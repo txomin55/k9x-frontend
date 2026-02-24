@@ -95,10 +95,13 @@ jobs:
       - name: Merge reports
         run: |
           mkdir -p .reports
-          cp -R artifacts/unit/.reports/* .reports/
-          cp -R artifacts/e2e/.reports/* .reports/
+          cp -R artifacts/unit/* .reports/
+          cp -R artifacts/e2e/* .reports/
       - name: Build summary coverage
-        run: bash ./ci-scripts/test-summary.sh
+        run: |
+          echo $PWD
+          ls .reports
+          bash ./ci-scripts/test-summary.sh
       - name: Upload summary reports
         uses: actions/upload-artifact@v4
         with:
@@ -131,8 +134,8 @@ jobs:
       - name: Merge reports
         run: |
           mkdir -p .reports
-          cp -R artifacts/unit/.reports/* .reports/
-          cp -R artifacts/e2e/.reports/* .reports/
+          cp -R artifacts/unit/* .reports/
+          cp -R artifacts/e2e/* .reports/
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
