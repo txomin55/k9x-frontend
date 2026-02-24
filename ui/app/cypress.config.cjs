@@ -104,17 +104,16 @@ const cypressConfig = defineConfig({
           }
 
           const stringifyTotalCoverage = JSON.stringify(totalCoverage, null, 2);
-          await fs.writeFileSync(
+          fs.mkdirSync(path.dirname(CYPRESS_ISTANBUL_COVERAGE_PATH), {
+            recursive: true,
+          });
+          fs.writeFileSync(
             CYPRESS_ISTANBUL_COVERAGE_PATH,
             stringifyTotalCoverage,
           );
 
-          fs.mkdir(NYC_OUTPUT_FOLDER, async (err) => {
-            if (err) {
-              throw err;
-            }
-            await fs.writeFileSync(NYC_COVERAGE_PATH, stringifyTotalCoverage);
-          });
+          fs.mkdirSync(NYC_OUTPUT_FOLDER, { recursive: true });
+          fs.writeFileSync(NYC_COVERAGE_PATH, stringifyTotalCoverage);
 
           // /!\ don't forget to return the Promise /!\
           return require("cypress-sonarqube-reporter/mergeReports")(results, {
