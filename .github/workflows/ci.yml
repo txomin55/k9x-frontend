@@ -131,9 +131,6 @@ jobs:
       - name: Merge reports
         run: |
           mkdir -p .reports
-          ls -la artifacts
-          ls -la artifacts/unit
-          ls -la artifacts/e2e
           cp -R artifacts/unit/.reports/* .reports/
           cp -R artifacts/e2e/.reports/* .reports/
       - name: SonarQube Scan
