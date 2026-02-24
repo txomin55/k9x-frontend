@@ -54,7 +54,7 @@ jobs:
         with:
           path: |
             cache/Cypress
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install deps
         run: bash ./ci-scripts/generic-before.sh
       - name: Run E2E tests
@@ -96,10 +96,13 @@ jobs:
           path: artifacts/e2e
       - name: Merge reports
         run: |
+          ls -la artifacts
+          ls -la artifacts/unit
+          ls -la artifacts/e2e
+          
           mkdir -p .reports
-          cp -R artifacts/unit/.reports/* .reports/
-          cp -R artifacts/e2e/.reports/* .reports/
-          ls -a
+          cp -R artifacts/unit/* .reports/
+          cp -R artifacts/e2e/* .reports/
       - name: Build summary coverage
         run: bash ./ci-scripts/test-summary.sh
       - name: Upload summary reports
@@ -134,12 +137,11 @@ jobs:
       - name: Merge reports
         run: |
           mkdir -p .reports
-          if [ -d artifacts/unit/.reports ]; then
-            cp -R artifacts/unit/.reports/* .reports/ || true
-          fi
-          if [ -d artifacts/e2e/.reports ]; then
-            cp -R artifacts/e2e/.reports/* .reports/ || true
-          fi
+          ls -la artifacts
+          ls -la artifacts/unit
+          ls -la artifacts/e2e
+          cp -R artifacts/unit/* .reports/
+          cp -R artifacts/e2e/* .reports/
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
