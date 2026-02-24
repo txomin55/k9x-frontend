@@ -10,5 +10,5 @@ pnpm --filter ./ui/app exec cypress install
 pnpm run test:e2e
 
 cp -r ui/app/.reports/test/e2e/coverage/* .reports/test/e2e/coverage
-cp -r ui/app/.reports/cypress .reports/cypress
-cp -r ui/app/.reports/sonar/e2e .reports/sonar/e2e
+cp -r ui/app/.reports/cypress/* .reports/cypress
+cp -r ui/app/.reports/sonar/e2e/* .reports/sonar/e2e
