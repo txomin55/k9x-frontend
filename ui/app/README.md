@@ -32,7 +32,7 @@ React PWA powered by Vite and the shared components from the `library` package. 
 ## Testing
 
 - Unit (Vitest, jsdom environment, shared config from `my-vitest`): `pnpm test:unit`.
-- Unit coverage: `pnpm test:coverage`.
+- Unit coverage: `pnpm test:unit:coverage`.
 - E2E (Cypress 14, Chrome):
   - `pnpm test:e2e` for headless runs against offline mode (`VITE_APP_IS_E2E=true`).
   - `pnpm test:e2e:dashboard` opens the runner; `pnpm test:e2e:real` records to the dashboard with `CY_E2E_KEY`.

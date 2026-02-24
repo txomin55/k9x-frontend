@@ -33,7 +33,7 @@ pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React
 
 - Unit (Vitest, app + library):
   - `pnpm test:unit`
-  - `pnpm test:coverage` generates coverage in `.reports/test/unit/coverage` and junit/Sonar in `.reports/test/unit` + `.reports/sonar`.
+  - `pnpm test:unit:coverage` generates coverage in `.reports/test/unit/coverage` and junit/Sonar in `.reports/test/unit` + `.reports/sonar`.
   - `pnpm unit:coverage-merge` merges coverage from app and library; `pnpm unit:merge` merges junit.
 - E2E (Cypress 14):
   - `pnpm test:e2e` launches the app in offline mode, runs in headless Chrome with `VITE_APP_IS_E2E=true`, produces `cypress/junit.xml`, coverage in `ui/app/coverage`, and Sonar reports in `coverage/sonar`.
@@ -48,7 +48,7 @@ pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React
 - `test_deploy/pages`: build with `CI_BUILD_ENV=staging`, move `ui/app/dist` to `public` and gzip; publishes artifact `public` and defines `RELEASE_NAME` for the release.
 - `release/ReleaseCreation`: uses `release-cli` to create the release with tag `RELEASE_NAME`.
 - `test`:
-  - `UnitTests`: `pnpm test:coverage`, then `unit:coverage-merge` + `unit:merge`; exports junit and `.reports`.
+  - `UnitTests`: `pnpm test:unit:coverage`, then `unit:coverage-merge` + `unit:merge`; exports junit and `.reports`.
   - `E2ETests`: `pnpm test:e2e`, then `functional:coverage`; exports `coverage`, `cypress`, and `.reports`.
 - `test_summary/TestSummary`: runs `total:coverage-merge` and publishes combined Cobertura coverage.
 - `code_checks/SonarCheck`: `sonar-scanner` using the reports generated in `.reports`.

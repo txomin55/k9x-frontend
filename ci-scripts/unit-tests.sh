@@ -2,7 +2,7 @@
 set -euo pipefail
 
 mkdir -p .reports/sonar
-pnpm run test:coverage
+pnpm run test:unit:coverage
 
 pnpm run unit:coverage-merge
 pnpm run unit:merge

@@ -7,7 +7,7 @@ React component library for Dog Trainer. Built with Vite, documented in Storyboo
 - React + Vite (`vite.config.js` uses `@vitejs/plugin-react`).
 - Storybook 10 with React/Vite preset (`npm run storybook` on port 6006, `npm run build-storybook` to generate static).
 - Chromatic for visual testing (`npm run chromatic` uses the token configured in the repo).
-- Vitest + Testing Library (`npm run test:unit`, `npm run test:coverage`).
+- Vitest + Testing Library (`npm run test:unit`, `npm run test:unit:coverage`).
 - ESLint with React and Storybook rules.
 
 Install dependencies with `pnpm install` (lockfile present) or `npm install` and use the scripts above for day-to-day development.
@@ -48,4 +48,4 @@ Install dependencies with `pnpm install` (lockfile present) or `npm install` and
 ## Tests
 
 - Unit: `npm run test:unit`.
-- Coverage: `npm run test:coverage`.
+- Coverage: `npm run test:unit:coverage`.
