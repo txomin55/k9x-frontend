@@ -9,7 +9,7 @@ pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React
 - Enable Corepack and prepare pnpm before installing:
   - `make install-tools` (nvm uses the `.nvmrc` version + prepares pnpm via Corepack according to `packageManager`)
   - `pnpm install`
-
+ 
 ## Project structure
 
 - `ui/app`: React + Vite PWA, VitePWA, Prism mock server over `public/openapi.json`, Cypress for E2E and Vitest for unit tests.
