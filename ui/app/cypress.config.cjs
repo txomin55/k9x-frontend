@@ -67,7 +67,7 @@ const cypressConfig = defineConfig({
               const directory = fs.opendirSync(item);
               let file;
               while ((file = directory.readSync()) !== null) {
-                if (file && file.name.includes(".json") === true) {
+                if (file?.name.includes(".json") === true) {
                   const fileName = file.name;
                   if (fileName) {
                     v8Coverage = require(
@@ -118,8 +118,8 @@ const cypressConfig = defineConfig({
           // /!\ don't forget to return the Promise /!\
           return require("cypress-sonarqube-reporter/mergeReports")(results, {
             // see "Merge Plugin Options" section for all available options
-            reportsOutputDir: ".reports/tests/e2e/sonar",
-            mergeOutputDir: ".reports/tests/e2e/sonar",
+            reportsOutputDir: ".reports/sonar/e2e/tests/e2e/specs",
+            mergeOutputDir: ".reports/test/e2e/sonar",
             mergeFileName: "cypress-unit-report.xml",
           });
         });

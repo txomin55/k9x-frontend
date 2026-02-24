@@ -4,7 +4,6 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "test:unit": "vitest",
     "test:unit:coverage": "vitest run --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

@@ -15,7 +15,6 @@
     "dev": {
       "cache": false
     },
-    "test:unit": {},
     "test:unit:coverage": {
       "cache": false
     }
