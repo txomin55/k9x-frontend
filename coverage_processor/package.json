@@ -1,0 +1,13 @@
+{
+  "name": "coverage_processor",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "istanbul-lib-coverage": "^3.2.2",
+    "istanbul-lib-report": "^3.0.1",
+    "istanbul-reports": "^3.2.0",
+    "junit-report-merger": "^9.0.3"
+  }
+}

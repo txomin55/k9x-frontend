@@ -1,0 +1,14 @@
+{
+  "name": "my-eslint",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "eslint.config.cjs"
+  ],
+  "dependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4"
+  }
+}

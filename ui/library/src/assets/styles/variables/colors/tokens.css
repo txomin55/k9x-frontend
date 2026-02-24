@@ -1,0 +1,79 @@
+@import "colors.css";
+
+/* https://m3.material.io/styles/color/roles */
+:root {
+  --light: var(--color-white);
+  --dark: var(--color-black);
+
+  --primary: var(--color-p-40);
+  --primary-inverse: var(--color-p-80);
+  --on-primary: var(--color-p-100);
+  --primary-container: var(--color-p-90);
+  --on-primary-container: var(--color-p-10);
+
+  --secondary: var(--color-s-40);
+  --on-secondary: var(--color-s-100);
+  --secondary-container: var(--color-s-90);
+  --on-secondary-container: var(--color-s-10);
+
+  --tertiary: var(--color-t-40);
+  --on-tertiary: var(--color-t-100);
+  --tertiary-container: var(--color-t-90);
+  --on-tertiary-container: var(--color-t-10);
+
+  --error: var(--color-e-40);
+  --on-error: var(--color-e-100);
+  --error-container: var(--color-e-90);
+  --on-error-container: var(--color-e-10);
+
+  --surface: var(--color-n-98);
+  --surface-inverse: var(--color-n-20);
+  --on-surface: var(--color-n-10);
+  --on-surface-inverse: var(--color-n-95);
+  --on-surface-variant: var(--color-nv-30);
+  --surface-container-lowest: var(--color-n-100);
+  --csurface-container-low: var(--color-n-96);
+  --surface-container: var(--color-n-94);
+  --surface-container-high: var(--color-n-92);
+  --csurface-container-highest: var(--color-n-90);
+
+  --outline: var(--color-nv-50);
+  --outline-variant: var(--color-nv-80);
+
+  body.dark {
+    --primary: var(--color-p-80);
+    --primary-inverse: var(--color-p-40);
+    --on-primary: var(--color-p-20);
+    --primary-container: var(--color-p-30);
+    --on-primary-container: var(--color-p-90);
+
+    --secondary: var(--color-s-80);
+    --on-secondary: var(--color-s-20);
+    --secondary-container: var(--color-s-30);
+    --on-secondary-container: var(--color-s-90);
+
+    --tertiary: var(--color-t-80);
+    --on-tertiary: var(--color-t-20);
+    --tertiary-container: var(--color-t-30);
+    --on-tertiary-container: var(--color-t-90);
+
+    --error: var(--color-e-80);
+    --on-error: var(--color-e-20);
+    --error-container: var(--color-e-30);
+    --on-error-container: var(--color-e-90);
+
+    --surface: var(--color-n-6);
+    --surface-inverse: var(--color-n-90);
+    --on-surface: var(--color-n-90);
+    --on-surface-inverse: var(--color-n-20);
+    --on-surface-variant: var(--color-n-80);
+    --surface-container-lowest: var(--color-n-4);
+    --surface-container-low: var(--color-n-10);
+    --surface-container: var(--color-n-12);
+    --surface-container-high: var(--color-n-17);
+    --surface-container-highest: var(--color-n-22);
+
+    --outline: var(--color-nv-60);
+    --outline-variant: var(--color-nv-30);
+  }
+}

@@ -1,0 +1,8 @@
+packages:
+  - ui/*
+  - configuration/*
+  - coverage_processor
+useNodeVersion: 24.11.1
+engineStrict: true
+executionEnv:
+  nodeVersion: 24.11.1

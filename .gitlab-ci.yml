@@ -1,0 +1,151 @@
+stages:
+  - test_deploy
+  - release
+  - test
+  - test_summary
+  - code_checks
+  - production_deploy
+  - smoke_tests
+
+# to cache both npm modules and Cypress binary we use environment variables
+# to point at the folders we can list as paths in "cache" job settings
+variables:
+  CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  GITLAB_PROJECT_ID: "${CI_PROJECT_ID}" # needed to be exported to the projects environments
+  SONAR_HOST_URL: "${SONAR_HOST_URL}"
+  TAGS_ACCESS_TOKEN: "${TAGS_ACCESS_TOKEN}"
+  SONAR_TOKEN: "${SONAR_TOKEN}"
+  CY_E2E_KEY: "${CY_E2E_KEY}"
+  CY_PROJECT_ID: "${CY_PROJECT_ID}"
+
+# cache using branch name
+# https://gitlab.com/help/ci/caching/index.md
+.pnpm-cache: &pnpm-cache
+  policy: pull
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+    - cache/Cypress
+
+.generic_before_script:
+  before_script:
+    - ./ci-scripts/generic-before.sh
+
+pages: # the job must be named pages
+  image: node:24.11.1-slim@sha256:0afb7822fac7bf9d7c1bf3b6e6c496dee6b2b64d8dfa365501a3c68e8eba94b2
+  stage: test_deploy
+  cache:
+    <<: *pnpm-cache
+  variables:
+    CI_BUILD_ENV: staging
+  before_script:
+    - !reference [ .generic_before_script, before_script ]
+  script:
+    - ./ci-scripts/pages.sh
+  only:
+    - master
+  artifacts:
+    reports:
+      # To ensure we've access to this file in the next stage
+      dotenv: generate_executables.env
+    paths:
+      - public # artifact path must be /public for GitLab Pages to pick it up
+
+ReleaseCreation:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+    - job: pages
+      artifacts: true
+  script:
+    - ./ci-scripts/release-creation.sh
+  release:
+    tag_name: $RELEASE_NAME
+    name: 'Release $RELEASE_NAME'
+    description: 'Release created using the release-cli.'
+    assets:
+      links:
+        - name: "Build folder"
+          url: "https://gitlab.com/txominsirera/dog-trainer-pwa/-/jobs/$GE_JOB_ID/artifacts/download"
+  only:
+    - master
+
+UnitTests:
+  stage: test
+  image: node:24.11.1-slim@sha256:0afb7822fac7bf9d7c1bf3b6e6c496dee6b2b64d8dfa365501a3c68e8eba94b2
+  cache:
+    <<: *pnpm-cache
+  before_script:
+    - !reference [ .generic_before_script, before_script ]
+  script:
+    - ./ci-scripts/unit-tests.sh
+  only:
+    - master
+    - merge_request
+  artifacts:
+    paths:
+      - .reports
+    reports:
+      junit:
+        - .reports/test/unit/junit.xml
+  coverage: '/Statements\s+:\s(\d+.?\d+)%/'
+
+E2ETests:
+  stage: test
+  image: cypress/browsers:node-24.11.1-chrome-143.0.7499.40-1-ff-145.0.2-edge-142.0.3595.94-1@sha256:ff79e75249941c52c301821a7979db306e2659aa2d6038428bcf77c6f5f125e1
+  cache:
+    <<: *pnpm-cache
+  before_script:
+    - !reference [ .generic_before_script, before_script ]
+  script:
+    - ./ci-scripts/e2e-tests.sh
+  only:
+    - master
+    - merge_request
+  artifacts:
+    paths:
+      - coverage
+      - cypress
+      - .reports
+    reports:
+      junit:
+        - cypress/junit.xml
+  coverage: '/Statements\s+:\s(\d+.?\d+)%/'
+
+TestSummary:
+  stage: test_summary
+  image: node:24.11.1-slim@sha256:0afb7822fac7bf9d7c1bf3b6e6c496dee6b2b64d8dfa365501a3c68e8eba94b2
+  cache:
+    <<: *pnpm-cache
+  before_script:
+    - !reference [ .generic_before_script, before_script ]
+  script:
+    - ./ci-scripts/test-summary.sh
+  only:
+    - master
+    - merge_request
+  artifacts:
+    paths:
+      - .reports
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: .reports/test/total/coverage/cobertura-coverage.xml
+  coverage: '/Statements\s+:\s(\d+.?\d+)%/'
+
+.SonarCheck:
+  stage: code_checks
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [ "" ]
+  cache:
+    <<: *pnpm-cache
+  script:
+    - ./ci-scripts/sonar-check.sh
+  only:
+    - master
+    - merge_request
