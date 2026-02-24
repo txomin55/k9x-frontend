@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reports-unit
-          path: .reports
+          path: .reports/**
           include-hidden-files: true
 
   e2e_tests:
@@ -63,7 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reports-e2e
-          path: .reports
+          path: .reports/**
           include-hidden-files: true
 
   test_summary:
