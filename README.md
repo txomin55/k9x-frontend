@@ -33,7 +33,7 @@ pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React
 
 - Unit (Vitest, app + library):
   - `pnpm test:unit`
-  - `pnpm test:unit:coverage` generates coverage in `.reports/test/unit/coverage` and junit/Sonar in `.reports/test/unit` + `.reports/sonar`.
+  - `pnpm test:unit:coverage` generates coverage in `.reports/test/unit/coverage` and junit/Sonar in `.reports/test/unit` + `.reports/sonar/unit`.
   - `pnpm unit:coverage-merge` merges coverage from app and library; `pnpm unit:merge` merges junit.
 - E2E (Cypress 14):
   - `pnpm test:e2e` launches the app in offline mode, runs in headless Chrome with `VITE_APP_IS_E2E=true`, produces `cypress/junit.xml`, coverage in `ui/app/coverage`, and Sonar reports in `coverage/sonar`.

@@ -28,7 +28,7 @@ export default defineConfig({
     sonarReporterOptions: { silent: true }, //??
     outputFile: {
       junit: ".reports/test/unit/junit.xml",
-      "vitest-sonar-reporter": ".reports/sonar/test-report.xml",
+      "vitest-sonar-reporter": ".reports/sonar/unit/test-report.xml",
     },
     watch: false,
     setupFiles: ["./vitest-setup.js"],
