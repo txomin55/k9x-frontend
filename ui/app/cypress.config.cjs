@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const url = require("url");
+const fs = require("node:fs");
+const path = require("node:path");
+const url = require("node:url");
 const v8toIstanbul = require("v8-to-istanbul");
 const glob = require("glob");
 
@@ -67,7 +67,7 @@ const cypressConfig = defineConfig({
               const directory = fs.opendirSync(item);
               let file;
               while ((file = directory.readSync()) !== null) {
-                if (file && file.name.includes(".json") === true) {
+                if (file?.name.includes(".json") === true) {
                   const fileName = file.name;
                   if (fileName) {
                     v8Coverage = require(
@@ -104,23 +104,22 @@ const cypressConfig = defineConfig({
           }
 
           const stringifyTotalCoverage = JSON.stringify(totalCoverage, null, 2);
-          await fs.writeFileSync(
+          fs.mkdirSync(path.dirname(CYPRESS_ISTANBUL_COVERAGE_PATH), {
+            recursive: true,
+          });
+          fs.writeFileSync(
             CYPRESS_ISTANBUL_COVERAGE_PATH,
             stringifyTotalCoverage,
           );
 
-          fs.mkdir(NYC_OUTPUT_FOLDER, async (err) => {
-            if (err) {
-              throw err;
-            }
-            await fs.writeFileSync(NYC_COVERAGE_PATH, stringifyTotalCoverage);
-          });
+          fs.mkdirSync(NYC_OUTPUT_FOLDER, { recursive: true });
+          fs.writeFileSync(NYC_COVERAGE_PATH, stringifyTotalCoverage);
 
           // /!\ don't forget to return the Promise /!\
           return require("cypress-sonarqube-reporter/mergeReports")(results, {
             // see "Merge Plugin Options" section for all available options
-            reportsOutputDir: ".reports/tests/e2e/sonar",
-            mergeOutputDir: ".reports/tests/e2e/sonar",
+            reportsOutputDir: ".reports/sonar/e2e/tests/e2e/specs",
+            mergeOutputDir: ".reports/test/e2e/sonar",
             mergeFileName: "cypress-unit-report.xml",
           });
         });
@@ -136,7 +135,7 @@ if (process.env.VITE_APP_IS_E2E) {
   cypressConfig.reporterOptions = {
     reporterEnabled: `cypress-sonarqube-reporter, ${cypressConfig.reporterOptions.reporterEnabled}`,
     cypressSonarqubeReporterReporterOptions: {
-      outputDir: ".reports/test/e2e/coverage/sonar",
+      outputDir: ".reports/sonar/e2e",
       overwrite: true,
     },
     mochaJunitReporterReporterOptions:
