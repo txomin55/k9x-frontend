@@ -36,8 +36,8 @@ React PWA powered by Vite and the shared components from the `library` package. 
 - E2E (Cypress 14, Chrome):
   - `pnpm test:e2e` for headless runs against offline mode (`VITE_APP_IS_E2E=true`).
   - `pnpm test:e2e:dashboard` opens the runner; `pnpm test:e2e:real` records to the dashboard with `CY_E2E_KEY`.
-  - E2E coverage via `cypress-cdp-coverage`; generates `.nyc_output/final.json` and `coverage/coverage-final.json`.
-  - Reports: JUnit in `cypress/junit.xml` and, with `VITE_APP_IS_E2E=true`, Sonar in `coverage/sonar/cypress-unit-report.xml`.
+  - E2E coverage via `cypress-cdp-coverage`; generates `.nyc_output/final.json` and `.reports/test/e2e/coverage/coverage-final.json`.
+  - Reports: JUnit in `.reports/cypress/junit.xml` and, with `VITE_APP_IS_E2E=true`, Sonar in `.reports/tests/e2e/sonar/cypress-unit-report.xml`.
 - Aggregated functional coverage (NYC): `pnpm test:functional-coverage`.
 - Smoke without coverage: `pnpm test:smoke`.
 

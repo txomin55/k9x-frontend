@@ -108,12 +108,10 @@ E2ETests:
     - merge_request
   artifacts:
     paths:
-      - coverage
-      - cypress
       - .reports
     reports:
       junit:
-        - cypress/junit.xml
+        - .reports/cypress/junit.xml
   coverage: '/Statements\s+:\s(\d+.?\d+)%/'
 
 TestSummary:

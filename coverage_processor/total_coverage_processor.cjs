@@ -2,7 +2,7 @@ const libCoverage = require("istanbul-lib-coverage");
 const libReport = require("istanbul-lib-report");
 const reports = require("istanbul-reports");
 
-const e2eCoverage = require("../coverage/coverage-final.json");
+const e2eCoverage = require("../.reports/test/e2e/coverage/coverage-final.json");
 const totalUnitCoverage = require("../.reports/test/unit/coverage/coverage-final.json");
 
 const map = libCoverage.createCoverageMap(e2eCoverage);

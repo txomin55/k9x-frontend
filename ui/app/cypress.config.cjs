@@ -9,7 +9,7 @@ const { defineConfig } = require("cypress");
 const V8_COVERAGE_FOLDER = ".cypress_v8_coverage";
 const NYC_OUTPUT_FOLDER = ".nyc_output";
 const NYC_COVERAGE_PATH = `${NYC_OUTPUT_FOLDER}/final.json`;
-const CYPRESS_ISTANBUL_COVERAGE_PATH = "coverage/coverage-final.json";
+const CYPRESS_ISTANBUL_COVERAGE_PATH = ".reports/test/e2e/coverage/coverage-final.json";
 
 const cypressConfig = defineConfig({
   projectId: process.env.CY_PROJECT_ID,
@@ -18,7 +18,7 @@ const cypressConfig = defineConfig({
   reporterOptions: {
     reporterEnabled: "mocha-junit-reporter",
     mochaJunitReporterReporterOptions: {
-      mochaFile: "cypress/junit.xml",
+      mochaFile: ".reports/cypress/junit.xml",
       toConsole: false,
     },
   },
@@ -119,8 +119,8 @@ const cypressConfig = defineConfig({
           // /!\ don't forget to return the Promise /!\
           return require("cypress-sonarqube-reporter/mergeReports")(results, {
             // see "Merge Plugin Options" section for all available options
-            reportsOutputDir: "./coverage/sonar",
-            mergeOutputDir: "./coverage/sonar",
+            reportsOutputDir: ".reports/tests/e2e/sonar",
+            mergeOutputDir: ".reports/tests/e2e/sonar",
             mergeFileName: "cypress-unit-report.xml",
           });
         });
@@ -136,7 +136,7 @@ if (process.env.VITE_APP_IS_E2E) {
   cypressConfig.reporterOptions = {
     reporterEnabled: `cypress-sonarqube-reporter, ${cypressConfig.reporterOptions.reporterEnabled}`,
     cypressSonarqubeReporterReporterOptions: {
-      outputDir: "./coverage/sonar",
+      outputDir: ".reports/test/e2e/coverage/sonar",
       overwrite: true,
     },
     mochaJunitReporterReporterOptions:

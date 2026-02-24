@@ -12,7 +12,7 @@
     "serve": "vite preview",
     "test:unit": "vitest",
     "test:unit:coverage": "vitest --coverage",
-    "test:e2e": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress run --spec tests/e2e/specs/**/*.js --browser chrome",
+    "test:e2e": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress run --spec tests/e2e/specs/**/*.js --browser chrome && pnpm run test:functional-coverage",
     "test:e2e:dashboard": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress open",
     "test:e2e:real": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress run --record --key ${CY_E2E_KEY} --spec tests/e2e/specs/**/*.js --browser chrome",
     "test:functional-coverage": "pnpm nyc report --reporter=text-summary",

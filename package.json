@@ -15,9 +15,8 @@
     "test:unit": "turbo run test:unit --parallel",
     "test:unit:coverage": "turbo run test:unit:coverage --parallel",
     "unit:coverage-merge": "node coverage_processor/unit_coverage_processor.cjs",
-    "unit:merge": "node coverage_processor/unit_processor.cjs",
+    "unit:junit-merge": "node coverage_processor/unit_jUnit_processor.cjs",
     "test:e2e": "pnpm --filter ./ui/app test:e2e",
-    "functional:coverage": "pnpm --filter ./ui/app test:functional-coverage",
     "total:coverage-merge": "node coverage_processor/total_coverage_processor.cjs",
     "preinstall": "npx only-allow pnpm"
   },
