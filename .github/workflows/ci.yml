@@ -70,8 +70,6 @@ jobs:
     name: Test Summary
     runs-on: ubuntu-latest
     needs: [unit_tests, e2e_tests]
-    env:
-      CI: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -97,9 +95,8 @@ jobs:
       - name: Merge reports
         run: |
           mkdir -p .reports
-          cp -R artifacts/unit/* .reports/
-          cp -R artifacts/e2e/* .reports/
-          ls .reports
+          cp -R artifacts/unit/.reports/* .reports/
+          cp -R artifacts/e2e/.reports/* .reports/
       - name: Build summary coverage
         run: bash ./ci-scripts/test-summary.sh
       - name: Upload summary reports
@@ -137,8 +134,8 @@ jobs:
           ls -la artifacts
           ls -la artifacts/unit
           ls -la artifacts/e2e
-          cp -R artifacts/unit/* .reports/
-          cp -R artifacts/e2e/* .reports/
+          cp -R artifacts/unit/.reports/* .reports/
+          cp -R artifacts/e2e/.reports/* .reports/
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
