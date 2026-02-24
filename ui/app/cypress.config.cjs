@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const url = require("url");
+const fs = require("node:fs");
+const path = require("node:path");
+const url = require("node:url");
 const v8toIstanbul = require("v8-to-istanbul");
 const glob = require("glob");
 

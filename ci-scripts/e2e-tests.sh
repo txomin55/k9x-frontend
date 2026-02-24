@@ -7,7 +7,7 @@ mkdir -p .reports/test/e2e/coverage
 
 pnpm --filter ./ui/app exec cypress install
 # Should be using for Cypress cloud test:e2e:real
-pnpm run test:e2e
+pnpm run test:e2e:coverage
 
 cp -r ui/app/.reports/test/e2e/coverage/* .reports/test/e2e/coverage
 cp -r ui/app/.reports/cypress/* .reports/cypress
