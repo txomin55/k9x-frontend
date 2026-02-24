@@ -35,11 +35,13 @@ jobs:
         with:
           name: reports-unit
           path: .reports
+          include-hidden-files: true
       - name: Upload unit junit
         uses: actions/upload-artifact@v4
         with:
           name: junit-unit
           path: .reports/test/unit/junit.xml
+          include-hidden-files: true
 
   e2e_tests:
     name: E2E Tests
@@ -67,11 +69,13 @@ jobs:
         with:
           name: reports-e2e
           path: .reports
+          include-hidden-files: true
       - name: Upload e2e junit
         uses: actions/upload-artifact@v4
         with:
           name: junit-e2e
           path: .reports/cypress/junit.xml
+          include-hidden-files: true
 
   test_summary:
     name: Test Summary
@@ -117,11 +121,13 @@ jobs:
         with:
           name: reports-summary
           path: .reports
+          include-hidden-files: true
       - name: Upload cobertura coverage
         uses: actions/upload-artifact@v4
         with:
           name: cobertura-coverage
           path: .reports/test/total/coverage/cobertura-coverage.xml
+          include-hidden-files: true
 
   sonar_check:
     name: Sonar Check
