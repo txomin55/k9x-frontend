@@ -96,13 +96,10 @@ jobs:
           path: artifacts/e2e
       - name: Merge reports
         run: |
-          ls -la artifacts
-          ls -la artifacts/unit
-          ls -la artifacts/e2e
-          
           mkdir -p .reports
           cp -R artifacts/unit/* .reports/
           cp -R artifacts/e2e/* .reports/
+          ls .reports
       - name: Build summary coverage
         run: bash ./ci-scripts/test-summary.sh
       - name: Upload summary reports
