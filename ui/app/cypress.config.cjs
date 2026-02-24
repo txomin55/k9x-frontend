@@ -136,7 +136,7 @@ if (process.env.VITE_APP_IS_E2E) {
   cypressConfig.reporterOptions = {
     reporterEnabled: `cypress-sonarqube-reporter, ${cypressConfig.reporterOptions.reporterEnabled}`,
     cypressSonarqubeReporterReporterOptions: {
-      outputDir: ".reports/test/e2e/coverage/sonar",
+      outputDir: ".reports/sonar/e2e",
       overwrite: true,
     },
     mochaJunitReporterReporterOptions:
