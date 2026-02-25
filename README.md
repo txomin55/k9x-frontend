@@ -1,5 +1,5 @@
 # k9x-frontend
-
+ 
 pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React 19, Vitest, Cypress, and Storybook/Chromatic.
 
 ## Requirements and setup

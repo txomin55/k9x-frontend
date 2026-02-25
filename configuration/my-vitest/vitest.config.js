@@ -1,10 +1,5 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
@@ -19,7 +14,10 @@ export default defineConfig({
         "**/src/**/*.json",
         "**/src/**/*stories.jsx",
       ],
-      include: ["**/src/**/*.{js,jsx}"],
+      allowExternal: true,
+      include: [
+        "**/src/**/*.{js,jsx}"
+      ],
       reportsDirectory: ".reports/test/unit/coverage",
       reporter: ["text-summary", "cobertura", "lcov", "json"],
     },
