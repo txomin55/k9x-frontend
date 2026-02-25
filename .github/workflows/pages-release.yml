@@ -17,35 +17,42 @@ jobs:
     outputs:
       release_name: ${{ steps.release_vars.outputs.release_name }}
     env:
-      CI: true
       CI_BUILD_ENV: staging
       CI_JOB_ID: ${{ github.run_id }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
+
       - name: Cache pnpm
         uses: actions/cache@v4
         with:
           path: .pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install deps
         run: bash ./ci-scripts/generic-before.sh
+
       - name: Build pages
         run: bash ./ci-scripts/pages.sh
+
       - name: Export release name
         id: release_vars
         run: |
           set -a
           source generate_executables.env
           echo "release_name=$RELEASE_NAME" >> "$GITHUB_OUTPUT"
+
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
       - name: Create release archive
         run: zip -r public.zip public
+
       - name: Upload release archive
         uses: actions/upload-artifact@v4
         with:
@@ -77,6 +84,7 @@ jobs:
         with:
           name: public-zip
           path: .
+
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.build_pages.outputs.release_name }}
