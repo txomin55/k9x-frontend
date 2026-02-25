@@ -44,7 +44,7 @@ jobs:
       image: cypress/browsers:node-24.11.1-chrome-143.0.7499.40-1-ff-145.0.2-edge-142.0.3595.94-1
     env:
       CI: true
-      CYPRESS_CACHE_FOLDER: cache/Cypress
+      CYPRESS_CACHE_FOLDER: ${{ github.workspace }}/cache/Cypress
       CY_E2E_KEY: ${{ secrets.CY_E2E_KEY }}
       CY_PROJECT_ID: ${{ secrets.CY_PROJECT_ID }}
     steps:
@@ -53,16 +53,14 @@ jobs:
       - name: Cache pnpm
         uses: actions/cache@v4
         with:
-          path: |
-            .pnpm-store
+          path: .pnpm-store
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Cache Cypress
         uses: actions/cache@v4
         with:
-          path: |
-            cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('pnpm-lock.yaml') }}
+          path: cache/Cypress
+          key: ${{ runner.os }}-cypress
 
       - name: Install deps
         run: bash ./ci-scripts/generic-before.sh
