@@ -119,25 +119,14 @@ jobs:
         run: |
           bash ./ci-scripts/test-summary.sh
 
-      - name: Code Coverage Report
-        uses: irongut/CodeCoverageSummary@v1.3.0
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v5
         with:
-          filename: .reports/test/total/coverage/cobertura-coverage.xml
-          badge: true
-          fail_below_min: false
-          format: markdown
-          hide_branch_rate: false
-          hide_complexity: true
-          indicators: true
-          output: file
-          thresholds: '40 80'
-
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
-        with:
-          recreate: true
-          path: code-coverage-results.md
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: .reports/test/e2e/coverage/coverage-final.json,..reports/test/unit/coverage/coverage-final.json
+          flags: unified-coverage
+          name: k9x-frontend
+          verbose: true
 
   sonar_check:
     name: Sonar Check
