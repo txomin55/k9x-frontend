@@ -121,7 +121,7 @@ jobs:
       - name: Produce the coverage report
         uses: insightsengineering/coverage-action@v3
         with:
-          path: .reports/test/total/cobertura-coverage.xml
+          path: .reports/test/total/coverage/cobertura-coverage.xml
           threshold: 50
           fail: true
           publish: true
