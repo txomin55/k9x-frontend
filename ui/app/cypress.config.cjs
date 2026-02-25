@@ -81,17 +81,45 @@ const cypressConfig = defineConfig({
               directory.closeSync();
             });
 
-          const codebaseResults = v8Coverage.result.filter((r) =>
-            r.url.match(
-              /^http:\/\/localhost:3000\/src\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.js(x)?$/,
-            ),
+          const baseUrl = new url.URL(
+            config.baseUrl ?? "http://localhost:3000",
           );
+          const appPathRegex =
+            /^\/src\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx)$/;
+          const libPathRegex =
+            /^\/(@fs\/.*\/ui\/library\/src|@id\/@lib)\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx)$/;
+
+          const codebaseResults = v8Coverage.result.filter((r) => {
+            let u;
+            try {
+              u = new url.URL(r.url);
+            } catch {
+              return false;
+            }
+            if (u.host !== baseUrl.host) return false;
+            return appPathRegex.test(u.pathname) || libPathRegex.test(u.pathname);
+          });
 
           const totalCoverage = {};
           for (const report of codebaseResults) {
-            // console.log('report is %o', report)
-            const u = new url.URL(report.url);
-            const filename = path.join(__dirname, u.pathname);
+            let u;
+            try {
+              u = new url.URL(report.url);
+            } catch {
+              continue;
+            }
+            let filename;
+            if (u.pathname.startsWith("/@fs/")) {
+              filename = u.pathname.replace(/^\/@fs\//, "/");
+            } else if (u.pathname.startsWith("/@id/@lib/")) {
+              filename = path.resolve(
+                __dirname,
+                "../library/src",
+                u.pathname.replace(/^\/@id\/@lib\//, ""),
+              );
+            } else {
+              filename = path.join(__dirname, u.pathname);
+            }
 
             const converter = v8toIstanbul(filename);
             // I wonder if this maps the source if there is a source map?!
