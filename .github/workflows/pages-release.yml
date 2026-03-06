@@ -3,6 +3,9 @@ name: Pages and Release
 on:
   push:
     branches: [main]
+    paths:
+      - ui/app/src/**
+      - ui/library/src/**
   workflow_dispatch:
 
 permissions:
