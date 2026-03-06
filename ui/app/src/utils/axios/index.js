@@ -5,12 +5,17 @@ export default {
     this.locale = locale;
     return new Promise((resolve) => {
       this.index = new OpenAPIClientAxios({
-        definition: `${process.env.VITE_APP_OAS}`,
+        definition:
+          "https://cdn.jsdelivr.net/gh/txomin55/k9x-oas-definition@main/openapi.yaml",
       });
 
       this.index.init().then((client) => {
         client.interceptors.request.use((request) => {
           request.headers["Accept-language"] = this.locale;
+
+          if (request.url.includes("/api/"))
+            request.headers["Authorization"] = "Bearer FAKE_BEARER";
+
           return request;
         });
 

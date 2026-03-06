@@ -14,7 +14,7 @@
     "test:e2e:dashboard": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress open",
     "test:e2e:real": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress run --record --key ${CY_E2E_KEY} --spec tests/e2e/specs/**/*.js --browser chrome",
     "test:smoke": "VITE_APP_IS_E2E=true cypress run --spec tests/e2e/specs/**/*.js",
-    "mock-server": "mkdir -p /tmp/k9x-mock && curl -L https://raw.githubusercontent.com/txomin55/k9x-oas-definition/refs/heads/main/openapi.yaml -o /tmp/k9x-mock/openapi.yaml && prism mock -d /tmp/k9x-mock/openapi.yaml"
+    "mock-server": "mkdir -p /tmp/k9x-mock && curl -L https://cdn.jsdelivr.net/gh/txomin55/k9x-oas-definition@main/openapi.yaml -o /tmp/k9x-mock/openapi.yaml && prism mock -d /tmp/k9x-mock/openapi.yaml"
   },
   "license": "MIT",
   "devDependencies": {
@@ -46,10 +46,11 @@
     "workbox-window": "^7.4.0"
   },
   "dependencies": {
-    "axios": "1.13.2",
-    "library": "workspace:^",
+    "axios": "1.13.6",
     "i18next": "^24.2.3",
-    "openapi-client-axios": "7.5.4",
+    "js-yaml": "^4.1.1",
+    "library": "workspace:^",
+    "openapi-client-axios": "7.9.0",
     "react-i18next": "^15.7.4",
     "react-router-dom": "^7.10.1",
     "vite-plugin-static-copy": "^3.1.4",

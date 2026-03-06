@@ -100,17 +100,20 @@ importers:
   ui/app:
     dependencies:
       axios:
-        specifier: 1.13.2
-        version: 1.13.2
+        specifier: 1.13.6
+        version: 1.13.6
       i18next:
         specifier: ^24.2.3
         version: 24.2.3(typescript@5.4.5)
+      js-yaml:
+        specifier: ^4.1.1
+        version: 4.1.1
       library:
         specifier: workspace:^
         version: link:../library
       openapi-client-axios:
-        specifier: 7.5.4
-        version: 7.5.4(axios@1.13.2)(js-yaml@4.1.1)
+        specifier: 7.9.0
+        version: 7.9.0(axios@1.13.6)(js-yaml@4.1.1)
       react-i18next:
         specifier: ^15.7.4
         version: 15.7.4(i18next@24.2.3(typescript@5.4.5))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.4.5)
@@ -3054,8 +3057,8 @@ packages:
     resolution: {integrity: sha512-ilYanEU8vxxBexpJd8cWM4ElSQq4QctCLKih0TSfjIfCQTeyH/6zVrmIJfLPrKTKJRbiG+cfnZbQIjAlJmF1jQ==}
     engines: {node: '>=4'}
 
-  axios@1.13.2:
-    resolution: {integrity: sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==}
+  axios@1.13.6:
+    resolution: {integrity: sha512-ChTCHMouEe2kn713WHbQGcuYrr6fXTBiu460OTwWrWob16g1bXn4vtz07Ope7ewMozJAnEquLk5lWQWtBig9DQ==}
 
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
@@ -6301,8 +6304,8 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openapi-client-axios@7.5.4:
-    resolution: {integrity: sha512-ZVzGRobfNjV1EWVlQ8R1ycpx+36bn6uAxrQotII6gy9fFmEoYgkMBM2qlrbfa3JgPO8G3A2bLF4dV7oyCJK2Pg==}
+  openapi-client-axios@7.9.0:
+    resolution: {integrity: sha512-1VRBbbNQTz6pAWFALXrqr88GclEb+LirqbzmLnFzqOlnCFC2Ao5Gv4JYf783+A8PQbEAu5Or4Rg32RaetllnwA==}
     peerDependencies:
       axios: '>=0.25.0'
       js-yaml: ^4.1.0
@@ -12131,7 +12134,7 @@ snapshots:
 
   axe-core@4.11.0: {}
 
-  axios@1.13.2:
+  axios@1.13.6:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
@@ -16327,9 +16330,9 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openapi-client-axios@7.5.4(axios@1.13.2)(js-yaml@4.1.1):
+  openapi-client-axios@7.9.0(axios@1.13.6)(js-yaml@4.1.1):
     dependencies:
-      axios: 1.13.2
+      axios: 1.13.6
       bath-es5: 3.0.3
       dereference-json-schema: 0.2.1
       js-yaml: 4.1.1
