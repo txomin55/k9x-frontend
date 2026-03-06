@@ -45,7 +45,7 @@ pnpm/turbo monorepo with a React PWA and a component library. Uses Vite 7, React
 ## GitLab pipeline (.gitlab-ci.yml)
 
 - Base image Node `24.11.1-slim` and cached pnpm (`.pnpm-store` + Cypress binary).
-- `test_deploy/pages`: build with `CI_BUILD_ENV=staging`, move `ui/app/dist` to `public` and gzip; publishes artifact `public` and defines `RELEASE_NAME` for the release.
+- `test_deploy/pages`: build with `CI_BUILD_ENV=develop`, move `ui/app/dist` to `public` and gzip; publishes artifact `public` and defines `RELEASE_NAME` for the release.
 - `release/ReleaseCreation`: uses `release-cli` to create the release with tag `RELEASE_NAME`.
 - `test`:
   - `UnitTests`: `pnpm test:unit:coverage`, then `unit:coverage-merge` + `unit:merge`; exports junit and `.reports`.

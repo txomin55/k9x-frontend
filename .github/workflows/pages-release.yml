@@ -24,7 +24,7 @@ jobs:
       id-token: write
       actions: write
     env:
-      CI_BUILD_ENV: staging
+      CI_BUILD_ENV: develop
       CI_JOB_ID: ${{ github.run_id }}
     environment:
       name: github-pages
