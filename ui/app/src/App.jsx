@@ -1,6 +1,6 @@
 import { useAuthentication } from "@/providers/authentication/AuthenticationProvider";
 import { useI18n } from "@/providers/i18n/I18nProvider.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { ROUTES } from "@/routes/index.js";
 import CoreButton from "@lib/components/atoms/button/CoreButton.jsx";
@@ -9,8 +9,6 @@ function App({ children }) {
   const { t, locale, setLocale, locales } = useI18n();
 
   const { user } = useAuthentication();
-
-  const navigate = useNavigate();
 
   const [isDark, setIsDark] = useState(false);
 
