@@ -24,7 +24,6 @@ React PWA powered by Vite and the shared components from the `library` package. 
 2. Start in offline (mock) mode with:
    - `pnpm dev` or `pnpm start:offline` (starts Prism with `public/openapi.json` + Vite at http://localhost:3000).
 3. Other modes:
-   - `pnpm start:integrated` (uses `.env.integrated`).
    - `pnpm start:develop` (uses `.env.develop`).
 4. Build and preview: `pnpm build` and `pnpm serve`.
 5. Mock server only: `pnpm mock-server` (`prism mock -d public/openapi.json`).

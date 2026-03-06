@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "pnpm run start:offline",
     "start:offline": "pnpm run mock-server & vite --mode offline",
-    "start:integrated": "vite --mode integrated",
     "start:develop": "vite --mode develop",
     "build": "vite build",
     "serve": "vite preview",
@@ -15,7 +14,7 @@
     "test:e2e:dashboard": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress open",
     "test:e2e:real": "pnpm run start:offline & VITE_APP_IS_E2E=true cypress run --record --key ${CY_E2E_KEY} --spec tests/e2e/specs/**/*.js --browser chrome",
     "test:smoke": "VITE_APP_IS_E2E=true cypress run --spec tests/e2e/specs/**/*.js",
-    "mock-server": "prism mock -d public/openapi.json"
+    "mock-server": "mkdir -p /tmp/k9x-mock && curl -L https://raw.githubusercontent.com/txomin55/k9x-oas-definition/refs/heads/main/openapi.yaml -o /tmp/k9x-mock/openapi.yaml && prism mock -d /tmp/k9x-mock/openapi.yaml"
   },
   "license": "MIT",
   "devDependencies": {
