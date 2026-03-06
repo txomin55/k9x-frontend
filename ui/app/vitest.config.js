@@ -19,10 +19,7 @@ export default {
     watch: process.env.CI ? false : undefined,
     deps: {
       ...restBaseTest.deps,
-      inline: [
-        /^@lib\//,
-        /\/ui\/library\/src\//,
-      ],
+      inline: [/^@lib\//, /\/ui\/library\/src\//],
       registerNodeLoader: true,
     },
     alias: {

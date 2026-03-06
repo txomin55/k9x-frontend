@@ -1,4 +1,3 @@
-
 export default (data) => ({
-  getUrl: () => (data.url),
+  getUrl: () => data.url,
 });

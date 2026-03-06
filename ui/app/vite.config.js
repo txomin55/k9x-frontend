@@ -28,8 +28,7 @@ export default ({ mode }) => {
         targets: [
           {
             src:
-              path.resolve(__dirname, "../library/src/assets/svg") +
-              "/[!.]*",
+              path.resolve(__dirname, "../library/src/assets/svg") + "/[!.]*",
             dest: "./",
           },
         ],

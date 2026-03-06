@@ -15,9 +15,7 @@ export default defineConfig({
         "**/src/**/*stories.jsx",
       ],
       allowExternal: true,
-      include: [
-        "**/src/**/*.{js,jsx}"
-      ],
+      include: ["**/src/**/*.{js,jsx}"],
       reportsDirectory: ".reports/test/unit/coverage",
       reporter: ["text-summary", "cobertura", "lcov", "json"],
     },

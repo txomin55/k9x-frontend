@@ -9,7 +9,8 @@ const { defineConfig } = require("cypress");
 const V8_COVERAGE_FOLDER = ".cypress_v8_coverage";
 const NYC_OUTPUT_FOLDER = ".nyc_output";
 const NYC_COVERAGE_PATH = `${NYC_OUTPUT_FOLDER}/final.json`;
-const CYPRESS_ISTANBUL_COVERAGE_PATH = ".reports/test/e2e/coverage/coverage-final.json";
+const CYPRESS_ISTANBUL_COVERAGE_PATH =
+  ".reports/test/e2e/coverage/coverage-final.json";
 
 const cypressConfig = defineConfig({
   projectId: process.env.CY_PROJECT_ID,
@@ -97,7 +98,9 @@ const cypressConfig = defineConfig({
               return false;
             }
             if (u.host !== baseUrl.host) return false;
-            return appPathRegex.test(u.pathname) || libPathRegex.test(u.pathname);
+            return (
+              appPathRegex.test(u.pathname) || libPathRegex.test(u.pathname)
+            );
           });
 
           const totalCoverage = {};
