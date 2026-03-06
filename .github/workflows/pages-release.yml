@@ -52,7 +52,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
-          name: pages
+          name: github-pages
 
       - name: Set release date tag
         id: release_vars
@@ -78,7 +78,7 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const perPage = 100;
-            const targetName = "pages";
+            const targetName = "github-pages";
 
             const artifacts = await github.paginate(
               github.rest.actions.listArtifactsForRepo,
