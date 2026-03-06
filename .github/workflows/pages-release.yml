@@ -9,6 +9,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  actions: write
 
 jobs:
   pages_release:
@@ -18,6 +19,7 @@ jobs:
       contents: write
       pages: write
       id-token: write
+      actions: write
     env:
       CI_BUILD_ENV: staging
       CI_JOB_ID: ${{ github.run_id }}
@@ -47,6 +49,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+          name: pages
 
       - name: Set release date tag
         id: release_vars
@@ -65,3 +68,31 @@ jobs:
           files: public.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup old pages artifacts (keep last 2)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const perPage = 100;
+            const targetName = "pages";
+
+            const artifacts = await github.paginate(
+              github.rest.actions.listArtifactsForRepo,
+              { owner, repo, per_page: perPage }
+            );
+
+            const pagesArtifacts = artifacts
+              .filter((artifact) => artifact.name === targetName)
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            const toDelete = pagesArtifacts.slice(2);
+
+            for (const artifact of toDelete) {
+              core.info(`Deleting artifact ${artifact.name} (#${artifact.id})`);
+              await github.rest.actions.deleteArtifact({
+                owner,
+                repo,
+                artifact_id: artifact.id,
+              });
+            }
