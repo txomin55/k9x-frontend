@@ -93,7 +93,7 @@ export default ({ mode }) => {
       injectRegister: "script",
       base: basePath ? `${basePath}/` : "/",
       devOptions: {
-        enabled: mode !== "production",
+        enabled: !["production", "staging"].includes(mode),
         navigateFallback: "index.html",
         type: "module",
       },

@@ -6,7 +6,7 @@ import fetchUserData from "$lib/services/fetch_user_data/fetchUserData";
 
 const auth = writable({
   user: null,
-  loading: true,
+  loading: false,
   error: null,
 });
 

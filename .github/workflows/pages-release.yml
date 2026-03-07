@@ -2,7 +2,7 @@ name: Pages and Release
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
     paths:
       - ui/app/src/**
       - ui/library/src/**
@@ -22,7 +22,7 @@ jobs:
       pages: write
       id-token: write
     env:
-      CI_BUILD_ENV: develop
+      CI_BUILD_ENV: staging
       CI_JOB_ID: ${{ github.run_id }}
     environment:
       name: github-pages

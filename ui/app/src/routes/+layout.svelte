@@ -1,11 +1,10 @@
 <script>
     import "@/app.css";
-    import {page} from "$app/state";
     import {resolve} from "$app/paths";
     import CoreButton from "@lib/components/atoms/button/CoreButton.svelte";
     import ReloadPrompt from "$lib/components/reload_prompt/ReloadPrompt.svelte";
     import {api, initApi} from "$lib/stores/api";
-    import {auth, ensureAuthenticated} from "$lib/stores/auth";
+    import {auth} from "$lib/stores/auth";
     import {initI18n, locale, locales, ready, setLocale, t} from "$lib/stores/i18n";
     import {initNotifications} from "$lib/stores/notifications";
 
@@ -35,13 +34,6 @@
     initNotifications();
     initI18n();
     initApi();
-
-    const currentPath = $derived(() => normalizePathname(page.url.pathname));
-    $effect(() => {
-        if ($api) {
-            ensureAuthenticated(currentPath);
-        }
-    });
 </script>
 
 <div>
