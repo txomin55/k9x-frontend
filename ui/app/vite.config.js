@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export default ({ mode }) => {
-  const envOptions = loadEnv(mode, process.cwd());
+  const envOptions = loadEnv(mode, __dirname);
   const basePath = envOptions.VITE_APP_BASE_PATH || "";
 
   const viteConfig = defineConfig({
