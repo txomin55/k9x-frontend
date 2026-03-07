@@ -1,8 +1,105 @@
 import OpenAPIClientAxios from "openapi-client-axios";
 
+const ACCESS_TOKEN_KEY = "k9x_access_token";
+const OAUTH_STATE_KEY = "k9x_google_oauth_state";
+const SILENT_OAUTH_MESSAGE_TYPE = "k9x_google_oauth";
+const SKIP_AUTH_REFRESH_HEADER = "X-K9X-Skip-Auth-Refresh";
+
+const getGoogleRedirectUri = () =>
+  import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${globalThis.location.origin}/`;
+
+const buildGoogleAuthUrl = ({ state, prompt }) => {
+  const params = new URLSearchParams({
+    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+    redirect_uri: getGoogleRedirectUri(),
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+  });
+
+  if (prompt) {
+    params.set("prompt", prompt);
+  }
+
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+};
+
+const startInteractiveLogin = () => {
+  const state = crypto.randomUUID();
+  globalThis.sessionStorage.setItem(OAUTH_STATE_KEY, state);
+  globalThis.location.assign(
+    buildGoogleAuthUrl({ state, prompt: "select_account" }),
+  );
+};
+
+const getSilentAuthCode = () =>
+  new Promise((resolve, reject) => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) {
+      reject(new Error("Missing Google client id"));
+      return;
+    }
+
+    const state = crypto.randomUUID();
+    const iframe = document.createElement("iframe");
+    iframe.style.display = "none";
+    iframe.setAttribute("aria-hidden", "true");
+
+    const cleanup = (timeoutId, onMessage) => {
+      clearTimeout(timeoutId);
+      globalThis.removeEventListener("message", onMessage);
+      if (iframe.parentNode) {
+        iframe.parentNode.removeChild(iframe);
+      }
+    };
+
+    const onMessage = (event) => {
+      if (event.origin !== globalThis.location.origin) return;
+
+      const data = event.data || {};
+      if (data.type !== SILENT_OAUTH_MESSAGE_TYPE) return;
+
+      const params = new URLSearchParams(data.search || "");
+      const returnedState = params.get("state");
+      const error = params.get("error");
+      const code = params.get("code");
+
+      if (returnedState !== state) {
+        cleanup(timeoutId, onMessage);
+        reject(new Error("Invalid OAuth state"));
+        return;
+      }
+
+      if (error) {
+        cleanup(timeoutId, onMessage);
+        reject(new Error(error));
+        return;
+      }
+
+      if (!code) {
+        cleanup(timeoutId, onMessage);
+        reject(new Error("Missing OAuth code"));
+        return;
+      }
+
+      cleanup(timeoutId, onMessage);
+      resolve(code);
+    };
+
+    const timeoutId = globalThis.setTimeout(() => {
+      cleanup(timeoutId, onMessage);
+      reject(new Error("Silent login timeout"));
+    }, 10000);
+
+    globalThis.addEventListener("message", onMessage);
+    iframe.src = buildGoogleAuthUrl({ state, prompt: "none" });
+    document.body.appendChild(iframe);
+  });
+
 export default {
   async initAxiosClient(locale) {
     this.locale = locale;
+    this.silentLoginPromise = null;
     return new Promise((resolve) => {
       this.index = new OpenAPIClientAxios({
         definition: import.meta.env.VITE_APP_OAS,
@@ -13,7 +110,7 @@ export default {
           request.headers["Accept-language"] = this.locale;
 
           if (request.url.includes("/api/")) {
-            const token = globalThis.localStorage.getItem("k9x_access_token");
+            const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);
             request.headers["Authorization"] = `Bearer ${token}`;
           }
 
@@ -24,8 +121,40 @@ export default {
           (response) => {
             return response.data;
           },
-          (error) => {
-            return Promise.reject(error);
+          async (error) => {
+            const status = error?.response?.status;
+            const originalRequest = error?.config || {};
+
+            if (status !== 401 || originalRequest.__k9xSilentRetry) {
+              return Promise.reject(error);
+            }
+
+            if (!this.silentLoginPromise) {
+              this.silentLoginPromise = (async () => {
+                const code = await getSilentAuthCode();
+                const token = await client.login(null, { idToken: code });
+
+                globalThis.localStorage.setItem(ACCESS_TOKEN_KEY, token);
+                return token;
+              })().finally(() => {
+                this.silentLoginPromise = null;
+              });
+            }
+
+            return this.silentLoginPromise
+              .then((token) => {
+                originalRequest.__k9xSilentRetry = true;
+                originalRequest.headers = {
+                  ...originalRequest.headers,
+                  Authorization: `Bearer ${token}`,
+                };
+
+                return client(originalRequest);
+              })
+              .catch((silentError) => {
+                startInteractiveLogin();
+                return Promise.reject(silentError);
+              });
           },
         );
 

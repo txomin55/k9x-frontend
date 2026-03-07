@@ -4,7 +4,8 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "dev": "pnpm run start:offline",
+    "dev": "pnpm run start:integrated",
+    "start:integrated": "vite --mode integrated",
     "start:offline": "pnpm run mock-server & vite --mode offline",
     "start:develop": "vite --mode develop",
     "build": "vite build",

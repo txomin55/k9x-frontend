@@ -7,6 +7,7 @@ import { ROUTES } from "@/routes/index.js";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 const OAUTH_STATE_KEY = "k9x_google_oauth_state";
+const SILENT_OAUTH_MESSAGE_TYPE = "k9x_google_oauth";
 
 const readCallbackParams = () => {
   const stored = globalThis.sessionStorage.getItem(CALLBACK_PARAMS_KEY);
@@ -27,10 +28,23 @@ function AuthCallback() {
   const [status, setStatus] = useState("pending");
   const [error, setError] = useState(null);
   const hasProcessed = useRef(false);
+  const isIframe =
+    globalThis.self && globalThis.top && globalThis.self !== globalThis.top;
 
   const params = useMemo(() => new URLSearchParams(readCallbackParams()), []);
 
   useEffect(() => {
+    if (isIframe) {
+      globalThis.parent.postMessage(
+        {
+          type: SILENT_OAUTH_MESSAGE_TYPE,
+          search: globalThis.location.search,
+        },
+        globalThis.location.origin,
+      );
+      return;
+    }
+
     if (hasProcessed.current) return;
 
     if (globalThis.location.search) {
@@ -79,7 +93,7 @@ function AuthCallback() {
         setStatus("error");
         setError(e?.message || "Login failed");
       });
-  }, [params, login, getUserData, setUser, navigate]);
+  }, [params, login, getUserData, setUser, navigate, isIframe]);
 
   if (status === "loading" || status === "pending") {
     return <p>Autenticando con Google...</p>;

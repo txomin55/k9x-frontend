@@ -3,7 +3,7 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import {
   initializePushNotifications,
   isPushNotificationSupported,
-  sendNotification
+  sendNotification,
 } from "@/utils/native_features/notifications/push-notifications.js";
 import mockedNotification from "@/components/reload_prompt/mockedNotification.js";
 
