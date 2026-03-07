@@ -29,9 +29,14 @@ function LandingPage() {
     globalThis.location.assign(buildGoogleAuthUrl());
   };
 
+  const handleLogout = () => {
+    globalThis.localStorage.removeItem("k9x_access_token");
+  };
+
   return (
     <div className={styles.LandingPage}>
       <CoreButton label="Haz login con Google" onClick={handleGoogleLogin} />
+      <CoreButton label="Logout" onClick={handleLogout} />
 
       <header className={styles.header}>
         <img src={logo} className={styles.logo} alt="logo" />

@@ -3,7 +3,84 @@ import OpenAPIClientAxios from "openapi-client-axios";
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 const OAUTH_STATE_KEY = "k9x_google_oauth_state";
 const SILENT_OAUTH_MESSAGE_TYPE = "k9x_google_oauth";
-const SKIP_AUTH_REFRESH_HEADER = "X-K9X-Skip-Auth-Refresh";
+
+export default {
+  async initAxiosClient(locale) {
+    this.locale = locale;
+    this.silentLoginPromise = null;
+
+    return new Promise((resolve) => {
+      this.index = new OpenAPIClientAxios({
+        definition: import.meta.env.VITE_APP_OAS,
+      });
+
+      this.index.init().then((client) => {
+        client.interceptors.request.use((request) => {
+          request.headers["Accept-language"] = this.locale;
+
+          if (request.url.includes("/api/")) {
+            const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);
+            if (token) {
+              request.headers["Authorization"] = `Bearer ${token}`;
+            }
+          }
+
+          return request;
+        });
+
+        client.interceptors.response.use(
+          (response) => {
+            return response.data;
+          },
+          async (error) => {
+            const status = error?.response?.status;
+            const originalRequest = error?.config || {};
+            if (!shouldAttemptSilentLogin(status, originalRequest)) {
+              return Promise.reject(error);
+            }
+
+            if (!this.silentLoginPromise) {
+              this.silentLoginPromise = (async () => {
+                const code = await getSilentAuthCode();
+                const token = await client.login(null, { idToken: code });
+
+                globalThis.localStorage.setItem(ACCESS_TOKEN_KEY, token);
+                return token;
+              })().finally(() => {
+                this.silentLoginPromise = null;
+              });
+            }
+
+            return this.silentLoginPromise
+              .then((token) => {
+                originalRequest.__k9xSilentRetry = true;
+                originalRequest.headers = {
+                  ...originalRequest.headers,
+                  Authorization: `Bearer ${token}`,
+                };
+
+                return client(originalRequest);
+              })
+              .catch((silentError) => {
+                startInteractiveLogin();
+                return Promise.reject(silentError);
+              });
+          },
+        );
+
+        resolve();
+      });
+    });
+  },
+  async getOASClient() {
+    const client = await this.index.getClient();
+    client.defaults.baseURL = import.meta.env.VITE_APP_API_ADDRESS;
+    return client;
+  },
+  setLocale(locale) {
+    this.locale = locale;
+  },
+};
 
 const getGoogleRedirectUri = () =>
   import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${globalThis.location.origin}/`;
@@ -96,78 +173,16 @@ const getSilentAuthCode = () =>
     document.body.appendChild(iframe);
   });
 
-export default {
-  async initAxiosClient(locale) {
-    this.locale = locale;
-    this.silentLoginPromise = null;
-    return new Promise((resolve) => {
-      this.index = new OpenAPIClientAxios({
-        definition: import.meta.env.VITE_APP_OAS,
-      });
+const shouldAttemptSilentLogin = (status, request) => {
+  const hasToken = Boolean(globalThis.localStorage.getItem(ACCESS_TOKEN_KEY));
+  const isApiRequest = Boolean(request?.url?.includes("/api/"));
+  const isLoginRequest = Boolean(request?.url?.includes("/login"));
 
-      this.index.init().then((client) => {
-        client.interceptors.request.use((request) => {
-          request.headers["Accept-language"] = this.locale;
-
-          if (request.url.includes("/api/")) {
-            const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);
-            request.headers["Authorization"] = `Bearer ${token}`;
-          }
-
-          return request;
-        });
-
-        client.interceptors.response.use(
-          (response) => {
-            return response.data;
-          },
-          async (error) => {
-            const status = error?.response?.status;
-            const originalRequest = error?.config || {};
-
-            if (status !== 401 || originalRequest.__k9xSilentRetry) {
-              return Promise.reject(error);
-            }
-
-            if (!this.silentLoginPromise) {
-              this.silentLoginPromise = (async () => {
-                const code = await getSilentAuthCode();
-                const token = await client.login(null, { idToken: code });
-
-                globalThis.localStorage.setItem(ACCESS_TOKEN_KEY, token);
-                return token;
-              })().finally(() => {
-                this.silentLoginPromise = null;
-              });
-            }
-
-            return this.silentLoginPromise
-              .then((token) => {
-                originalRequest.__k9xSilentRetry = true;
-                originalRequest.headers = {
-                  ...originalRequest.headers,
-                  Authorization: `Bearer ${token}`,
-                };
-
-                return client(originalRequest);
-              })
-              .catch((silentError) => {
-                startInteractiveLogin();
-                return Promise.reject(silentError);
-              });
-          },
-        );
-
-        resolve();
-      });
-    });
-  },
-  async getOASClient() {
-    const client = await this.index.getClient();
-    client.defaults.baseURL = import.meta.env.VITE_APP_API_ADDRESS;
-    return client;
-  },
-  setLocale(locale) {
-    this.locale = locale;
-  },
+  return (
+    status === 401 &&
+    isApiRequest &&
+    !isLoginRequest &&
+    hasToken &&
+    !request.__k9xSilentRetry
+  );
 };
