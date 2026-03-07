@@ -1,9 +1,11 @@
 import { useAuthentication } from "@/providers/authentication/AuthenticationProvider";
 import { useI18n } from "@/providers/i18n/I18nProvider.jsx";
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { ROUTES } from "@/routes/index.js";
 import CoreButton from "@lib/components/atoms/button/CoreButton.jsx";
+
+const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
 function App({ children }) {
   const { t, locale, setLocale, locales } = useI18n();
@@ -11,6 +13,19 @@ function App({ children }) {
   const { user } = useAuthentication();
 
   const [isDark, setIsDark] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!globalThis.location.search) return;
+    const params = new URLSearchParams(globalThis.location.search);
+    if (!params.get("code") && !params.get("error")) return;
+
+    globalThis.sessionStorage.setItem(
+      CALLBACK_PARAMS_KEY,
+      globalThis.location.search,
+    );
+    navigate(ROUTES.AUTH_CALLBACK, { replace: true });
+  }, [navigate]);
 
   const toggleMode = () => {
     if (isDark) {

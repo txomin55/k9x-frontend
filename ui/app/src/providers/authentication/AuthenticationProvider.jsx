@@ -7,13 +7,14 @@ import { create } from "zustand";
 
 const UserContext = createContext();
 
-export const AuthenticationProvider = ({ children }) => {
-  const api = create((set) => ({
-    user: null,
-    setUser: (newUser) => set({ user: newUser }),
-  }));
+const useAuthStore = create((set) => ({
+  user: null,
+  setUser: (newUser) => set({ user: newUser }),
+}));
 
-  const setUser = api((state) => state.setUser);
+export const AuthenticationProvider = ({ children }) => {
+  const setUser = useAuthStore((state) => state.setUser);
+  const user = useAuthStore((state) => state.user);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +26,10 @@ export const AuthenticationProvider = ({ children }) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname !== ROUTES.LANDING) {
+    if (
+      ![ROUTES.AUTH_CALLBACK, ROUTES.LANDING].includes(location.pathname) &&
+      !user
+    ) {
       fetchUserData(getUserData, (d) => {
         setUser(d);
 
@@ -45,10 +49,10 @@ export const AuthenticationProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-  }, [getApi, getUserData, location, navigate]);
+  }, [getApi, getUserData, location, navigate, user]);
 
   return (
-    <UserContext.Provider value={api()}>
+    <UserContext.Provider value={useAuthStore()}>
       {loading ? <p>..Verifying</p> : !error && children}
     </UserContext.Provider>
   );

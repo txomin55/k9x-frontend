@@ -5,16 +5,17 @@ export default {
     this.locale = locale;
     return new Promise((resolve) => {
       this.index = new OpenAPIClientAxios({
-        definition:
-          "https://cdn.jsdelivr.net/gh/txomin55/k9x-oas-definition@main/openapi.yaml",
+        definition: import.meta.env.VITE_APP_OAS,
       });
 
       this.index.init().then((client) => {
         client.interceptors.request.use((request) => {
           request.headers["Accept-language"] = this.locale;
 
-          if (request.url.includes("/api/"))
-            request.headers["Authorization"] = "Bearer FAKE_BEARER";
+          if (request.url.includes("/api/")) {
+            const token = globalThis.localStorage.getItem("k9x_access_token");
+            request.headers["Authorization"] = `Bearer ${token}`;
+          }
 
           return request;
         });
@@ -34,7 +35,7 @@ export default {
   },
   async getOASClient() {
     const client = await this.index.getClient();
-    client.defaults.baseURL = process.env.VITE_APP_API_ADDRESS;
+    client.defaults.baseURL = import.meta.env.VITE_APP_API_ADDRESS;
     return client;
   },
   setLocale(locale) {

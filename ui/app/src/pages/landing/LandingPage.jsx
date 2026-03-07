@@ -1,27 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import styles from "./styles.module.css";
 import logo from "@/assets/logo.svg";
-import { useApi } from "@/providers/api/ApiProvider.jsx";
+
+const OAUTH_STATE_KEY = "k9x_google_oauth_state";
+
+const buildGoogleAuthUrl = () => {
+  const redirectUri =
+    import.meta.env.VITE_GOOGLE_REDIRECT_URI ||
+    `${globalThis.location.origin}/`;
+
+  const state = crypto.randomUUID();
+  globalThis.sessionStorage.setItem(OAUTH_STATE_KEY, state);
+
+  const params = new URLSearchParams({
+    client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+    redirect_uri: redirectUri,
+    response_type: "code",
+    scope: "openid email profile",
+    state,
+  });
+
+  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+};
 
 function LandingPage() {
-  const getApi = useApi();
-
-  const [buttonLabel, setButtonLabel] = useState("Haz login con google");
-  const [disabledButton, setDisabledButton] = useState(false);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setButtonLabel("Cambiado");
-      setDisabledButton(true);
-    }, 5000);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
+  const handleGoogleLogin = () => {
+    globalThis.location.assign(buildGoogleAuthUrl());
+  };
 
   return (
     <div className={styles.LandingPage}>
-      <CoreButton label={buttonLabel} disabled={disabledButton} />
+      <CoreButton label="Haz login con Google" onClick={handleGoogleLogin} />
 
       <header className={styles.header}>
         <img src={logo} className={styles.logo} alt="logo" />

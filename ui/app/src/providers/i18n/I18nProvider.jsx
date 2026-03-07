@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useMemo, useState } from "react";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
@@ -16,7 +16,7 @@ i18n
     debug: true,
     backend: {
       ns: ["translation"],
-      loadPath: `${process.env.VITE_APP_BASE_PATH}/locales/{{lng}}/{{ns}}.json`,
+      loadPath: `${import.meta.env.VITE_APP_BASE_PATH}/locales/{{lng}}/{{ns}}.json`,
     },
     interpolation: {
       escapeValue: false,
@@ -24,27 +24,22 @@ i18n
   });
 
 export const I18nProvider = ({ children }) => {
-  const [locale, setLocale] = useState();
-  const [ready, setReady] = useState(false);
+  const [locale, setLocale] = useState(i18n.language);
 
-  i18n.on("initialized", () => {
-    setLocale(i18n.language);
-    setReady(true);
-  });
-
-  useEffect(() => {
-    if (ready) {
-      i18n.changeLanguage(locale);
-    }
-  }, [ready, locale]);
-
-  return (
-    <I18nContext.Provider
-      value={{ t: i18n.t, setLocale, locale, locales: ["en", "es"] }}
-    >
-      {ready ? children : "Loading translations..."}
-    </I18nContext.Provider>
+  const api = useMemo(
+    () => ({
+      t: i18n.t,
+      setLocale: async (l) => {
+        await i18n.changeLanguage(l);
+        setLocale(l);
+      },
+      locale,
+      locales: ["en", "es"],
+    }),
+    [locale],
   );
+
+  return <I18nContext.Provider value={api}>{children}</I18nContext.Provider>;
 };
 
 export const useI18n = () => {
