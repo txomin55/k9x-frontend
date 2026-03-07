@@ -101,7 +101,8 @@ export default ({ mode }) => {
       base: basePath ? `${basePath}/` : "/",
       devOptions: {
         enabled: !["production", "staging"].includes(mode),
-        navigateFallback: "index.html",
+        // SvelteKit doesn't serve /index.html in dev; fallback to the app root.
+        navigateFallback: basePath ? `${basePath}/` : "/",
         type: "module",
       },
       manifest: {
