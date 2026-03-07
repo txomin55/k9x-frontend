@@ -36,3 +36,4 @@ dev-dist
 
 *storybook.log
 /ui/app/.svelte-kit/
+/ui/app/build/

@@ -21,7 +21,7 @@ const initNotifications = async () => {
   initialized = true;
 
   if ("serviceWorker" in navigator) {
-    const swPath = import.meta.env.DEV ? "/sw-dev.js" : "/sw.js";
+    const swPath = import.meta.env.DEV ? "/sw-dev.js" : "/service-worker.js";
     const swUrl = new URL(resolve(swPath), globalThis.location.origin);
     const scope = resolve("/");
     try {

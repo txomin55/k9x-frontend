@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-auto";
+import adapter from "@sveltejs/adapter-static";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -10,7 +10,10 @@ const basePath = process.env.VITE_APP_BASE_PATH ?? "";
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter(),
+    // GitHub Pages needs a static build with an SPA fallback.
+    adapter: adapter({
+      fallback: "index.html",
+    }),
     paths: {
       base: basePath,
     },

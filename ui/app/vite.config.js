@@ -89,7 +89,14 @@ export default ({ mode }) => {
     SvelteKitPWA({
       strategies: "injectManifest",
       srcDir: "src",
-      filename: "sw.js",
+      filename: "service-worker.js",
+      injectManifest: {
+        // Only precache client assets; avoid the prerendered glob warning.
+        globPatterns: ["client/**/*.{js,css,ico,png,svg,webp,webmanifest}"],
+        globIgnores: ["server/**"],
+        // Prevent @vite-pwa/sveltekit from auto-adding prerendered glob patterns.
+        modifyURLPrefix: {},
+      },
       injectRegister: "script",
       base: basePath ? `${basePath}/` : "/",
       devOptions: {
