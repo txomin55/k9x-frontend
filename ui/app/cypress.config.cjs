@@ -86,9 +86,9 @@ const cypressConfig = defineConfig({
             config.baseUrl ?? "http://localhost:3000",
           );
           const appPathRegex =
-            /^\/src\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx)$/;
+            /^\/src\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx|svelte)$/;
           const libPathRegex =
-            /^\/(@fs\/.*\/ui\/library\/src|@id\/@lib)\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx)$/;
+            /^\/(@fs\/.*\/ui\/library\/src|@id\/@lib)\/(?:[^/]+\/)*[^/]+(?<!\.(stories|test))\.(js|jsx|ts|tsx|svelte)$/;
 
           const codebaseResults = v8Coverage.result.filter((r) => {
             let u;

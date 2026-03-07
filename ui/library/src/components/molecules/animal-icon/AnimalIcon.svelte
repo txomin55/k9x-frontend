@@ -4,17 +4,21 @@
 
     export let animal = "";
 
+    const animalSources = import.meta.glob(
+        "@lib/assets/svg/animals/*.svg",
+        {eager: true, import: "default"},
+    );
+    const animalMap = Object.fromEntries(
+        Object.entries(animalSources).map(([path, src]) => {
+            const name = path.split("/").pop().replace(".svg", "");
+            return [name, src];
+        }),
+    );
+
     $: curatedAnimal =
         availableAnimalNames[animal?.toUpperCase?.()] ?? availableAnimalNames.DOG;
 
-    const animalSvgs = import.meta.glob("/src/assets/svg/animals/*.svg", {
-        eager: true,
-        import: "default",
-    });
-
-    $: iconSrc = import.meta.env.VITE_APP_BASE_PATH
-        ? `${import.meta.env.VITE_APP_BASE_PATH}/animals/${curatedAnimal}.svg`
-        : animalSvgs[`/src/assets/svg/animals/${curatedAnimal}.svg`];
+    $: iconSrc = animalMap[curatedAnimal];
 </script>
 
 <CoreSvgIcon src={iconSrc} alt={curatedAnimal}/>

@@ -35,3 +35,4 @@ dev-dist
 /ui/dog-trainer-library/build-storybook.log
 
 *storybook.log
+/ui/app/.svelte-kit/

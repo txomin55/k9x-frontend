@@ -1,7 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
+import { sveltekit } from "@sveltejs/kit/vite";
 import eslint from "vite-plugin-eslint";
-import path from "path";
+import path from "node:path";
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 import EnvironmentPlugin from "vite-plugin-environment";
@@ -9,18 +9,19 @@ import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 import commonjs from "vite-plugin-commonjs";
 import jsconfigPaths from "vite-jsconfig-paths";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { VitePWA } from "vite-plugin-pwa";
-import { fileURLToPath } from "url";
+import { SvelteKitPWA } from "@vite-pwa/sveltekit";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export default ({ mode }) => {
   const envOptions = loadEnv(mode, process.cwd());
+  const basePath = envOptions.VITE_APP_BASE_PATH || "";
 
   const viteConfig = defineConfig({
     plugins: [
-      react(),
-      eslint({ include: "src/**/*.+(js|jsx)" }),
+      sveltekit(),
+      eslint({ include: "src/**/*.+(js|svelte)" }),
       EnvironmentPlugin("all"),
       commonjs(),
       jsconfigPaths({ root: "." }),
@@ -34,16 +35,8 @@ export default ({ mode }) => {
         ],
       }),
     ],
-    define: {
-      "process.env": {
-        ...process.env,
-        ...envOptions,
-      },
-    },
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
-        "@lib": path.resolve(__dirname, "../library/src"),
         stream: "rollup-plugin-node-polyfills/polyfills/stream",
         http: "rollup-plugin-node-polyfills/polyfills/http",
         https: "rollup-plugin-node-polyfills/polyfills/http",
@@ -52,7 +45,6 @@ export default ({ mode }) => {
         process: "rollup-plugin-node-polyfills/polyfills/process-es6",
       },
     },
-    base: envOptions.VITE_APP_BASE_PATH,
     server: {
       port: 3000,
     },
@@ -94,12 +86,12 @@ export default ({ mode }) => {
   });
 
   viteConfig.plugins.push(
-    VitePWA({
+    SvelteKitPWA({
       strategies: "injectManifest",
       srcDir: "src",
       filename: "sw.js",
       injectRegister: "script",
-      base: `${envOptions.VITE_APP_BASE_PATH}/`,
+      base: basePath ? `${basePath}/` : "/",
       devOptions: {
         enabled: mode !== "production",
         navigateFallback: "index.html",

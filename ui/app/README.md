@@ -1,22 +1,22 @@
 # Dog-trainer-app
 
-React PWA powered by Vite and the shared components from the `library` package. Routing is handled with
-`react-router-dom` (HashRouter), lightweight global state with `zustand`, and internationalization with
-`i18next` + `react-i18next`.
+SvelteKit PWA powered by Vite and the shared components from the `library` package. Routing is handled by
+SvelteKit, lightweight state is managed with Svelte stores, and internationalization uses `i18next` +
+`i18next-http-backend`.
 
 ## Stack and configuration
 
-- Build and dev server: Vite + `@vitejs/plugin-react`, linting with `vite-plugin-eslint`, env loading with
+- Build and dev server: SvelteKit + `@sveltejs/kit`, linting with `vite-plugin-eslint`, env loading with
   `vite-plugin-environment`.
 - Aliases: `@` -> `src`, `@lib` -> `../library/src` (SVG assets copied on build with
   `vite-plugin-static-copy`).
-- PWA: `vite-plugin-pwa` in `injectManifest` mode with `src/sw.js` (Workbox), `VITE_APP_BASE_PATH` is used as the base for
+- PWA: `@vite-pwa/sveltekit` in `injectManifest` mode with `src/sw.js` (Workbox), `VITE_APP_BASE_PATH` is used as the base for
   routes and SW registration.
 - Polyfills: `rollup-plugin-node-polyfills` and esbuild plugins to expose `process`, `buffer`, `stream`, etc. in the
   browser; `globalThis` is defined for dependencies that require it.
 - API: client generated on the fly with `openapi-client-axios`, base `VITE_APP_API_ADDRESS` and spec served from
   `VITE_APP_OAS`; language headers are updated based on the active locale.
-- i18n: `i18next` with `i18next-http-backend` and language detector, loading strings from `public/locales/{{lng}}`.
+- i18n: `i18next` with `i18next-http-backend` and language detector, loading strings from `static/locales/{{lng}}`.
 
 ## Environments and startup
 
@@ -42,5 +42,5 @@ React PWA powered by Vite and the shared components from the `library` package. 
 
 ## Additional notes
 
-- HashRouter simplifies static deployments under subfolders; adjust `VITE_APP_BASE_PATH` if the app does not live at `/`.
+- SvelteKit runs in SPA mode (`ssr = false`) to match the previous client-only behavior; adjust if you want SSR later.
 - The service worker clears obsolete caches and listens to `notificationclick` events to handle push notifications.

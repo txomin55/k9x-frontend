@@ -1,6 +1,7 @@
 import path from "node:path";
 import baseConfig from "my-vitest/vitest.config.js";
 import { fileURLToPath } from "node:url";
+import { sveltekit } from "@sveltejs/kit/vite";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,10 +12,11 @@ const { test: baseTest = {}, ...restBaseConfig } = baseConfig;
 const { transformMode, ...restBaseTest } = baseTest;
 
 export default {
+  plugins: [sveltekit()],
   ...restBaseConfig,
   test: {
     ...restBaseTest,
-    // Use jsdom for broader React compatibility and allow watch locally.
+    // Use jsdom for Svelte component tests and allow watch locally.
     environment: "jsdom",
     watch: process.env.CI ? false : undefined,
     deps: {
@@ -29,8 +31,8 @@ export default {
     coverage: {
       ...restBaseTest.coverage,
       include: [
-        path.resolve(__dirname, "src/**/*.{js,jsx}"),
-        path.resolve(__dirname, "../library/src/**/*.{js,jsx}"),
+        path.resolve(__dirname, "src/**/*.{js,svelte}"),
+        path.resolve(__dirname, "../library/src/**/*.{js,svelte}"),
       ],
     },
   },
