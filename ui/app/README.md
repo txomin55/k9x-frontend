@@ -24,7 +24,7 @@ SvelteKit, lightweight state is managed with Svelte stores, and internationaliza
 2. Start in offline (mock) mode with:
    - `pnpm dev` or `pnpm start:offline` (starts Prism with `public/openapi.json` + Vite at http://localhost:3000).
 3. Other modes:
-   - `pnpm start:develop` (uses `.env.develop`).
+   - `pnpm start:staging` (uses `.env.staging`).
 4. Build and preview: `pnpm build` and `pnpm serve`.
 5. Mock server only: `pnpm mock-server` (`prism mock -d public/openapi.json`).
 
