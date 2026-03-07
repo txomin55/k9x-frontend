@@ -1,5 +1,5 @@
-import CoreButton from "./CoreButton.svelte";
-import { BUTTON_TYPES } from "./button.constants.js";
+import CoreButton from "@lib/components/atoms/button/CoreButton.svelte";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/button.constants.js";
 import { fn } from "storybook/test";
 
 export default {

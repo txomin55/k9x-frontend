@@ -1,27 +1,20 @@
 <script>
-  import CoreSvgIcon from "../../atoms/svg-icon/CoreSvgIcon.svelte";
-  import { availableAnimalNames } from "./animals.constants.js";
+    import CoreSvgIcon from "@lib/components/atoms/svg-icon/CoreSvgIcon.svelte";
+    import {availableAnimalNames} from "@lib/components/molecules/animal-icon/animals.constants.js";
 
-  export let animal = "";
+    export let animal = "";
 
-  const basePath = import.meta.env.VITE_APP_BASE_PATH ?? "";
-  const importedAnimals = import.meta.glob(
-    "../../../assets/svg/animals/*.svg",
-    { eager: true, import: "default" }
-  );
-  const animalSources = Object.fromEntries(
-    Object.entries(importedAnimals).map(([path, src]) => {
-      const name = path.split("/").pop().replace(".svg", "");
-      return [name, src];
-    })
-  );
+    $: curatedAnimal =
+        availableAnimalNames[animal?.toUpperCase?.()] ?? availableAnimalNames.DOG;
 
-  $: curatedAnimal =
-    availableAnimalNames[animal?.toUpperCase?.()] ?? availableAnimalNames.DOG;
-  $: iconSrc =
-    basePath !== ""
-      ? `${basePath}/animals/${curatedAnimal}.svg`
-      : animalSources[curatedAnimal];
+    const animalSvgs = import.meta.glob("/src/assets/svg/animals/*.svg", {
+        eager: true,
+        import: "default",
+    });
+
+    $: iconSrc = import.meta.env.VITE_APP_BASE_PATH
+        ? `${import.meta.env.VITE_APP_BASE_PATH}/animals/${curatedAnimal}.svg`
+        : animalSvgs[`/src/assets/svg/animals/${curatedAnimal}.svg`];
 </script>
 
-<CoreSvgIcon src={iconSrc} alt={curatedAnimal} />
+<CoreSvgIcon src={iconSrc} alt={curatedAnimal}/>

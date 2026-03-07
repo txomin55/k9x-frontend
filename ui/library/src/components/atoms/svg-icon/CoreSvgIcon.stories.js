@@ -1,5 +1,5 @@
-import CoreSvgIcon from "./CoreSvgIcon.svelte";
-import dog from "../../../assets/svg/animals/dog.svg";
+import CoreSvgIcon from "@lib/components/atoms/svg-icon/CoreSvgIcon.svelte";
+import dog from "@lib/assets/svg/animals/dog.svg";
 
 export default {
   title: "Atoms/CoreSvgIcon",

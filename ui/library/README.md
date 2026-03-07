@@ -19,7 +19,7 @@ Install dependencies with `pnpm install` (lockfile present) or `npm install` and
 - `src/assets/styles`: global styles and color variables.
 - `src/assets/svg/animals`: SVG sprites referenced by `AnimalIcon` and `animals.constants.js`.
 
-`AnimalIcon` expects `VITE_APP_BASE_PATH` to resolve the animals folder; adjust that variable if you serve assets from a different base path.
+`AnimalIcon` uses `VITE_APP_BASE_PATH` (if set) to resolve the animals folder. If not set, it falls back to `import.meta.glob` from `src/assets/svg/animals`.
 
 ## Component conventions
 

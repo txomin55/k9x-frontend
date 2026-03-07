@@ -1,6 +1,6 @@
 <script>
-  import "./styles.css";
-  import { BUTTON_TYPES } from "./button.constants.js";
+  import "@lib/components/atoms/button/styles.css";
+  import { BUTTON_TYPES } from "@lib/components/atoms/button/button.constants.js";
 
   export let label = "";
   export let type = BUTTON_TYPES.DEFAULT;

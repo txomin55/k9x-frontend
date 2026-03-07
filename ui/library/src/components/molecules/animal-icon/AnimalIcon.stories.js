@@ -1,5 +1,5 @@
-import AnimalIcon from "./AnimalIcon.svelte";
-import { availableAnimalNames } from "./animals.constants.js";
+import AnimalIcon from "@lib/components/molecules/animal-icon/AnimalIcon.svelte";
+import { availableAnimalNames } from "@lib/components/molecules/animal-icon/animals.constants.js";
 
 export default {
   title: "Molecules/AnimalIcon",

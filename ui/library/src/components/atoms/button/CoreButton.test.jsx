@@ -1,5 +1,5 @@
 import { render } from "@testing-library/svelte";
-import CoreButton from "./CoreButton.svelte";
+import CoreButton from "@lib/components/atoms/button/CoreButton.svelte";
 
 describe("test library", () => {
   test("prueba library", () => {
