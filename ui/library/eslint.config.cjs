@@ -2,7 +2,4 @@
 import storybook from "eslint-plugin-storybook";
 const defaultConfig = require("my-vitest/eslint.config.cjs");
 
-module.exports = [
-  ...defaultConfig,
-  ...storybook.configs["flat/recommended"],
-];
+module.exports = [...defaultConfig, ...storybook.configs["flat/recommended"]];

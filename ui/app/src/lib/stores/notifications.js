@@ -3,7 +3,7 @@ import { resolve } from "$app/paths";
 import {
   initializePushNotifications,
   isPushNotificationSupported,
-  sendNotification
+  sendNotification,
 } from "$lib/utils/native_features/notifications/push-notifications.js";
 import mockedNotification from "$lib/components/reload_prompt/mockedNotification.js";
 
