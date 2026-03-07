@@ -3,7 +3,7 @@ import { useRegisterSW } from "virtual:pwa-register/react";
 import {
   initializePushNotifications,
   isPushNotificationSupported,
-  sendNotification,
+  sendNotification
 } from "@/utils/native_features/notifications/push-notifications.js";
 import mockedNotification from "@/components/reload_prompt/mockedNotification.js";
 
@@ -15,11 +15,11 @@ export const NotificationsProvider = ({ children }) => {
   const { updateServiceWorker, needRefresh, offlineReady } = useRegisterSW({
     immediate: true,
     onRegistered: (r) => {
-      alert("Worker registered");
+      console.log("Worker registered");
       worker = r;
     },
     onRegisterError: (error) => {
-      alert(`SW registration error ${error}`);
+      console.error(`SW registration error ${error}`);
     },
   });
   const setOfflineReady = offlineReady[1];
