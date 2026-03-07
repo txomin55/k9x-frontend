@@ -1,16 +1,14 @@
 <script>
-  import {auth} from "$lib/stores/auth";
-  import {acceptRefresh, close, needRefresh, showNotification,} from "$lib/stores/notifications";
+    import {auth} from "$lib/stores/auth";
+    import {acceptRefresh, close, needRefresh, showNotification,} from "$lib/stores/notifications";
 
-  const updateNotes = $derived(
-        () => $auth?.user?.getNews?.() ?? [],
-    );
-  const showUpdateNotes = $derived(
-        () => updateNotes.length > 0,
-    );
+    const updateNotes = $derived.by(() => $auth?.user?.getNews?.() ?? ['aaa', 'bbb']);
+    const showUpdateNotes = $derived.by(() => updateNotes.length > 0);
 
     $effect(() => {
+        if (import.meta.env.DEV) return;
         if ($needRefresh && !showUpdateNotes) {
+            console.log("worker reloads app")
             acceptRefresh();
         }
     });
@@ -26,7 +24,9 @@
     {#if $needRefresh && showUpdateNotes}
         <div class="Toast">
             <div class="ToastMessage">
-                <span>{updateNotes}</span>
+                {#each updateNotes as note}
+                    <div>{note}</div>
+                {/each}
             </div>
             <button class="ToastButton" onclick={acceptRefresh}>Reload</button>
             <button class="ToastButton" onclick={close}>Close</button>

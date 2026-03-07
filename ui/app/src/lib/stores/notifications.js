@@ -9,66 +9,63 @@ import mockedNotification from "$lib/components/reload_prompt/mockedNotification
 
 const needRefresh = writable(false);
 const offlineReady = writable(false);
+const notificationPermission = writable("default");
 
-let updateServiceWorker = null;
-let worker = null;
 let registrationRef = null;
-let workerReady = null;
+let registrationReady = null;
 let initialized = false;
 
 const initNotifications = async () => {
   if (initialized) return;
   initialized = true;
 
-  if ("serviceWorker" in navigator) {
-    const swPath = import.meta.env.DEV ? "/sw-dev.js" : "/service-worker.js";
-    const swUrl = new URL(resolve(swPath), globalThis.location.origin);
-    const scope = resolve("/");
-    try {
-      const registration = await navigator.serviceWorker.register(swUrl, {
-        scope,
-        type: "module",
-      });
-      registrationRef = registration;
-      if (!worker) worker = registration;
+  if (!("serviceWorker" in navigator)) return;
 
-      registration.addEventListener("updatefound", () => {
-        const installing = registration.installing;
-        if (!installing) return;
-        installing.addEventListener("statechange", () => {
-          if (installing.state === "installed") {
-            if (navigator.serviceWorker.controller) {
-              needRefresh.set(true);
-            } else {
-              offlineReady.set(true);
-            }
-          }
-        });
-      });
-    } catch (error) {
-      console.warn("Service worker registration failed", error);
+  const swPath = import.meta.env.DEV ? "/sw-dev.js" : "/service-worker.js";
+  const swUrl = new URL(resolve(swPath), globalThis.location.origin);
+  const scope = resolve("/");
+
+  try {
+    const swRegistration = await navigator.serviceWorker.register(swUrl, {
+      scope,
+      type: "module",
+    });
+
+    registrationRef = swRegistration;
+
+    if (swRegistration.waiting && navigator.serviceWorker.controller) {
+      needRefresh.set(true);
     }
 
-    workerReady = navigator.serviceWorker.ready
-      .then((registration) => {
-        if (!worker) {
-          worker = registration;
+    swRegistration.addEventListener("updatefound", () => {
+      const installing = swRegistration.installing;
+      if (!installing) return;
+      installing.addEventListener("statechange", () => {
+        if (installing.state !== "installed") return;
+        if (!navigator.serviceWorker.controller) {
+          offlineReady.set(true);
+          return;
         }
-        return registration;
-      })
-      .catch((error) => {
-        console.warn("Service worker ready failed", error);
-        return null;
+        if (swRegistration.waiting) {
+          needRefresh.set(true);
+        }
       });
+    });
+  } catch (error) {
+    console.warn("Service worker registration failed", error);
   }
 
-  updateServiceWorker = async () => {
-    if (!registrationRef) return;
-    await registrationRef.update();
-    if (registrationRef.waiting) {
-      registrationRef.waiting.postMessage({ type: "SKIP_WAITING" });
-    }
-  };
+  registrationReady = navigator.serviceWorker.ready
+    .then((readyRegistration) => {
+      if (readyRegistration.waiting && navigator.serviceWorker.controller) {
+        needRefresh.set(true);
+      }
+      return readyRegistration;
+    })
+    .catch((error) => {
+      console.warn("Service worker ready failed", error);
+      return null;
+    });
 };
 
 const close = () => {
@@ -77,25 +74,42 @@ const close = () => {
 };
 
 const acceptRefresh = async () => {
-  if (updateServiceWorker) {
-    await updateServiceWorker();
-    if (registrationRef?.waiting) {
-      registrationRef.waiting.postMessage({ type: "SKIP_WAITING" });
-    }
-    globalThis.location.reload();
+  if (!registrationRef?.waiting) {
+    close();
+    return;
   }
-  close();
+
+  const controllerChanged = new Promise((resolve) => {
+    if (!("serviceWorker" in navigator)) {
+      resolve();
+      return;
+    }
+    const onChange = () => {
+      navigator.serviceWorker.removeEventListener("controllerchange", onChange);
+      resolve();
+    };
+    navigator.serviceWorker.addEventListener("controllerchange", onChange);
+    setTimeout(resolve, 3000);
+  });
+
+  registrationRef.waiting.postMessage({ type: "SKIP_WAITING" });
+  await controllerChanged;
+  globalThis.location.reload();
 };
 
 const showNotification = async () => {
   alert(`supports push ${isPushNotificationSupported()}`);
   const result = await initializePushNotifications();
-  if (result === "granted" && !worker && workerReady) {
-    await workerReady;
+  notificationPermission.set(result);
+
+  if (result !== "granted") return;
+
+  if (registrationReady) {
+    await registrationReady;
   }
 
-  if (result === "granted" && worker) {
-    sendNotification(worker, mockedNotification);
+  if (registrationRef) {
+    sendNotification(registrationRef, mockedNotification);
   }
 };
 
@@ -104,5 +118,6 @@ export {
   close,
   initNotifications,
   needRefresh,
+  notificationPermission,
   showNotification,
 };

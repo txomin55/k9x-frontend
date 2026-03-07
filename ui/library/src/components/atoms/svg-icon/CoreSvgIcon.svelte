@@ -1,6 +1,5 @@
 <script>
-  export let src;
-  export let alt = "";
+  let { src, alt = "" } = $props();
 </script>
 
 <img src={src} alt={alt} />

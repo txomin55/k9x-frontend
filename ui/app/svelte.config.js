@@ -9,6 +9,9 @@ const basePath = process.env.VITE_APP_BASE_PATH ?? "";
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+  compilerOptions: {
+    runes: true,
+  },
   kit: {
     // GitHub Pages needs a static build with an SPA fallback.
     adapter: adapter({

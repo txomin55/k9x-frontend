@@ -2,7 +2,7 @@
     import CoreSvgIcon from "@lib/components/atoms/svg-icon/CoreSvgIcon.svelte";
     import {availableAnimalNames} from "@lib/components/molecules/animal-icon/animals.constants.js";
 
-    export let animal = "";
+    let { animal = "" } = $props();
 
     const animalSources = import.meta.glob(
         "@lib/assets/svg/animals/*.svg",
@@ -15,10 +15,11 @@
         }),
     );
 
-    $: curatedAnimal =
-        availableAnimalNames[animal?.toUpperCase?.()] ?? availableAnimalNames.DOG;
+    const curatedAnimal = $derived.by(
+        () => availableAnimalNames[animal?.toUpperCase?.()] ?? availableAnimalNames.DOG,
+    );
 
-    $: iconSrc = animalMap[curatedAnimal];
+    const iconSrc = $derived.by(() => animalMap[curatedAnimal]);
 </script>
 
 <CoreSvgIcon src={iconSrc} alt={curatedAnimal}/>
