@@ -3,7 +3,7 @@ import { resolve } from "$app/paths";
 import {
   initializePushNotifications,
   isPushNotificationSupported,
-  sendNotification,
+  sendNotification
 } from "$lib/utils/native_features/notifications/push-notifications.js";
 import mockedNotification from "$lib/components/reload_prompt/mockedNotification.js";
 
@@ -46,7 +46,7 @@ const initNotifications = async () => {
         });
       });
     } catch (error) {
-      console.error("Service worker registration failed", error);
+      console.warn("Service worker registration failed", error);
     }
 
     workerReady = navigator.serviceWorker.ready
@@ -57,7 +57,7 @@ const initNotifications = async () => {
         return registration;
       })
       .catch((error) => {
-        console.error("Service worker ready failed", error);
+        console.warn("Service worker ready failed", error);
         return null;
       });
   }
