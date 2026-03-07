@@ -11,7 +11,7 @@ function getAbsolutePath(value) {
   return dirname(require.resolve(join(value, "package.json")));
 }
 
-/** @type { import('@storybook/react-vite').StorybookConfig } */
+/** @type { import('@storybook/svelte-vite').StorybookConfig } */
 const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
@@ -19,7 +19,7 @@ const config = {
     getAbsolutePath("@storybook/addon-docs"),
   ],
   framework: {
-    name: getAbsolutePath("@storybook/react-vite"),
+    name: getAbsolutePath("@storybook/svelte-vite"),
     options: {},
   },
 };

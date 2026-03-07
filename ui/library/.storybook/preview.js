@@ -1,5 +1,5 @@
 import "../src/assets/styles/index.css";
-import { withDarkTheme } from "./withDarkTheme.decorator.jsx";
+import { withDarkTheme } from "./withDarkTheme.decorator.js";
 
 export const decorators = [withDarkTheme];
 

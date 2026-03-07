@@ -1,26 +1,20 @@
-import CoreButton, { BUTTON_TYPES } from "./CoreButton";
+import CoreButton from "./CoreButton.svelte";
+import { BUTTON_TYPES } from "./button.constants.js";
 import { fn } from "storybook/test";
 
 export default {
   title: "Atoms/CoreButton",
   tags: ["figma:v1"],
+  component: CoreButton,
   argTypes: {
-    label: {
-      control: "text",
-    },
+    label: { control: "text" },
     type: {
       options: Object.values(BUTTON_TYPES),
       mapping: BUTTON_TYPES,
-      control: {
-        type: "select",
-      },
+      control: { type: "select" },
     },
-    onClick: {
-      control: "function",
-    },
-    disabled: {
-      control: "boolean",
-    },
+    onClick: { control: "function" },
+    disabled: { control: "boolean" },
   },
   actions: {
     args: {
@@ -30,15 +24,12 @@ export default {
   parameters: {
     design: {
       type: "figspec",
-      url: "https://www.figma.com/file/twFjIpOW0mzopH3yKEWJnm/Chromatic-library-test?node-id=61-56&t=QdsTnU2HBcqMTuT9-0", //hay que cambiar design por file en la url
+      url: "https://www.figma.com/file/twFjIpOW0mzopH3yKEWJnm/Chromatic-library-test?node-id=61-56&t=QdsTnU2HBcqMTuT9-0",
     },
   },
 };
 
-const Template = (args) => <CoreButton {...args} />;
-
 export const Basic = {
-  render: Template,
   args: {
     label: "this is a button",
     onClick: fn(() => {
@@ -50,7 +41,6 @@ export const Basic = {
 };
 
 export const Custom = {
-  render: Template,
   args: {
     label: "this is a primary",
     onClick: fn(() => {
@@ -59,6 +49,5 @@ export const Custom = {
     disabled: false,
     type: BUTTON_TYPES.PRIMARY,
   },
-
   tags: ["figma:v1", "new"],
 };
