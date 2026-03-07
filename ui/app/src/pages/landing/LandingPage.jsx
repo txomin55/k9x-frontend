@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import styles from "./styles.module.css";
 import logo from "@/assets/logo.svg";
+import { useApi } from "@/providers/api/ApiProvider.jsx";
 
 const OAUTH_STATE_KEY = "k9x_google_oauth_state";
 
@@ -25,6 +26,11 @@ const buildGoogleAuthUrl = () => {
 };
 
 function LandingPage() {
+  const getApi = useApi();
+  const api = getApi();
+  const { getDogs } = api;
+  const [dogsResult, setDogsResult] = useState(null);
+
   const handleGoogleLogin = () => {
     globalThis.location.assign(buildGoogleAuthUrl());
   };
@@ -33,10 +39,21 @@ function LandingPage() {
     globalThis.localStorage.removeItem("k9x_access_token");
   };
 
+  const handleFetchDogs = () => {
+    getDogs().then((data) => {
+      setDogsResult(data);
+    });
+  };
+
   return (
     <div className={styles.LandingPage}>
       <CoreButton label="Haz login con Google" onClick={handleGoogleLogin} />
       <CoreButton label="Logout" onClick={handleLogout} />
+      <CoreButton label="Cargar perros" onClick={handleFetchDogs} />
+
+      {dogsResult ? (
+        <pre>{JSON.stringify(dogsResult, null, 2)}</pre>
+      ) : null}
 
       <header className={styles.header}>
         <img src={logo} className={styles.logo} alt="logo" />
