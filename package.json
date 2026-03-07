@@ -9,7 +9,7 @@
     "coverage_processor/*"
   ],
   "scripts": {
-    "build": "turbo run build -- --mode ${CI_BUILD_ENV}",
+    "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{cjs,js,jsx,md,mdx}\"",
     "test:unit:coverage": "turbo run test:unit:coverage --parallel",
