@@ -15,6 +15,16 @@ let registrationRef = null;
 let registrationReady = null;
 let initialized = false;
 
+const shouldPromptRefresh = (registration) => {
+  if (!registration?.waiting) return false;
+  if (!navigator.serviceWorker?.controller) return false;
+  const waitingUrl = registration.waiting.scriptURL;
+  const activeUrl =
+    registration.active?.scriptURL ||
+    navigator.serviceWorker.controller.scriptURL;
+  return !(waitingUrl && activeUrl && waitingUrl === activeUrl);
+};
+
 const initNotifications = async () => {
   if (initialized) return;
   initialized = true;
@@ -33,7 +43,7 @@ const initNotifications = async () => {
 
     registrationRef = swRegistration;
 
-    if (swRegistration.waiting && navigator.serviceWorker.controller) {
+    if (shouldPromptRefresh(swRegistration)) {
       needRefresh.set(true);
     }
 
@@ -46,7 +56,7 @@ const initNotifications = async () => {
           offlineReady.set(true);
           return;
         }
-        if (swRegistration.waiting) {
+        if (shouldPromptRefresh(swRegistration)) {
           needRefresh.set(true);
         }
       });
@@ -57,7 +67,7 @@ const initNotifications = async () => {
 
   registrationReady = navigator.serviceWorker.ready
     .then((readyRegistration) => {
-      if (readyRegistration.waiting && navigator.serviceWorker.controller) {
+      if (shouldPromptRefresh(readyRegistration)) {
         needRefresh.set(true);
       }
       return readyRegistration;

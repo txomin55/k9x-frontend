@@ -100,10 +100,9 @@ export default ({ mode }) => {
       injectRegister: "script",
       base: basePath ? `${basePath}/` : "/",
       devOptions: {
-        enabled: !["production", "staging"].includes(mode),
-        // SvelteKit doesn't serve /index.html in dev; fallback to the app root.
-        navigateFallback: basePath ? `${basePath}/` : "/",
-        type: "module",
+        // Dev SW is manually registered from static/sw-dev.js (see notifications.js).
+        // Disable the plugin dev SW to avoid double registration.
+        enabled: false,
       },
       manifest: {
         name: "My Awesome React App",

@@ -2,7 +2,7 @@
     import {auth} from "$lib/stores/auth";
     import {acceptRefresh, close, needRefresh, showNotification,} from "$lib/stores/notifications";
 
-    const updateNotes = $derived.by(() => $auth?.user?.getNews?.() ?? ['aaa', 'bbb']);
+    const updateNotes = $derived.by(() => $auth?.user?.getNews?.() ?? []);
     const showUpdateNotes = $derived.by(() => updateNotes.length > 0);
 
     $effect(() => {
@@ -21,6 +21,7 @@
         </button>
     </div>
 
+    needRefresh {$needRefresh}
     {#if $needRefresh && showUpdateNotes}
         <div class="Toast">
             <div class="ToastMessage">
