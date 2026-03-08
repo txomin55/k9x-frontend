@@ -31,6 +31,7 @@ jobs:
         run: bash ./ci-scripts/unit-tests.sh
 
       - name: Upload unit reports
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: reports-unit
@@ -62,6 +63,7 @@ jobs:
         run: bash ./ci-scripts/e2e-tests.sh
 
       - name: Upload e2e reports
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: reports-e2e
