@@ -6,20 +6,30 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const { test: baseTest = {}, ...restBaseConfig } = baseConfig;
+const { transformMode, ...restBaseTest } = baseTest;
+
 export default {
   plugins: [svelte()],
-  ...baseConfig,
+  ...restBaseConfig,
   resolve: {
     // Ensure client-side Svelte exports are used during tests.
     conditions: ["browser"],
   },
   test: {
-    ...baseConfig.test,
+    ...restBaseTest,
+    coverage: {
+      ...restBaseConfig.coverage,
+      provider: "istanbul",
+      extension: [".js", ".jsx", ".ts", ".tsx", ".svelte"],
+      reporter: ["text-summary"],
+      include: [path.resolve(__dirname, "src/**/*.{js,svelte}")],
+    },
     alias: {
       "@lib": path.resolve(__dirname, "./src"),
     },
     deps: {
-      ...baseConfig.test?.deps,
+      ...restBaseConfig.deps,
       registerNodeLoader: true,
     },
   },

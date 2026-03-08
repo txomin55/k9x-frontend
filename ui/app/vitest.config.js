@@ -14,6 +14,10 @@ const { transformMode, ...restBaseTest } = baseTest;
 export default {
   plugins: [sveltekit()],
   ...restBaseConfig,
+  resolve: {
+    // Ensure client-side Svelte exports are used during tests.
+    conditions: ["browser"],
+  },
   test: {
     ...restBaseTest,
     // Use jsdom for Svelte component tests and allow watch locally.
@@ -30,6 +34,9 @@ export default {
     },
     coverage: {
       ...restBaseTest.coverage,
+      provider: "v8",
+      // Only report executed files to avoid v8 remap failures on raw .svelte.
+      all: false,
       include: [
         path.resolve(__dirname, "src/**/*.{js,svelte}"),
         path.resolve(__dirname, "../library/src/**/*.{js,svelte}"),
