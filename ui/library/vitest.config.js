@@ -20,7 +20,6 @@ export default {
     ...restBaseTest,
     coverage: {
       ...restBaseConfig.coverage,
-      provider: "istanbul",
       extension: [".js", ".jsx", ".ts", ".tsx", ".svelte"],
       reporter: ["text-summary"],
       include: [path.resolve(__dirname, "src/**/*.{js,svelte}")],
