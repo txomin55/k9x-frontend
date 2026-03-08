@@ -17,6 +17,9 @@ const __dirname = path.dirname(__filename);
 export default ({ mode }) => {
   const envOptions = loadEnv(mode, __dirname);
   const basePath = envOptions.VITE_APP_BASE_PATH || "";
+  const appVersion = ["offline", "integrated"].includes(mode)
+    ? null
+    : `${Date.now()}`;
 
   const viteConfig = defineConfig({
     plugins: [
@@ -83,6 +86,13 @@ export default ({ mode }) => {
         ],
       },
     },
+    ...(appVersion
+      ? {
+          define: {
+            "import.meta.env.VITE_APP_VERSION": JSON.stringify(appVersion),
+          },
+        }
+      : {}),
   });
 
   viteConfig.plugins.push(
@@ -113,12 +123,12 @@ export default ({ mode }) => {
         id: `${envOptions.VITE_APP_BASE_PATH}/`,
         icons: [
           {
-            src: "pwa-192x192.png",
+            src: `pwa-192x192.png${appVersion ? `?v=${appVersion}` : ""}`,
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "pwa-512x512.png",
+            src: `pwa-512x512.png${appVersion ? `?v=${appVersion}` : ""}`,
             sizes: "512x512",
             type: "image/png",
             purpose: "any maskable",

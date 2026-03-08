@@ -30,6 +30,13 @@
     initApi();
 </script>
 
+<svelte:head>
+    <link
+        rel="manifest"
+        href={resolve("/manifest.webmanifest") + (import.meta.env.VITE_APP_VERSION ? `?v=${import.meta.env.VITE_APP_VERSION}` : "")}
+    />
+</svelte:head>
+
 <div>
     <h1>My SvelteKit PWA</h1>
     {#if $ready}
