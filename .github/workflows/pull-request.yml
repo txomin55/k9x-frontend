@@ -67,7 +67,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: reports-e2e
-          path: .reports/*
+          path: .reports
+          include-hidden-files: true
+      - name: Upload Cypress artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-artifacts
+          path: .reports/cypress
           include-hidden-files: true
 
   test_summary:

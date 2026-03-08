@@ -7,6 +7,10 @@ mkdir -p .reports/test/e2e/coverage
 mkdir -p .reports/cypress/screenshots
 mkdir -p .reports/cypress/videos
 
+# Ensure report roots are never empty so CI artifact upload always has files.
+touch .reports/.keep
+touch .reports/cypress/.keep
+
 pnpm --filter ./ui/app exec cypress install
 # Should be using for Cypress cloud test:e2e:real
 pnpm run test:e2e:coverage
