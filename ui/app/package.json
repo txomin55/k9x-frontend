@@ -57,6 +57,7 @@
     "library": "workspace:^",
     "openapi-client-axios": "7.9.0",
     "svelte": "^5.0.0",
+    "v8-to-istanbul": "^9.3.0",
     "vite-plugin-static-copy": "^3.1.4",
     "workbox-core": "^7.4.0"
   }

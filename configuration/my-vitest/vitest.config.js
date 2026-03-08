@@ -1,8 +1,6 @@
 import { defineConfig } from "vitest/config";
-import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react()],
   test: {
     globals: true,
     environment: "jsdom",
@@ -12,14 +10,14 @@ export default defineConfig({
       exclude: [
         "**/src/**/*.constants.js",
         "**/src/**/*.json",
-        "**/src/**/*stories.jsx",
+        "**/src/**/*stories.@(js|jsx|ts|tsx|svelte)",
       ],
       allowExternal: true,
-      include: ["**/src/**/*.{js,jsx}"],
+      include: ["**/src/**/*.{js,jsx,ts,tsx,svelte}"],
       reportsDirectory: ".reports/test/unit/coverage",
       reporter: ["text-summary", "cobertura", "lcov", "json"],
     },
-    include: ["**/src/**/*.test.{js,jsx}"],
+    include: ["**/src/**/*.test.{js,jsx,ts,tsx,svelte}"],
     reporters: ["default", "junit", "vitest-sonar-reporter"],
     sonarReporterOptions: { silent: true }, //??
     outputFile: {
