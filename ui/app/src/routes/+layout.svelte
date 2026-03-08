@@ -2,25 +2,14 @@
     import "@/app.css";
     import {resolve} from "$app/paths";
     import CoreButton from "@lib/components/atoms/button/CoreButton.svelte";
-    import ReloadPrompt from "$lib/components/reload_prompt/ReloadPrompt.svelte";
     import {api, initApi} from "$lib/stores/api";
     import {auth} from "$lib/stores/auth";
     import {initI18n, locale, locales, ready, setLocale, t} from "$lib/stores/i18n";
-    import {initNotifications} from "$lib/stores/notifications";
+    import {acceptRefresh, initNotifications, needRefresh} from "$lib/stores/notifications";
+    import NewsVisualizer from "$lib/components/reload_prompt/NewsVisualizer.svelte";
 
     let {children} = $props();
     let isDark = $state(false);
-
-    const basePath = resolve("/").replace(/\/$/, "");
-
-    const normalizePathname = (pathname) => {
-        if (!basePath) return pathname || "/";
-        if (pathname.startsWith(basePath)) {
-            const stripped = pathname.slice(basePath.length);
-            return stripped === "" ? "/" : stripped;
-        }
-        return pathname || "/";
-    };
 
     const toggleMode = () => {
         if (isDark) {
@@ -30,6 +19,13 @@
         }
         isDark = !isDark;
     };
+
+    $effect(() => {
+        if ($needRefresh) {
+            debugger
+            acceptRefresh();
+        }
+    });
 
     initNotifications();
     initI18n();
@@ -63,7 +59,7 @@
         <a href={resolve("/")}>Landing</a>
         <a href={resolve("/home")}>Home</a>
     </nav>
-    <ReloadPrompt/>
+    <NewsVisualizer/>
     <div>
         {#if $api}
             {#if $auth.loading}

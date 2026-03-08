@@ -46,6 +46,7 @@ const handleNotification = (clients) => {
     event.notification.close();
   };
 };
+
 export {
   initializePushNotifications,
   sendNotification,
