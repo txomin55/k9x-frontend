@@ -5,7 +5,7 @@
     import {api, initApi} from "$lib/stores/api";
     import {auth} from "$lib/stores/auth";
     import {initI18n, locale, locales, ready, setLocale, t} from "$lib/stores/i18n";
-    import {acceptRefresh, initNotifications, needRefresh} from "$lib/stores/notifications";
+    import {initNotifications} from "$lib/stores/notifications";
     import NewsVisualizer from "$lib/components/reload_prompt/NewsVisualizer.svelte";
 
     let {children} = $props();
@@ -20,12 +20,11 @@
         isDark = !isDark;
     };
 
-    $effect(() => {
-        if ($needRefresh) {
-            acceptRefresh();
-        }
-    });
-
+    if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+            globalThis.location.reload();
+        });
+    }
     initNotifications();
     initI18n();
     initApi();

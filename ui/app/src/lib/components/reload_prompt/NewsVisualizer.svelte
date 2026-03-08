@@ -1,6 +1,6 @@
 <script>
     import {auth} from "$lib/stores/auth";
-    import {close, showNotification} from "$lib/stores/notifications";
+    import {showNotification} from "$lib/stores/notifications";
 
     const updateNotes = $derived.by(() => $auth?.user?.getNews?.() ?? ["1", "2"]);
     const showUpdateNotes = $derived.by(() => updateNotes.length > 0);
@@ -20,7 +20,6 @@
                     <div>{note}</div>
                 {/each}
             </div>
-            <button class="ToastButton" onclick={close}>Close</button>
         </div>
     {/if}
 </div>

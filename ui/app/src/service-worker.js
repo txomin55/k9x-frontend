@@ -4,6 +4,10 @@ import { handleNotification } from "./lib/utils/native_features/notifications/pu
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
+self.addEventListener("install", (event) => {
+  event.waitUntil(self.skipWaiting());
+});
+
 self.addEventListener("message", (event) => {
   if (event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
