@@ -22,7 +22,6 @@
 
     $effect(() => {
         if ($needRefresh) {
-            debugger
             acceptRefresh();
         }
     });

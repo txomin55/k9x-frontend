@@ -10,7 +10,8 @@ SvelteKit, lightweight state is managed with Svelte stores, and internationaliza
   `vite-plugin-environment`.
 - Aliases: `@` -> `src`, `@lib` -> `../library/src` (SVG assets copied on build with
   `vite-plugin-static-copy`).
-- PWA: `@vite-pwa/sveltekit` in `injectManifest` mode with `src/service-worker-pro.js` (Workbox), `VITE_APP_BASE_PATH`
+- PWA: `@vite-pwa/sveltekit` in `injectManifest` mode with `src/service-worker.js` (Workbox) plus
+  `src/service-worker.js`, `VITE_APP_BASE_PATH`
   is
   used as the base for
   routes and SW registration.

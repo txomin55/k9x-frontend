@@ -85,44 +85,48 @@ export default ({ mode }) => {
     },
   });
 
-  if (!["offline", "integrated"].includes(envOptions.VITE_ENV)) {
-    viteConfig.plugins.push(
-      SvelteKitPWA({
-        strategies: "injectManifest",
-        srcDir: "src",
-        filename: "service-worker-pro.js",
-        injectManifest: {
-          // Only precache client assets; avoid the prerendered glob warning.con
-          globPatterns: ["client/**/*.{js,css,ico,png,svg,webp,webmanifest}"],
-          globIgnores: ["server/**"],
-          // Prevent @vite-pwa/sveltekit from auto-adding prerendered glob patterns.
-          modifyURLPrefix: {},
-        },
-        injectRegister: "script",
-        base: basePath ? `${basePath}/` : "/",
-        manifest: {
-          name: "My Awesome Svelte App",
-          short_name: "MyApp",
-          description: "My Awesome App description",
-          theme_color: "#ffffff",
-          id: `${envOptions.VITE_APP_BASE_PATH}/`,
-          icons: [
-            {
-              src: "pwa-192x192.png",
-              sizes: "192x192",
-              type: "image/png",
-            },
-            {
-              src: "pwa-512x512.png",
-              sizes: "512x512",
-              type: "image/png",
-              purpose: "any maskable",
-            },
-          ],
-        },
-      }),
-    );
-  }
+  viteConfig.plugins.push(
+    SvelteKitPWA({
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "service-worker.js",
+      injectManifest: {
+        // Only precache client assets; avoid the prerendered glob warning.con
+        globPatterns: ["client/**/*.{js,css,ico,png,svg,webp,webmanifest}"],
+        globIgnores: ["server/**"],
+        // Prevent @vite-pwa/sveltekit from auto-adding prerendered glob patterns.
+        modifyURLPrefix: {},
+      },
+      injectRegister: "script",
+      devOptions: {
+        enabled: ["offline", "integrated"].includes(mode),
+        // SvelteKit doesn't serve /index.html in dev; fallback to the app root.
+        navigateFallback: basePath ? `${basePath}/` : "/",
+        type: "module",
+      },
+      base: basePath ? `${basePath}/` : "/",
+      manifest: {
+        name: "My Awesome Svelte App",
+        short_name: "MyApp",
+        description: "My Awesome App description",
+        theme_color: "#ffffff",
+        id: `${envOptions.VITE_APP_BASE_PATH}/`,
+        icons: [
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
+        ],
+      },
+    }),
+  );
 
   return viteConfig;
 };

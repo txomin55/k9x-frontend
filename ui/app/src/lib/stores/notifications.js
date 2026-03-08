@@ -15,6 +15,17 @@ let registrationRef = null;
 let registrationReady = null;
 let initialized = false;
 
+const requestNotificationPermission = async () => {
+  if (!("Notification" in globalThis)) return;
+  if (Notification.permission !== "default") {
+    notificationPermission.set(Notification.permission);
+    return;
+  }
+
+  const result = await initializePushNotifications();
+  notificationPermission.set(result);
+};
+
 const shouldPromptRefresh = (registration) => {
   if (!registration?.waiting) return false;
   if (!navigator.serviceWorker?.controller) return false;
@@ -25,45 +36,33 @@ const shouldPromptRefresh = (registration) => {
   return !(waitingUrl && activeUrl && waitingUrl === activeUrl);
 };
 
-const initNotifications = async () => {
-  if (initialized) return;
-  initialized = true;
+const attachServiceWorkerListeners = async () => {
+  if (!("serviceWorker" in navigator)) return null;
 
-  if (!("serviceWorker" in navigator)) return;
-
-  const swPath = import.meta.env.DEV ? "/sw-dev.js" : "/service-worker-pro.js";
-  const swUrl = new URL(resolve(swPath), globalThis.location.origin);
   const scope = resolve("/");
+  const swRegistration = await navigator.serviceWorker.getRegistration(scope);
+  if (!swRegistration) return null;
 
-  try {
-    const swRegistration = await navigator.serviceWorker.register(swUrl, {
-      scope,
-      type: "module",
-    });
+  registrationRef = swRegistration;
 
-    registrationRef = swRegistration;
-
-    if (shouldPromptRefresh(swRegistration)) {
-      needRefresh.set(true);
-    }
-
-    swRegistration.addEventListener("updatefound", () => {
-      const installing = swRegistration.installing;
-      if (!installing) return;
-      installing.addEventListener("statechange", () => {
-        if (installing.state !== "installed") return;
-        if (!navigator.serviceWorker.controller) {
-          offlineReady.set(true);
-          return;
-        }
-        if (shouldPromptRefresh(swRegistration)) {
-          needRefresh.set(true);
-        }
-      });
-    });
-  } catch (error) {
-    console.warn("Service worker registration failed", error);
+  if (shouldPromptRefresh(swRegistration)) {
+    needRefresh.set(true);
   }
+
+  swRegistration.addEventListener("updatefound", () => {
+    const installing = swRegistration.installing;
+    if (!installing) return;
+    installing.addEventListener("statechange", () => {
+      if (installing.state !== "installed") return;
+      if (!navigator.serviceWorker.controller) {
+        offlineReady.set(true);
+        return;
+      }
+      if (shouldPromptRefresh(swRegistration)) {
+        needRefresh.set(true);
+      }
+    });
+  });
 
   registrationReady = navigator.serviceWorker.ready
     .then((readyRegistration) => {
@@ -72,10 +71,19 @@ const initNotifications = async () => {
       }
       return readyRegistration;
     })
-    .catch((error) => {
-      console.warn("Service worker ready failed", error);
+    .catch(() => {
       return null;
     });
+
+  return swRegistration;
+};
+
+const initNotifications = async () => {
+  if (initialized) return;
+  initialized = true;
+
+  await requestNotificationPermission();
+  await attachServiceWorkerListeners();
 };
 
 const close = () => {
