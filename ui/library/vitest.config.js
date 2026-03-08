@@ -19,9 +19,9 @@ export default {
   test: {
     ...restBaseTest,
     coverage: {
-      ...restBaseConfig.coverage,
+      ...restBaseTest.coverage,
+      provider: "v8",
       extension: [".js", ".jsx", ".ts", ".tsx", ".svelte"],
-      reporter: ["text-summary"],
       include: [path.resolve(__dirname, "src/**/*.{js,svelte}")],
     },
     alias: {
