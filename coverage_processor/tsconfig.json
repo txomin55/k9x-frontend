@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "resolveJsonModule": true
+  },
+  "include": [
+    "unit_coverage_processor.ts",
+    "unit_jUnit_processor.ts",
+    "total_coverage_processor.ts"
+  ]
+}

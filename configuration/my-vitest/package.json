@@ -1,0 +1,17 @@
+{
+  "name": "my-vitest",
+  "type": "module",
+  "license": "MIT",
+  "files": [
+    "vitest-setup.ts",
+    "vitest.config.ts",
+    "tsconfig.json",
+    "eslint.config.cjs"
+  ],
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@vitest/eslint-plugin": "^1.5.1",
+    "eslint-plugin-vitest-globals": "1.5.0",
+    "my-eslint": "workspace:^"
+  }
+}

@@ -1,0 +1,72 @@
+name: Pages and Release
+
+on:
+  ##  push:
+  #    branches: [ main ]
+  #    paths:
+  #      - ui/app/src/**
+  #      - ui/library/src/**
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  pages_release:
+    name: Build, Deploy Pages and Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    env:
+      CI_BUILD_ENV: staging
+      CI_JOB_ID: ${{ github.run_id }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Cache pnpm
+        uses: actions/cache@v4
+        with:
+          path: .pnpm-store
+          key: pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install deps
+        run: bash ./ci-scripts/generic-before.sh
+
+      - name: Build pages
+        run: bash ./ci-scripts/pages.sh
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+          name: github-pages
+          retention-days: 7
+
+      - name: Set release date tag
+        id: release_vars
+        run: echo "release_tag=pages-$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Create release archive
+        run: zip -r public.zip public
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.release_vars.outputs.release_tag }}
+          name: Release ${{ steps.release_vars.outputs.release_tag }}
+          files: public.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

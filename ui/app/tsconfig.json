@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "strict": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": [
+      "vite/client",
+      "node",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["../library/src/*"],
+      "@test/*": ["./playwright/*"]
+    }
+  },
+  "include": [
+    "src",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+    "vite.config.ts",
+    "vite.sw.config.ts",
+    "vitest.config.ts",
+    "vitest-setup.ts"
+  ]
+}
