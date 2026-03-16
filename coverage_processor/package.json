@@ -4,10 +4,17 @@
   "type": "module",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "coverage:merge": "tsx unit_coverage_processor.ts",
+    "junit:merge": "tsx unit_jUnit_processor.ts",
+    "total:coverage-merge": "tsx total_coverage_processor.ts"
+  },
   "devDependencies": {
+    "@types/node": "catalog:",
     "istanbul-lib-coverage": "^3.2.2",
     "istanbul-lib-report": "^3.0.1",
     "istanbul-reports": "^3.2.0",
-    "junit-report-merger": "^9.0.3"
+    "junit-report-merger": "^9.0.3",
+    "typescript": "catalog:"
   }
 }

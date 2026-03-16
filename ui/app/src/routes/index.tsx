@@ -67,7 +67,7 @@ export default function IndexRoute() {
         />
         <CoreButton type="secondary" label="Logout" onClick={handleLogout} />
         <CoreButton
-          type="tertiary"
+          type="secondary"
           label="Cargar perros"
           onClick={handleFetchDogs}
         />

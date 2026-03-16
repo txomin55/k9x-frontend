@@ -114,7 +114,7 @@ export default function AppLayout(props) {
                 <div class="app-layout-tools__group">
                   <p>Mode</p>
                   <CoreButton
-                    type="tertiary"
+                    type="secondary"
                     onClick={toggleMode}
                     label={isDark() ? "Light" : "Dark"}
                   />

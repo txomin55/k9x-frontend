@@ -16,7 +16,9 @@
     "@storybook/addon-docs": "^10.2.16",
     "@storybook/addon-links": "^10.2.16",
     "@storybook/html-vite": "^10.2.16",
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "catalog:",
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
     "autoprefixer": "^10.4.22",
     "chromatic": "^13.3.4",
     "eslint-plugin-storybook": "^10.1.4",
@@ -24,12 +26,15 @@
     "my-vitest": "workspace:^",
     "postcss": "^8.5.6",
     "prop-types": "^15.8.1",
+    "react": "^19.2.0",
     "remark-gfm": "^4.0.1",
     "storybook": "^10.2.16",
-    "vite-plugin-solid": "^2.11.10",
-    "vite-jsconfig-paths": "^2.0.1"
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:",
+    "vite-jsconfig-paths": "catalog:",
+    "vitest": "catalog:"
   },
   "dependencies": {
-    "solid-js": "^1.9.10"
+    "solid-js": "catalog:"
   }
 }

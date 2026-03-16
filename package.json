@@ -5,7 +5,7 @@
   "workspaces": [
     "ui/*",
     "configuration/*",
-    "coverage_processor/*"
+    "coverage_processor"
   ],
   "scripts": {
     "build": "turbo run build -- --mode ${CI_BUILD_ENV:-production}",
@@ -21,21 +21,26 @@
     "dev": "pnpm --filter ./ui/app dev"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.0.15",
-    "eslint": "^9.39.1",
-    "jsdom": "27.2.0",
-    "junit-report-merger": "^9.0.3",
-    "prettier": "3.7.4",
-    "regenerator-runtime": "^0.14.1",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "tsx": "^4.20.6",
     "turbo": "^2.8.10",
-    "typescript": "^5.4.5",
-    "vite": "7.2.6",
-    "vite-plugin-eslint": "^1.8.1",
-    "vitest": "^4.0.15",
-    "vitest-sonar-reporter": "^3.0.0"
+    "typescript": "catalog:"
+  },
+  "pnpm": {
+    "overrides": {
+      "@testing-library/jest-dom": "catalog:",
+      "@types/node": "catalog:",
+      "@vitest/coverage-v8": "catalog:",
+      "eslint": "catalog:",
+      "prettier": "catalog:",
+      "solid-js": "catalog:",
+      "typescript": "catalog:",
+      "vite": "catalog:",
+      "vite-jsconfig-paths": "catalog:",
+      "vite-plugin-solid": "catalog:",
+      "vitest": "catalog:"
+    }
   },
   "packageManager": "pnpm@10.30.0"
 }

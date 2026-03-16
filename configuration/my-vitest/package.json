@@ -9,9 +9,16 @@
     "eslint.config.cjs"
   ],
   "dependencies": {
-    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/jest-dom": "catalog:",
     "@vitest/eslint-plugin": "^1.5.1",
     "eslint-plugin-vitest-globals": "1.5.0",
-    "my-eslint": "workspace:^"
+    "jsdom": "27.2.0",
+    "my-eslint": "workspace:^",
+    "vitest": "catalog:",
+    "vitest-sonar-reporter": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }
