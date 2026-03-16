@@ -1,14 +1,7 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { A, useLocation } from "@solidjs/router";
 import { locale, locales, setLocale } from "@/stores/i18n";
-import {
-  createEffect,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import "@/layout/styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
@@ -113,11 +106,9 @@ export default function AppLayout(props) {
               <div class="app-layout-tools">
                 <div class="app-layout-tools__group">
                   <p>Mode</p>
-                  <CoreButton
-                    type="accent"
-                    onClick={toggleMode}
-                    label={isDark() ? "Light" : "Dark"}
-                  />
+                  <CoreButton type="accent" onClick={toggleMode}>
+                    {isDark() ? "Light" : "Dark"}
+                  </CoreButton>
                 </div>
 
                 <div class="app-layout-tools__group">
@@ -129,8 +120,9 @@ export default function AppLayout(props) {
                         <CoreButton
                           type="primary"
                           onClick={() => setLocale(nextLocale)}
-                          label={nextLocale}
-                        />
+                        >
+                          {nextLocale}
+                        </CoreButton>
                       )}
                     </For>
                   </div>

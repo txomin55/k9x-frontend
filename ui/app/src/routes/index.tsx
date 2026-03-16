@@ -60,17 +60,15 @@ export default function IndexRoute() {
   return (
     <>
       <div class="Landing">
-        <CoreButton
-          type="primary"
-          label="Haz login con Google"
-          onClick={handleGoogleLogin}
-        />
-        <CoreButton type="primary" label="Logout" onClick={handleLogout} />
-        <CoreButton
-          type="primary"
-          label="Cargar perros"
-          onClick={handleFetchDogs}
-        />
+        <CoreButton type="primary" onClick={handleGoogleLogin}>
+          Haz login con Google
+        </CoreButton>
+        <CoreButton type="primary" onClick={handleLogout}>
+          Logout
+        </CoreButton>
+        <CoreButton type="primary" onClick={handleFetchDogs}>
+          Cargar perros
+        </CoreButton>
 
         <Show when={dogsResult()}>
           <pre>{JSON.stringify(dogsResult(), null, 2)}</pre>
