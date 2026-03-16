@@ -10,7 +10,7 @@ export default createHandler(() => (
           <meta charset="utf-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href={resolveAppPath("/favicon.svg")} />
-          <title>Solid PWA</title>
+          <title>K9X</title>
           {assets}
         </head>
         <body>

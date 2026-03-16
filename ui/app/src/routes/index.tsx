@@ -1,4 +1,3 @@
-import { Title } from "@solidjs/meta";
 import { useLocation, useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, Show } from "solid-js";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
@@ -60,7 +59,6 @@ export default function IndexRoute() {
 
   return (
     <>
-      <Title>Landing</Title>
       <div class="Landing">
         <CoreButton
           type="primary"
