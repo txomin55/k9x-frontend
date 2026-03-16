@@ -3,8 +3,8 @@ import HomeRoute from "@/routes/home/index";
 
 describe("home route", () => {
   test("renders login text", () => {
-    const { getByText } = render(() => <HomeRoute />);
+    const { queryByText } = render(() => <HomeRoute />);
 
-    expect(getByText("ESTAS LOGUEADO")).not.toBeInTheDocument();
+    expect(queryByText("ESTAS LOGUEADO")).not.toBeInTheDocument();
   });
 });
