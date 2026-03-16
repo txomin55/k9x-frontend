@@ -1,8 +1,8 @@
 export const BUTTON_TYPES = {
-  DEFAULT: "",
   PRIMARY: "primary",
-  SECONDARY: "secondary",
+  ACCENT: "accent",
   ERROR: "error",
+  GHOST: "ghost",
 } as const;
 
 export type ButtonType = (typeof BUTTON_TYPES)[keyof typeof BUTTON_TYPES];

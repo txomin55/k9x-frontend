@@ -1,7 +1,5 @@
 import { renderSolid } from "../../../../.storybook/renderSolid";
-import CoreButton, {
-  type CoreButtonProps,
-} from "@lib/components/atoms/button/CoreButton";
+import CoreButton, { type CoreButtonProps } from "@lib/components/atoms/button/CoreButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/button.constants";
 import { fn } from "storybook/test";
 
@@ -29,7 +27,8 @@ const meta = {
       url: "https://www.figma.com/file/twFjIpOW0mzopH3yKEWJnm/Chromatic-library-test?node-id=61-56&t=QdsTnU2HBcqMTuT9-0",
     },
   },
-  render: (args: CoreButtonProps) => renderSolid(() => <CoreButton {...args} />),
+  render: (args: CoreButtonProps) =>
+    renderSolid(() => <CoreButton {...args} />),
 };
 
 export default meta;
@@ -41,18 +40,6 @@ export const Basic = {
       alert("button clicked");
     }),
     disabled: false,
-    type: BUTTON_TYPES.DEFAULT,
-  },
-};
-
-export const Custom = {
-  args: {
-    label: "this is a primary",
-    onClick: fn(() => {
-      alert("button clicked");
-    }),
-    disabled: false,
     type: BUTTON_TYPES.PRIMARY,
   },
-  tags: ["figma:v1", "new"],
 };

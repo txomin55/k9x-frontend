@@ -15,7 +15,7 @@ export type CoreButtonProps = {
 
 export default function CoreButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);
-  const typeClass = () => props.type ?? BUTTON_TYPES.DEFAULT;
+  const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event,

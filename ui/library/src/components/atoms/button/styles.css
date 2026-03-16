@@ -2,26 +2,24 @@
     --button-background-color: var(--surface);
     --button-background-color-hover: var(--surface-hover);
     --button-background-color-active: var(--surface-muted);
-    --button-foreground-color: var(--text-primary);
+    --button-text-color: var(--text-primary);
     --button-border-color: var(--border-strong);
 }
 
+/* BASE */
 .button {
-    appearance: none;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
     height: 40px;
     width: auto;
     outline: none;
     border-radius: 6px;
     padding: 0 16px;
     background-color: var(--button-background-color);
-    border-color: var(--button-border-color);
-    color: var(--button-foreground-color);
+    border: 1px solid var(--button-border-color);
+    color: var(--button-text-color);
     font-size: 16px;
-    line-height: 0;
-    transition: 250ms background-color;
+    transition: background-color 250ms,
+    border-color 250ms,
+    color 250ms;
     cursor: pointer;
 }
 
@@ -33,74 +31,82 @@
     --button-background-color: var(--button-background-color-active);
 }
 
-.button.disabled {
+.button.disabled,
+.button:disabled {
     cursor: not-allowed;
-    --button-foreground-color: var(--text-muted);
+    --button-text-color: var(--text-muted);
     --button-background-color: var(--surface-muted);
     --button-border-color: var(--border-muted);
 }
 
-/*PRIMARY*/
+/* PRIMARY */
 .button.primary {
     --button-background-color: var(--primary);
-    --button-foreground-color: var(--text-inverted);
-    --button-border-color: var(--primary-border);
+    --button-background-color-hover: var(--primary-hover);
+    --button-background-color-active: var(--primary-active);
+    --button-text-color: var(--text-inverted);
+    --button-border-color: var(--primary);
 }
 
-.button.primary:hover {
-    --button-background-color: var(--primary-hover);
-}
-
-.button.primary:active {
-    --button-background-color: var(--primary-active);
-}
-
-.button.primary.disabled {
-    --button-foreground-color: var(--text-secondary);
+.button.primary.disabled,
+.button.primary:disabled {
+    --button-text-color: var(--accent);
     --button-background-color: var(--primary-soft);
     --button-border-color: var(--primary-border);
 }
 
-/*SECONDARY*/
-.button.secondary {
+/* ACCENT */
+.button.accent {
     --button-background-color: var(--accent);
-    --button-foreground-color: var(--text-inverted);
-    --button-border-color: var(--accent-border);
+    --button-background-color-hover: var(--accent-hover);
+    --button-background-color-active: var(--accent-hover);
+    --button-text-color: var(--text-inverted);
+    --button-border-color: var(--accent);
 }
 
-.button.secondary:hover {
-    --button-background-color: var(--accent-hover);
-}
-
-.button.secondary:active {
-    /* No dedicated accent active token exists yet. */
-    --button-background-color: var(--accent-hover);
-}
-
-.button.secondary.disabled {
-    --button-foreground-color: var(--text-secondary);
+.button.accent.disabled,
+.button.accent:disabled {
+    --button-text-color: var(--accent);
     --button-background-color: var(--accent-soft);
     --button-border-color: var(--accent-border);
 }
 
-/*ERROR*/
+/* GHOST */
+.button.ghost {
+    --button-background-color: transparent;
+    --button-background-color-hover: var(--surface-hover);
+    --button-background-color-active: var(--surface-muted);
+    --button-text-color: var(--text-primary);
+    --button-border-color: transparent;
+}
+
+.button.ghost:hover {
+    --button-background-color: var(--surface-hover);
+}
+
+.button.ghost:active {
+    --button-background-color: var(--surface-muted);
+}
+
+.button.ghost.disabled,
+.button.ghost:disabled {
+    --button-text-color: var(--text-muted);
+    --button-background-color: transparent;
+    --button-border-color: transparent;
+}
+
+/* ERROR */
 .button.error {
     --button-background-color: var(--error);
-    --button-foreground-color: var(--text-inverted);
-    --button-border-color: var(--error-border);
+    --button-background-color-hover: var(--error-text);
+    --button-background-color-active: var(--error-text);
+    --button-text-color: var(--text-inverted);
+    --button-border-color: var(--error);
 }
 
-.button.error:hover {
-    /* No dedicated error hover token exists yet. */
-    --button-background-color: var(--error-text);
-}
-
-.button.error:active {
-    --button-background-color: var(--error-bg);
-}
-
-.button.error.disabled {
-    --button-foreground-color: var(--error-text);
+.button.error.disabled,
+.button.error:disabled {
+    --button-text-color: var(--error-text);
     --button-background-color: var(--error-bg);
     --button-border-color: var(--error-border);
 }

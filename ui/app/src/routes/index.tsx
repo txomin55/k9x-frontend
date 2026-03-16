@@ -65,9 +65,9 @@ export default function IndexRoute() {
           label="Haz login con Google"
           onClick={handleGoogleLogin}
         />
-        <CoreButton type="secondary" label="Logout" onClick={handleLogout} />
+        <CoreButton type="primary" label="Logout" onClick={handleLogout} />
         <CoreButton
-          type="secondary"
+          type="primary"
           label="Cargar perros"
           onClick={handleFetchDogs}
         />
