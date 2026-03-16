@@ -1,7 +1,7 @@
 export const BUTTON_TYPES = {
   PRIMARY: "primary",
   ACCENT: "accent",
-  ERROR: "error",
+  DESTRUCTIVE: "destructive",
   GHOST: "ghost",
 } as const;
 

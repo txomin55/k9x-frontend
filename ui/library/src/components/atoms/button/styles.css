@@ -8,18 +8,15 @@
 
 /* BASE */
 .button {
-    height: 40px;
+    height: var(--unit-5);
     width: auto;
     outline: none;
-    border-radius: 6px;
-    padding: 0 16px;
+    border-radius: var(--unit-1);
+    padding: 0 var(--unit-2);
     background-color: var(--button-background-color);
     border: 1px solid var(--button-border-color);
     color: var(--button-text-color);
-    font-size: 16px;
-    transition: background-color 250ms,
-    border-color 250ms,
-    color 250ms;
+    transition: background-color 200ms, border-color 200ms, color 200ms;
     cursor: pointer;
 }
 
@@ -31,7 +28,7 @@
     --button-background-color: var(--button-background-color-active);
 }
 
-.button.disabled,
+/* DISABLED */
 .button:disabled {
     cursor: not-allowed;
     --button-text-color: var(--text-muted);
@@ -48,14 +45,13 @@
     --button-border-color: var(--primary);
 }
 
-.button.primary.disabled,
 .button.primary:disabled {
-    --button-text-color: var(--accent);
+    --button-text-color: var(--text-secondary);
     --button-background-color: var(--primary-soft);
     --button-border-color: var(--primary-border);
 }
 
-/* ACCENT */
+/* ACCENT (secondary important action) */
 .button.accent {
     --button-background-color: var(--accent);
     --button-background-color-hover: var(--accent-hover);
@@ -64,11 +60,25 @@
     --button-border-color: var(--accent);
 }
 
-.button.accent.disabled,
 .button.accent:disabled {
-    --button-text-color: var(--accent);
+    --button-text-color: var(--text-secondary);
     --button-background-color: var(--accent-soft);
     --button-border-color: var(--accent-border);
+}
+
+/* DESTRUCTIVE */
+.button.destructive {
+    --button-background-color: var(--error);
+    --button-background-color-hover: var(--error-text);
+    --button-background-color-active: var(--error-text);
+    --button-text-color: var(--text-inverted);
+    --button-border-color: var(--error);
+}
+
+.button.destructive:disabled {
+    --button-text-color: var(--error-text);
+    --button-background-color: var(--error-bg);
+    --button-border-color: var(--error-border);
 }
 
 /* GHOST */
@@ -80,33 +90,8 @@
     --button-border-color: transparent;
 }
 
-.button.ghost:hover {
-    --button-background-color: var(--surface-hover);
-}
-
-.button.ghost:active {
-    --button-background-color: var(--surface-muted);
-}
-
-.button.ghost.disabled,
 .button.ghost:disabled {
     --button-text-color: var(--text-muted);
     --button-background-color: transparent;
     --button-border-color: transparent;
-}
-
-/* ERROR */
-.button.error {
-    --button-background-color: var(--error);
-    --button-background-color-hover: var(--error-text);
-    --button-background-color-active: var(--error-text);
-    --button-text-color: var(--text-inverted);
-    --button-border-color: var(--error);
-}
-
-.button.error.disabled,
-.button.error:disabled {
-    --button-text-color: var(--error-text);
-    --button-background-color: var(--error-bg);
-    --button-border-color: var(--error-border);
 }

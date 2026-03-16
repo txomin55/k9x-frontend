@@ -1,4 +1,4 @@
-import { renderSolid } from "../../../../.storybook/renderSolid";
+import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AnimalIcon, {
   type AnimalIconProps,
 } from "@lib/components/molecules/animal-icon/AnimalIcon";
@@ -12,7 +12,8 @@ const meta = {
       control: { type: "select" },
     },
   },
-  render: (args: AnimalIconProps) => renderSolid(() => <AnimalIcon {...args} />),
+  render: (args: AnimalIconProps) =>
+    renderSolid(() => <AnimalIcon {...args} />),
 };
 
 export default meta;

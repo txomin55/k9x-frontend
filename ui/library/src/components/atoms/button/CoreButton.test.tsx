@@ -3,7 +3,7 @@ import CoreButton from "@lib/components/atoms/button/CoreButton";
 
 describe("test library", () => {
   test("prueba library", () => {
-    const { getByText } = render(() => <CoreButton label="test" />);
+    const { getByText } = render(() => <CoreButton>test</CoreButton>);
     expect(getByText("test")).toBeInTheDocument();
   });
 });

@@ -6,9 +6,8 @@ import {
 } from "@lib/components/atoms/button/button.constants";
 
 export type CoreButtonProps = {
+  children: JSX.Element;
   disabled?: boolean;
-  htmlType?: JSX.ButtonHTMLAttributes<HTMLButtonElement>["type"];
-  label?: string;
   onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
   type?: ButtonType;
 };
@@ -27,12 +26,11 @@ export default function CoreButton(props: CoreButtonProps) {
 
   return (
     <button
-      class={`button ${typeClass()} ${disabled() ? "disabled" : ""}`.trim()}
+      class={`button ${typeClass()}`}
       disabled={disabled()}
       onClick={handleClick}
-      type={props.htmlType ?? "button"}
     >
-      {props.label ?? ""}
+      {props.children}
     </button>
   );
 }

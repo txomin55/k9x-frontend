@@ -1,4 +1,4 @@
-import { renderSolid } from "../../../../.storybook/renderSolid";
+import { renderSolid } from "@lib/../.storybook/renderSolid";
 import CoreSvgIcon, {
   type CoreSvgIconProps,
 } from "@lib/components/atoms/svg-icon/CoreSvgIcon";
@@ -10,7 +10,8 @@ const meta = {
     src: { control: "text" },
     alt: { control: "text" },
   },
-  render: (args: CoreSvgIconProps) => renderSolid(() => <CoreSvgIcon {...args} />),
+  render: (args: CoreSvgIconProps) =>
+    renderSolid(() => <CoreSvgIcon {...args} />),
 };
 
 export default meta;
