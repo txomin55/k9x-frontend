@@ -1,7 +1,14 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { A, useLocation } from "@solidjs/router";
 import { locale, locales, setLocale } from "@/stores/i18n";
-import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import "@/layout/styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
@@ -14,9 +21,13 @@ export default function AppLayout(props) {
   let previousDesktop = null;
 
   const toggleMode = () => {
-    const next = !isDark();
-    document.body.classList.toggle("dark", next);
-    setIsDark(next);
+    const nextIsDark = !isDark();
+    document.documentElement.setAttribute(
+      "data-theme",
+      nextIsDark ? "dark" : "",
+    );
+
+    setIsDark(nextIsDark);
   };
 
   const syncViewport = () => {
@@ -29,7 +40,7 @@ export default function AppLayout(props) {
   };
 
   onMount(() => {
-    setIsDark(document.body.classList.contains("dark"));
+    setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
     syncViewport();
     globalThis.addEventListener("resize", syncViewport);
   });

@@ -33,7 +33,7 @@ current SVG while the service worker can warm the rest in the background.
 
 - Run `pnpm run storybook` for the interactive environment and `pnpm run build-storybook` to generate static output.
 - Stories define controls/args and document props/events; use comments and the Storybook API to expose this info.
-- **Dark mode**: `.storybook/preview.ts` loads `.storybook/withDarkTheme.decorator.ts` to apply the theme class to all elements.
+- **Dark mode**: `.storybook/preview.ts` loads `.storybook/withDarkTheme.decorator.ts` to set `data-theme` on the `html` element.
 - **Sidebar badges**: use `renderLabel` in `.storybook/manager.ts` to show badges based on each story's `tags` (for example `figma:v1`).
 - **Figma**: with `@chromatic-com/storybook` you can link designs via `parameters.design` (`type` + `url`). If private features are used, define `STORYBOOK_FIGMA_ACCESS_TOKEN`.
 
