@@ -4,6 +4,7 @@ import { createEffect, createSignal, Show } from "solid-js";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import fetchDogs from "@/services/fetch_dogs/fetchDogs";
 import logo from "@/assets/logo.svg";
+import { setUser } from "@/stores/auth";
 
 const OAUTH_STATE_KEY = "k9x_google_oauth_state";
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
@@ -34,6 +35,7 @@ export default function IndexRoute() {
   };
 
   const handleLogout = () => {
+    setUser(null);
     globalThis.localStorage.removeItem("k9x_access_token");
   };
 

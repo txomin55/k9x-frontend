@@ -8,8 +8,6 @@ const [authStore, setAuth] = createStore({
   error: null,
 });
 
-let inFlight = null;
-
 const setUser = (user) => {
   setAuth({
     user,
@@ -21,7 +19,7 @@ const setUser = (user) => {
 const fetchUserIfAuthenticated = async (pathname, navigate) => {
   const appPath = stripBasePath(pathname);
 
-  if (inFlight || appPath === "/auth/callback") return;
+  if (appPath === "/auth/callback") return;
 
   if (authStore.user && !authStore.loading) return;
 
@@ -35,9 +33,6 @@ const fetchUserIfAuthenticated = async (pathname, navigate) => {
       loading: false,
       error: null,
     });
-    if (appPath !== "/") {
-      navigate("/", { replace: true });
-    }
     return;
   }
 
@@ -47,20 +42,8 @@ const fetchUserIfAuthenticated = async (pathname, navigate) => {
     error: null,
   });
 
-  inFlight = fetchUserData()
-    .then((user) => {
-      setUser(user);
-    })
-    .catch((error) => {
-      setAuth("error", error);
-      if (appPath !== "/") {
-        navigate("/", { replace: true });
-      }
-    })
-    .finally(() => {
-      setAuth("loading", false);
-      inFlight = null;
-    });
+  setUser(await fetchUserData());
+  navigate(appPath);
 };
 
 const auth = () => authStore;

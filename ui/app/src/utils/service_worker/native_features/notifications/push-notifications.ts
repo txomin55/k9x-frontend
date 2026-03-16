@@ -2,6 +2,10 @@ function isPushNotificationSupported() {
   return "serviceWorker" in navigator && "PushManager" in globalThis;
 }
 
+function notificationsPermission() {
+  return Notification.permission;
+}
+
 async function initializePushNotifications() {
   return await Notification.requestPermission();
 }
@@ -11,7 +15,8 @@ async function sendNotification(worker, notification) {
 }
 
 export {
-  initializePushNotifications,
+  notificationsPermission,
   sendNotification,
   isPushNotificationSupported,
+  initializePushNotifications,
 };

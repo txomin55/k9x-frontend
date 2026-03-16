@@ -26,7 +26,9 @@ addons.setConfig({
       const badges: Array<{ color?: string; text: string }> = [];
       if (item.type === "story") {
         item?.tags
-          ?.filter((tag) => !["dev", "test", "autodocs"].includes(tag))
+          ?.filter(
+            (tag) => !["dev", "test", "autodocs", "manifest"].includes(tag),
+          )
           ?.forEach((tag) => {
             const parts = tag.split(":");
             const text = parts.length === 2 ? parts[1] : parts[0];

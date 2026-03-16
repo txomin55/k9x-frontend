@@ -1,7 +1,7 @@
 import "@/components/news_visualizer/news-visualizer.css";
 import { For, Show } from "solid-js";
 import { auth } from "@/stores/auth";
-import { showNotification } from "@/stores/notifications";
+import { showNotification } from "@/utils/notifications/notifications";
 
 export default function NewsVisualizer() {
   const updateNotes = () => auth().user?.getNews?.() ?? ["1", "2"];

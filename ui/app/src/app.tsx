@@ -7,10 +7,11 @@ import NewsVisualizer from "@/components/news_visualizer/NewsVisualizer";
 import { api, initApi } from "@/stores/api";
 import { auth } from "@/stores/auth";
 import { initI18n, ready, t } from "@/stores/i18n";
-import { initNotifications } from "@/stores/notifications";
 import { getBasePath, resolveAppPath } from "@/utils/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_features/offline_load/animal-icons";
 import AppLayout from "@/layout/AppLayout";
+import NotificationGuard from "@/guards/notifications/NotificationsGuard";
+import AuthGuard from "@/guards/auth/AuthGuard";
 
 function AppShell(props) {
   let cancelAnimalIconWarmup = null;
@@ -22,7 +23,6 @@ function AppShell(props) {
       });
     }
 
-    await initNotifications();
     await initI18n();
     await initApi();
 
@@ -37,19 +37,21 @@ function AppShell(props) {
     <MetaProvider>
       <Title>Dog Trainer App</Title>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <AppLayout>
-        <div class="app-shell">
-          <h1>My Solid PWA</h1>
-          <Show when={ready()}>{t("hello", { name: "txomin" })}</Show>
-          <h2>USER -- {auth().user ? auth().user.getOwner() : "--NO"}</h2>
-          <NewsVisualizer />
-          <div>
-            <Show when={api()} fallback={<p>Loading api....</p>}>
-              {props.children}
-            </Show>
-          </div>
-        </div>
-      </AppLayout>
+      <Show when={api()} fallback={<p>Loading api....</p>}>
+        <AuthGuard>
+          <NotificationGuard>
+            <AppLayout>
+              <div class="app-shell">
+                <h1>My Solid PWA</h1>
+                <Show when={ready()}>{t("hello", { name: "txomin" })}</Show>
+                <h2>USER -- {auth().user ? auth().user.getOwner() : "--NO"}</h2>
+                <NewsVisualizer />
+                <div>{props.children}</div>
+              </div>
+            </AppLayout>
+          </NotificationGuard>
+        </AuthGuard>
+      </Show>
     </MetaProvider>
   );
 }

@@ -60,7 +60,7 @@ export default function AuthCallbackRoute() {
 
       setStatus("loaded");
 
-      navigate("/home", { replace: true });
+      navigate("/", { replace: true });
     };
 
     await runCallback();
