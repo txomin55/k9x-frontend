@@ -1,0 +1,169 @@
+import {Meta} from "@storybook/addon-docs/blocks";
+import {TokenTable} from "@lib/../.storybook/components/token_table/TokenTable.tsx";
+
+<Meta title="Design System/Colors/Actions vs States"/>
+
+# Colors
+
+This system is built using two layers:
+
+1. Semantic tokens → used in UI
+2. Primitives (scales) → raw color values
+
+---
+
+## Actions vs States
+
+This system defines three distinct roles:
+
+### Action variants
+
+Define what the user can do.
+
+| Variant | Usage |
+|---|---|
+| primary | Main action on the screen |
+| accent | Secondary but important action |
+| ghost | Low emphasis action |
+| destructive | Dangerous or irreversible action |
+
+---
+
+### State colors
+
+Define how the system responds.
+
+| State | Usage |
+|---|---|
+| success | Operation completed successfully |
+| warning | Attention required |
+| error | Operation failed |
+
+---
+
+### Neutral tokens
+
+Define the visual foundation of the interface.
+
+| Category | Usage |
+|---|---|
+| backgrounds & surfaces | App background, cards, panels, containers |
+| text | Primary, secondary, and muted text |
+| borders | Dividers, outlines, and separators |
+
+Neutral tokens do not communicate action or feedback.
+They provide structure, hierarchy, and readability.
+
+---
+
+### Core rule
+
+If the user clicks it → it's an action variant
+If the system shows feedback → it's a state
+If it builds the interface structure → it's neutral
+
+---
+
+### Guidelines
+
+- Do not use state colors as action variants
+- Do not use accent for feedback
+- Use destructive only for irreversible actions
+- Use neutral tokens for layout, text, and borders
+- Keep hierarchy clear and predictable
+
+---
+
+## Semantic Color Tokens
+
+### Actions
+
+#### Primary
+
+<TokenTable
+    rows={[
+        {token: "--primary", value: "#1F1F25"},
+        {token: "--primary-hover", value: "#2F2F38"},
+        {token: "--primary-active", value: "#141418"},
+        {token: "--primary-soft", value: "#F6F6F7"},
+    ]}
+/>
+
+#### Accent
+
+<TokenTable
+    rows={[
+        {token: "--accent", value: "#4F46E5"},
+        {token: "--accent-hover", value: "#4338CA"},
+        {token: "--accent-soft", value: "#EEF2FF"},
+    ]}
+/>
+
+---
+
+### States
+
+#### Success
+
+<TokenTable
+    rows={[
+        {token: "--success", value: "#16A34A"},
+        {token: "--success-bg", value: "#F0FDF4"},
+    ]}
+/>
+
+#### Warning
+
+<TokenTable
+    rows={[
+        {token: "--warning", value: "#F59E0B"},
+        {token: "--warning-bg", value: "#FFFBEB"},
+    ]}
+/>
+
+#### Error
+
+<TokenTable
+    rows={[
+        {token: "--error", value: "#B91C1C"},
+        {token: "--error-bg", value: "#FEF2F2"},
+    ]}
+/>
+
+---
+
+### Neutral
+
+#### Background & Surfaces
+
+<TokenTable
+    rows={[
+        {token: "--background", value: "#FAFAFA"},
+        {token: "--surface", value: "#FFFFFF"},
+        {token: "--surface-muted", value: "#F4F4F5"},
+        {token: "--surface-hover", value: "#E4E4E7"},
+    ]}
+/>
+
+#### Text
+
+<TokenTable
+    rows={[
+        {token: "--text-primary", value: "#18181B"},
+        {token: "--text-secondary", value: "#52525B"},
+        {token: "--text-muted", value: "#A1A1AA"},
+        {token: "--text-inverted", value: "#FFFFFF"},
+    ]}
+/>
+
+#### Borders
+
+<TokenTable
+    rows={[
+        {token: "--border", value: "#E4E4E7"},
+        {token: "--border-strong", value: "#D4D4D8"},
+        {token: "--border-muted", value: "#F4F4F5"},
+    ]}
+/>
+
+---

@@ -1,6 +1,6 @@
-import {dirname, join} from "node:path";
-import {createRequire} from "node:module";
-import type {StorybookConfig} from "@storybook/html-vite";
+import { dirname, join } from "node:path";
+import { createRequire } from "node:module";
+import type { StorybookConfig } from "@storybook/html-vite";
 import solid from "vite-plugin-solid";
 import remarkGfm from "remark-gfm";
 
@@ -36,7 +36,12 @@ const config: StorybookConfig = {
   async viteFinal(baseConfig) {
     return {
       ...baseConfig,
-      plugins: [...(baseConfig.plugins ?? []), solid()],
+      plugins: [
+        ...(baseConfig.plugins ?? []),
+        solid({
+          exclude: ["**/.storybook/components/**"],
+        }),
+      ],
     };
   },
 };

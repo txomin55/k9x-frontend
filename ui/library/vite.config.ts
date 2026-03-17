@@ -7,7 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [
+    solid({
+      exclude: ["**/.storybook/components/**"],
+    }),
+  ],
   resolve: {
     alias: {
       "@lib": path.resolve(__dirname, "./src"),
