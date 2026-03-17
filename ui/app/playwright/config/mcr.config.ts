@@ -9,7 +9,8 @@ const MCR =
 const appRoot = path.resolve(process.cwd());
 const uiRoot = path.resolve(appRoot, "..");
 
-const stripSearchAndHash = (inputPath: string) => inputPath.replace(/[?#].*$/, "");
+const stripSearchAndHash = (inputPath: string) =>
+  inputPath.replace(/[?#].*$/, "");
 
 const isTypeScriptFile = (inputPath: string) => {
   const normalizedPath = stripSearchAndHash(inputPath).replaceAll("\\", "/");
@@ -72,7 +73,10 @@ const normalizeCoverageSourcePath = (
 
   if (info?.distFile && info.url) {
     const distFilePath = normalizeCoverageSourcePath(info.distFile);
-    const relativeSourcePath = stripSearchAndHash(info.url).replace(/^\.?\//, "");
+    const relativeSourcePath = stripSearchAndHash(info.url).replace(
+      /^\.?\//,
+      "",
+    );
 
     if (path.isAbsolute(distFilePath) && relativeSourcePath) {
       return path.resolve(path.dirname(distFilePath), relativeSourcePath);

@@ -6,7 +6,9 @@ export const registerServiceWorkerSetup = (
   scope: ServiceWorkerGlobalScope,
   options: ServiceWorkerSetupOptions = {},
 ) => {
-  const cacheNames = Array.isArray(options.cacheNames) ? options.cacheNames : [];
+  const cacheNames = Array.isArray(options.cacheNames)
+    ? options.cacheNames
+    : [];
 
   scope.addEventListener("install", (event) => {
     event.waitUntil(scope.skipWaiting());

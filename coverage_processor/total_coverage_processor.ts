@@ -15,13 +15,19 @@ const isTestFile = (filePath: string) => {
 
 const e2eCoverage = JSON.parse(
   fs.readFileSync(
-    new URL("../.reports/test/e2e/coverage/coverage-final.json", import.meta.url),
+    new URL(
+      "../.reports/test/e2e/coverage/coverage-final.json",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );
 const totalUnitCoverage = JSON.parse(
   fs.readFileSync(
-    new URL("../.reports/test/unit/coverage/coverage-final.json", import.meta.url),
+    new URL(
+      "../.reports/test/unit/coverage/coverage-final.json",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );

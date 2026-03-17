@@ -2,7 +2,7 @@ import {
   initializePushNotifications,
   isPushNotificationSupported,
   notificationsPermission,
-  sendNotification
+  sendNotification,
 } from "@/utils/service_worker/native_features/notifications/push-notifications";
 import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
 

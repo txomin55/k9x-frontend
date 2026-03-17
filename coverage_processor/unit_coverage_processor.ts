@@ -14,7 +14,10 @@ const libraryUnitCoverage = JSON.parse(
 );
 const appUnitCoverage = JSON.parse(
   fs.readFileSync(
-    new URL("../ui/app/.reports/test/unit/coverage/coverage-final.json", import.meta.url),
+    new URL(
+      "../ui/app/.reports/test/unit/coverage/coverage-final.json",
+      import.meta.url,
+    ),
     "utf8",
   ),
 );
