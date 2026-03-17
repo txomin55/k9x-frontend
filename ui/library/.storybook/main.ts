@@ -18,6 +18,7 @@ const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.tsx"],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),
+    getAbsolutePath("storybook-addon-tag-badges"),
     {
       name: getAbsolutePath("@storybook/addon-docs"),
       options: {

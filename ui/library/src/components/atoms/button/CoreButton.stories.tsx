@@ -1,13 +1,11 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import CoreButton, {
-  type CoreButtonProps,
-} from "@lib/components/atoms/button/CoreButton";
+import CoreButton, { type CoreButtonProps } from "@lib/components/atoms/button/CoreButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/button.constants";
 import { fn } from "storybook/test";
 
 const meta = {
   title: "Atoms/CoreButton",
-  tags: ["figma:v1"],
+  tags: ["new"],
   argTypes: {
     type: {
       options: Object.values(BUTTON_TYPES),
@@ -42,4 +40,17 @@ export const Basic = {
     disabled: false,
     type: BUTTON_TYPES.PRIMARY,
   },
+  //tags: ["experimental"],
+};
+
+export const Basic2 = {
+  tags: ["outdated"],
+  args: {
+    onClick: fn(() => {
+      alert("button clicked");
+    }),
+    disabled: false,
+    type: BUTTON_TYPES.PRIMARY,
+  },
+  //tags: ["experimental"],
 };

@@ -29,9 +29,10 @@
     "react": "^19.2.0",
     "remark-gfm": "^4.0.1",
     "storybook": "^10.2.16",
+    "storybook-addon-tag-badges": "^3.0.6",
     "vite": "catalog:",
-    "vite-plugin-solid": "catalog:",
     "vite-jsconfig-paths": "catalog:",
+    "vite-plugin-solid": "catalog:",
     "vitest": "catalog:"
   },
   "dependencies": {
