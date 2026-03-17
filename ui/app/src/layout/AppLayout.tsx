@@ -33,6 +33,11 @@ export default function AppLayout(props) {
     setIsDesktop(desktop);
   };
 
+  const systemDefaultIsDark = globalThis.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
+  const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
+
   const OAUTH_STATE_KEY = "k9x_google_oauth_state";
   const buildGoogleAuthUrl = () => {
     const state = crypto.randomUUID();
@@ -53,27 +58,29 @@ export default function AppLayout(props) {
     globalThis.location.assign(buildGoogleAuthUrl());
   };
 
-  const logginButton = () => (
+  const loginButton = () => (
     <CoreButton type="ghost" onClick={handleGoogleLogin}>
       --Login
     </CoreButton>
   );
 
   onMount(() => {
-    setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
+    document.documentElement.setAttribute(
+      "data-theme",
+      systemDefaultIsDark ? "dark" : "",
+    );
+
+    setIsDark(systemDefaultIsDark);
+
     syncViewport();
     globalThis.addEventListener("resize", syncViewport);
-  });
-
-  onCleanup(() => {
-    globalThis.removeEventListener("resize", syncViewport);
+    mediaQuery.addEventListener("change", toggleMode);
   });
 
   createEffect(() => {
     const shouldLockScroll = !isDesktop() && isNavOpen();
     document.body.style.overflow = shouldLockScroll ? "hidden" : "";
   });
-
   createEffect(() => {
     location.pathname;
     if (!isDesktop()) {
@@ -82,6 +89,8 @@ export default function AppLayout(props) {
   });
 
   onCleanup(() => {
+    globalThis.removeEventListener("resize", syncViewport);
+    mediaQuery.removeEventListener("change", toggleMode);
     document.body.style.overflow = "";
   });
 
@@ -100,7 +109,7 @@ export default function AppLayout(props) {
           </span>
         </button>
 
-        <Show when={auth().user} fallback={logginButton()}>
+        <Show when={auth().user} fallback={loginButton()}>
           {auth().user.getOwner()}
         </Show>
       </div>
