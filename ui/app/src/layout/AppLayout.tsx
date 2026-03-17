@@ -1,7 +1,7 @@
 import { useLocation } from "@solidjs/router";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import "@/layout/styles.css";
-import Drawer from "@/components/drawer/Drawer";
+import Navigation from "@/components/navigation/Navigation";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { auth } from "@/stores/auth";
 
@@ -113,7 +113,7 @@ export default function AppLayout(props) {
           />
         </Show>
 
-        <Drawer
+        <Navigation
           isDesktop={isDesktop()}
           isNavOpen={isNavOpen()}
           isDark={isDark()}
