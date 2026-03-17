@@ -1,49 +1,66 @@
-.app-layout__sidebar {
-    box-sizing: border-box;
-    min-height: 0;
-}
-
-.app-layout__sidebar--desktop {
-    position: relative;
+.drawer__sidebar--desktop {
+    position: fixed;
+    top: var(--unit-6);
+    left: 0;
+    bottom: 0;
     width: 0;
-    flex: 0 0 auto;
+    pointer-events: none;
     transition: width 220ms ease;
 }
 
-.app-layout__sidebar--desktop.app-layout__sidebar--open {
+.drawer__sidebar--desktop.drawer__sidebar--open {
     width: 280px;
-}
-
-.app-layout__sidebar-panel {
-    background: #0f1720;
-    color: #f4f7fb;
-    height: 100%;
-    padding: 1.5rem;
-    box-sizing: border-box;
-    overflow: auto;
-}
-
-.app-layout__sidebar--desktop .app-layout__sidebar-panel {
-    width: 280px;
-    min-height: 100%;
-    opacity: 0;
-    transform: translateX(-18px);
-    clip-path: inset(0 100% 0 0 round 1rem);
-    transition: clip-path 220ms ease,
-    transform 220ms ease,
-    opacity 180ms ease;
-    pointer-events: none;
-}
-
-.app-layout__sidebar--desktop.app-layout__sidebar--open .app-layout__sidebar-panel {
-    opacity: 1;
-    transform: translateX(0);
-    clip-path: inset(0 0 0 0 round 1rem);
     pointer-events: auto;
 }
 
+.drawer__sidebar-panel {
+    background: #0f1720;
+    color: #f4f7fb;
+    padding: 1.5rem;
+}
+
+.drawer__sidebar--desktop .drawer__sidebar-panel {
+    width: 280px;
+    height: calc(100vh - 4.75rem);
+    opacity: 0;
+    pointer-events: none;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    transition: transform 220ms ease,
+    opacity 180ms ease;
+}
+
+.drawer__sidebar--desktop.drawer__sidebar--open .drawer__sidebar-panel {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drawer__sidebar-panel--navigation {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.drawer__sidebar-panel--navigation a {
+    color: inherit;
+    text-decoration: none;
+    padding: var(--unit-1) var(--unit-2);
+}
+
+.drawer__controls {
+    flex: 0 0 auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 1rem;
+}
+
 @media (max-width: 1024px) {
-    .app-layout__sidebar {
+    .drawer__sidebar {
         position: absolute;
         top: 4.75rem;
         left: 1rem;
@@ -53,29 +70,25 @@
         pointer-events: none;
     }
 
-    .app-layout__sidebar-panel {
+    .drawer__sidebar-panel {
         height: auto;
         max-height: calc(100vh - 5.75rem);
-        border-radius: 1rem;
         box-shadow: 0 20px 45px rgba(15, 23, 32, 0.22);
     }
 
-    .app-layout__sidebar--mobile .app-layout__sidebar-panel {
+    .drawer__sidebar--mobile .drawer__sidebar-panel {
         opacity: 0;
         transform: translateY(-12px);
-        clip-path: inset(0 0 100% 0 round 1rem);
-        transition: clip-path 220ms ease,
-        transform 220ms ease,
+        transition: transform 220ms ease,
         opacity 180ms ease;
     }
 
-    .app-layout__sidebar--mobile.app-layout__sidebar--open {
+    .drawer__sidebar--mobile.drawer__sidebar--open {
         pointer-events: auto;
     }
 
-    .app-layout__sidebar--mobile.app-layout__sidebar--open .app-layout__sidebar-panel {
+    .drawer__sidebar--mobile.drawer__sidebar--open .drawer__sidebar-panel {
         opacity: 1;
         transform: translateY(0);
-        clip-path: inset(0 0 0 0 round 1rem);
     }
 }

@@ -59,21 +59,19 @@ export default function AppLayout(props) {
 
   return (
     <div class="app-layout">
-      <button
-        class="app-layout__navigation-toggle"
-        onClick={() => setIsNavOpen((open) => !open)}
-        aria-expanded={isNavOpen()}
-        aria-label={isNavOpen() ? "Cerrar navegacion" : "Abrir navegacion"}
-      >
-        <span class="app-layout__navigation-toggle-icon" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-        <span class="app-layout__navigation-toggle-text">
-          {isNavOpen() ? "--Cerrar" : "--Menu"}
-        </span>
-      </button>
+      <div class="app-layout__navigation">
+        <button
+          class="app-layout__navigation-toggle"
+          onClick={() => setIsNavOpen((open) => !open)}
+          aria-expanded={isNavOpen()}
+        >
+          <span class="app-layout__navigation-toggle-icon" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </span>
+        </button>
+      </div>
 
       <div class="app-layout__wrapper">
         <Show when={!isDesktop() && isNavOpen()}>

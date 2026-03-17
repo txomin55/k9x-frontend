@@ -8,34 +8,34 @@ import { For, Show } from "solid-js";
 export default function Drawer(props) {
   return (
     <aside
-      class="app-layout__sidebar"
+      class="drawer__sidebar"
       classList={{
-        "app-layout__sidebar--desktop": props.isDesktop,
-        "app-layout__sidebar--mobile": !props.isDesktop,
-        "app-layout__sidebar--open": props.isNavOpen,
+        "drawer__sidebar--desktop": props.isDesktop,
+        "drawer__sidebar--mobile": !props.isDesktop,
+        "drawer__sidebar--open": props.isNavOpen,
       }}
       id={props.id}
     >
-      <div class="app-layout__sidebar-panel">
-        <nav class="app-navigation">
+      <div class="drawer__sidebar-panel">
+        <nav class="drawer__sidebar-panel--navigation">
           <A href="/">--Competitions</A>
           <Show when={auth().user}>
             <A href="/my-competitions">--My competitions</A>
           </Show>
         </nav>
-        <div class="app-layout__controls">
-          <div class="app-layout-tools">
-            <div class="app-layout-tools__group">
+        <div class="drawer__controls">
+          <div class="drawer-tools">
+            <div class="drawer-tools__group">
               <p>Mode</p>
               <CoreButton type="accent" onClick={props.onToggleMode}>
                 {props.isDark ? "Light" : "Dark"}
               </CoreButton>
             </div>
 
-            <div class="app-layout-tools__group">
+            <div class="drawer-tools__group">
               <p>LOCALES</p>
               <p>locale - {locale()}</p>
-              <div class="app-layout-tools__locales">
+              <div class="drawer-tools__locales">
                 <For each={locales}>
                   {(nextLocale) => (
                     <CoreButton
