@@ -6,6 +6,7 @@
     --text-heading-lg: var(--font-size-2xl);
     --text-heading-md: var(--font-size-xl);
     --text-heading-sm: var(--font-size-lg);
+    --text-heading-xs: var(--font-size-md);
 
     /* body */
     --text-body-lg: var(--font-size-lg);
@@ -13,10 +14,18 @@
     --text-body-sm: var(--font-size-sm);
 
     /* UI elements */
-    --text-label: var(--font-size-sm);
-    --text-caption: var(--font-size-xs);
+    --text-label-lg: var(--font-size-md);
+    --text-label-md: var(--font-size-sm);
+    --text-label-sm: var(--font-size-xs);
 
-    /* special use cases */
-    --text-score: var(--font-size-2xl);
-    --text-mono: var(--font-size-md);
+    /* caption */
+    --text-caption-lg: var(--font-size-sm);
+    --text-caption-md: var(--font-size-xs);
+    --text-caption-sm: var(--font-size-2xs);
+
+    /* line heights */
+    --text-heading-line-height: var(--line-height-tight);
+    --text-body-line-height: var(--line-height-normal);
+    --text-label-line-height: var(--line-height-normal);
+    --text-caption-line-height: var(--line-height-relaxed);
 }

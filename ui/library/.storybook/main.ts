@@ -1,7 +1,8 @@
-import { dirname, join } from "node:path";
-import { createRequire } from "node:module";
-import type { StorybookConfig } from "@storybook/html-vite";
+import {dirname, join} from "node:path";
+import {createRequire} from "node:module";
+import type {StorybookConfig} from "@storybook/html-vite";
 import solid from "vite-plugin-solid";
+import remarkGfm from "remark-gfm";
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -14,10 +15,19 @@ function getAbsolutePath(value) {
 }
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(mjs|ts|tsx)"],
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.tsx"],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),
-    getAbsolutePath("@storybook/addon-docs"),
+    {
+      name: getAbsolutePath("@storybook/addon-docs"),
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+        },
+      },
+    },
   ],
   framework: {
     name: getAbsolutePath("@storybook/html-vite"),
