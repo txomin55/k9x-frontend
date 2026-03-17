@@ -10,7 +10,7 @@ import { initI18n, ready, t } from "@/stores/i18n";
 import { getBasePath, resolveAppPath } from "@/utils/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_features/offline_load/animal-icons";
 import AppLayout from "@/layout/AppLayout";
-import NotificationGuard from "@/guards/notifications/NotificationsInit";
+import NotificationGuard from "@/providers/notifications/NotificationsInit";
 
 function AppShell(props) {
   let cancelAnimalIconWarmup = null;
