@@ -1,8 +1,16 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { A, useLocation } from "@solidjs/router";
 import { locale, locales, setLocale } from "@/stores/i18n";
-import { createEffect, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import "@/layout/styles.css";
+import { auth } from "@/stores/auth";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -99,8 +107,10 @@ export default function AppLayout(props) {
         >
           <div class="app-layout__sidebar-panel">
             <nav class="app-navigation">
-              <A href="/">Landing</A>
-              <A href="/home">Home</A>
+              <A href="/">--Competitions</A>
+              <Show when={auth().user}>
+                <A href="/my-competitions">--My competitions</A>
+              </Show>
             </nav>
             <div class="app-layout__controls">
               <div class="app-layout-tools">

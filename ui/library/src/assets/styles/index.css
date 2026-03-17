@@ -1,5 +1,6 @@
 @import "colors/tokens.css";
-@import "sizes/tokens.css";
+@import "sizes/primitives.css";
+@import "text/tokens.css";
 
 html {
     font-family: "Times New Roman", Times, serif;

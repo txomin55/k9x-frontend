@@ -1,7 +1,7 @@
 import { render } from "@solidjs/testing-library";
-import HomeRoute from "@/routes/home/index";
+import HomeRoute from "@/routes/my-competitions/index";
 
-describe("home route", () => {
+describe("my competition route", () => {
   test("renders login text", () => {
     const { queryByText } = render(() => <HomeRoute />);
 

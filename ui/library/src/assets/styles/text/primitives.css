@@ -1,0 +1,23 @@
+:root {
+    /* FONT SIZE */
+    --font-size-2xs: 12px; /* very small labels */
+    --font-size-xs: 13px;
+    --font-size-sm: 14px;
+    --font-size-md: var(--unit-1); /* base size (16px) */
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: var(--unit-3); /* 24px */
+    --font-size-3xl: 30px;
+    --font-size-4xl: 36px;
+
+    /* LINE HEIGHT */
+    --line-height-tight: 1.2; /* headings */
+    --line-height-normal: 1.4; /* body text */
+    --line-height-relaxed: 1.6; /* long text / captions */
+
+    /* FONT WEIGHT */
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+}

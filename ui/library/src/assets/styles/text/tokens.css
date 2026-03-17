@@ -1,0 +1,22 @@
+@import "primitives.css";
+
+:root {
+    /* headings */
+    --text-heading-xl: var(--font-size-3xl);
+    --text-heading-lg: var(--font-size-2xl);
+    --text-heading-md: var(--font-size-xl);
+    --text-heading-sm: var(--font-size-lg);
+
+    /* body */
+    --text-body-lg: var(--font-size-lg);
+    --text-body-md: var(--font-size-md);
+    --text-body-sm: var(--font-size-sm);
+
+    /* UI elements */
+    --text-label: var(--font-size-sm);
+    --text-caption: var(--font-size-xs);
+
+    /* special use cases */
+    --text-score: var(--font-size-2xl);
+    --text-mono: var(--font-size-md);
+}
