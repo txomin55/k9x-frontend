@@ -4,7 +4,7 @@
     overflow: hidden;
 }
 
-.app-layout__toggle {
+.app-layout__navigation-toggle {
     position: fixed;
     top: 1rem;
     left: 1rem;
@@ -26,17 +26,17 @@
     background 180ms ease;
 }
 
-.app-layout__toggle:hover {
+.app-layout__navigation-toggle:hover {
     transform: translateY(-1px);
     box-shadow: 0 18px 36px rgba(15, 23, 32, 0.28);
 }
 
-.app-layout__toggle:focus-visible {
+.app-layout__navigation-toggle:focus-visible {
     outline: 3px solid rgba(78, 168, 222, 0.45);
     outline-offset: 2px;
 }
 
-.app-layout__toggle-icon {
+.app-layout__navigation-toggle-icon {
     position: relative;
     width: 1.15rem;
     height: 1rem;
@@ -45,7 +45,7 @@
     justify-content: space-between;
 }
 
-.app-layout__toggle-icon span {
+.app-layout__navigation-toggle-icon span {
     display: block;
     height: 2px;
     border-radius: 999px;
@@ -55,25 +55,25 @@
     opacity 180ms ease;
 }
 
-.app-layout__toggle[aria-expanded="true"] .app-layout__toggle-icon span:nth-child(1) {
+.app-layout__navigation-toggle[aria-expanded="true"] .app-layout__navigation-toggle-icon span:nth-child(1) {
     transform: translateY(0.43rem) rotate(45deg);
 }
 
-.app-layout__toggle[aria-expanded="true"] .app-layout__toggle-icon span:nth-child(2) {
+.app-layout__navigation-toggle[aria-expanded="true"] .app-layout__navigation-toggle-icon span:nth-child(2) {
     opacity: 0;
 }
 
-.app-layout__toggle[aria-expanded="true"] .app-layout__toggle-icon span:nth-child(3) {
+.app-layout__navigation-toggle[aria-expanded="true"] .app-layout__navigation-toggle-icon span:nth-child(3) {
     transform: translateY(-0.43rem) rotate(-45deg);
 }
 
-.app-layout__toggle-text {
+.app-layout__navigation-toggle-text {
     font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.01em;
 }
 
-.app-layout__shell {
+.app-layout__wrapper {
     display: flex;
     height: 100%;
     min-height: 0;
@@ -83,50 +83,6 @@
 
 .app-layout__backdrop {
     display: none;
-}
-
-.app-layout__sidebar {
-    box-sizing: border-box;
-    min-height: 0;
-}
-
-.app-layout__sidebar--desktop {
-    position: relative;
-    width: 0;
-    flex: 0 0 auto;
-    transition: width 220ms ease;
-}
-
-.app-layout__sidebar--desktop.app-layout__sidebar--open {
-    width: 280px;
-}
-
-.app-layout__sidebar-panel {
-    background: #0f1720;
-    color: #f4f7fb;
-    height: 100%;
-    padding: 1.5rem;
-    box-sizing: border-box;
-    overflow: auto;
-}
-
-.app-layout__sidebar--desktop .app-layout__sidebar-panel {
-    width: 280px;
-    min-height: 100%;
-    opacity: 0;
-    transform: translateX(-18px);
-    clip-path: inset(0 100% 0 0 round 1rem);
-    transition: clip-path 220ms ease,
-    transform 220ms ease,
-    opacity 180ms ease;
-    pointer-events: none;
-}
-
-.app-layout__sidebar--desktop.app-layout__sidebar--open .app-layout__sidebar-panel {
-    opacity: 1;
-    transform: translateX(0);
-    clip-path: inset(0 0 0 0 round 1rem);
-    pointer-events: auto;
 }
 
 .app-layout__content {
@@ -186,7 +142,7 @@
 }
 
 @media (max-width: 1024px) {
-    .app-layout__shell {
+    .app-layout__wrapper {
         position: relative;
         height: 100%;
         flex-direction: column;
@@ -203,50 +159,14 @@
         cursor: pointer;
     }
 
-    .app-layout__toggle {
+    .app-layout__navigation-toggle {
         top: 0.875rem;
         left: 0.875rem;
         padding: 0.7rem 0.9rem;
     }
 
-    .app-layout__toggle-text {
+    .app-layout__navigation-toggle-text {
         font-size: 0.9rem;
-    }
-
-    .app-layout__sidebar {
-        position: absolute;
-        top: 4.75rem;
-        left: 1rem;
-        right: 1rem;
-        z-index: 10;
-        margin: 0;
-        pointer-events: none;
-    }
-
-    .app-layout__sidebar-panel {
-        height: auto;
-        max-height: calc(100vh - 5.75rem);
-        border-radius: 1rem;
-        box-shadow: 0 20px 45px rgba(15, 23, 32, 0.22);
-    }
-
-    .app-layout__sidebar--mobile .app-layout__sidebar-panel {
-        opacity: 0;
-        transform: translateY(-12px);
-        clip-path: inset(0 0 100% 0 round 1rem);
-        transition: clip-path 220ms ease,
-        transform 220ms ease,
-        opacity 180ms ease;
-    }
-
-    .app-layout__sidebar--mobile.app-layout__sidebar--open {
-        pointer-events: auto;
-    }
-
-    .app-layout__sidebar--mobile.app-layout__sidebar--open .app-layout__sidebar-panel {
-        opacity: 1;
-        transform: translateY(0);
-        clip-path: inset(0 0 0 0 round 1rem);
     }
 
     .app-layout__content {

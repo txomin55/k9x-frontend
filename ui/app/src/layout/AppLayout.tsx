@@ -1,16 +1,7 @@
-import CoreButton from "@lib/components/atoms/button/CoreButton";
-import { A, useLocation } from "@solidjs/router";
-import { locale, locales, setLocale } from "@/stores/i18n";
-import {
-  createEffect,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { useLocation } from "@solidjs/router";
+import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import "@/layout/styles.css";
-import { auth } from "@/stores/auth";
+import Drawer from "@/components/drawer/Drawer";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -69,78 +60,35 @@ export default function AppLayout(props) {
   return (
     <div class="app-layout">
       <button
-        class="app-layout__toggle"
-        type="button"
+        class="app-layout__navigation-toggle"
         onClick={() => setIsNavOpen((open) => !open)}
         aria-expanded={isNavOpen()}
-        aria-controls="app-layout-navigation"
         aria-label={isNavOpen() ? "Cerrar navegacion" : "Abrir navegacion"}
       >
-        <span class="app-layout__toggle-icon" aria-hidden="true">
+        <span class="app-layout__navigation-toggle-icon" aria-hidden="true">
           <span />
           <span />
           <span />
         </span>
-        <span class="app-layout__toggle-text">
-          {isNavOpen() ? "Cerrar" : "Menu"}
+        <span class="app-layout__navigation-toggle-text">
+          {isNavOpen() ? "--Cerrar" : "--Menu"}
         </span>
       </button>
 
-      <div class="app-layout__shell">
+      <div class="app-layout__wrapper">
         <Show when={!isDesktop() && isNavOpen()}>
           <button
             class="app-layout__backdrop"
-            type="button"
-            aria-label="Cerrar navegacion"
             onClick={() => setIsNavOpen(false)}
           />
         </Show>
 
-        <aside
-          class="app-layout__sidebar"
-          classList={{
-            "app-layout__sidebar--desktop": isDesktop(),
-            "app-layout__sidebar--mobile": !isDesktop(),
-            "app-layout__sidebar--open": isNavOpen(),
-          }}
-          id="app-layout-navigation"
-        >
-          <div class="app-layout__sidebar-panel">
-            <nav class="app-navigation">
-              <A href="/">--Competitions</A>
-              <Show when={auth().user}>
-                <A href="/my-competitions">--My competitions</A>
-              </Show>
-            </nav>
-            <div class="app-layout__controls">
-              <div class="app-layout-tools">
-                <div class="app-layout-tools__group">
-                  <p>Mode</p>
-                  <CoreButton type="accent" onClick={toggleMode}>
-                    {isDark() ? "Light" : "Dark"}
-                  </CoreButton>
-                </div>
-
-                <div class="app-layout-tools__group">
-                  <p>LOCALES</p>
-                  <p>locale - {locale()}</p>
-                  <div class="app-layout-tools__locales">
-                    <For each={locales}>
-                      {(nextLocale) => (
-                        <CoreButton
-                          type="primary"
-                          onClick={() => setLocale(nextLocale)}
-                        >
-                          {nextLocale}
-                        </CoreButton>
-                      )}
-                    </For>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </aside>
+        <Drawer
+          isDesktop={isDesktop()}
+          isNavOpen={isNavOpen()}
+          isDark={isDark()}
+          onToggleMode={toggleMode}
+        />
 
         <main class="app-layout__content">{props.children}</main>
       </div>

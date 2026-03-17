@@ -1,0 +1,81 @@
+.app-layout__sidebar {
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.app-layout__sidebar--desktop {
+    position: relative;
+    width: 0;
+    flex: 0 0 auto;
+    transition: width 220ms ease;
+}
+
+.app-layout__sidebar--desktop.app-layout__sidebar--open {
+    width: 280px;
+}
+
+.app-layout__sidebar-panel {
+    background: #0f1720;
+    color: #f4f7fb;
+    height: 100%;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.app-layout__sidebar--desktop .app-layout__sidebar-panel {
+    width: 280px;
+    min-height: 100%;
+    opacity: 0;
+    transform: translateX(-18px);
+    clip-path: inset(0 100% 0 0 round 1rem);
+    transition: clip-path 220ms ease,
+    transform 220ms ease,
+    opacity 180ms ease;
+    pointer-events: none;
+}
+
+.app-layout__sidebar--desktop.app-layout__sidebar--open .app-layout__sidebar-panel {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0 round 1rem);
+    pointer-events: auto;
+}
+
+@media (max-width: 1024px) {
+    .app-layout__sidebar {
+        position: absolute;
+        top: 4.75rem;
+        left: 1rem;
+        right: 1rem;
+        z-index: 10;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .app-layout__sidebar-panel {
+        height: auto;
+        max-height: calc(100vh - 5.75rem);
+        border-radius: 1rem;
+        box-shadow: 0 20px 45px rgba(15, 23, 32, 0.22);
+    }
+
+    .app-layout__sidebar--mobile .app-layout__sidebar-panel {
+        opacity: 0;
+        transform: translateY(-12px);
+        clip-path: inset(0 0 100% 0 round 1rem);
+        transition: clip-path 220ms ease,
+        transform 220ms ease,
+        opacity 180ms ease;
+    }
+
+    .app-layout__sidebar--mobile.app-layout__sidebar--open {
+        pointer-events: auto;
+    }
+
+    .app-layout__sidebar--mobile.app-layout__sidebar--open .app-layout__sidebar-panel {
+        opacity: 1;
+        transform: translateY(0);
+        clip-path: inset(0 0 0 0 round 1rem);
+    }
+}
