@@ -1,4 +1,4 @@
-import "@/components/news_visualizer/news-visualizer.css";
+import "@/components/news_visualizer/index.css";
 import { For, Show } from "solid-js";
 import { auth } from "@/stores/auth";
 import { showNotification } from "@/utils/notifications/notifications";
@@ -8,16 +8,19 @@ export default function NewsVisualizer() {
   const showUpdateNotes = () => updateNotes().length > 0;
 
   return (
-    <div class="Container">
-      <div class="Toast2">
-        <button class="ToastButton" onClick={showNotification}>
+    <div class="news-visualizer">
+      <div class="news-visualizer__toast-trigger">
+        <button
+          class="news-visualizer__toast-button"
+          onClick={showNotification}
+        >
           txomins
         </button>
       </div>
 
       <Show when={showUpdateNotes()}>
-        <div class="Toast">
-          <div class="ToastMessage">
+        <div class="news-visualizer__toast">
+          <div class="news-visualizer__toast--message">
             <For each={updateNotes()}>{(note) => <div>{note}</div>}</For>
           </div>
         </div>

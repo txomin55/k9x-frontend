@@ -3,6 +3,7 @@ import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import "@/layout/styles.css";
 import Drawer from "@/components/drawer/Drawer";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
+import { auth } from "@/stores/auth";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -52,6 +53,12 @@ export default function AppLayout(props) {
     globalThis.location.assign(buildGoogleAuthUrl());
   };
 
+  const logginButton = () => (
+    <CoreButton type="ghost" onClick={handleGoogleLogin}>
+      --Login
+    </CoreButton>
+  );
+
   onMount(() => {
     setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
     syncViewport();
@@ -93,9 +100,9 @@ export default function AppLayout(props) {
           </span>
         </button>
 
-        <CoreButton type="ghost" onClick={handleGoogleLogin}>
-          --Login
-        </CoreButton>
+        <Show when={auth().user} fallback={logginButton()}>
+          {auth().user.getOwner()}
+        </Show>
       </div>
 
       <div class="app-layout__wrapper">

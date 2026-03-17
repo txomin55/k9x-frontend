@@ -1,11 +1,16 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
-import { A } from "@solidjs/router";
-import { locale, locales, setLocale } from "@/stores/i18n";
-import { auth } from "@/stores/auth";
+import {A} from "@solidjs/router";
+import {locale, locales, setLocale} from "@/stores/i18n";
+import {auth, setUser} from "@/stores/auth";
 import "@/components/drawer/styles.css";
-import { For, Show } from "solid-js";
+import {For, Show} from "solid-js";
 
 export default function Drawer(props) {
+  const handleLogout = () => {
+    setUser(null);
+    globalThis.localStorage.removeItem("k9x_access_token");
+  };
+
   return (
     <aside
       class="drawer__sidebar"
@@ -47,6 +52,10 @@ export default function Drawer(props) {
                   )}
                 </For>
               </div>
+
+              <CoreButton type="primary" onClick={handleLogout}>
+                Logout
+              </CoreButton>
             </div>
           </div>
         </div>

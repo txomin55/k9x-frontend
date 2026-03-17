@@ -3,7 +3,6 @@ import { createEffect, createSignal, Show } from "solid-js";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import fetchDogs from "@/services/fetch_dogs/fetchDogs";
 import logo from "@/assets/logo.svg";
-import { setUser } from "@/stores/auth";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -12,11 +11,6 @@ export default function IndexRoute() {
   const location = useLocation();
   const [dogsResult, setDogsResult] = createSignal(null);
   const [lastSearch, setLastSearch] = createSignal("");
-
-  const handleLogout = () => {
-    setUser(null);
-    globalThis.localStorage.removeItem("k9x_access_token");
-  };
 
   const handleFetchDogs = async () => {
     setDogsResult(await fetchDogs());
@@ -40,9 +34,6 @@ export default function IndexRoute() {
   return (
     <>
       <div class="Landing">
-        <CoreButton type="primary" onClick={handleLogout}>
-          Logout
-        </CoreButton>
         <CoreButton type="primary" onClick={handleFetchDogs}>
           Cargar perros
         </CoreButton>
