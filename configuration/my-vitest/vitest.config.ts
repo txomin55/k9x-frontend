@@ -1,6 +1,9 @@
 import path from "node:path";
+import { createRequire } from "node:module";
 import { defineConfig } from "vitest/config";
 
+const require = createRequire(import.meta.url);
+const vitestSonarReporterPath = require.resolve("vitest-sonar-reporter");
 const sonarPathPrefix = path
   .relative(path.resolve(process.cwd(), "../.."), process.cwd())
   .replaceAll("\\", "/");
@@ -27,7 +30,7 @@ export default defineConfig({
       "default",
       "junit",
       [
-        "vitest-sonar-reporter",
+        vitestSonarReporterPath,
         {
           outputFile: ".reports/sonar/unit/test-report.xml",
           silent: true,

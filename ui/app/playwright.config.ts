@@ -1,7 +1,7 @@
 import type { ReporterDescription } from "@playwright/test";
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.PWA_PRO_URL ?? "http://127.0.0.1:3000";
+const baseURL = process.env.PWA_PRO_URL ?? "http://localhost:5173";
 const ciReporters: ReporterDescription[] = process.env.CI
   ? [["./playwright/utils/errorExitReporter.ts"]]
   : [];
