@@ -2,6 +2,7 @@ import { useLocation } from "@solidjs/router";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import "@/layout/styles.css";
 import Drawer from "@/components/drawer/Drawer";
+import CoreButton from "@lib/components/atoms/button/CoreButton";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -29,6 +30,26 @@ export default function AppLayout(props) {
     }
     previousDesktop = desktop;
     setIsDesktop(desktop);
+  };
+
+  const OAUTH_STATE_KEY = "k9x_google_oauth_state";
+  const buildGoogleAuthUrl = () => {
+    const state = crypto.randomUUID();
+    globalThis.sessionStorage.setItem(OAUTH_STATE_KEY, state);
+
+    const params = new URLSearchParams({
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
+      response_type: "code",
+      scope: "openid email profile",
+      state,
+    });
+
+    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+  };
+
+  const handleGoogleLogin = () => {
+    globalThis.location.assign(buildGoogleAuthUrl());
   };
 
   onMount(() => {
@@ -71,6 +92,10 @@ export default function AppLayout(props) {
             <span />
           </span>
         </button>
+
+        <CoreButton type="ghost" onClick={handleGoogleLogin}>
+          --Login
+        </CoreButton>
       </div>
 
       <div class="app-layout__wrapper">

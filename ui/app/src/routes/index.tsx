@@ -5,7 +5,6 @@ import fetchDogs from "@/services/fetch_dogs/fetchDogs";
 import logo from "@/assets/logo.svg";
 import { setUser } from "@/stores/auth";
 
-const OAUTH_STATE_KEY = "k9x_google_oauth_state";
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
 export default function IndexRoute() {
@@ -13,25 +12,6 @@ export default function IndexRoute() {
   const location = useLocation();
   const [dogsResult, setDogsResult] = createSignal(null);
   const [lastSearch, setLastSearch] = createSignal("");
-
-  const buildGoogleAuthUrl = () => {
-    const state = crypto.randomUUID();
-    globalThis.sessionStorage.setItem(OAUTH_STATE_KEY, state);
-
-    const params = new URLSearchParams({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
-      response_type: "code",
-      scope: "openid email profile",
-      state,
-    });
-
-    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-  };
-
-  const handleGoogleLogin = () => {
-    globalThis.location.assign(buildGoogleAuthUrl());
-  };
 
   const handleLogout = () => {
     setUser(null);
@@ -60,9 +40,6 @@ export default function IndexRoute() {
   return (
     <>
       <div class="Landing">
-        <CoreButton type="primary" onClick={handleGoogleLogin}>
-          Haz login con Google
-        </CoreButton>
         <CoreButton type="primary" onClick={handleLogout}>
           Logout
         </CoreButton>

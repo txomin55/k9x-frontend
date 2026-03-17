@@ -14,6 +14,7 @@
     border-bottom: 1px solid var(--border-strong);
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding-inline-start: var(--unit-2);
 }
 
@@ -77,6 +78,10 @@
 }
 
 @media (max-width: 1024px) {
+    .app-layout__navigation {
+        padding: var(--unit-2);
+    }
+
     .app-layout__backdrop {
         display: block;
         position: fixed;
