@@ -11,7 +11,8 @@
     height: var(--unit-5);
     width: auto;
     outline: none;
-    border-radius: var(--unit-1);
+    border-radius: var(--unit-05);
+    margin: var(--unit-05);
     padding: 0 var(--unit-2);
     background-color: var(--button-background-color);
     border: 1px solid var(--button-border-color);

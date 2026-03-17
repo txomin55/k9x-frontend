@@ -51,45 +51,52 @@
 }
 
 [data-theme="dark"] {
-    --background: #09090B;
-    --surface: #18181B;
-    --surface-muted: #27272A;
-    --surface-hover: #3F3F46;
 
-    --text-primary: #FAFAFA;
-    --text-secondary: #A1A1AA;
-    --text-muted: #71717A;
-    --text-inverted: #09090B;
+    /* semantic: surfaces */
+    --background: var(--neutral-950);
+    --surface: var(--neutral-900);
+    --surface-muted: var(--neutral-800);
+    --surface-hover: var(--neutral-700);
 
-    --border: #27272A;
-    --border-strong: #3F3F46;
-    --border-muted: #18181B;
+    /* semantic: text */
+    --text-primary: var(--neutral-50);
+    --text-secondary: var(--neutral-300);
+    --text-muted: var(--neutral-500);
+    --text-inverted: var(--neutral-950);
 
-    --primary: #FAFAFA;
-    --primary-hover: #E4E4E7;
-    --primary-active: #F4F4F5;
-    --primary-soft: #27272A;
-    --primary-border: #3F3F46;
+    /* semantic: borders */
+    --border: var(--neutral-800);
+    --border-strong: var(--neutral-700);
+    --border-muted: var(--neutral-900);
 
-    --accent: #22D3EE;
-    --accent-hover: #67E8F9;
-    --accent-soft: #164E63;
-    --accent-border: #155E75;
+    /* semantic: brand */
+    --primary: var(--primary-300);
+    --primary-hover: var(--primary-200);
+    --primary-active: var(--primary-400);
+    --primary-soft: var(--primary-900);
+    --primary-border: var(--primary-700);
 
-    --success: #4ADE80;
-    --success-bg: #14532D;
-    --success-border: #166534;
-    --success-text: #86EFAC;
+    --accent: var(--accent-400);
+    --accent-hover: var(--accent-300);
+    --accent-soft: var(--accent-900);
+    --accent-border: var(--accent-700);
 
-    --warning: #FBBF24;
-    --warning-bg: #78350F;
-    --warning-border: #92400E;
-    --warning-text: #FCD34D;
+    /* semantic: states */
+    --success: var(--success-400);
+    --success-bg: var(--success-900);
+    --success-border: var(--success-700);
+    --success-text: var(--success-300);
 
-    --error: #F87171;
-    --error-bg: #7F1D1D;
-    --error-border: #991B1B;
-    --error-text: #FCA5A5;
+    --warning: var(--warning-400);
+    --warning-bg: var(--warning-900);
+    --warning-border: var(--warning-700);
+    --warning-text: var(--warning-300);
 
-    --focus-ring: #06B6D4;
+    --error: var(--error-400);
+    --error-bg: var(--error-900);
+    --error-border: var(--error-700);
+    --error-text: var(--error-300);
+
+    /* semantic: focus */
+    --focus-ring: var(--accent-400);
 }

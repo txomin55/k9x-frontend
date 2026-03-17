@@ -1,5 +1,8 @@
 :root {
-    /* primitives: neutral */
+    /* ----------------------------- */
+    /* Neutral */
+    /* ----------------------------- */
+
     --neutral-50: #FAFAFA;
     --neutral-100: #F4F4F5;
     --neutral-200: #E4E4E7;
@@ -12,31 +15,40 @@
     --neutral-900: #18181B;
     --neutral-950: #09090B;
 
-    /* primitives: primary */
-    --primary-50: #F6F6F7;
-    --primary-100: #E7E7EA;
-    --primary-200: #D1D1D6;
-    --primary-300: #B0B0B8;
-    --primary-400: #888892;
-    --primary-500: #5F5F6B;
-    --primary-600: #44444F;
-    --primary-700: #2F2F38;
-    --primary-800: #1F1F25;
-    --primary-900: #141418;
+    /* ----------------------------- */
+    /* Primary (Slate Blue) */
+    /* ----------------------------- */
 
-    /* primitives: accent */
-    --accent-50: #EEF2FF;
-    --accent-100: #E0E7FF;
-    --accent-200: #C7D2FE;
-    --accent-300: #A5B4FC;
-    --accent-400: #818CF8;
-    --accent-500: #6366F1;
-    --accent-600: #4F46E5;
-    --accent-700: #4338CA;
-    --accent-800: #3730A3;
-    --accent-900: #312E81;
+    --primary-50: #F1F3F8;
+    --primary-100: #E0E5F0;
+    --primary-200: #D8DDEA;
+    --primary-300: #B8C1D6;
+    --primary-400: #8F9BB6;
+    --primary-500: #4C5A73;
+    --primary-600: #404B61;
+    --primary-700: #333D59;
+    --primary-800: #262F45;
+    --primary-900: #1A2133;
 
-    /* primitives: success */
+    /* ----------------------------- */
+    /* Accent (Pastel Pink) */
+    /* ----------------------------- */
+
+    --accent-50: #FFF7F9;
+    --accent-100: #FFEFF3;
+    --accent-200: #FFDCE4;
+    --accent-300: #FFC2CF;
+    --accent-400: #FFA3B7;
+    --accent-500: #F48FA7;
+    --accent-600: #E17C95;
+    --accent-700: #C9687E;
+    --accent-800: #A85366;
+    --accent-900: #7F3A4A;
+
+    /* ----------------------------- */
+    /* Success */
+    /* ----------------------------- */
+
     --success-50: #F0FDF4;
     --success-100: #DCFCE7;
     --success-200: #BBF7D0;
@@ -48,7 +60,9 @@
     --success-800: #166534;
     --success-900: #14532D;
 
-    /* primitives: warning */
+    /* ----------------------------- */
+    /* Warning */
+    /* ----------------------------- */
     --warning-50: #FFFBEB;
     --warning-100: #FEF3C7;
     --warning-200: #FDE68A;
@@ -60,7 +74,10 @@
     --warning-800: #92400E;
     --warning-900: #78350F;
 
-    /* primitives: error */
+    /* ----------------------------- */
+    /* Error */
+    /* ----------------------------- */
+
     --error-50: #FEF2F2;
     --error-100: #FEE2E2;
     --error-200: #FECACA;

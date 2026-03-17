@@ -1,6 +1,6 @@
 .drawer__sidebar--desktop {
     position: fixed;
-    top: var(--unit-6);
+    top: calc(var(--unit-6) + 1px);
     left: 0;
     bottom: 0;
     width: 0;
@@ -9,19 +9,19 @@
 }
 
 .drawer__sidebar--desktop.drawer__sidebar--open {
-    width: 280px;
+    width: 300px;
     pointer-events: auto;
+    border-right: 1px solid var(--border);
 }
 
 .drawer__sidebar-panel {
-    background: #0f1720;
-    color: #f4f7fb;
-    padding: 1.5rem;
+    padding: var(--unit-3);
+    background: var(--surface-muted);
+    border-right: 1px solid var(--border);
 }
 
 .drawer__sidebar--desktop .drawer__sidebar-panel {
-    width: 280px;
-    height: calc(100vh - 4.75rem);
+    height: stretch;
     opacity: 0;
     pointer-events: none;
 
@@ -56,15 +56,15 @@
 .drawer__controls {
     flex: 0 0 auto;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
-    padding-top: 1rem;
+    padding-top: var(--unit-2);
 }
 
 @media (max-width: 1024px) {
     .drawer__sidebar {
         position: absolute;
-        top: 4.75rem;
-        left: 1rem;
-        right: 1rem;
+        top: var(--unit-6);
+        left: var(--unit-2);
+        right: var(--unit-2);
         z-index: 10;
         margin: 0;
         pointer-events: none;
@@ -72,7 +72,6 @@
 
     .drawer__sidebar-panel {
         height: auto;
-        max-height: calc(100vh - 5.75rem);
         box-shadow: 0 20px 45px rgba(15, 23, 32, 0.22);
     }
 
