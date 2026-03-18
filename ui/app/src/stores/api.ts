@@ -2,7 +2,9 @@ import { createSignal } from "solid-js";
 import axios from "@/utils/axios";
 import { locale } from "@/stores/i18n";
 
-const [api, setApi] = createSignal(null);
+type ApiClient = Record<string, (...args: any[]) => Promise<any>>;
+
+const [api, setApi] = createSignal<ApiClient | null>(null);
 let initialized = false;
 
 const initApi = async () => {
@@ -18,7 +20,7 @@ const initApi = async () => {
     .reduce((acc, curr) => {
       acc[curr] = client[curr];
       return acc;
-    }, {});
+    }, {} as ApiClient);
 
   setApi(() => enhancedApi);
 };

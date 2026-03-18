@@ -1,4 +1,5 @@
 import OpenAPIClientAxios from "openapi-client-axios";
+import { AppRoutePath } from "@/components/router/paths";
 import { resolveAppPath } from "@/utils/app-paths";
 import doLogin from "@/services/do_login/doLogin";
 
@@ -86,7 +87,7 @@ export default {
 
 const getGoogleRedirectUri = () =>
   import.meta.env.VITE_GOOGLE_REDIRECT_URI ||
-  `${globalThis.location.origin}${resolveAppPath("/")}`;
+  `${globalThis.location.origin}${resolveAppPath(AppRoutePath.HOME)}`;
 
 const buildGoogleAuthUrl = ({ state, prompt }) => {
   const params = new URLSearchParams({

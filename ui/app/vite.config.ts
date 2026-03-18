@@ -6,6 +6,7 @@ import path from "node:path";
 import commonjs from "vite-plugin-commonjs";
 import { fileURLToPath } from "node:url";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { AppRoutePath } from "./src/components/router/paths";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +23,12 @@ export default defineConfig(({ mode }) => {
       nitro({
         preset: "github-pages",
         prerender: {
-          routes: ["/", "/home", "/auth/callback", "/404.html"],
+          routes: [
+            AppRoutePath.HOME,
+            AppRoutePath.MY_COMPETITIONS,
+            AppRoutePath.AUTH_CALLBACK,
+            AppRoutePath.NOT_FOUND,
+          ],
           crawlLinks: false,
         },
       }),

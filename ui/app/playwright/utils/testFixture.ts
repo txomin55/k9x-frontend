@@ -6,25 +6,15 @@ const test = testBase.extend<{
 }>({
   autoTestFixture: [
     async ({ context, page: myPage }, use) => {
-      await Promise.all([
-        myPage.coverage.startJSCoverage({
-          resetOnNavigation: true,
-        }),
-        myPage.coverage.startCSSCoverage({
-          resetOnNavigation: true,
-        }),
-      ]);
+      await myPage.coverage.startJSCoverage({
+        resetOnNavigation: true,
+      });
 
       await use("autoTestFixture");
 
       const coverageList = await Promise.all(
         context.pages().map(async (page) => {
-          const [jsCoverage, cssCoverage] = await Promise.all([
-            page.coverage.stopJSCoverage(),
-            page.coverage.stopCSSCoverage(),
-          ]);
-
-          return [...jsCoverage, ...cssCoverage];
+          return page.coverage.stopJSCoverage();
         }),
       );
 

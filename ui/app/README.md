@@ -1,8 +1,8 @@
 # Dog-trainer-app
 
 SolidJS PWA powered by Vite and the shared components from the `library` package. Routing is handled by
-`@solidjs/router`, lightweight state is managed with Solid signals/stores, and internationalization uses `i18next` +
-`i18next-http-backend`.
+`@tanstack/solid-router`, lightweight state is managed with Solid signals/stores, and internationalization uses
+`i18next` + `i18next-http-backend`.
 
 ## Stack and configuration
 

@@ -1,6 +1,7 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
-import { A } from "@solidjs/router";
+import { Link } from "@tanstack/solid-router";
 import { locale, locales, setLocale } from "@/stores/i18n";
+import { AppRoutePath } from "@/components/router/paths";
 import { auth, setUser } from "@/stores/auth";
 import "@/components/navigation/styles.css";
 import { For, Show } from "solid-js";
@@ -23,9 +24,11 @@ export default function Navigation(props) {
     >
       <div class="navigation__sidebar-panel">
         <nav class="navigation__sidebar-panel--navigation">
-          <A href="/">--Competitions</A>
+          <Link to={AppRoutePath.HOME as "/"}>--Competitions</Link>
           <Show when={auth().user}>
-            <A href="/my-competitions">--My competitions</A>
+            <Link to={AppRoutePath.MY_COMPETITIONS as never}>
+              --My competitions
+            </Link>
           </Show>
         </nav>
         <div class="navigation__controls">

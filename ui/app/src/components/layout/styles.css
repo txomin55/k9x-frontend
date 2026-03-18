@@ -79,7 +79,7 @@
 
 @media (max-width: 1024px) {
     .app-layout__navigation {
-        padding: var(--unit-2);
+        padding: var(--unit-1);
     }
 
     .app-layout__backdrop {

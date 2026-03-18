@@ -1,3 +1,7 @@
 import { api } from "@/stores/api";
 
-export default async (data) => await api().login(null, data);
+export default async (data) => {
+  const client = api();
+  if (!client) throw new Error("API client is not initialized");
+  return client.login(null, data);
+};

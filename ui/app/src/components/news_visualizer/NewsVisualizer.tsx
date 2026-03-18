@@ -5,7 +5,7 @@ import { displayNotification } from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
 
 export default function NewsVisualizer() {
-  const updateNotes = () => auth().user?.getNews?.() ?? ["1", "2"];
+  const updateNotes = () => auth().user?.getNews() ?? ["1", "2"];
   const showUpdateNotes = () => updateNotes().length > 0;
 
   return (
@@ -15,7 +15,7 @@ export default function NewsVisualizer() {
           class="news-visualizer__toast-button"
           onClick={() => displayNotification(mockedNotification)}
         >
-          txomins
+          --txomins
         </button>
       </div>
 

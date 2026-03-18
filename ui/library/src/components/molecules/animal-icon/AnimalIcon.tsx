@@ -13,11 +13,15 @@ export default function AnimalIcon(props: AnimalIconProps) {
   const basePath = (
     import.meta.env.VITE_APP_BASE_PATH ?? "/src/assets/svg/"
   ).replace(/\/$/, "");
-  const curatedAnimal = createMemo(
-    () =>
-      availableAnimalNames[props.animal?.toUpperCase?.()] ??
-      availableAnimalNames.DOG,
-  );
+  const resolveAnimalName = () => props.animal?.toUpperCase?.() as
+    | keyof typeof availableAnimalNames
+    | undefined;
+  const curatedAnimal = createMemo(() => {
+    const animalName = resolveAnimalName();
+    return animalName
+      ? availableAnimalNames[animalName]
+      : availableAnimalNames.DOG;
+  });
   const iconSrc = createMemo(
     () => `${basePath}/animals/${curatedAnimal()}.svg`,
   );

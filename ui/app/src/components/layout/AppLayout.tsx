@@ -1,18 +1,19 @@
-import { useLocation } from "@solidjs/router";
+import { useLocation } from "@tanstack/solid-router";
+import type { ParentProps } from "solid-js";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
-import "@/layout/styles.css";
+import "@/components/layout/styles.css";
 import Navigation from "@/components/navigation/Navigation";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { auth } from "@/stores/auth";
 
 const DESKTOP_BREAKPOINT = 1024;
 
-export default function AppLayout(props) {
+export default function AppLayout(props: ParentProps) {
   const location = useLocation();
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
   const [isDark, setIsDark] = createSignal(false);
-  let previousDesktop = null;
+  let previousDesktop: boolean | null = null;
 
   const toggleMode = () => {
     const nextIsDark = !isDark();
@@ -59,7 +60,7 @@ export default function AppLayout(props) {
   };
 
   const loginButton = () => (
-    <CoreButton type="ghost" onClick={handleGoogleLogin}>
+    <CoreButton type="accent" onClick={handleGoogleLogin}>
       --Login
     </CoreButton>
   );
@@ -82,7 +83,7 @@ export default function AppLayout(props) {
     document.body.style.overflow = shouldLockScroll ? "hidden" : "";
   });
   createEffect(() => {
-    location.pathname;
+    location().pathname;
     if (!isDesktop()) {
       setIsNavOpen(false);
     }
@@ -110,7 +111,7 @@ export default function AppLayout(props) {
         </button>
 
         <Show when={auth().user} fallback={loginButton()}>
-          {auth().user.getOwner()}
+          {auth().user?.getOwner()}
         </Show>
       </div>
 

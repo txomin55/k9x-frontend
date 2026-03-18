@@ -1,6 +1,7 @@
 import { Title } from "@solidjs/meta";
-import { useNavigate } from "@solidjs/router";
+import { useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
+import { AppRoutePath } from "@/components/router/paths";
 import fetchUserData from "@/services/fetch_user_data/fetchUserData";
 import { setUser } from "@/stores/auth";
 import { resolveAppPath } from "@/utils/app-paths";
@@ -47,7 +48,7 @@ export default function AuthCallbackRoute() {
         globalThis.history.replaceState(
           {},
           document.title,
-          resolveAppPath("/auth/callback"),
+          resolveAppPath(AppRoutePath.AUTH_CALLBACK),
         );
       }
 
@@ -60,7 +61,7 @@ export default function AuthCallbackRoute() {
 
       setStatus("loaded");
 
-      navigate("/", { replace: true });
+      navigate({ to: AppRoutePath.HOME as "/", replace: true });
     };
 
     await runCallback();
