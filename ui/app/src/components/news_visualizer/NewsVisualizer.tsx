@@ -1,7 +1,8 @@
 import "@/components/news_visualizer/index.css";
 import { For, Show } from "solid-js";
 import { auth } from "@/stores/auth";
-import { showNotification } from "@/utils/notifications/notifications";
+import { displayNotification } from "@/utils/notifications/notifications";
+import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
 
 export default function NewsVisualizer() {
   const updateNotes = () => auth().user?.getNews?.() ?? ["1", "2"];
@@ -12,7 +13,7 @@ export default function NewsVisualizer() {
       <div class="news-visualizer__toast-trigger">
         <button
           class="news-visualizer__toast-button"
-          onClick={showNotification}
+          onClick={() => displayNotification(mockedNotification)}
         >
           txomins
         </button>
