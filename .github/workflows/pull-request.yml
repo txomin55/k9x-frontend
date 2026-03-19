@@ -72,9 +72,6 @@ jobs:
       - name: Install deps
         run: bash ./ci-scripts/generic-before.sh
 
-      - name: Prepare offline OpenAPI spec
-        run: pnpm --filter ./ui/app run prepare:offline-oas
-
       - name: Run E2E tests
         run: bash ./ci-scripts/e2e-tests.sh
 

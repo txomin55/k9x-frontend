@@ -1,7 +1,7 @@
 import { defineQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
 
-const DOGS_ENDPOINT_PATH = "/api/dogs";
+const DOGS_ENDPOINT_PATH = "/dogs";
 
 export type Dog = {
   id?: string;

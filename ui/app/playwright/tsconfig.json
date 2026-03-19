@@ -12,6 +12,8 @@
     "isolatedModules": true,
     "baseUrl": "..",
     "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["../library/src/*"],
       "@test/*": ["./playwright/*"]
     }
   },

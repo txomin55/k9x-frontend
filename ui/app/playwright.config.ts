@@ -28,9 +28,7 @@ export default defineConfig({
     video: "retain-on-failure",
   },
   webServer: {
-    command: process.env.CI
-      ? "pnpm run start:offline:prepared"
-      : "pnpm run start:offline",
+    command: "pnpm run start:standalone",
     url: baseURL,
   },
   globalSetup: "./playwright/global-setup.ts",

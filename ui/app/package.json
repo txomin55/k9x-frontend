@@ -3,18 +3,15 @@
   "type": "module",
   "scripts": {
     "build:sw": "vite build --config vite.sw.config.ts --mode ${CI_BUILD_ENV:-production}",
-    "build:sw:develop": "vite build --config vite.sw.config.ts --mode offline",
+    "build:sw:develop": "vite build --config vite.sw.config.ts --mode standalone",
     "dev": "pnpm run start:integrated",
     "start:integrated": "pnpm run build:sw:develop && vite dev --mode integrated",
-    "start:offline": "pnpm run build:sw:develop && pnpm run prepare:offline-oas && pnpm run start:offline:prepared",
-    "start:offline:prepared": "test -f ./static/openapi.yaml && (pnpm run mock-server & vite dev --mode offline)",
+    "start:standalone": "pnpm run build:sw:develop && vite dev --mode standalone",
     "build": "pnpm run build:sw && vite build --mode ${CI_BUILD_ENV:-production} && node ./scripts/prefix-build-paths.mjs",
     "serve": "vite start",
     "preview": "vite preview",
     "test:unit:coverage": "vitest --coverage",
-    "test:e2e:coverage": "playwright test",
-    "prepare:offline-oas": "mkdir -p ./static && curl --fail --location --retry 3 --retry-all-errors --connect-timeout 10 --max-time 60 https://cdn.jsdelivr.net/gh/txomin55/k9x-oas-definition@main/openapi.yaml -o ./static/openapi.yaml",
-    "mock-server": "prism mock -d ./static/openapi.yaml"
+    "test:e2e:coverage": "playwright test"
   },
   "license": "MIT",
   "devDependencies": {
