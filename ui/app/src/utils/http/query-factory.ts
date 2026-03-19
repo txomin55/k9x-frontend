@@ -5,7 +5,7 @@ import {
   type MutationFunction,
   type QueryKey,
 } from "@tanstack/solid-query";
-import { locale } from "@/stores/i18n";
+import { i18nStore, useLocale } from "@/stores/i18n";
 
 type QueryFactoryOptions<TData, TKey extends QueryKey> = {
   fetcher: () => Promise<TData>;
@@ -19,19 +19,21 @@ type MutationFactoryOptions<TData, TVariables> = {
 export const defineQuery = <TData, const TKey extends QueryKey>(
   options: QueryFactoryOptions<TData, TKey>,
 ) => {
-  const queryOptions = () => ({
-    queryFn: options.fetcher,
-    queryKey: [...options.queryKey, locale()] as const,
-  });
-
   return {
     key: options.queryKey,
-    options: queryOptions,
-    useQuery: (override?: Record<string, unknown>) =>
-      createQuery(() => ({
-        ...queryOptions(),
+    options: () => ({
+      queryFn: options.fetcher,
+      queryKey: [...options.queryKey, i18nStore.state.locale] as const,
+    }),
+    useQuery: (override?: Record<string, unknown>) => {
+      const locale = useLocale();
+
+      return createQuery(() => ({
+        queryFn: options.fetcher,
+        queryKey: [...options.queryKey, locale()] as const,
         ...override,
-      })),
+      }));
+    },
   };
 };
 

@@ -4,13 +4,14 @@ import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import Navigation from "@/components/navigation/Navigation";
 import { startGoogleInteractiveLogin } from "@/services/google_auth/googleAuth";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
-import { auth } from "@/stores/auth";
+import { useAuthUser } from "@/stores/auth";
 import "@/components/layout/styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
 
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
+  const user = useAuthUser();
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
   const [isDark, setIsDark] = createSignal(false);
@@ -92,8 +93,8 @@ export default function AppLayout(props: ParentProps) {
           </span>
         </button>
 
-        <Show when={auth().user} fallback={loginButton()}>
-          {auth().user?.getOwner()}
+        <Show when={user()} fallback={loginButton()}>
+          {user()?.getOwner()}
         </Show>
       </div>
 

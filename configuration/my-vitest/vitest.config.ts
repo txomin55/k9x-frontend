@@ -17,6 +17,7 @@ export default defineConfig({
       all: true,
       exclude: [
         "**/src/**/*.constants.ts",
+        "**/*.d.ts",
         "**/src/**/*.json",
         "**/src/**/*.stories.@(ts|tsx|svelte)",
       ],

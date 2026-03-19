@@ -41,6 +41,8 @@
     "@solidjs/start": "2.0.0-alpha.2",
     "@tanstack/solid-query": "^5.91.1",
     "@tanstack/solid-router": "^1.167.4",
+    "@tanstack/solid-store": "^0.9.2",
+    "@tanstack/store": "^0.9.2",
     "i18next": "^24.2.3",
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",

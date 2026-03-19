@@ -1,5 +1,5 @@
 import { createEffect } from "solid-js";
-import { auth } from "@/stores/auth";
+import { useAuthUser } from "@/stores/auth";
 import { enablePushNotifications, requestNotificationPermission } from "@/utils/notifications/notifications";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
@@ -18,8 +18,10 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 export default function NotificationGuard(props) {
+  const user = useAuthUser();
+
   createEffect(async () => {
-    if (auth().user) {
+    if (user()) {
       const permission = await requestNotificationPermission();
       if (permission === "granted") {
         const result = await enablePushNotifications(

@@ -1,10 +1,7 @@
-import { createStore } from "solid-js/store";
 import { AppRoutePath } from "@/components/router/paths";
-import {
-  clearCachedUserData,
-  fetchCachedUserData,
-} from "@/services/fetch_user_data/fetchUserData";
+import { clearCachedUserData, fetchCachedUserData } from "@/services/fetch_user_data/fetchUserData";
 import type { User } from "@/services/fetch_user_data/UserResponse";
+import { createAppStore } from "@/utils/store/createAppStore";
 import { stripBasePath } from "@/utils/routes/app-paths";
 
 type AuthState = {
@@ -13,18 +10,27 @@ type AuthState = {
   error: Error | null;
 };
 
-const [authStore, setAuth] = createStore({
+const {
+  getState,
+  setState,
+  store: authStore,
+  useAppStore,
+} = createAppStore<AuthState>({
   user: null,
   loading: false,
   error: null,
-} as AuthState);
+});
+
+const setAuthState = (updater: (state: AuthState) => AuthState) => {
+  setState(updater);
+};
 
 const setUser = (user: User | null) => {
-  setAuth({
+  setAuthState(() => ({
     user,
     loading: false,
     error: null,
-  });
+  }));
 };
 
 const fetchUserIfAuthenticated = async (
@@ -35,36 +41,46 @@ const fetchUserIfAuthenticated = async (
 
   if (appPath === AppRoutePath.AUTH_CALLBACK) return;
 
-  if (authStore.user && !authStore.loading) return;
+  const state = getState();
+
+  if (state.user && !state.loading) return;
 
   const hasToken =
     typeof globalThis !== "undefined" &&
     Boolean(globalThis.localStorage.getItem("k9x_access_token"));
 
   if (!hasToken && appPath !== AppRoutePath.AUTH_CALLBACK) {
-    setAuth({
-      ...authStore,
+    setAuthState((currentState) => ({
+      ...currentState,
       loading: false,
       error: null,
-    });
+    }));
     return;
   }
 
-  setAuth({
-    ...authStore,
+  setAuthState((currentState) => ({
+    ...currentState,
     loading: true,
     error: null,
-  });
+  }));
 
   setUser(await fetchCachedUserData());
   navigate(appPath);
 };
-
-const auth = () => authStore;
 
 const clearAuth = () => {
   clearCachedUserData();
   setUser(null);
 };
 
-export { auth, clearAuth, fetchUserIfAuthenticated, setUser };
+const useAuth = <TSelected>(selector: (state: AuthState) => TSelected) =>
+  useAppStore(selector);
+
+const useAuthUser = () => useAuth((state) => state.user);
+
+export {
+  clearAuth,
+  fetchUserIfAuthenticated,
+  setUser,
+  useAuthUser,
+};

@@ -1,13 +1,16 @@
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { Link } from "@tanstack/solid-router";
-import { locale, locales, setLocale } from "@/stores/i18n";
 import { AppRoutePath } from "@/components/router/paths";
-import { auth, clearAuth } from "@/stores/auth";
+import { clearAuth, useAuthUser } from "@/stores/auth";
+import { locales, setLocale, useLocale } from "@/stores/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import "@/components/navigation/styles.css";
 import { For, Show } from "solid-js";
 
 export default function Navigation(props) {
+  const user = useAuthUser();
+  const locale = useLocale();
+
   const handleLogout = () => {
     queryClient.clear();
     clearAuth();
@@ -27,7 +30,7 @@ export default function Navigation(props) {
       <div class="navigation__sidebar-panel">
         <nav class="navigation__sidebar-panel--navigation">
           <Link to={AppRoutePath.HOME as "/"}>--Competitions</Link>
-          <Show when={auth().user}>
+          <Show when={user()}>
             <Link to={AppRoutePath.MY_COMPETITIONS as never}>
               --My competitions
             </Link>
@@ -58,7 +61,7 @@ export default function Navigation(props) {
                 </For>
               </div>
 
-              <Show when={auth().user}>
+              <Show when={user()}>
                 <CoreButton type="primary" onClick={handleLogout}>
                   Logout
                 </CoreButton>

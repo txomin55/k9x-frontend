@@ -2,7 +2,7 @@ import {
   getSilentGoogleAuthCode,
   startGoogleInteractiveLogin,
 } from "@/services/google_auth/googleAuth";
-import { locale } from "@/stores/i18n";
+import { i18nStore } from "@/stores/i18n";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 const LOGIN_ENDPOINT_PATH = "/login";
@@ -20,7 +20,7 @@ const getApiBaseUrl = () => import.meta.env.VITE_APP_API_ADDRESS;
 
 const buildHeaders = (path: string, headers?: HeadersInit) => {
   const nextHeaders = new Headers(headers);
-  nextHeaders.set("Accept-language", locale());
+  nextHeaders.set("Accept-language", i18nStore.state.locale);
 
   if (path.startsWith("/api/")) {
     const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);

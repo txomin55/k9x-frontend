@@ -1,11 +1,12 @@
 import "@/components/news_visualizer/index.css";
 import { For, Show } from "solid-js";
-import { auth } from "@/stores/auth";
+import { useAuthUser } from "@/stores/auth";
 import { displayNotification } from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
 
 export default function NewsVisualizer() {
-  const updateNotes = () => auth().user?.getNews() ?? ["1", "2"];
+  const user = useAuthUser();
+  const updateNotes = () => user()?.getNews() ?? ["1", "2"];
   const showUpdateNotes = () => updateNotes().length > 0;
 
   return (

@@ -1,30 +1,52 @@
-import { createSignal } from "solid-js";
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { createAppStore } from "@/utils/store/createAppStore";
 
-const locales = ["en", "es"];
-const [locale, setLocaleValue] = createSignal("en");
-const [ready, setReady] = createSignal(false);
+enum TranslationLocale {
+  EN = "en",
+  ES = "es",
+}
 
-let initPromise;
+const locales = Object.values(TranslationLocale);
+type Locale = TranslationLocale;
 
-const normalizeLocale = (inputLocale) => {
-  if (!inputLocale) return "en";
+type I18nState = {
+  locale: Locale;
+  ready: boolean;
+};
+
+const {
+  setState,
+  store: i18nStore,
+  useAppStore,
+} = createAppStore<I18nState>({
+  locale: TranslationLocale.EN,
+  ready: false,
+});
+
+let initPromise: Promise<void> | undefined;
+
+const setI18nState = (updater: (state: I18nState) => I18nState) => {
+  setState(updater);
+};
+
+const normalizeLocale = (inputLocale: unknown): Locale => {
+  if (!inputLocale) return TranslationLocale.EN;
 
   const canonicalLocale = String(inputLocale).trim().toLowerCase();
 
-  if (locales.includes(canonicalLocale)) {
-    return canonicalLocale;
+  if (locales.includes(canonicalLocale as Locale)) {
+    return canonicalLocale as Locale;
   }
 
   const [baseLocale] = canonicalLocale.split("-");
 
-  if (baseLocale && locales.includes(baseLocale)) {
-    return baseLocale;
+  if (baseLocale && locales.includes(baseLocale as Locale)) {
+    return baseLocale as Locale;
   }
 
-  return "en";
+  return TranslationLocale.EN;
 };
 
 const initI18n = async () => {
@@ -37,7 +59,7 @@ const initI18n = async () => {
     .use(Backend)
     .use(languageDetector)
     .init({
-      fallbackLng: "en",
+      fallbackLng: TranslationLocale.EN,
       debug: true,
       supportedLngs: locales,
       load: "currentOnly",
@@ -51,23 +73,42 @@ const initI18n = async () => {
       lng: normalizeLocale(languageDetector.detect()),
     })
     .then(() => {
-      setLocaleValue(i18n.language);
-      setReady(true);
+      setI18nState(() => ({
+        locale: normalizeLocale(i18n.language),
+        ready: true,
+      }));
     });
 
   return initPromise;
 };
 
-const setLocale = async (nextLocale) => {
+const setLocale = async (nextLocale: string) => {
   await initI18n();
   await i18n.changeLanguage(normalizeLocale(nextLocale));
-  setLocaleValue(i18n.language);
+  setI18nState((state) => ({
+    ...state,
+    locale: normalizeLocale(i18n.language),
+  }));
 };
 
-const t = (key, options) => {
-  locale();
+const t = (key: string, options?: Record<string, unknown>) => {
   if (!i18n.isInitialized) return key;
   return i18n.t(key, options);
 };
 
-export { i18n, initI18n, locale, locales, ready, setLocale, t };
+const useI18n = <TSelected>(selector: (state: I18nState) => TSelected) =>
+  useAppStore(selector);
+
+const useLocale = () => useI18n((state) => state.locale);
+const useI18nReady = () => useI18n((state) => state.ready);
+
+export {
+  i18nStore,
+  initI18n,
+  locales,
+  setLocale,
+  t,
+  TranslationLocale,
+  useI18nReady,
+  useLocale,
+};
