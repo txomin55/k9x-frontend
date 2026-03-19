@@ -15,9 +15,10 @@
     margin: var(--unit-05);
     padding: 0 var(--unit-2);
     background-color: var(--button-background-color);
-    border: 1px solid var(--button-border-color);
+    border: 2px solid var(--button-border-color);
     color: var(--button-text-color);
     font-size: var(--text-label-md);
+    font-weight: 500;
     transition: background-color 200ms, border-color 200ms, color 200ms;
     cursor: pointer;
 }
@@ -30,7 +31,7 @@
     --button-background-color: var(--button-background-color-active);
 }
 
-/* DISABLED */
+/* DISABLED BASE */
 .button:disabled {
     cursor: not-allowed;
     --button-text-color: var(--text-muted);
@@ -38,7 +39,9 @@
     --button-border-color: var(--border-muted);
 }
 
-/* PRIMARY */
+/* ----------------------------- */
+/* PRIMARY                       */
+/* ----------------------------- */
 .button.primary {
     --button-background-color: var(--primary);
     --button-background-color-hover: var(--primary-hover);
@@ -53,22 +56,31 @@
     --button-border-color: var(--primary-border);
 }
 
-/* ACCENT (secondary important action) */
+/* ----------------------------- */
+/* ACCENT (Outline / Secondary)  */
+/* ----------------------------- */
 .button.accent {
-    --button-background-color: var(--accent);
-    --button-background-color-hover: var(--accent-hover);
-    --button-background-color-active: var(--accent-hover);
-    --button-text-color: var(--text-inverted);
-    --button-border-color: var(--accent);
+    --button-background-color: transparent;
+    --button-background-color-hover: var(--accent-soft);
+    --button-background-color-active: var(--surface-muted);
+    --button-text-color: var(--text-primary);
+    --button-border-color: var(--text-primary);
+}
+
+.button.accent:hover {
+    --button-text-color: var(--text-primary);
+    --button-border-color: var(--text-primary);
 }
 
 .button.accent:disabled {
-    --button-text-color: var(--text-secondary);
-    --button-background-color: var(--accent-soft);
-    --button-border-color: var(--accent-border);
+    --button-text-color: var(--text-muted);
+    --button-background-color: transparent;
+    --button-border-color: var(--border-muted);
 }
 
-/* DESTRUCTIVE */
+/* ----------------------------- */
+/* DESTRUCTIVE                   */
+/* ----------------------------- */
 .button.destructive {
     --button-background-color: var(--error);
     --button-background-color-hover: var(--error-text);
@@ -83,13 +95,15 @@
     --button-border-color: var(--error-border);
 }
 
-/* GHOST */
+/* ----------------------------- */
+/* GHOST                         */
+/* ----------------------------- */
 .button.ghost {
     --button-background-color: transparent;
     --button-background-color-hover: var(--surface-hover);
     --button-background-color-active: var(--surface-muted);
     --button-text-color: var(--text-primary);
-    --button-border-color: transparent;
+    border-color: transparent;
 }
 
 .button.ghost:disabled {

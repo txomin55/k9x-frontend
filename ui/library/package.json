@@ -36,6 +36,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@kobalte/core": "^0.13.11",
     "solid-js": "catalog:"
   }
 }

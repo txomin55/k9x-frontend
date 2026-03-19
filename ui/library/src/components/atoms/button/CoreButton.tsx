@@ -4,6 +4,7 @@ import {
   BUTTON_TYPES,
   type ButtonType,
 } from "@lib/components/atoms/button/button.constants";
+import { Button } from "@kobalte/core/button";
 
 export type CoreButtonProps = {
   children: JSX.Element;
@@ -25,12 +26,12 @@ export default function CoreButton(props: CoreButtonProps) {
   };
 
   return (
-    <button
+    <Button
       class={`button ${typeClass()}`}
       disabled={disabled()}
       onClick={handleClick}
     >
       {props.children}
-    </button>
+    </Button>
   );
 }
