@@ -1,19 +1,39 @@
+const getAppUrlToOpen = (scope, rawUrl) => {
+  const appScopeUrl = new URL(scope.registration.scope);
+  const requestedUrl = new URL(rawUrl, appScopeUrl);
+  const appScopePathname = appScopeUrl.pathname.replace(/\/$/, "") || "/";
+  const requestedPathname = requestedUrl.pathname.replace(/\/$/, "") || "/";
+
+  if (requestedUrl.origin !== appScopeUrl.origin) {
+    return appScopeUrl.href;
+  }
+
+  if (
+    requestedUrl.href.startsWith(appScopeUrl.href) ||
+    requestedPathname === appScopePathname
+  ) {
+    return requestedUrl.href;
+  }
+
+  return new URL(
+    `${appScopeUrl.pathname}${requestedUrl.search}${requestedUrl.hash}`,
+    appScopeUrl.origin,
+  ).href;
+};
+
 const reuseOrOpenWindow = async (scope, urlToOpen) => {
   const windowClients = await scope.clients.matchAll({
     type: "window",
     includeUncontrolled: true,
   });
 
-  // Check if any window is already open within our PWA scope
   for (const client of windowClients) {
-    // On mobile, focusing an existing client is better than opening a new one
     if ("navigate" in client && "focus" in client) {
       await client.navigate(urlToOpen);
       return client.focus();
     }
   }
 
-  // If no window is found, this MUST be within the manifest scope to stay in the PWA
   if (scope.clients.openWindow) {
     return scope.clients.openWindow(urlToOpen);
   }
@@ -26,7 +46,7 @@ export const registerNotificationClickHandler = (scope) => {
     const dataUrl = event.notification.data?.url;
     if (!dataUrl) return;
 
-    const urlToOpen = new URL(dataUrl, scope.registration.scope).href;
+    const urlToOpen = getAppUrlToOpen(scope, dataUrl);
 
     event.waitUntil(reuseOrOpenWindow(scope, urlToOpen));
   });

@@ -11,7 +11,7 @@ const options = {
   data: {
     createdAt: new Date(Date.now()).toString(),
     message: "Hello, World!",
-    url: "https://txomin55.github.io/k9x-frontend",
+    url: "/",
   },
 };
 
