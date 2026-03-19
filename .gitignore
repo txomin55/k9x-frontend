@@ -31,14 +31,11 @@ dist
 dev-dist
 .turbo
 /.idea
-.cypress_v8_coverage/
 /ui/dog-trainer-library/build-storybook.log
 
 *storybook.log
-/ui/app/.svelte-kit/
 /ui/app/build/
 /ui/app/static/sw.js
-/ui/app/static/openapi.yaml
 /ui/library/storybook-static/
 /ui/app/.nitro/
 /ui/app/.output/

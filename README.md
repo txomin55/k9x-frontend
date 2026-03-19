@@ -20,7 +20,7 @@ pnpm/turbo monorepo with a SolidJS PWA and a component library. Uses Vite 7, Sol
 ## Local development
 
 - `pnpm dev`: runs `ui/app/start:integrated`.
-- `pnpm --filter ./ui/app run start:offline`: builds the service worker, prepares the offline OpenAPI spec, starts Prism on `http://127.0.0.1:4010`, and starts Vite on `http://127.0.0.1:3000`.
+- `pnpm --filter ./ui/app run start:standalone`: builds the service worker, prepares the standalone OpenAPI spec, starts Prism on `http://127.0.0.1:4010`, and starts Vite on `http://127.0.0.1:3000`.
 - `pnpm --filter ./ui/app run start:integrated|serve|preview`: alternative app modes.
 - `pnpm build`: `turbo run build -- --mode ${CI_BUILD_ENV}` (uses `CI_BUILD_ENV` to select the mode for each package build).
 
@@ -37,7 +37,7 @@ pnpm/turbo monorepo with a SolidJS PWA and a component library. Uses Vite 7, Sol
   - `pnpm test:unit:coverage` generates coverage in `.reports/test/unit/coverage` and junit/Sonar in `.reports/test/unit` + `.reports/sonar/unit`.
   - `pnpm unit:coverage-merge` merges coverage from app and library; `pnpm unit:junit-merge` merges JUnit reports.
 - E2E (Playwright, Chromium):
-  - `pnpm test:e2e:coverage` launches the app in offline mode and runs the Playwright suite against Chromium.
+  - `pnpm test:e2e:coverage` launches the app in standalone mode and runs the Playwright suite against Chromium.
   - Reports are written to `ui/app/.reports/test/e2e/junit.xml`, `ui/app/.reports/test/e2e/playwright`, `ui/app/.reports/test/e2e/coverage`, and `ui/app/.reports/sonar/e2e/sonar.xml`.
 - Combined coverage:
   - `pnpm total:coverage-merge` mixes merged unit coverage with Playwright E2E coverage and writes `lcov.info` and `cobertura-coverage.xml` to `.reports/test/total/coverage`.
@@ -46,6 +46,6 @@ pnpm/turbo monorepo with a SolidJS PWA and a component library. Uses Vite 7, Sol
 
 - GitHub Actions workflow lives in `.github/workflows/pull-request.yml`.
 - `unit_tests`: installs dependencies, runs unit coverage, and uploads `.reports`.
-- `e2e_tests`: caches Playwright browsers under `ui/app/.cache/ms-playwright`, prepares the offline OpenAPI spec, runs Playwright E2E coverage, and uploads `.reports`.
+- `e2e_tests`: caches Playwright browsers under `ui/app/.cache/ms-playwright`, prepares the standalone OpenAPI spec, runs Playwright E2E coverage, and uploads `.reports`.
 - `test_summary`: downloads unit/e2e artifacts, merges coverage, and publishes the combined Cobertura report.
 - `sonar_check`: downloads the same artifacts and runs the SonarQube scan against `.reports`.
