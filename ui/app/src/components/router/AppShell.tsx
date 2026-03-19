@@ -2,14 +2,13 @@ import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
 import { onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/layout/AppLayout";
-import "@/app.css";
 import NewsVisualizer from "@/components/news_visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
-import { api, initApi } from "@/stores/api";
 import { auth, fetchUserIfAuthenticated } from "@/stores/auth";
 import { initI18n, ready, t } from "@/stores/i18n";
-import { resolveAppPath } from "@/utils/app-paths";
+import { resolveAppPath } from "@/utils/routes/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_features/offline_load/animal-icons";
+import "@/app.css";
 
 export default function AppShell() {
   let cancelAnimalIconWarmup: (() => void) | undefined;
@@ -25,7 +24,6 @@ export default function AppShell() {
     }
 
     await initI18n();
-    await initApi();
     await fetchUserIfAuthenticated(location().pathname, (path) =>
       navigate({ to: path as never }),
     );
@@ -40,12 +38,12 @@ export default function AppShell() {
   return (
     <MetaProvider>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <Show when={api()} fallback={<p>Loading api....</p>}>
+      <Show when={ready()} fallback={<p>Loading app....</p>}>
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">
               <h1>--My Solid PWA</h1>
-              <Show when={ready()}>{t("hello", { name: "txomin" })}</Show>
+              <p>{t("hello", { name: "txomin" })}</p>
               <h2>--USER -- {auth().user?.getOwner() ?? "--NO"}</h2>
               <NewsVisualizer />
               <Outlet />

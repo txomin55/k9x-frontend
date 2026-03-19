@@ -2,13 +2,15 @@ import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { Link } from "@tanstack/solid-router";
 import { locale, locales, setLocale } from "@/stores/i18n";
 import { AppRoutePath } from "@/components/router/paths";
-import { auth, setUser } from "@/stores/auth";
+import { auth, clearAuth } from "@/stores/auth";
+import { queryClient } from "@/utils/http/query-client";
 import "@/components/navigation/styles.css";
 import { For, Show } from "solid-js";
 
 export default function Navigation(props) {
   const handleLogout = () => {
-    setUser(null);
+    queryClient.clear();
+    clearAuth();
     globalThis.localStorage.removeItem("k9x_access_token");
   };
 

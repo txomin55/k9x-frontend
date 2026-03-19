@@ -2,14 +2,19 @@ import { Title } from "@solidjs/meta";
 import { useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
 import { AppRoutePath } from "@/components/router/paths";
-import fetchUserData from "@/services/fetch_user_data/fetchUserData";
+import {
+  clearCachedUserData,
+  fetchCachedUserData,
+} from "@/services/fetch_user_data/fetchUserData";
+import {
+  GOOGLE_OAUTH_STATE_KEY,
+  GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
+} from "@/services/google_auth/googleAuth";
+import { useLogin } from "@/services/do_login/doLogin";
 import { setUser } from "@/stores/auth";
-import { resolveAppPath } from "@/utils/app-paths";
-import doLogin from "@/services/do_login/doLogin";
+import { resolveAppPath } from "@/utils/routes/app-paths";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
-const OAUTH_STATE_KEY = "k9x_google_oauth_state";
-const SILENT_OAUTH_MESSAGE_TYPE = "k9x_google_oauth";
 
 function readCallbackParams() {
   const stored = globalThis.sessionStorage.getItem(CALLBACK_PARAMS_KEY);
@@ -24,6 +29,7 @@ function readCallbackParams() {
 export default function AuthCallbackRoute() {
   const navigate = useNavigate();
   const [status, setStatus] = createSignal("pending");
+  const login = useLogin();
 
   onMount(async () => {
     const runCallback = async () => {
@@ -33,7 +39,7 @@ export default function AuthCallbackRoute() {
       if (isIframe) {
         globalThis.parent.postMessage(
           {
-            type: SILENT_OAUTH_MESSAGE_TYPE,
+            type: GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
             search: globalThis.location.search,
           },
           globalThis.location.origin,
@@ -43,6 +49,10 @@ export default function AuthCallbackRoute() {
 
       const params = new URLSearchParams(readCallbackParams());
       const code = params.get("code");
+
+      if (!code) {
+        throw new Error("Missing OAuth code");
+      }
 
       if (globalThis.location.search) {
         globalThis.history.replaceState(
@@ -54,10 +64,11 @@ export default function AuthCallbackRoute() {
 
       setStatus("loading");
 
-      const token = await doLogin({ idToken: code });
+      const token = await login.mutateAsync({ idToken: code });
       globalThis.localStorage.setItem("k9x_access_token", token);
-      setUser(await fetchUserData());
-      globalThis.sessionStorage.removeItem(OAUTH_STATE_KEY);
+      clearCachedUserData();
+      setUser(await fetchCachedUserData());
+      globalThis.sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);
 
       setStatus("loaded");
 

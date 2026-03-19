@@ -1,8 +1,11 @@
 import { createStore } from "solid-js/store";
 import { AppRoutePath } from "@/components/router/paths";
-import fetchUserData from "@/services/fetch_user_data/fetchUserData";
+import {
+  clearCachedUserData,
+  fetchCachedUserData,
+} from "@/services/fetch_user_data/fetchUserData";
 import type { User } from "@/services/fetch_user_data/UserResponse";
-import { stripBasePath } from "@/utils/app-paths";
+import { stripBasePath } from "@/utils/routes/app-paths";
 
 type AuthState = {
   user: User | null;
@@ -53,10 +56,15 @@ const fetchUserIfAuthenticated = async (
     error: null,
   });
 
-  setUser(await fetchUserData());
+  setUser(await fetchCachedUserData());
   navigate(appPath);
 };
 
 const auth = () => authStore;
 
-export { auth, fetchUserIfAuthenticated, setUser };
+const clearAuth = () => {
+  clearCachedUserData();
+  setUser(null);
+};
+
+export { auth, clearAuth, fetchUserIfAuthenticated, setUser };

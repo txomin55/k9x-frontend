@@ -8,7 +8,7 @@ import AuthCallbackRoute from "@/routes/auth/callback";
 import IndexRoute from "@/routes/index";
 import MyCompetitionsRoute from "@/routes/my-competitions/index";
 import { AppRoutePath, trimLeadingSlash } from "@/components/router/paths";
-import { getBasePath } from "@/utils/app-paths";
+import { getBasePath } from "@/utils/routes/app-paths";
 
 const rootRoute = createRootRoute({
   component: AppShell,

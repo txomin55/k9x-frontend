@@ -1,6 +1,6 @@
 // @refresh reload
 import { mount, StartClient } from "@solidjs/start/client";
-import { resolveAppPath } from "@/utils/app-paths";
+import { resolveAppPath } from "@/utils/routes/app-paths";
 
 mount(() => <StartClient />, document.getElementById("app")!);
 

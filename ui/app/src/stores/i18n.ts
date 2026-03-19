@@ -2,7 +2,6 @@ import { createSignal } from "solid-js";
 import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
-import axios from "@/utils/axios";
 
 const locales = ["en", "es"];
 const [locale, setLocaleValue] = createSignal("en");
@@ -53,7 +52,6 @@ const initI18n = async () => {
     })
     .then(() => {
       setLocaleValue(i18n.language);
-      axios.setLocale(i18n.language);
       setReady(true);
     });
 
@@ -64,7 +62,6 @@ const setLocale = async (nextLocale) => {
   await initI18n();
   await i18n.changeLanguage(normalizeLocale(nextLocale));
   setLocaleValue(i18n.language);
-  axios.setLocale(i18n.language);
 };
 
 const t = (key, options) => {

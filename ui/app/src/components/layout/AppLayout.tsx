@@ -1,10 +1,11 @@
 import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
-import "@/components/layout/styles.css";
 import Navigation from "@/components/navigation/Navigation";
+import { startGoogleInteractiveLogin } from "@/services/google_auth/googleAuth";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { auth } from "@/stores/auth";
+import "@/components/layout/styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -39,28 +40,8 @@ export default function AppLayout(props: ParentProps) {
   ).matches;
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
 
-  const OAUTH_STATE_KEY = "k9x_google_oauth_state";
-  const buildGoogleAuthUrl = () => {
-    const state = crypto.randomUUID();
-    globalThis.sessionStorage.setItem(OAUTH_STATE_KEY, state);
-
-    const params = new URLSearchParams({
-      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-      redirect_uri: import.meta.env.VITE_GOOGLE_REDIRECT_URI,
-      response_type: "code",
-      scope: "openid email profile",
-      state,
-    });
-
-    return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
-  };
-
-  const handleGoogleLogin = () => {
-    globalThis.location.assign(buildGoogleAuthUrl());
-  };
-
   const loginButton = () => (
-    <CoreButton type="accent" onClick={handleGoogleLogin}>
+    <CoreButton type="accent" onClick={startGoogleInteractiveLogin}>
       --Login
     </CoreButton>
   );
@@ -82,6 +63,7 @@ export default function AppLayout(props: ParentProps) {
     const shouldLockScroll = !isDesktop() && isNavOpen();
     document.body.style.overflow = shouldLockScroll ? "hidden" : "";
   });
+
   createEffect(() => {
     location().pathname;
     if (!isDesktop()) {
