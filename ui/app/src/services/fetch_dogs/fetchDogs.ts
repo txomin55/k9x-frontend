@@ -11,6 +11,8 @@ export type Dog = {
 
 type UseDogsOptions = {
   staleTime?: number;
+  gcTime?: number;
+  refetchOnMount?: boolean;
 };
 
 const fetchDogs = () =>
@@ -26,4 +28,6 @@ const dogsQuery = defineQuery({
 export const useDogs = (options?: UseDogsOptions) =>
   dogsQuery.useQuery({
     staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    refetchOnMount: options?.refetchOnMount,
   });

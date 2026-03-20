@@ -10,7 +10,9 @@ export default function IndexRoute() {
   const navigate = useNavigate();
   const location = useLocation();
   const fetchedDogs = useDogs({
-    staleTime: 30_000,
+    staleTime: 30 * 1000,
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
   });
 
   createEffect(async () => {
