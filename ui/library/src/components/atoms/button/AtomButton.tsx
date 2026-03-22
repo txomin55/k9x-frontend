@@ -3,7 +3,7 @@ import type { JSX } from "solid-js";
 import {
   BUTTON_TYPES,
   type ButtonType,
-} from "@lib/components/atoms/button/button.constants";
+} from "@lib/components/atoms/button/atomButton.constants";
 import { Button } from "@kobalte/core/button";
 
 export type CoreButtonProps = {
@@ -13,7 +13,7 @@ export type CoreButtonProps = {
   type?: ButtonType;
 };
 
-export default function CoreButton(props: CoreButtonProps) {
+export default function AtomButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);
   const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
 

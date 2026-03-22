@@ -1,5 +1,5 @@
 import type { JSX } from "solid-js";
-import CoreImage from "@lib/components/atoms/image/CoreImage";
+import CoreImage from "@lib/components/atoms/image/AtomImage";
 import "./styles.css";
 
 export type ProfileImageProps = {

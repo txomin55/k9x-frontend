@@ -1,12 +1,12 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import CoreButton, {
+import AtomButton, {
   type CoreButtonProps,
-} from "@lib/components/atoms/button/CoreButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/button.constants";
+} from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { fn } from "storybook/test";
 
 const meta = {
-  title: "Atoms/CoreButton",
+  title: "Atoms/AtomButton",
   tags: ["new"],
   argTypes: {
     type: {
@@ -29,7 +29,7 @@ const meta = {
     },
   },
   render: (args: CoreButtonProps) =>
-    renderSolid(() => <CoreButton {...args}>this is a button</CoreButton>),
+    renderSolid(() => <AtomButton {...args}>this is a button</AtomButton>),
 };
 
 export default meta;

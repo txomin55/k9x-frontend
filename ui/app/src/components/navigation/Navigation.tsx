@@ -1,4 +1,4 @@
-import CoreButton from "@lib/components/atoms/button/CoreButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { Link } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/router/paths";
 import { clearAuth, useAuthUser } from "@/stores/auth";
@@ -40,9 +40,9 @@ export default function Navigation(props) {
           <div class="navigation-tools">
             <div class="navigation-tools__group">
               <p>--Mode</p>
-              <CoreButton type="accent" onClick={props.onToggleMode}>
+              <AtomButton type="accent" onClick={props.onToggleMode}>
                 {props.isDark ? "Light" : "Dark"}
-              </CoreButton>
+              </AtomButton>
             </div>
 
             <div class="navigation-tools__group">
@@ -51,20 +51,20 @@ export default function Navigation(props) {
               <div class="navigation-tools__locales">
                 <For each={locales}>
                   {(nextLocale) => (
-                    <CoreButton
+                    <AtomButton
                       type="primary"
                       onClick={() => setLocale(nextLocale)}
                     >
                       {nextLocale}
-                    </CoreButton>
+                    </AtomButton>
                   )}
                 </For>
               </div>
 
               <Show when={user()}>
-                <CoreButton type="primary" onClick={handleLogout}>
+                <AtomButton type="primary" onClick={handleLogout}>
                   Logout
-                </CoreButton>
+                </AtomButton>
               </Show>
             </div>
           </div>

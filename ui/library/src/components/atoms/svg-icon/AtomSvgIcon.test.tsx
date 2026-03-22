@@ -1,10 +1,10 @@
 import { render } from "@solidjs/testing-library";
-import CoreSvgIcon from "@lib/components/atoms/svg-icon/CoreSvgIcon";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 
-describe("CoreSvgIcon", () => {
+describe("AtomSvgIcon", () => {
   test("renders an image with the provided src and alt", () => {
     const { getByAltText } = render(() => (
-      <CoreSvgIcon src="/icons/dog.svg" alt="dog icon" />
+      <AtomSvgIcon src="/icons/dog.svg" alt="dog icon" />
     ));
 
     const image = getByAltText("dog icon");
@@ -15,7 +15,7 @@ describe("CoreSvgIcon", () => {
   });
 
   test("defaults alt to an empty string when not provided", () => {
-    const { container } = render(() => <CoreSvgIcon src="/icons/cat.svg" />);
+    const { container } = render(() => <AtomSvgIcon src="/icons/cat.svg" />);
 
     const image = container.querySelector("img");
 

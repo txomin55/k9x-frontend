@@ -1,9 +1,9 @@
 import { render } from "@solidjs/testing-library";
-import CoreButton from "@lib/components/atoms/button/CoreButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 
 describe("test library", () => {
   test("prueba library", () => {
-    const { getByText } = render(() => <CoreButton>test</CoreButton>);
+    const { getByText } = render(() => <AtomButton>test</AtomButton>);
     expect(getByText("test")).toBeInTheDocument();
   });
 });

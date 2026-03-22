@@ -3,7 +3,7 @@ import type { ParentProps } from "solid-js";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import Navigation from "@/components/navigation/Navigation";
 import { startGoogleInteractiveLogin } from "@/services/google_auth/googleAuth";
-import CoreButton from "@lib/components/atoms/button/CoreButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
 import "@/components/layout/styles.css";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
@@ -43,9 +43,9 @@ export default function AppLayout(props: ParentProps) {
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
 
   const loginButton = () => (
-    <CoreButton type="accent" onClick={startGoogleInteractiveLogin}>
+    <AtomButton type="accent" onClick={startGoogleInteractiveLogin}>
       --Login
-    </CoreButton>
+    </AtomButton>
   );
 
   onMount(() => {

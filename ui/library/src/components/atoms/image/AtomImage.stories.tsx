@@ -1,7 +1,7 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import CoreImage, {
   type CoreImageProps,
-} from "@lib/components/atoms/image/CoreImage";
+} from "@lib/components/atoms/image/AtomImage";
 
 const meta = {
   title: "Atoms/CoreImage",

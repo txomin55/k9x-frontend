@@ -1,5 +1,5 @@
 import { render } from "@solidjs/testing-library";
-import CoreImage from "@lib/components/atoms/image/CoreImage";
+import CoreImage from "@lib/components/atoms/image/AtomImage";
 
 class MockImage {
   onload: () => void = () => {};

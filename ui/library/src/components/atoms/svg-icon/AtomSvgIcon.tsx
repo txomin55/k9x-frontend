@@ -3,6 +3,6 @@ export type CoreSvgIconProps = {
   src: string;
 };
 
-export default function CoreSvgIcon(props: CoreSvgIconProps) {
+export default function AtomSvgIcon(props: CoreSvgIconProps) {
   return <img src={props.src} alt={props.alt ?? ""} />;
 }

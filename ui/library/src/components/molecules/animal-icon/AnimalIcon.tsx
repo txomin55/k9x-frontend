@@ -1,5 +1,5 @@
 import { createMemo } from "solid-js";
-import CoreSvgIcon from "@lib/components/atoms/svg-icon/CoreSvgIcon";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import {
   type AnimalName,
   availableAnimalNames,
@@ -13,9 +13,10 @@ export default function AnimalIcon(props: AnimalIconProps) {
   const basePath = (
     import.meta.env.VITE_APP_BASE_PATH ?? "/src/assets/svg/"
   ).replace(/\/$/, "");
-  const resolveAnimalName = () => props.animal?.toUpperCase?.() as
-    | keyof typeof availableAnimalNames
-    | undefined;
+  const resolveAnimalName = () =>
+    props.animal?.toUpperCase?.() as
+      | keyof typeof availableAnimalNames
+      | undefined;
   const curatedAnimal = createMemo(() => {
     const animalName = resolveAnimalName();
     return animalName
@@ -26,5 +27,5 @@ export default function AnimalIcon(props: AnimalIconProps) {
     () => `${basePath}/animals/${curatedAnimal()}.svg`,
   );
 
-  return <CoreSvgIcon src={iconSrc()} alt={curatedAnimal()} />;
+  return <AtomSvgIcon src={iconSrc()} alt={curatedAnimal()} />;
 }
