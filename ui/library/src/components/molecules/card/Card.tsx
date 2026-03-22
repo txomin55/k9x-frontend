@@ -1,4 +1,5 @@
 import "./styles.css";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 
 export default function Card() {
   return (
@@ -33,7 +34,7 @@ export default function Card() {
       </section>
 
       <footer class="data-card__actions">
-        <button type="primary">Ver clasificacion</button>
+        <AtomButton type="primary">Ver clasificacion</AtomButton>
       </footer>
     </article>
   );

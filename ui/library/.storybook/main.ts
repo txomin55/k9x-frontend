@@ -9,6 +9,7 @@ import remarkGfm from "remark-gfm";
  * It is necessary in projects that use Yarn PnP or are set up within a monorepo.
  */
 const require = createRequire(import.meta.url);
+const kobalteSolidDist = /node_modules\/(?:\.pnpm\/.*\/)?@kobalte\/core\/dist\/.*\.jsx$/;
 
 function getAbsolutePath(value) {
   return dirname(require.resolve(join(value, "package.json")));
@@ -40,10 +41,14 @@ const config: StorybookConfig = {
       plugins: [
         ...(baseConfig.plugins ?? []),
         solid({
-          include: ["src/**/*.tsx"],
+          include: ["src/**/*.tsx", kobalteSolidDist],
           exclude: ["**/.storybook/components/**"],
         }),
       ],
+      resolve: {
+        ...(baseConfig.resolve ?? {}),
+        conditions: ["solid", ...((baseConfig.resolve?.conditions ?? []) as string[])],
+      },
     };
   },
 };

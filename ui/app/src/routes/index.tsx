@@ -1,8 +1,8 @@
 import { useLocation, useNavigate } from "@tanstack/solid-router";
-import { createEffect, Show } from "solid-js";
+import { createEffect, Index, Show } from "solid-js";
 import { useDogs } from "@/services/fetch_dogs/fetchDogs";
-import logo from "@/assets/logo.svg";
 import { AppRoutePath } from "@/components/router/paths";
+import Card from "@lib/components/molecules/card/Card";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -32,23 +32,8 @@ export default function IndexRoute() {
   return (
     <div class="Landing">
       <Show when={fetchedDogs.data}>
-        <pre>{JSON.stringify(fetchedDogs.data, null, 2)}</pre>
+        <Index each={fetchedDogs.data}>{() => <Card />}</Index>
       </Show>
-
-      <div class="header">
-        <img src={logo} class="logo" alt="logo" />
-        <p>
-          --Edit <code>src/routes/index.tsx</code> and save to reload.
-        </p>
-        <a
-          class="link"
-          href="https://www.solidjs.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          --Learn Solid
-        </a>
-      </div>
     </div>
   );
 }
