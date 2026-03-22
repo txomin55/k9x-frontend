@@ -47,7 +47,7 @@ export default function AppShell() {
             <div class="app-shell">
               <h1>--My Solid PWA</h1>
               <p>{(locale(), t("hello", { name: "txomin" }))}</p>
-              <h2>--USER -- {user()?.getOwner() ?? "--NO"}</h2>
+              <h2>--USER -- {user()?.getName() ?? "--NO"}</h2>
               <NewsVisualizer />
               <Outlet />
             </div>

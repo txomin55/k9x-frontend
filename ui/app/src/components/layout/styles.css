@@ -77,6 +77,12 @@
     padding: var(--unit-3) var(--unit-2);
 }
 
+.app-layout__user-img {
+    display: flex;
+    height: var(--unit-4);
+    width: var(--unit-4);
+}
+
 @media (max-width: 1024px) {
     .app-layout__navigation {
         padding: var(--unit-1);
@@ -91,5 +97,11 @@
         background: rgba(15, 23, 32, 0.2);
         backdrop-filter: blur(2px);
         cursor: pointer;
+    }
+
+    .app-layout__user-img {
+        display: flex;
+        height: var(--unit-6);
+        width: var(--unit-6);
     }
 }

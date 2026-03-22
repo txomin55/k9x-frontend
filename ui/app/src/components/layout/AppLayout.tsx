@@ -6,6 +6,7 @@ import { startGoogleInteractiveLogin } from "@/services/google_auth/googleAuth";
 import CoreButton from "@lib/components/atoms/button/CoreButton";
 import { useAuthUser } from "@/stores/auth";
 import "@/components/layout/styles.css";
+import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -94,7 +95,14 @@ export default function AppLayout(props: ParentProps) {
         </button>
 
         <Show when={user()} fallback={loginButton()}>
-          {user()?.getOwner()}
+          {(currentUser) => (
+            <div class="app-layout__user-img">
+              <ProfileImage
+                src={currentUser().getImage()}
+                fallback={currentUser().getInitials()}
+              />
+            </div>
+          )}
         </Show>
       </div>
 
