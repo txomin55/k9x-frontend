@@ -1,8 +1,4 @@
-export interface UserModel {
-  email: string;
-  image: string;
-  name: string;
-}
+import { UserModel } from "@/services/fetch_user_data/fetchUserData";
 
 export type User = {
   getName: () => string;

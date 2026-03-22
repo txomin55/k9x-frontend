@@ -5,14 +5,13 @@ import AppLayout from "@/components/layout/AppLayout";
 import NewsVisualizer from "@/components/news_visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth";
-import { initI18n, t, useI18nReady, useLocale } from "@/stores/i18n";
+import { useI18n } from "@/stores/i18n";
 import { resolveAppPath } from "@/utils/routes/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_features/offline_load/animal-icons";
 import "@/app.css";
 
 export default function AppShell() {
-  const ready = useI18nReady();
-  const locale = useLocale();
+  const i18n = useI18n();
   const user = useAuthUser();
   let cancelAnimalIconWarmup: (() => void) | undefined;
 
@@ -26,7 +25,7 @@ export default function AppShell() {
       });
     }
 
-    await initI18n();
+    await i18n.init();
     await fetchUserIfAuthenticated(location().pathname, (path) =>
       navigate({ to: path as never }),
     );
@@ -41,13 +40,12 @@ export default function AppShell() {
   return (
     <MetaProvider>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <Show when={ready()} fallback={<p>Loading app....</p>}>
+      <Show when={i18n.ready()} fallback={<p>Loading app....</p>}>
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">
               <h1>--My Solid PWA</h1>
-              <p>{(locale(), t("hello", { name: "txomin" }))}</p>
-              <p>{t("hello", { name: "txomin" })}</p>
+              <p>{i18n.t("hello", { name: "txomin" })}</p>
               <h2>--USER -- {user()?.getName() ?? "--NO"}</h2>
               <NewsVisualizer />
               <Outlet />

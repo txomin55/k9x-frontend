@@ -16,20 +16,12 @@ type I18nState = {
   ready: boolean;
 };
 
-const {
-  setState,
-  store: i18nStore,
-  useAppStore,
-} = createAppStore<I18nState>({
+const { getState, setState, useAppStore } = createAppStore<I18nState>({
   locale: TranslationLocale.EN,
   ready: false,
 });
 
 let initPromise: Promise<void> | undefined;
-
-const setI18nState = (updater: (state: I18nState) => I18nState) => {
-  setState(updater);
-};
 
 const normalizeLocale = (inputLocale: unknown): Locale => {
   if (!inputLocale) return TranslationLocale.EN;
@@ -73,7 +65,7 @@ const initI18n = async () => {
       lng: normalizeLocale(languageDetector.detect()),
     })
     .then(() => {
-      setI18nState(() => ({
+      setState(() => ({
         locale: normalizeLocale(i18n.language),
         ready: true,
       }));
@@ -82,33 +74,29 @@ const initI18n = async () => {
   return initPromise;
 };
 
-const setLocale = async (nextLocale: string) => {
-  await initI18n();
-  await i18n.changeLanguage(normalizeLocale(nextLocale));
-  setI18nState((state) => ({
-    ...state,
-    locale: normalizeLocale(i18n.language),
-  }));
+const getCurrentLocale = () => getState().locale;
+
+const useI18n = () => {
+  const locale = useAppStore((state) => state.locale);
+  const ready = useAppStore((state) => state.ready);
+  return {
+    init: initI18n,
+    locale,
+    ready,
+    locales,
+    setLocale: async (nextLocale: string) => {
+      if (!ready()) return;
+      await i18n.changeLanguage(normalizeLocale(nextLocale));
+      setState((state) => ({
+        ...state,
+        locale: normalizeLocale(i18n.language),
+      }));
+    },
+    t: (key: string, options?: Record<string, unknown>) => {
+      if (!locale() || !ready()) return key;
+      return i18n.t(key, options);
+    },
+  };
 };
 
-const t = (key: string, options?: Record<string, unknown>) => {
-  if (!i18n.isInitialized) return key;
-  return i18n.t(key, options);
-};
-
-const useI18n = <TSelected>(selector: (state: I18nState) => TSelected) =>
-  useAppStore(selector);
-
-const useLocale = () => useI18n((state) => state.locale);
-const useI18nReady = () => useI18n((state) => state.ready);
-
-export {
-  i18nStore,
-  initI18n,
-  locales,
-  setLocale,
-  t,
-  TranslationLocale,
-  useI18nReady,
-  useLocale,
-};
+export { getCurrentLocale, initI18n, useI18n };

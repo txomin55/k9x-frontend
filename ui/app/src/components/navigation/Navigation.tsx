@@ -2,14 +2,14 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { Link } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/router/paths";
 import { clearAuth, useAuthUser } from "@/stores/auth";
-import { locales, setLocale, useLocale } from "@/stores/i18n";
+import { useI18n } from "@/stores/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import "@/components/navigation/styles.css";
 import { For, Show } from "solid-js";
 
 export default function Navigation(props) {
   const user = useAuthUser();
-  const locale = useLocale();
+  const i18n = useI18n();
 
   const handleLogout = () => {
     queryClient.clear();
@@ -47,13 +47,13 @@ export default function Navigation(props) {
 
             <div class="navigation-tools__group">
               <p>--LOCALES</p>
-              <p>--locale - {locale()}</p>
+              <p>--locale - {i18n.locale()}</p>
               <div class="navigation-tools__locales">
-                <For each={locales}>
+                <For each={i18n.locales}>
                   {(nextLocale) => (
                     <AtomButton
                       type="primary"
-                      onClick={() => setLocale(nextLocale)}
+                      onClick={() => i18n.setLocale(nextLocale)}
                     >
                       {nextLocale}
                     </AtomButton>

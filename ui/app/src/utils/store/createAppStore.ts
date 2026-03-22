@@ -10,9 +10,8 @@ const createAppStore = <TState>(initialState: TState) => {
   const setState = (updater: StoreUpdater<TState>) => {
     store.setState(updater);
   };
-  const useAppStore = <TSelected>(
-    selector: (state: TState) => TSelected,
-  ) => useStore(store, selector);
+  const useAppStore = <TSelected>(selector: (state: TState) => TSelected) =>
+    useStore(store, selector);
 
   return {
     getState,
