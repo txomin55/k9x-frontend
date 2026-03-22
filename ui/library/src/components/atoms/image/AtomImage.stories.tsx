@@ -1,16 +1,14 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import CoreImage, {
-  type CoreImageProps,
-} from "@lib/components/atoms/image/AtomImage";
+import AtomImage, { type AtomImageProps } from "@lib/components/atoms/image/AtomImage";
 
 const meta = {
-  title: "Atoms/CoreImage",
+  title: "Atoms/AtomImage",
   argTypes: {
     src: { control: "text" },
     alt: { control: "text" },
     fallback: { control: "text" },
   },
-  render: (args: CoreImageProps) => renderSolid(() => <CoreImage {...args} />),
+  render: (args: AtomImageProps) => renderSolid(() => <AtomImage {...args} />),
 };
 
 export default meta;

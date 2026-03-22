@@ -1,6 +1,7 @@
 @import "colors/tokens.css";
 @import "sizes/primitives.css";
 @import "text/index.css";
+@import "../../../node_modules/flag-icons/css/flag-icons.min.css";
 
 html {
     font-family: "Times New Roman", Times, serif;

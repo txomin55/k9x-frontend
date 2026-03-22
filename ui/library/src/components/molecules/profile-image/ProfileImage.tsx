@@ -1,5 +1,5 @@
 import type { JSX } from "solid-js";
-import CoreImage from "@lib/components/atoms/image/AtomImage";
+import AtomImage from "@lib/components/atoms/image/AtomImage";
 import "./styles.css";
 
 export type ProfileImageProps = {
@@ -11,7 +11,7 @@ export type ProfileImageProps = {
 
 export default (props: ProfileImageProps) => (
   <div class="profile-image">
-    <CoreImage
+    <AtomImage
       alt={props.alt}
       src={props.src}
       onClick={props.onClick}

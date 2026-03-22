@@ -40,6 +40,7 @@ const config: StorybookConfig = {
       plugins: [
         ...(baseConfig.plugins ?? []),
         solid({
+          include: ["src/**/*.tsx"],
           exclude: ["**/.storybook/components/**"],
         }),
       ],

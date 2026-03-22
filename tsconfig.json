@@ -1,0 +1,17 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./ui/app"
+    },
+    {
+      "path": "./ui/library"
+    },
+    {
+      "path": "./configuration/my-vitest"
+    },
+    {
+      "path": "./coverage_processor"
+    }
+  ]
+}
