@@ -1,4 +1,4 @@
-import { defineQuery } from "@/utils/http/query-factory";
+import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
 
 const STAGES_ENDPOINT_PATH = "/stages";
@@ -25,12 +25,6 @@ export interface Location {
   latitude: number;
   longitude: number;
 }
-
-type TanstackCreateQuery = {
-  staleTime?: number;
-  gcTime?: number;
-  refetchOnMount?: boolean;
-};
 
 const fetchStages = () =>
   rawRequest<Stage[]>({

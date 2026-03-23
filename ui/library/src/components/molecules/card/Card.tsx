@@ -1,4 +1,14 @@
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type CardProps = {
+  topLeft?: JSX.Element;
+  topRight?: JSX.Element;
+  subHeader?: JSX.Element;
+  description?: JSX.Element;
+  content?: JSX.Element;
+  actions?: JSX.Element;
+};
 
 export default function Card({
   topLeft,
@@ -7,7 +17,7 @@ export default function Card({
   description,
   content,
   actions,
-}) {
+}: CardProps) {
   return (
     <article class="data-card">
       <header class="data-card__top">
@@ -15,7 +25,7 @@ export default function Card({
         <div class="data-card__top-right">{topRight}</div>
       </header>
 
-      <span class="data-card__date text-caption-sm">{subHeader}</span>
+      <span class="data-card__sub-header text-caption-sm">{subHeader}</span>
 
       <p class="data-card__description text-body-md">{description}</p>
       <section class="data-card__content">{content}</section>

@@ -1,8 +1,8 @@
-import {useLocation, useNavigate} from "@tanstack/solid-router";
-import {createEffect, For, Show} from "solid-js";
-import {AppRoutePath} from "@/components/router/paths";
+import { useLocation, useNavigate } from "@tanstack/solid-router";
+import { For, onMount, Suspense } from "solid-js";
+import { AppRoutePath } from "@/components/router/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
-import {useStages} from "@/services/fetch_stages/fetchStages";
+import { useStages } from "@/services/fetch_stages/fetchStages";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -15,7 +15,7 @@ export default function IndexRoute() {
     gcTime: 5 * 60 * 1000,
   });
 
-  createEffect(async () => {
+  onMount(async () => {
     const search = location().searchStr;
     if (!search) return;
 
@@ -30,8 +30,8 @@ export default function IndexRoute() {
   });
 
   return (
-    <div class="Landing">
-      <Show when={fetchedStages.data}>
+    <div class="home">
+      <Suspense fallback={<span>--Loading stages</span>}>
         <For each={fetchedStages.data}>
           {(stage) => (
             <StageCard
@@ -45,7 +45,7 @@ export default function IndexRoute() {
             />
           )}
         </For>
-      </Show>
+      </Suspense>
     </div>
   );
 }

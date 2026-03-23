@@ -14,17 +14,6 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.data-card:hover {
-    border-color: var(--border-strong);
-    box-shadow: 0 8px 24px rgba(15, 23, 32, 0.08);
-    transform: translateY(-1px);
-}
-
-.data-card:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-}
-
 .data-card__top {
     display: flex;
     justify-content: space-between;
@@ -43,20 +32,7 @@
     color: var(--text-primary);
 }
 
-.data-card__badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
-    padding: 0 var(--unit-1);
-    border-radius: 999px;
-    background: var(--primary-soft);
-    color: var(--text-primary);
-    border: 1px solid var(--primary-border);
-}
-
-.data-card__date {
+.data-card__sub-header {
     display: block;
     color: var(--text-muted);
     margin-bottom: var(--unit-1);

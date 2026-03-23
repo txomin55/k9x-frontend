@@ -1,11 +1,17 @@
 import {
   createMutation,
-  createQuery,
   type CreateMutationOptions,
+  createQuery,
   type MutationFunction,
   type QueryKey,
 } from "@tanstack/solid-query";
 import { getCurrentLocale, useI18n } from "@/stores/i18n";
+
+export type TanstackCreateQuery = {
+  staleTime?: number;
+  gcTime?: number;
+  refetchOnMount?: boolean;
+};
 
 type QueryFactoryOptions<TData, TKey extends QueryKey> = {
   fetcher: () => Promise<TData>;

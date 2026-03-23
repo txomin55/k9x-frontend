@@ -44,7 +44,7 @@ export default ({
       }
       subHeader={
         <span class="stage-card__date text-caption-sm">
-          {new Date(from).toDateString()} - {new Date(to).toDateString()}
+          {`${new Date(from).toDateString()} - ${new Date(to).toDateString()}`}
         </span>
       }
       description={
@@ -53,21 +53,22 @@ export default ({
       content={
         <Index each={grades}>
           {(grade) => (
-            <div>
-              <span>{grade().name}</span>
-              <span>{grade().competitors}</span>
+            <div class="stage-card__grades-content">
+              <div>
+                <span>{grade().name}</span>
+                <span>{grade().competitors}</span>
+              </div>
+              <div>
+                <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
+                <AtomButton type={BUTTON_TYPES.PRIMARY}>
+                  --Ver clasificacion
+                </AtomButton>
+              </div>
             </div>
           )}
         </Index>
       }
-      actions={
-        <>
-          <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
-          <AtomButton type={BUTTON_TYPES.PRIMARY}>
-            --Ver clasificacion
-          </AtomButton>
-        </>
-      }
+      actions={<></>}
     />
   );
 };
