@@ -28,7 +28,6 @@
 .data-card__top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
     gap: var(--unit-1);
     margin-bottom: var(--unit-05);
 }
