@@ -3,7 +3,7 @@
     --font-size-2xs: 12px; /* very small labels */
     --font-size-xs: 13px;
     --font-size-sm: 14px;
-    --font-size-md: var(--unit-1); /* base size (16px) */
+    --font-size-md: var(--unit-2); /* base size (16px) */
     --font-size-lg: 18px;
     --font-size-xl: 20px;
     --font-size-2xl: var(--unit-3); /* 24px */

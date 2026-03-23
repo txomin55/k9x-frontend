@@ -1,6 +1,5 @@
 import { dirname, join } from "node:path";
 import { createRequire } from "node:module";
-import type { StorybookConfig } from "@storybook/html-vite";
 import solid from "vite-plugin-solid";
 import remarkGfm from "remark-gfm";
 
@@ -8,14 +7,20 @@ import remarkGfm from "remark-gfm";
  * This function is used to resolve the absolute path of a package.
  * It is necessary in projects that use Yarn PnP or are set up within a monorepo.
  */
-const require = createRequire(import.meta.url);
+const nodeRequire = createRequire(join(process.cwd(), "package.json"));
 const kobalteSolidDist = /node_modules\/(?:\.pnpm\/.*\/)?@kobalte\/core\/dist\/.*\.jsx$/;
 
 function getAbsolutePath(value) {
-  return dirname(require.resolve(join(value, "package.json")));
+  return dirname(nodeRequire.resolve(join(value, "package.json")));
 }
 
-const config: StorybookConfig = {
+function mergeResolveConditions(
+  conditions: string[] | undefined,
+): string[] {
+  return Array.from(new Set(["solid", ...(conditions ?? [])]));
+}
+
+const config = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.tsx"],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),
@@ -47,7 +52,7 @@ const config: StorybookConfig = {
       ],
       resolve: {
         ...(baseConfig.resolve ?? {}),
-        conditions: ["solid", ...((baseConfig.resolve?.conditions ?? []) as string[])],
+        conditions: mergeResolveConditions(baseConfig.resolve?.conditions),
       },
     };
   },
