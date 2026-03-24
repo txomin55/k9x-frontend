@@ -1,5 +1,6 @@
 import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
+import { CompetitionLocation } from "@/services/fetch_competitions/fetchCompetitions";
 
 const STAGES_ENDPOINT_PATH = "/stages";
 
@@ -7,23 +8,18 @@ export interface Stage {
   country: string;
   dateFrom: number;
   dateTo: number;
-  description: string;
-  grades: Grade[];
+  description?: string;
+  events: StageEvent[];
   id: string;
-  location: Location;
+  location?: CompetitionLocation;
   name: string;
 }
 
-export interface Grade {
+export interface StageEvent {
   competitors: number;
+  discipline: string;
   id: string;
   name: string;
-}
-
-export interface Location {
-  address: string;
-  latitude: number;
-  longitude: number;
 }
 
 const fetchStages = () =>

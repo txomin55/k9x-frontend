@@ -7,9 +7,16 @@ export interface Competitions {
   country: string;
   description: string;
   id: string;
+  location?: CompetitionLocation;
   name: string;
   stages: CompetitionStage[];
   status: string;
+}
+
+export interface CompetitionLocation {
+  address?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface CompetitionStage {

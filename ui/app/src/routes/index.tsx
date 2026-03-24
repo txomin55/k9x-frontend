@@ -41,7 +41,8 @@ export default function IndexRoute() {
               from={stage.dateFrom}
               to={stage.dateTo}
               description={stage.description}
-              grades={stage.grades}
+              address={stage?.location?.address}
+              events={stage.events}
             />
           )}
         </For>
