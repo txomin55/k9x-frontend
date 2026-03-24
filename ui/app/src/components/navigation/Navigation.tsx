@@ -41,7 +41,7 @@ export default function Navigation(props) {
             <div class="navigation-tools__group">
               <p>--Mode</p>
               <AtomButton type="accent" onClick={props.onToggleMode}>
-                {props.isDark ? "Light" : "Dark"}
+                {props.isDark ? "--Light" : "--Dark"}
               </AtomButton>
             </div>
 
@@ -62,8 +62,9 @@ export default function Navigation(props) {
               </div>
 
               <Show when={user()}>
+                <p>{i18n.t("hello", { name: "txomin" })}</p>
                 <AtomButton type="primary" onClick={handleLogout}>
-                  Logout
+                  --Logout
                 </AtomButton>
               </Show>
             </div>
