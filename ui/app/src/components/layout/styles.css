@@ -83,6 +83,28 @@
     width: var(--unit-4);
 }
 
+.app-layout__user-img--menu {
+    min-width: 220px;
+}
+
+.app-layout__user-img--menu .navigation-tools {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-2);
+}
+
+.app-layout__user-img--menu .navigation-tools__group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.app-layout__user-img--menu .navigation-tools__locales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-1);
+}
+
 @media (max-width: 1024px) {
     .app-layout__navigation {
         padding: var(--unit-1);

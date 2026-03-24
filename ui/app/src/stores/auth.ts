@@ -1,5 +1,8 @@
 import { AppRoutePath } from "@/components/router/paths";
-import { clearCachedUserData, fetchCachedUserData } from "@/services/fetch_user_data/fetchUserData";
+import {
+  clearCachedUserData,
+  fetchCachedUserData,
+} from "@/services/fetch_user_data/fetchUserData";
 import type { User } from "@/services/fetch_user_data/UserResponse";
 import { createAppStore } from "@/utils/store/createAppStore";
 import { stripBasePath } from "@/utils/routes/app-paths";

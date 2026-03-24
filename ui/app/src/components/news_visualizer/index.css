@@ -22,7 +22,7 @@
 .news-visualizer__toast-trigger {
     position: fixed;
     right: 0;
-    top: 5rem;
+    bottom: 0;
     margin: 16px;
     padding: 12px;
     border: 1px solid #8885;

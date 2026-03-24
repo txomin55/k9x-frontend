@@ -7,6 +7,8 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
 import "@/components/layout/styles.css";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
+import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
+import NavigationUserMenu from "@/components/navigation/NavigationUserMenu";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -96,12 +98,24 @@ export default function AppLayout(props: ParentProps) {
 
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
-            <div class="app-layout__user-img">
-              <ProfileImage
-                src={currentUser().getImage()}
-                fallback={currentUser().getInitials()}
-              />
-            </div>
+            <AtomPopover
+              trigger={
+                <div class="app-layout__user-img">
+                  <ProfileImage
+                    src={currentUser().getImage()}
+                    fallback={currentUser().getInitials()}
+                  />
+                </div>
+              }
+              content={
+                <div class="app-layout__user-img--menu">
+                  <NavigationUserMenu
+                    isDark={isDark()}
+                    onToggleMode={toggleMode}
+                  />
+                </div>
+              }
+            />
           )}
         </Show>
       </div>
@@ -117,8 +131,6 @@ export default function AppLayout(props: ParentProps) {
         <Navigation
           isDesktop={isDesktop()}
           isNavOpen={isNavOpen()}
-          isDark={isDark()}
-          onToggleMode={toggleMode}
         />
 
         <main class="app-layout__content">{props.children}</main>

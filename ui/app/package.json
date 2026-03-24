@@ -17,10 +17,11 @@
   "devDependencies": {
     "@bdellegrazie/playwright-sonar-reporter": "^0.4.0",
     "@playwright/test": "^1.58.2",
-    "@solidjs/testing-library": "^0.8.10",
+    "@solidjs/testing-library": "catalog:",
     "@solidjs/vite-plugin-nitro-2": "^0.1.0",
     "@stoplight/prism-cli": "^5.14.2",
     "@testing-library/jest-dom": "catalog:",
+    "@testing-library/user-event": "catalog:",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "monocart-coverage-reports": "^2.12.9",
