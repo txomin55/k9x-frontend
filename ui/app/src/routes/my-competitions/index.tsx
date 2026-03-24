@@ -22,6 +22,7 @@ export default function MyCompetitionsRoute() {
               description={competition.description}
               country={competition.country}
               stages={competition.stages}
+              address={competition?.location?.address}
             />
           )}
         </For>

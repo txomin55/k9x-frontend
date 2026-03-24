@@ -11,6 +11,7 @@ interface CompetitionCardProps {
   name: string;
   status: string;
   description: string;
+  address?: string;
   stages: CompetitionStage[];
 }
 
@@ -20,6 +21,7 @@ export default ({
   description,
   status,
   stages,
+  address,
 }: CompetitionCardProps) => {
   const normalizedCountry = () => country?.trim().toLowerCase();
 
@@ -38,6 +40,13 @@ export default ({
       topRight={
         <div class="competition-card__status">
           <span>{status}</span>
+        </div>
+      }
+      subHeader={
+        <div class="competition-card__meta">
+          <span class="competition-card__address text-caption-md">
+            {address}
+          </span>
         </div>
       }
       description={
