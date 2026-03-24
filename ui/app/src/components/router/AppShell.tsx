@@ -11,7 +11,7 @@ import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_featu
 
 export default function AppShell() {
   const i18n = useI18n();
-  let cancelAnimalIconWarmup: (() => void) | undefined;
+  let cancelAnimalIconWarmup: () => void;
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function AppShell() {
 
     await i18n.init();
     await fetchUserIfAuthenticated(location().pathname, (path) =>
-      navigate({ to: path as never }),
+      navigate({ to: path }),
     );
 
     cancelAnimalIconWarmup = warmAnimalIconsInBackground();

@@ -16,7 +16,7 @@ export default function AppLayout(props: ParentProps) {
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
   const [isDark, setIsDark] = createSignal(false);
-  let previousDesktop: boolean | null = null;
+  let previousDesktop = false;
 
   const toggleMode = () => {
     const nextIsDark = !isDark();

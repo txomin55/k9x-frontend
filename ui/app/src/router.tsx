@@ -12,7 +12,7 @@ import { getBasePath } from "@/utils/routes/app-paths";
 
 const rootRoute = createRootRoute({
   component: AppShell,
-  notFoundComponent: () => <p>Page not found.</p>,
+  notFoundComponent: () => <p>--Page not found.</p>,
 });
 
 const indexRoute = createRoute({

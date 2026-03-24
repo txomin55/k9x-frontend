@@ -10,12 +10,7 @@ type AuthState = {
   error: Error | null;
 };
 
-const {
-  getState,
-  setState,
-  store: authStore,
-  useAppStore,
-} = createAppStore<AuthState>({
+const { getState, setState, useAppStore } = createAppStore<AuthState>({
   user: null,
   loading: false,
   error: null,
@@ -78,9 +73,4 @@ const useAuth = <TSelected>(selector: (state: AuthState) => TSelected) =>
 
 const useAuthUser = () => useAuth((state) => state.user);
 
-export {
-  clearAuth,
-  fetchUserIfAuthenticated,
-  setUser,
-  useAuthUser,
-};
+export { clearAuth, fetchUserIfAuthenticated, setUser, useAuthUser };

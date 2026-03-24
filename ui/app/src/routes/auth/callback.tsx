@@ -72,7 +72,7 @@ export default function AuthCallbackRoute() {
 
       setStatus("loaded");
 
-      navigate({ to: AppRoutePath.HOME as "/", replace: true });
+      await navigate({ to: AppRoutePath.HOME as "/", replace: true });
     };
 
     await runCallback();
@@ -80,7 +80,7 @@ export default function AuthCallbackRoute() {
 
   return (
     <>
-      <Title>Auth Callback</Title>
+      <Title>--Auth Callback</Title>
       <Switch>
         <Match when={status() === "loading" || status() === "pending"}>
           <p>--Autenticando con Google...</p>
