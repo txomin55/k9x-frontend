@@ -1,17 +1,19 @@
 .navigation__sidebar--desktop {
-    position: fixed;
-    top: calc(var(--unit-6) + 1px);
-    left: 0;
-    bottom: 0;
+    position: relative;
+    flex: 0 0 0;
     width: 0;
+    min-width: 0;
+    height: 100%;
     pointer-events: none;
-    transition: width 220ms ease;
+    overflow: hidden;
+    transition: flex-basis 220ms ease,
+    width 220ms ease;
 }
 
 .navigation__sidebar--desktop.navigation__sidebar--open {
+    flex-basis: 300px;
     width: 300px;
     pointer-events: auto;
-    border-right: 1px solid var(--border);
 }
 
 .navigation__sidebar-panel {
@@ -21,14 +23,12 @@
 }
 
 .navigation__sidebar--desktop .navigation__sidebar-panel {
-    height: stretch;
+    height: 100%;
     opacity: 0;
     pointer-events: none;
-
     display: flex;
     flex-direction: column;
     overflow: hidden;
-
     transition: transform 220ms ease,
     opacity 180ms ease;
 }
