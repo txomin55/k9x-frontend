@@ -1,6 +1,7 @@
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import { useNavigate } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import "./styles.css";
 import { CompetitionStage } from "@/services/fetch_competitions/fetchCompetitions";
@@ -16,6 +17,7 @@ interface CompetitionCardProps {
 }
 
 export default ({
+  id,
   country,
   name,
   description,
@@ -23,6 +25,7 @@ export default ({
   stages,
   address,
 }: CompetitionCardProps) => {
+  const navigate = useNavigate();
   const normalizedCountry = () => country?.trim().toLowerCase();
 
   return (
@@ -64,7 +67,16 @@ export default ({
                   {`${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`}
                 </span>
               </div>
-              <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
+              <AtomButton
+                type={BUTTON_TYPES.ACCENT}
+                onClick={() =>
+                  navigate({
+                    href: `/my-competitions/${id}`,
+                  })
+                }
+              >
+                --+ Info
+              </AtomButton>
             </div>
           )}
         </For>

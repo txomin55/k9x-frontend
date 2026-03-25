@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from "vite";
 import { nitroV2Plugin as nitro } from "@solidjs/vite-plugin-nitro-2";
 import { solidStart } from "@solidjs/start/config";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import eslint from "vite-plugin-eslint";
 import path from "node:path";
 import commonjs from "vite-plugin-commonjs";
@@ -19,6 +20,11 @@ export default defineConfig(({ mode }) => {
   return {
     base: assetBase,
     plugins: [
+      tanstackRouter({
+        target: "solid",
+        autoCodeSplitting: true,
+        routeFileIgnorePattern: "\\.(spec|test)\\.(ts|tsx)$",
+      }),
       solidStart({ ssr: false }),
       nitro({
         preset: "github-pages",

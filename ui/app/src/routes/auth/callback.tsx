@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { useNavigate } from "@tanstack/solid-router";
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
 import { AppRoutePath } from "@/components/router/paths";
 import {
@@ -16,6 +16,10 @@ import { resolveAppPath } from "@/utils/routes/app-paths";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
+export const Route = createFileRoute("/auth/callback")({
+  component: AuthCallbackPage,
+});
+
 function readCallbackParams() {
   const stored = globalThis.sessionStorage.getItem(CALLBACK_PARAMS_KEY);
   if (stored) {
@@ -26,7 +30,7 @@ function readCallbackParams() {
   return globalThis.location.search;
 }
 
-export default function AuthCallbackRoute() {
+function AuthCallbackPage() {
   const navigate = useNavigate();
   const [status, setStatus] = createSignal("pending");
   const login = useLogin();

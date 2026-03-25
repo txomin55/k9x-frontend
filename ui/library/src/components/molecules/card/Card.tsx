@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import { JSX, Show } from "solid-js";
 import "./styles.css";
 
 export type CardProps = {
@@ -30,7 +30,9 @@ export default function Card({
       <p class="data-card__description text-body-md">{description}</p>
       <section class="data-card__content">{content}</section>
 
-      <footer class="data-card__actions">{actions}</footer>
+      <Show when={actions !== null}>
+        <footer class="data-card__actions">{actions}</footer>
+      </Show>
     </article>
   );
 }

@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "@tanstack/solid-router";
+import { createFileRoute, useLocation, useNavigate } from "@tanstack/solid-router";
 import { For, onMount, Suspense } from "solid-js";
 import { AppRoutePath } from "@/components/router/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
@@ -6,7 +6,11 @@ import { useStages } from "@/services/fetch_stages/fetchStages";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
-export default function IndexRoute() {
+export const Route = createFileRoute("/")({
+  component: IndexRoutePage,
+});
+
+function IndexRoutePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const fetchedStages = useStages({
