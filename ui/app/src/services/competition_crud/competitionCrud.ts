@@ -1,9 +1,22 @@
 import { type CreateQueryResult } from "@tanstack/solid-query";
 import {
+  COMPETITIONS_SNAPSHOT_ID,
   type Competitions,
   CompetitionStage,
   type CompetitionStage as CompetitionListStage
 } from "@/services/fetch_competitions/fetchCompetitions";
+import {
+  processPendingTasks,
+} from "@/services/pending_tasks/pendingTasksRunner";
+import {
+  createPendingTaskId,
+  enqueuePendingTask,
+  type PendingTaskMethod,
+} from "@/services/pending_tasks/pendingTasksStore";
+import {
+  getQuerySnapshot,
+  saveQuerySnapshot,
+} from "@/services/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
@@ -11,41 +24,63 @@ import { defineQuery, type TanstackCreateQuery } from "@/utils/http/query-factor
 
 const DRAFT_COMPETITION_STATUS = "draft";
 
-const fetchCompetition = (id: string) =>
-  rawRequest<Competition>({
+const getCompetitionDetailKey = (id: string) =>
+  ["competition", id, getCurrentLocale()] as const;
+
+const getCompetitionsListKey = () =>
+  ["competitions", getCurrentLocale()] as const;
+
+const refreshCompetitionSnapshot = async (id: string) => {
+  const competition = await rawRequest<Competition>({
     path: `/api/competitions/${id}`,
   });
 
-const postCompetition = (payload: PostCompetition) =>
-  rawRequest<string>({
-    body: payload,
-    method: "POST",
-    path: "/api/competitions",
-  });
+  queryClient.setQueryData(getCompetitionDetailKey(id), competition);
 
-const putCompetition = (payload: PostCompetition) =>
-  rawRequest<void>({
-    body: payload,
-    method: "PUT",
-    path: `/api/competitions/${payload.id}`,
-  });
+  const previousCompetitions =
+    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
+  const nextCompetition = toCompetitionListItem(
+    competition,
+    previousCompetitions.find((candidate) => candidate.id === competition.id),
+  );
+  const existingIndex = previousCompetitions.findIndex(
+    (candidate) => candidate.id === competition.id,
+  );
+  const nextCompetitions =
+    existingIndex === -1
+      ? [nextCompetition, ...previousCompetitions]
+      : previousCompetitions.map((candidate) =>
+          candidate.id === competition.id ? nextCompetition : candidate,
+        );
 
-const deleteCompetitionRequest = (id: string) =>
-  rawRequest<void>({
-    method: "DELETE",
-    path: `/api/competitions/${id}`,
-  });
+  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
+  queryClient.setQueryData(getCompetitionsListKey(), nextCompetitions);
+
+  return competition;
+};
+
+const fetchCompetition = async (id: string) => {
+  const competitionsSnapshot =
+    await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID);
+  const competitionSnapshot = competitionsSnapshot?.find(
+    (competition) => competition.id === id,
+  );
+
+  if (competitionSnapshot) {
+    if (globalThis.navigator.onLine) {
+      void refreshCompetitionSnapshot(id).catch(() => undefined);
+    }
+
+    return competitionSnapshot as Competition;
+  }
+
+  return refreshCompetitionSnapshot(id);
+};
 
 const competitionQuery = defineQuery({
   fetcher: fetchCompetition,
   queryKey: (id: string) => ["competition", id] as const,
 });
-
-const getCompetitionDetailKey = (id: string) =>
-  [...competitionQuery.key(id), getCurrentLocale()] as const;
-
-const getCompetitionsListKey = () =>
-  ["competitions", getCurrentLocale()] as const;
 
 const toCompetitionStage = (
   stage: CompetitionStage,
@@ -176,6 +211,71 @@ const removeCompetitionFromListCache = (id: string) => {
   );
 };
 
+const persistCompetitionSnapshot = async (competition: Competition) => {
+  const previousCompetitions =
+    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
+  const nextCompetition = toCompetitionListItem(
+    competition,
+    previousCompetitions.find(({ id }) => id === competition.id),
+  );
+  const existingIndex = previousCompetitions.findIndex(
+    ({ id }) => id === competition.id,
+  );
+
+  const nextCompetitions =
+    existingIndex === -1
+      ? [nextCompetition, ...previousCompetitions]
+      : previousCompetitions.map((previousCompetition) =>
+          previousCompetition.id === competition.id
+            ? nextCompetition
+            : previousCompetition,
+        );
+
+  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
+};
+
+const removeCompetitionSnapshot = async (id: string) => {
+  const previousCompetitions =
+    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
+  const nextCompetitions = previousCompetitions.filter(
+    (competition) => competition.id !== id,
+  );
+
+  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
+};
+
+const enqueueCompetitionTask = async ({
+  entityId,
+  method,
+  payload,
+  url,
+}: {
+  entityId: string;
+  method: PendingTaskMethod;
+  payload?: unknown;
+  url: string;
+}) => {
+  const timestamp = Date.now();
+
+  await enqueuePendingTask({
+    attemptCount: 0,
+    entityId,
+    entityType: "competition",
+    id: createPendingTaskId({
+      entityId,
+      entityType: "competition",
+      method,
+      timestamp,
+    }),
+    method,
+    payload,
+    status: "pending",
+    timestamp,
+    updatedAt: timestamp,
+    url,
+  });
+};
+
 export const createDefaultCompetition = (): PostCompetition => ({
   country: "pt",
   id: globalThis.crypto.randomUUID(),
@@ -199,8 +299,14 @@ export const useCompetition = () => {
 
     queryClient.setQueryData(detailKey, draftCompetition);
     upsertCompetitionInListCache(draftCompetition);
+    void persistCompetitionSnapshot(draftCompetition);
 
-    void postCompetition(payload);
+    void enqueueCompetitionTask({
+      entityId: draftCompetition.id,
+      method: "POST",
+      payload,
+      url: "/api/competitions",
+    }).then(() => processPendingTasks());
   };
 
   const updateCompetition = (payload: PostCompetition) => {
@@ -218,8 +324,14 @@ export const useCompetition = () => {
 
     queryClient.setQueryData(detailKey, nextCompetition);
     upsertCompetitionInListCache(nextCompetition);
+    void persistCompetitionSnapshot(nextCompetition);
 
-    void putCompetition(payload);
+    void enqueueCompetitionTask({
+      entityId: payload.id,
+      method: "PUT",
+      payload,
+      url: `/api/competitions/${payload.id}`,
+    }).then(() => processPendingTasks());
   };
 
   const deleteCompetition = (id: string) => {
@@ -227,8 +339,13 @@ export const useCompetition = () => {
 
     queryClient.removeQueries({ queryKey: detailKey, exact: true });
     removeCompetitionFromListCache(id);
+    void removeCompetitionSnapshot(id);
 
-    void deleteCompetitionRequest(id);
+    void enqueueCompetitionTask({
+      entityId: id,
+      method: "DELETE",
+      url: `/api/competitions/${id}`,
+    }).then(() => processPendingTasks());
   };
 
   return {

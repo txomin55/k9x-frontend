@@ -16,6 +16,31 @@ type RequestOptions = {
   retryOnUnauthorized?: boolean;
 };
 
+class HttpRequestError extends Error {
+  kind = "http" as const;
+  path: string;
+  status: number;
+
+  constructor(path: string, status: number, message?: string) {
+    super(message ?? `Request failed for ${path} with status ${status}`);
+    this.name = "HttpRequestError";
+    this.path = path;
+    this.status = status;
+  }
+}
+
+class NetworkRequestError extends Error {
+  kind = "network" as const;
+  path: string;
+
+  constructor(path: string, cause?: unknown) {
+    super(`Network request failed for ${path}`);
+    this.name = "NetworkRequestError";
+    this.path = path;
+    this.cause = cause;
+  }
+}
+
 const getApiBaseUrl = () => import.meta.env.VITE_APP_API_ADDRESS;
 
 const buildHeaders = (path: string, headers?: HeadersInit) => {
@@ -44,11 +69,17 @@ const rawRequest = async <TResponse>({
   path,
   retryOnUnauthorized = auth,
 }: RequestOptions): Promise<TResponse> => {
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    body: body === undefined ? undefined : JSON.stringify(body),
-    headers: buildHeaders(path, headers),
-    method,
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${getApiBaseUrl()}${path}`, {
+      body: body === undefined ? undefined : JSON.stringify(body),
+      headers: buildHeaders(path, headers),
+      method,
+    });
+  } catch (error) {
+    throw new NetworkRequestError(path, error);
+  }
 
   if (
     response.status === 401 &&
@@ -77,9 +108,7 @@ const rawRequest = async <TResponse>({
   }
 
   if (!response.ok) {
-    throw new Error(
-      `Request failed for ${path} with status ${response.status}`,
-    );
+    throw new HttpRequestError(path, response.status);
   }
 
   if (response.status === 204) {
@@ -89,7 +118,15 @@ const rawRequest = async <TResponse>({
   const contentType = response.headers.get("content-type") ?? "";
 
   if (contentType.includes("application/json")) {
-    return (await response.json()) as TResponse;
+    try {
+      return (await response.json()) as TResponse;
+    } catch (error) {
+      throw new HttpRequestError(
+        path,
+        response.status,
+        `Invalid JSON response for ${path}`,
+      );
+    }
   }
 
   return (await response.text()) as TResponse;
@@ -116,4 +153,4 @@ const shouldAttemptSilentLogin = (path: string) => {
   return hasToken && isApiRequest && !isLoginRequest;
 };
 
-export { loginWithToken, rawRequest };
+export { HttpRequestError, loginWithToken, NetworkRequestError, rawRequest };

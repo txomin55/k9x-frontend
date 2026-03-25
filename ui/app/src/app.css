@@ -1,4 +1,6 @@
-@import "@lib/assets/styles/index.css";
+@import "@lib/assets/styles/colors/tokens.css";
+@import "@lib/assets/styles/sizes/primitives.css";
+@import "@lib/assets/styles/text/index.css";
 
 body {
     margin: 0;

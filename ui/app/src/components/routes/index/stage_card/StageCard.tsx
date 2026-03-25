@@ -2,8 +2,9 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import type { StageEvent } from "@/services/fetch_stages/fetchStages";
-import { Index, Suspense } from "solid-js";
+import { Index } from "solid-js";
 import "./styles.css";
+import CountryFlag from "@/components/common/CountryFlag";
 
 interface StageCardProps {
   id: string;
@@ -25,16 +26,12 @@ export default ({
   events,
   address,
 }: StageCardProps) => {
-  const normalizedCountry = () => country?.trim().toLowerCase();
-
   return (
     <Card
       topLeft={
         <div class="stage-card__main-info">
           <div class="stage-card__country-flag">
-            <Suspense fallback={<span>--N/A</span>}>
-              <span class={`fi fi-${normalizedCountry()}`} />
-            </Suspense>
+            <CountryFlag country={country} alt={`${name} flag`} />
           </div>
           <span class="text-heading-sm">{name}</span>
         </div>

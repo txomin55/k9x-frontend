@@ -17,14 +17,23 @@ const isCacheableAssetRequest = (scope, request) => {
   return CACHEABLE_EXTENSIONS.test(url.pathname);
 };
 
-const networkFirst = async (request, cacheName) => {
+const getAppShellRequest = (scope) => {
+  const appShellUrl = new URL(scope.registration.scope);
+  return new Request(appShellUrl.href, { credentials: "same-origin" });
+};
+
+const networkFirst = async (scope, request, cacheName) => {
   const cache = await caches.open(cacheName);
+  const appShellRequest = getAppShellRequest(scope);
 
   try {
     const response = await fetch(request);
 
     if (response.ok) {
       await cache.put(request, response.clone());
+      if (request.mode === "navigate") {
+        await cache.put(appShellRequest, response.clone());
+      }
     }
 
     return response;
@@ -33,6 +42,13 @@ const networkFirst = async (request, cacheName) => {
 
     if (cachedResponse) {
       return cachedResponse;
+    }
+
+    if (request.mode === "navigate") {
+      const appShellResponse = await cache.match(appShellRequest);
+      if (appShellResponse) {
+        return appShellResponse;
+      }
     }
 
     return Response.error();
@@ -68,7 +84,7 @@ export const registerAppShellCache = (scope) => {
     }
 
     if (request.mode === "navigate") {
-      event.respondWith(networkFirst(request, APP_SHELL_CACHE));
+      event.respondWith(networkFirst(scope, request, APP_SHELL_CACHE));
       return;
     }
 

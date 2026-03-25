@@ -2,8 +2,9 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { useNavigate } from "@tanstack/solid-router";
-import { For, Suspense } from "solid-js";
+import { For } from "solid-js";
 import "./styles.css";
+import CountryFlag from "@/components/common/CountryFlag";
 import { CompetitionStage } from "@/services/fetch_competitions/fetchCompetitions";
 
 interface CompetitionCardProps {
@@ -26,16 +27,13 @@ export default ({
   address,
 }: CompetitionCardProps) => {
   const navigate = useNavigate();
-  const normalizedCountry = () => country?.trim().toLowerCase();
 
   return (
     <Card
       topLeft={
         <div class="competition-card__main-info">
           <div class="competition-card__country-flag">
-            <Suspense fallback={<span>--N/A</span>}>
-              <span class={`fi fi-${normalizedCountry()}`} />
-            </Suspense>
+            <CountryFlag country={country} alt={`${name} flag`} />
           </div>
           <span class="text-heading-sm">{name}</span>
         </div>

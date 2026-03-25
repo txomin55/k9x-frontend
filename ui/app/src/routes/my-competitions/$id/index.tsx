@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { createEffect, createMemo, For, Show, Suspense } from "solid-js";
+import CountryFlag from "@/components/common/CountryFlag";
 import { createDefaultCompetition, useCompetition } from "@/services/competition_crud/competitionCrud";
 
 const COUNTRY_OPTIONS = [
@@ -51,8 +52,6 @@ function CompetitionDetailContent(props: { id: string }) {
   });
   const competition = createMemo(() => fetchedCompetition.data);
 
-  const normalizedCountry = (country) => country?.trim().toLowerCase();
-
   return (
     <div class="competition-detail">
       <Suspense fallback={<span>--Loading competition</span>}>
@@ -60,11 +59,10 @@ function CompetitionDetailContent(props: { id: string }) {
           {(competition) => (
             <div class="competition-detail__content">
               <div class="competition-detail__content--header">
-                <Suspense fallback={<span>--N/A</span>}>
-                  <span
-                    class={`fi fi-${normalizedCountry(competition().country)}`}
-                  />
-                </Suspense>
+                <CountryFlag
+                  country={competition().country}
+                  alt={`${competition().name} flag`}
+                />
                 <h1>{competition().name}</h1>
                 <span>{competition().status}</span>
               </div>
