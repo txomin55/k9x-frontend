@@ -40,7 +40,9 @@ export function defineQuery<TData, const TKey extends QueryKey>(
     queryFn: () => Promise<TData>;
     queryKey: readonly [...TKey, string];
   };
-  useQuery: (override?: Record<string, unknown>) => CreateQueryResult<TData, Error>;
+  useQuery: (
+    override?: Record<string, unknown>,
+  ) => CreateQueryResult<TData, Error>;
 };
 export function defineQuery<
   TData,
@@ -98,7 +100,10 @@ export function defineQuery(options: any) {
     key: (...args: readonly unknown[]) => options.queryKey(...args),
     options: (...args: readonly unknown[]) =>
       createOptions(args, getCurrentLocale()),
-    useQuery: (args: readonly unknown[], override?: Record<string, unknown>) => {
+    useQuery: (
+      args: readonly unknown[],
+      override?: Record<string, unknown>,
+    ) => {
       const i18n = useI18n();
       return createQuery(() => ({
         ...createOptions(args, i18n.locale()),
@@ -108,11 +113,17 @@ export function defineQuery(options: any) {
   };
 }
 
-export const defineMutation = <TData, TVariables = void>(
+export const defineMutation = <
+  TData,
+  TVariables = void,
+  TOnMutateResult = unknown,
+>(
   options: MutationFactoryOptions<TData, TVariables>,
 ) => ({
   useMutation: (
-    override?: Partial<CreateMutationOptions<TData, Error, TVariables>>,
+    override?: Partial<
+      CreateMutationOptions<TData, Error, TVariables, TOnMutateResult>
+    >,
   ) =>
     createMutation(() => ({
       mutationFn: options.mutate,

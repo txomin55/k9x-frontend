@@ -14,7 +14,6 @@ function IndexRoutePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const fetchedStages = useStages({
-    staleTime: 30 * 1000,
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
   });

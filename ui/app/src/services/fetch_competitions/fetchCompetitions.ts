@@ -1,5 +1,6 @@
 import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
+import { CompetitionLocation } from "@/services/competition_crud/competitionCrud";
 
 const fetchCompetitions = () =>
   rawRequest<Competitions[]>({
@@ -26,12 +27,6 @@ export interface Competitions {
   name: string;
   stages: CompetitionStage[];
   status: string;
-}
-
-export interface CompetitionLocation {
-  address?: string;
-  latitude?: number;
-  longitude?: number;
 }
 
 export interface CompetitionStage {
