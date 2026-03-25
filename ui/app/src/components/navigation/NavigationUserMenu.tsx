@@ -3,6 +3,8 @@ import { For, Show } from "solid-js";
 import { clearAuth, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
 import { queryClient } from "@/utils/http/query-client";
+import { displayNotification } from "@/utils/notifications/notifications";
+import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
 
 type NavigationUserMenuProps = {
   isDark: boolean;
@@ -43,6 +45,13 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
             )}
           </For>
         </div>
+
+        <button
+          class="news-visualizer__toast-button"
+          onClick={() => displayNotification(mockedNotification)}
+        >
+          --Trigger notification
+        </button>
 
         <Show when={user()}>
           <p>{i18n.t("hello", { name: "txomin" })}</p>
