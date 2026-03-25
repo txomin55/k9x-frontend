@@ -1,7 +1,22 @@
 import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
 
-const COMPETITIONS_ENDPOINT_PATH = "/api/competitions";
+const fetchCompetitions = () =>
+  rawRequest<Competitions[]>({
+    path: "/api/competitions",
+  });
+
+const competitionsQuery = defineQuery({
+  fetcher: fetchCompetitions,
+  queryKey: ["competitions"] as const,
+});
+
+export const useCompetitions = (options?: TanstackCreateQuery) =>
+  competitionsQuery.useQuery({
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    refetchOnMount: options?.refetchOnMount,
+  });
 
 export interface Competitions {
   country: string;
@@ -25,20 +40,3 @@ export interface CompetitionStage {
   id: string;
   name: string;
 }
-
-const fetchCompetitions = () =>
-  rawRequest<Competitions[]>({
-    path: COMPETITIONS_ENDPOINT_PATH,
-  });
-
-const competitionsQuery = defineQuery({
-  fetcher: fetchCompetitions,
-  queryKey: ["competitions"] as const,
-});
-
-export const useCompetitions = (options?: TanstackCreateQuery) =>
-  competitionsQuery.useQuery({
-    staleTime: options?.staleTime,
-    gcTime: options?.gcTime,
-    refetchOnMount: options?.refetchOnMount,
-  });

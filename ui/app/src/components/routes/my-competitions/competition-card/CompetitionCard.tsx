@@ -67,19 +67,21 @@ export default ({
                   {`${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`}
                 </span>
               </div>
-              <AtomButton
-                type={BUTTON_TYPES.ACCENT}
-                onClick={() =>
-                  navigate({
-                    href: `/my-competitions/${id}`,
-                  })
-                }
-              >
-                --+ Info
-              </AtomButton>
             </div>
           )}
         </For>
+      }
+      actions={
+        <AtomButton
+          type={BUTTON_TYPES.ACCENT}
+          onClick={() =>
+            navigate({
+              href: `/my-competitions/${id}`,
+            })
+          }
+        >
+          --+ Info
+        </AtomButton>
       }
     />
   );

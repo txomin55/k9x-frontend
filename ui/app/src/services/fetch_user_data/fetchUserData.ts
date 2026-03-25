@@ -3,18 +3,10 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";
 
-const USER_ENDPOINT_PATH = "/api/user";
-
-export interface UserModel {
-  email: string;
-  image: string;
-  name: string;
-}
-
 const fetchUserData = async () => {
   const rawUser = await rawRequest<UserModel>({
     auth: true,
-    path: USER_ENDPOINT_PATH,
+    path: "/api/user",
   });
   return UserResponse(rawUser);
 };
@@ -29,3 +21,9 @@ export const fetchCachedUserData = () =>
 
 export const clearCachedUserData = () =>
   queryClient.removeQueries({ queryKey: userQuery.key });
+
+export interface UserModel {
+  email: string;
+  image: string;
+  name: string;
+}
