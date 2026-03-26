@@ -2,14 +2,12 @@ import { createFileRoute, useParams } from "@tanstack/solid-router";
 import {
   type Accessor,
   createEffect,
-  createMemo,
   createSignal,
   For,
   onCleanup,
   Show,
   Suspense,
 } from "solid-js";
-import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
 import {
   type ApiStage,
   useApiStage,
@@ -23,70 +21,9 @@ export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
 
 function CompetitionStageDetailPage() {
   const params = useParams({ from: "/my-competitions/$id/stages/$stageId/" });
-  const { updateApiStage } = useApiStage();
-  const competitions = useCompetitions({
-    gcTime: 5 * 60 * 1000,
-    refetchOnMount: false,
-    staleTime: 30 * 1000,
-  });
-  const stage = createMemo<ApiStage | undefined>(() => {
-    const competition = competitions.data?.find(
-      (entry) => entry.id === params().id,
-    );
-    const competitionStage = competition?.stages?.find(
-      (entry) => entry.id === params().stageId,
-    );
+  const { updateApiStage, getStage } = useApiStage();
 
-    if (!competitionStage) return undefined;
-
-    return {
-      competitionId: competition?.id ?? "",
-      dateFrom: competitionStage.dateFrom ?? 0,
-      dateTo: competitionStage.dateTo ?? 0,
-      discipline: "",
-      events:
-        competitionStage.events?.map((event) => ({
-          competitors:
-            event.competitors?.map((competitor) => ({
-              finalScore: competitor.finalScore ?? 0,
-              id: competitor.id ?? "",
-              identity: competitor.identity ?? "",
-              name: competitor.name ?? "",
-              owner: competitor.owner ?? "",
-              scores:
-                competitor.scores?.map((score) => ({
-                  exerciseId: score.exerciseId ?? "",
-                  id: score.id ?? "",
-                  score: score.score ?? 0,
-                })) ?? [],
-            })) ?? [],
-          configuration: {
-            federation: event.configuration?.federation ?? "",
-            id: event.configuration?.id ?? "",
-            name: event.configuration?.name ?? "",
-            version: event.configuration?.version ?? 0,
-          },
-          discipline: event.discipline ?? "",
-          exercises:
-            event.exercises?.map((exercise) => ({
-              id: exercise.id ?? "",
-              order: exercise.order ?? 0,
-              text: exercise.text ?? "",
-            })) ?? [],
-          id: event.id ?? "",
-          judges:
-            event.judges?.map((judge) => ({
-              collectorEmail: judge.collectorEmail ?? "",
-              name: judge.name ?? "",
-            })) ?? [],
-          name: event.name ?? "",
-          status: event.status ?? "",
-        })) ?? [],
-      federation: "",
-      id: competitionStage.id ?? "",
-      name: competitionStage.name ?? "",
-    };
-  });
+  const stage = getStage(params().id, params().stageId);
 
   return (
     <div class="competition-stage-detail">

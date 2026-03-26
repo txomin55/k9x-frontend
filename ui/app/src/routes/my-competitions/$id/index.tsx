@@ -6,7 +6,6 @@ import {
 } from "@tanstack/solid-router";
 import {
   createEffect,
-  createMemo,
   createSignal,
   For,
   onCleanup,
@@ -14,11 +13,7 @@ import {
   Suspense,
 } from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
-import {
-  createDefaultCompetition,
-  useCompetition,
-  useCompetitions,
-} from "@/services/api/competition_crud/competitionCrud";
+import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
 import type { Competition } from "@/services/api/competition_crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 
@@ -39,7 +34,7 @@ export const Route = createFileRoute("/my-competitions/$id/")({
 function CompetitionDetailPage() {
   const navigate = useNavigate();
   const params = useParams({ from: "/my-competitions/$id/" });
-  const competitionCrud = useCompetition();
+  const { createCompetition, createDefaultCompetition } = useCompetition();
   let hasCreatedDraftCompetition = false;
 
   createEffect(() => {
@@ -48,7 +43,7 @@ function CompetitionDetailPage() {
     hasCreatedDraftCompetition = true;
     const draftCompetition = createDefaultCompetition();
 
-    competitionCrud.createCompetition(draftCompetition);
+    createCompetition(draftCompetition);
     void navigate({
       params: { id: draftCompetition.id ?? "" },
       replace: true,
@@ -65,15 +60,10 @@ function CompetitionDetailPage() {
 
 function CompetitionDetailContent(props: { id: string }) {
   const navigate = useNavigate();
-  const { deleteCompetition, updateCompetition } = useCompetition();
-  const fetchedCompetitions = useCompetitions({
-    gcTime: 5 * 60 * 1000,
-    refetchOnMount: false,
-    staleTime: 30 * 1000,
-  });
-  const competition = createMemo(() =>
-    fetchedCompetitions.data?.find((entry) => entry.id === props.id),
-  );
+  const { deleteCompetition, updateCompetition, getCompetition } =
+    useCompetition();
+
+  const competition = getCompetition(props.id);
 
   return (
     <div class="competition-detail">

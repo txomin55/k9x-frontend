@@ -46,54 +46,139 @@ export interface Notification {
   text: string;
 }
 
-export interface Stage {
-  dateFrom: number;
-  dateTo: number;
-  events: Event[];
-  id: string;
-  name: string;
-}
-
-export interface Event {
-  competitors?: Competitor[];
-  configuration?: EventConfiguration;
-  discipline: string;
-  exercises: Exercise[];
-  id: string;
-  judges?: Judge[];
-  name: string;
-  status: string;
-}
-
-export interface Competitor {
-  finalScore: number;
-  id: string;
-  identity: string;
-  name: string;
-  owner: string;
-  scores: EventScore[];
-}
-
-export interface EventScore {
+export interface StageEventScore {
   exerciseId: string;
   id: string;
   score: number;
 }
 
-export interface EventConfiguration {
+export interface PostStageEventScore {
+  exerciseId?: string;
+  id?: string;
+  score?: number;
+}
+
+export interface StageExercise {
+  id: string;
+  order: number;
+  text: string;
+}
+
+export interface PostStageExercise {
+  id?: string;
+  order?: number;
+  text?: string;
+}
+
+export interface StageEventConfiguration {
   federation: string;
   id: string;
   name: string;
   version: number;
 }
 
-export interface Exercise {
-  id: string;
-  order: number;
-  text: string;
+export interface PostStageEventConfiguration {
+  federation?: string;
+  id?: string;
+  name?: string;
+  version?: number;
 }
 
-export interface Judge {
+export interface StageJudge {
   collectorEmail: string;
+  name: string;
+}
+
+export interface PostStageJudge {
+  collectorEmail?: string;
   name?: string;
 }
+
+export interface StageCompetitor {
+  finalScore: number;
+  id: string;
+  identity: string;
+  name: string;
+  owner: string;
+  scores: StageEventScore[];
+}
+
+export interface PostStageCompetitor {
+  finalScore?: number;
+  id?: string;
+  identity?: string;
+  name?: string;
+  owner?: string;
+  scores?: PostStageEventScore[];
+}
+
+export interface StageEvent {
+  competitors: StageCompetitor[];
+  configuration: StageEventConfiguration;
+  discipline: string;
+  exercises: StageExercise[];
+  id: string;
+  judges: StageJudge[];
+  name: string;
+  status: string;
+}
+
+export interface PostStageEvent {
+  competitors?: PostStageCompetitor[];
+  configuration?: PostStageEventConfiguration;
+  discipline?: string;
+  exercises?: PostStageExercise[];
+  id?: string;
+  judges?: PostStageJudge[];
+  name?: string;
+  status?: string;
+}
+
+export interface Stage {
+  dateFrom: number;
+  dateTo: number;
+  events: StageEvent[];
+  id: string;
+  name: string;
+}
+
+export interface ApiStage {
+  competitionId: string;
+  dateFrom: number;
+  dateTo: number;
+  events: ApiStageEvent[];
+  id: string;
+  name: string;
+}
+
+export interface ApiPostStage {
+  competitionId?: string;
+  dateFrom?: number;
+  dateTo?: number;
+  discipline?: string;
+  events?: ApiPostStageEvent[];
+  federation?: string;
+  id?: string;
+  name?: string;
+}
+
+export interface ApiStageRollbackPayload {
+  competitionId: string;
+  entityId: string;
+  previousCompetition: Competition | null;
+  previousCompetitions: Competitions[] | null;
+  previousStage: ApiStage | null;
+}
+
+export type ApiStageEvent = StageEvent;
+export type ApiPostStageEvent = PostStageEvent;
+export type ApiStageCompetitor = StageCompetitor;
+export type ApiPostStageCompetitor = PostStageCompetitor;
+export type ApiStageEventScore = StageEventScore;
+export type ApiPostStageEventScore = PostStageEventScore;
+export type ApiStageExercise = StageExercise;
+export type ApiPostStageExercise = PostStageExercise;
+export type ApiStageEventConfiguration = StageEventConfiguration;
+export type ApiPostStageEventConfiguration = PostStageEventConfiguration;
+export type ApiStageJudge = StageJudge;
+export type ApiPostStageJudge = PostStageJudge;

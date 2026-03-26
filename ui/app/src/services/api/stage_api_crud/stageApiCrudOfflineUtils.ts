@@ -1,4 +1,6 @@
 import type {
+  ApiStage,
+  ApiStageRollbackPayload,
   Competition,
   Stage as CompetitionStage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
@@ -22,11 +24,6 @@ import {
   type PendingTaskMethod,
 } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
-import type {
-  ApiStage,
-  ApiStageRollbackPayload,
-} from "@/services/api/stage_api_crud/stageApiCrudTypes";
-
 const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,

@@ -3,6 +3,7 @@ import {
   saveQuerySnapshot,
 } from "@/utils/local_first/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
+import { createMemo } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -63,13 +64,16 @@ const competitionsQuery = defineQuery({
   queryKey: ["competitions"] as const,
 });
 
-export const useCompetitions = (options?: TanstackCreateQuery) =>
+const createCompetitionsQuery = (options?: TanstackCreateQuery) =>
   competitionsQuery.useQuery({
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
   });
+
+export const useCompetitions = (options?: TanstackCreateQuery) =>
+  createCompetitionsQuery(options);
 
 const toCompetitionStage = (
   stage: PostCompetitionStage,
@@ -124,13 +128,24 @@ const mergeCompetitionWithPayload = (
   };
 };
 
-export const createDefaultCompetition = (): PostCompetition => ({
+const createDefaultCompetition = (): PostCompetition => ({
   country: "pt",
   id: globalThis.crypto.randomUUID(),
   name: "--Default competition",
 });
 
 export const useCompetition = () => {
+  const getCompetitions = (options?: TanstackCreateQuery) =>
+    createCompetitionsQuery(options);
+
+  const getCompetition = (id: string) => {
+    return createMemo(() =>
+      queryClient
+        .getQueryData<Competitions[]>(getCompetitionsQueryKey())
+        ?.find((competition) => competition.id === id),
+    );
+  };
+
   const createCompetition = (payload: PostCompetition) => {
     const previousCompetitionsFromCache = queryClient.getQueryData<
       Competitions[]
@@ -215,8 +230,11 @@ export const useCompetition = () => {
   };
 
   return {
+    getCompetition,
+    getCompetitions,
     createCompetition,
     deleteCompetition,
     updateCompetition,
+    createDefaultCompetition,
   };
 };
