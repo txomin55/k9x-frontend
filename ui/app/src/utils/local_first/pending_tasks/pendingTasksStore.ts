@@ -1,17 +1,17 @@
 import {
   LOCAL_FIRST_STORE_NAMES,
   localFirstDatabase,
-} from "@/services/storage/localFirstDatabase";
+} from "@/utils/local_first/storage/localFirstDatabase";
 import type {
   PendingTask,
   PendingTaskMethod,
-} from "@/services/pending_tasks/pendingTasks.types";
+} from "@/utils/local_first/pending_tasks/pendingTasks.types";
 
 export type {
   PendingTask,
   PendingTaskMethod,
   PendingTaskStatus,
-} from "@/services/pending_tasks/pendingTasks.types";
+} from "@/utils/local_first/pending_tasks/pendingTasks.types";
 
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
@@ -35,23 +35,21 @@ export const createPendingTaskId = ({
 export const enqueuePendingTask = (task: PendingTask) =>
   pendingTasksTable.put(toSerializable(task));
 
-export const getPendingTask = (id: string) =>
-  pendingTasksTable.get(id);
+export const getPendingTask = (id: string) => pendingTasksTable.get(id);
 
-export const getRetryablePendingTasks = async (processingStaleMs: number) =>
-  {
-    const tasks = await pendingTasksTable.toArray();
-    const staleProcessingBefore = Date.now() - processingStaleMs;
+export const getRetryablePendingTasks = async (processingStaleMs: number) => {
+  const tasks = await pendingTasksTable.toArray();
+  const staleProcessingBefore = Date.now() - processingStaleMs;
 
-    return tasks
-      .filter((task) => {
-        if (task.status === "pending" || task.status === "failed") return true;
-        return (
-          task.status === "processing" && task.updatedAt <= staleProcessingBefore
-        );
-      })
-      .sort((left, right) => left.timestamp - right.timestamp);
-  };
+  return tasks
+    .filter((task) => {
+      if (task.status === "pending" || task.status === "failed") return true;
+      return (
+        task.status === "processing" && task.updatedAt <= staleProcessingBefore
+      );
+    })
+    .sort((left, right) => left.timestamp - right.timestamp);
+};
 
 export const updatePendingTask = async (
   id: string,
@@ -62,5 +60,4 @@ export const updatePendingTask = async (
   await pendingTasksTable.put(toSerializable(updater(existingTask)));
 };
 
-export const removePendingTask = (id: string) =>
-  pendingTasksTable.delete(id);
+export const removePendingTask = (id: string) => pendingTasksTable.delete(id);

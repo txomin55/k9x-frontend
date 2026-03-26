@@ -1,5 +1,7 @@
-import type { Competitions } from "@/services/fetch_competitions/fetchCompetitions";
-import type { Competition } from "@/services/competition_crud/competitionCrudTypes";
+import type {
+  Competition,
+  Competitions,
+} from "@/services/api/competition_crud/competitionCrudTypes";
 
 export interface ApiStage {
   competitionId: string;

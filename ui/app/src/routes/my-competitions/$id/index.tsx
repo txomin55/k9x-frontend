@@ -17,9 +17,9 @@ import CountryFlag from "@/components/common/CountryFlag";
 import {
   createDefaultCompetition,
   useCompetition,
-} from "@/services/competition_crud/competitionCrud";
-import type { Competition } from "@/services/competition_crud/competitionCrudTypes";
-import { useCompetitions } from "@/services/fetch_competitions/fetchCompetitions";
+  useCompetitions,
+} from "@/services/api/competition_crud/competitionCrud";
+import type { Competition } from "@/services/api/competition_crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 
 const COUNTRY_OPTIONS = [

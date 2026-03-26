@@ -2,7 +2,7 @@ import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import Navigation from "@/components/navigation/Navigation";
-import { startGoogleInteractiveLogin } from "@/services/google_auth/googleAuth";
+import { startGoogleInteractiveLogin } from "@/utils/google_auth/googleAuth";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
 import "@/components/layout/styles.css";
@@ -128,10 +128,7 @@ export default function AppLayout(props: ParentProps) {
           />
         </Show>
 
-        <Navigation
-          isDesktop={isDesktop()}
-          isNavOpen={isNavOpen()}
-        />
+        <Navigation isDesktop={isDesktop()} isNavOpen={isNavOpen()} />
 
         <main class="app-layout__content">{props.children}</main>
       </div>

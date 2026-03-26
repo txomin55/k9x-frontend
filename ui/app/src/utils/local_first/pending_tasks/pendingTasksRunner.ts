@@ -11,9 +11,9 @@ import {
 import type {
   PendingTask,
   PendingTaskHandler,
-} from "@/services/pending_tasks/pendingTasks.types";
+} from "@/utils/local_first/pending_tasks/pendingTasks.types";
 
-export type { PendingTaskHandler } from "@/services/pending_tasks/pendingTasks.types";
+export type { PendingTaskHandler } from "@/utils/local_first/pending_tasks/pendingTasks.types";
 
 const STALE_PROCESSING_MS = 60 * 1000;
 

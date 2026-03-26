@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my-competitions/competition-card/CompetitionCard";
-import { useCompetitions } from "@/services/fetch_competitions/fetchCompetitions";
+import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
 
 export const Route = createFileRoute("/my-competitions/list/")({
   component: MyCompetitionsIndexPage,

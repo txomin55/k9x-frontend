@@ -1,4 +1,4 @@
-import type { CompetitionLocation } from "@/services/fetch_competitions/fetchCompetitions.types";
+import type { CompetitionLocation } from "@/services/api/competition_crud/competitionCrudTypes";
 
 export interface Stage {
   country: string;

@@ -9,8 +9,11 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import { useCompetitions } from "@/services/fetch_competitions/fetchCompetitions";
-import { type ApiStage, useApiStage } from "@/services/stage_api_crud/stageApiCrud";
+import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
+import {
+  type ApiStage,
+  useApiStage,
+} from "@/services/api/stage_api_crud/stageApiCrud";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -107,9 +110,9 @@ function CompetitionStageDetailContent(props: {
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftStage, setDraftStage] = createSignal(props.stage());
-  const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<string | null>(
-    null,
-  );
+  const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
+    string | null
+  >(null);
 
   const draftKey = (stage: ApiStage) =>
     JSON.stringify({

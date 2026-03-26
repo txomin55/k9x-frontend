@@ -1,31 +1,31 @@
 import {
+  type Competitions,
   COMPETITIONS_SNAPSHOT_ID,
   getCompetitionsQueryKey,
-  type Competitions,
-} from "@/services/fetch_competitions/fetchCompetitions";
+} from "@/services/api/competition_crud/competitionCrud";
 import {
+  type PendingTaskHandler,
   processPendingTasks,
   registerPendingTaskHandler,
-  type PendingTaskHandler,
-} from "@/services/pending_tasks/pendingTasksRunner";
+} from "@/utils/local_first/pending_tasks/pendingTasksRunner";
 import {
   createPendingTaskId,
   enqueuePendingTask,
   type PendingTask,
   type PendingTaskMethod,
-} from "@/services/pending_tasks/pendingTasksStore";
+} from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import {
   getQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
   saveQuerySnapshot,
-} from "@/services/query_snapshots/querySnapshotsStore";
+} from "@/utils/local_first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
   Competition,
   CompetitionLocation,
   CompetitionRollbackPayload,
-} from "@/services/competition_crud/competitionCrudTypes";
+} from "@/services/api/competition_crud/competitionCrudTypes";
 
 export const toCompetitionListItem = (
   competition: Competition,
@@ -189,7 +189,10 @@ const rollbackCompetitionTask = async (task: PendingTask) => {
     );
   } else {
     await removeQuerySnapshot(COMPETITIONS_SNAPSHOT_ID);
-    queryClient.removeQueries({ queryKey: getCompetitionsQueryKey(), exact: true });
+    queryClient.removeQueries({
+      queryKey: getCompetitionsQueryKey(),
+      exact: true,
+    });
   }
 };
 

@@ -6,7 +6,7 @@ import NewsVisualizer from "@/components/news_visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { fetchUserIfAuthenticated } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
-import { resolveAppPath } from "@/utils/routes/app-paths";
+import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service_worker/native_features/offline_load/animal-icons";
 
 export default function AppShell() {

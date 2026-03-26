@@ -5,14 +5,14 @@ import { AppRoutePath } from "@/components/app_shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-} from "@/services/fetch_user_data/fetchUserData";
+} from "@/services/api/fetch_user_data/fetchUserData";
 import {
   GOOGLE_OAUTH_STATE_KEY,
   GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
-} from "@/services/google_auth/googleAuth";
-import { useLogin } from "@/services/do_login/doLogin";
+} from "@/utils/google_auth/googleAuth";
+import { useLogin } from "@/services/api/do_login/doLogin";
 import { setUser } from "@/stores/auth";
-import { resolveAppPath } from "@/utils/routes/app-paths";
+import { resolveAppPath } from "@/utils/paths/app-paths";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 

@@ -2,11 +2,11 @@ import { AppRoutePath } from "@/components/app_shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-} from "@/services/fetch_user_data/fetchUserData";
-import type { User } from "@/services/fetch_user_data/UserResponse.types";
+} from "@/services/api/fetch_user_data/fetchUserData";
+import type { User } from "@/services/api/fetch_user_data/UserResponse.types";
 import type { AuthState } from "@/stores/auth.types";
 import { createAppStore } from "@/utils/store/createAppStore";
-import { stripBasePath } from "@/utils/routes/app-paths";
+import { stripBasePath } from "@/utils/paths/app-paths";
 
 const { getState, setState, useAppStore } = createAppStore<AuthState>({
   user: null,

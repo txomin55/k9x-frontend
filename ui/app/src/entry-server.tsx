@@ -1,6 +1,6 @@
 // @refresh reload
 import { createHandler, StartServer } from "@solidjs/start/server";
-import { resolveAppPath } from "@/utils/routes/app-paths";
+import { resolveAppPath } from "@/utils/paths/app-paths";
 
 export default createHandler(() => (
   <StartServer

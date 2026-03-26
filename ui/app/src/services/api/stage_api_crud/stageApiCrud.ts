@@ -3,11 +3,11 @@ import {
   applyApiStageUpsert,
   createApiStageRollbackPayload,
   queueApiStageMutation,
-} from "@/services/stage_api_crud/stageApiCrudOfflineUtils";
+} from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import {
-  getCompetitionsQueryKey,
   type Competitions,
-} from "@/services/fetch_competitions/fetchCompetitions";
+  getCompetitionsQueryKey,
+} from "@/services/api/competition_crud/competitionCrud";
 import { queryClient } from "@/utils/http/query-client";
 import type {
   ApiPostStage,
@@ -24,7 +24,7 @@ import type {
   ApiStageEventScore,
   ApiStageExercise,
   ApiStageJudge,
-} from "@/services/stage_api_crud/stageApiCrudTypes";
+} from "@/services/api/stage_api_crud/stageApiCrudTypes";
 
 export type {
   ApiPostStage,
@@ -35,7 +35,7 @@ export type {
   ApiStageEventScore,
   ApiStageExercise,
   ApiStageJudge,
-} from "@/services/stage_api_crud/stageApiCrudTypes";
+} from "@/services/api/stage_api_crud/stageApiCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
 

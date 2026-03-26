@@ -1,7 +1,7 @@
 import {
   getSilentGoogleAuthCode,
   startGoogleInteractiveLogin,
-} from "@/services/google_auth/googleAuth";
+} from "@/utils/google_auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
 import type { RequestOptions } from "@/utils/http/client.types";
 

@@ -15,7 +15,7 @@ export interface PostCompetition {
   id?: string;
   location?: CompetitionLocation;
   name?: string;
-  stages?: CompetitionStage[];
+  stages?: PostCompetitionStage[];
 }
 
 export interface CompetitionRollbackPayload {
@@ -30,12 +30,15 @@ export interface CompetitionLocation {
   longitude?: number;
 }
 
-export interface CompetitionStage {
+export interface PostCompetitionStage {
   dateFrom?: number;
   dateTo?: number;
   id?: string;
   name?: string;
 }
+
+export type Competitions = Competition;
+export type CompetitionStage = Stage;
 
 export interface Notification {
   date: number;

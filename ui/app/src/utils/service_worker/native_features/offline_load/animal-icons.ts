@@ -1,5 +1,5 @@
 import { availableAnimalNames } from "@lib/components/molecules/animal-icon/animals.constants";
-import { resolveAppPath } from "@/utils/routes/app-paths";
+import { resolveAppPath } from "@/utils/paths/app-paths";
 import { WARM_ANIMAL_ICONS } from "@/utils/service_worker/events/animal-icons";
 
 const scheduleIdleTask = (callback) => {

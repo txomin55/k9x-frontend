@@ -1,31 +1,31 @@
 import type {
   Competition,
   Stage as CompetitionStage,
-} from "@/services/competition_crud/competitionCrudTypes";
+} from "@/services/api/competition_crud/competitionCrudTypes";
 import {
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
-} from "@/services/competition_crud/competitionCrudOfflineUtils";
+} from "@/services/api/competition_crud/competitionCrudOfflineUtils";
 import {
-  getCompetitionsQueryKey,
   type Competitions,
-} from "@/services/fetch_competitions/fetchCompetitions";
+  getCompetitionsQueryKey,
+} from "@/services/api/competition_crud/competitionCrud";
 import {
+  type PendingTaskHandler,
   processPendingTasks,
   registerPendingTaskHandler,
-  type PendingTaskHandler,
-} from "@/services/pending_tasks/pendingTasksRunner";
+} from "@/utils/local_first/pending_tasks/pendingTasksRunner";
 import {
   createPendingTaskId,
   enqueuePendingTask,
   type PendingTask,
   type PendingTaskMethod,
-} from "@/services/pending_tasks/pendingTasksStore";
+} from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
   ApiStage,
   ApiStageRollbackPayload,
-} from "@/services/stage_api_crud/stageApiCrudTypes";
+} from "@/services/api/stage_api_crud/stageApiCrudTypes";
 
 const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
   dateFrom: stage.dateFrom,
@@ -114,8 +114,7 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
   const previousCompetitions =
     cachedCompetitions ?? (await readCompetitionsSnapshot()) ?? [];
   const parentCompetition = previousCompetitions.find(
-    (competition) =>
-      String(competition.id) === String(apiStage.competitionId),
+    (competition) => String(competition.id) === String(apiStage.competitionId),
   );
 
   console.log(
@@ -145,7 +144,10 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
     return;
   }
 
-  const nextCompetition = buildNextCompetitionDetail(parentCompetition, apiStage);
+  const nextCompetition = buildNextCompetitionDetail(
+    parentCompetition,
+    apiStage,
+  );
   const nextCompetitions = buildNextCompetitionsList(
     previousCompetitions,
     apiStage,
@@ -286,7 +288,10 @@ const rollbackApiStageTask = async (task: PendingTask) => {
       rollbackPayload.previousCompetitions,
     );
   } else {
-    queryClient.removeQueries({ queryKey: getCompetitionsQueryKey(), exact: true });
+    queryClient.removeQueries({
+      queryKey: getCompetitionsQueryKey(),
+      exact: true,
+    });
   }
 };
 
