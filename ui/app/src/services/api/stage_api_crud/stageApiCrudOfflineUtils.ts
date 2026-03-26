@@ -2,28 +2,26 @@ import type {
   ApiStage,
   ApiStageRollbackPayload,
   Competition,
-  Stage as CompetitionStage,
+  Stage as CompetitionStage
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import {
   readCompetitionsSnapshot,
-  saveCompetitionsSnapshot,
+  saveCompetitionsSnapshot
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
-import {
-  type Competitions,
-  getCompetitionsQueryKey,
-} from "@/services/api/competition_crud/competitionCrud";
+import { type Competitions, getCompetitionsQueryKey } from "@/services/api/competition_crud/competitionCrud";
 import {
   type PendingTaskHandler,
   processPendingTasks,
-  registerPendingTaskHandler,
+  registerPendingTaskHandler
 } from "@/utils/local_first/pending_tasks/pendingTasksRunner";
 import {
   createPendingTaskId,
   enqueuePendingTask,
   type PendingTask,
-  type PendingTaskMethod,
+  type PendingTaskMethod
 } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
+
 const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,
@@ -114,30 +112,7 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
     (competition) => String(competition.id) === String(apiStage.competitionId),
   );
 
-  console.log(
-    `[stageApiCrudOfflineUtils] persistApiStageCompetitionSnapshot ${JSON.stringify(
-      {
-        apiStage,
-        cachedCompetitionsCount: cachedCompetitions?.length ?? 0,
-        previousCompetitionsCount: previousCompetitions.length,
-        parentCompetitionFound: Boolean(parentCompetition),
-      },
-      null,
-      2,
-    )}`,
-  );
-
   if (!parentCompetition) {
-    console.warn(
-      `[stageApiCrudOfflineUtils] parent competition not found for stage update ${JSON.stringify(
-        {
-          competitionId: apiStage.competitionId,
-          stageId: apiStage.id,
-        },
-        null,
-        2,
-      )}`,
-    );
     return;
   }
 
@@ -150,42 +125,8 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
     apiStage,
   );
 
-  console.log(
-    `[stageApiCrudOfflineUtils] nextCompetition ${JSON.stringify(
-      {
-        competitionId: nextCompetition.id,
-        stageBefore: parentCompetition.stages?.find(
-          (stage) => String(stage.id) === String(apiStage.id),
-        ),
-        stageAfter: nextCompetition.stages?.find(
-          (stage) => String(stage.id) === String(apiStage.id),
-        ),
-        nextCompetitionsCompetition: nextCompetitions.find(
-          (competition) =>
-            String(competition.id) === String(apiStage.competitionId),
-        ),
-      },
-      null,
-      2,
-    )}`,
-  );
-
   queryClient.setQueryData(getCompetitionsQueryKey(), nextCompetitions);
   await saveCompetitionsSnapshot(nextCompetitions);
-  const savedCompetitions = await readCompetitionsSnapshot();
-
-  console.log(
-    `[stageApiCrudOfflineUtils] savedSnapshot ${JSON.stringify(
-      {
-        savedCompetition: savedCompetitions?.find(
-          (competition) =>
-            String(competition.id) === String(apiStage.competitionId),
-        ),
-      },
-      null,
-      2,
-    )}`,
-  );
 };
 
 const removeApiStageFromCompetitionSnapshot = async (
@@ -299,17 +240,6 @@ const apiStagePendingTaskHandler: PendingTaskHandler = {
 registerPendingTaskHandler("stage", apiStagePendingTaskHandler);
 
 export const applyApiStageUpsert = (apiStage: ApiStage) => {
-  console.log(
-    `[stageApiCrudOfflineUtils] applyApiStageUpsert ${JSON.stringify(
-      {
-        competitionId: apiStage.competitionId,
-        stageId: apiStage.id,
-        name: apiStage.name,
-      },
-      null,
-      2,
-    )}`,
-  );
   void persistApiStageCompetitionSnapshot(apiStage);
 };
 

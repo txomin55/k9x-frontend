@@ -2,13 +2,13 @@ import {
   applyApiStageRemoval,
   applyApiStageUpsert,
   createApiStageRollbackPayload,
-  queueApiStageMutation
+  queueApiStageMutation,
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import { createMemo } from "solid-js";
 import {
   type Competitions,
   getCompetitionsQueryKey,
-  useCompetition
+  useCompetition,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
   ApiPostStage,
@@ -25,7 +25,7 @@ import type {
   ApiStageEventScore,
   ApiStageExercise,
   ApiStageJudge,
-  Stage
+  Stage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { queryClient } from "@/utils/http/query-client";
 
@@ -305,19 +305,6 @@ export const useApiStage = () => {
     const nextApiStage = mergeApiStageWithPayload(
       payload,
       previousStage ?? undefined,
-    );
-
-    console.log(
-      `[stageApiCrud] updateApiStage ${JSON.stringify(
-        {
-          competitionId: payload.competitionId,
-          nextApiStage,
-          previousStage,
-          cachedCompetitionsCount: previousCompetitionsFromCache?.length ?? 0,
-        },
-        null,
-        2,
-      )}`,
     );
 
     applyApiStageUpsert(nextApiStage);

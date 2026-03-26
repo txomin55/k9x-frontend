@@ -1,17 +1,6 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  For,
-  onCleanup,
-  Show,
-  Suspense,
-} from "solid-js";
-import {
-  type ApiStage,
-  useApiStage,
-} from "@/services/api/stage_api_crud/stageApiCrud";
+import { type Accessor, createEffect, createSignal, For, onCleanup, Show, Suspense } from "solid-js";
+import { type ApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -94,24 +83,9 @@ function CompetitionStageDetailContent(props: {
       <header>
         <button
           type="button"
-          aria-label="--Edit stage"
           onClick={() => setIsEditing((current) => !current)}
         >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
+          --Edit stage
         </button>
         <Show
           when={isEditing()}
@@ -119,8 +93,6 @@ function CompetitionStageDetailContent(props: {
             <>
               <h1>{draftStage().name}</h1>
               <p>--Competition ID: {draftStage().competitionId}</p>
-              <p>--Discipline: {draftStage().discipline}</p>
-              <p>--Federation: {draftStage().federation}</p>
               <p>{`${formatDateLabel(toDateInputValue(draftStage().dateFrom))} - ${formatDateLabel(toDateInputValue(draftStage().dateTo))}`}</p>
             </>
           }
@@ -128,6 +100,7 @@ function CompetitionStageDetailContent(props: {
           <div>
             <p>--Editing mode active.</p>
             <label for="stage-title">--Title</label>
+            <p>txomin {draftStage().name}</p>
             <input
               id="stage-title"
               type="text"
