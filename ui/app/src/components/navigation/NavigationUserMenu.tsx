@@ -5,11 +5,7 @@ import { useI18n } from "@/stores/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import { displayNotification } from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
-
-type NavigationUserMenuProps = {
-  isDark: boolean;
-  onToggleMode: () => void;
-};
+import type { NavigationUserMenuProps } from "@/components/navigation/NavigationUserMenu.types";
 
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const user = useAuthUser();

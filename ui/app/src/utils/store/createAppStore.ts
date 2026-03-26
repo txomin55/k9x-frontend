@@ -1,7 +1,6 @@
 import { useStore } from "@tanstack/solid-store";
 import { Store } from "@tanstack/store";
-
-type StoreUpdater<TState> = (state: TState) => TState;
+import type { StoreUpdater } from "@/utils/store/createAppStore.types";
 
 const createAppStore = <TState>(initialState: TState) => {
   const store = new Store<TState>(initialState);

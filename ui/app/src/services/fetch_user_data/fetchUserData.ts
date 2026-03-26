@@ -2,6 +2,9 @@ import UserResponse from "@/services/fetch_user_data/UserResponse";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";
+import type { UserModel } from "@/services/fetch_user_data/fetchUserData.types";
+
+export type { UserModel } from "@/services/fetch_user_data/fetchUserData.types";
 
 const fetchUserData = async () => {
   const rawUser = await rawRequest<UserModel>({
@@ -21,9 +24,3 @@ export const fetchCachedUserData = () =>
 
 export const clearCachedUserData = () =>
   queryClient.removeQueries({ queryKey: userQuery.key });
-
-export interface UserModel {
-  email: string;
-  image: string;
-  name: string;
-}

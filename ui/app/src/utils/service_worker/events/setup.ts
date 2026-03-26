@@ -1,6 +1,4 @@
-type ServiceWorkerSetupOptions = {
-  cacheNames?: string[];
-};
+import type { ServiceWorkerSetupOptions } from "@/utils/service_worker/events/setup.types";
 
 export const registerServiceWorkerSetup = (
   scope: ServiceWorkerGlobalScope,

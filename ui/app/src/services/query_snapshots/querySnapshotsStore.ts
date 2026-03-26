@@ -2,6 +2,9 @@ import {
   LOCAL_FIRST_STORE_NAMES,
   localFirstDatabase,
 } from "@/services/storage/localFirstDatabase";
+import type { QuerySnapshot } from "@/services/query_snapshots/querySnapshots.types";
+
+export type { QuerySnapshot } from "@/services/query_snapshots/querySnapshots.types";
 
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
@@ -22,9 +25,3 @@ export const getQuerySnapshot = <TData>(id: string) =>
 
 export const removeQuerySnapshot = (id: string) =>
   querySnapshotsTable.delete(id);
-
-export interface QuerySnapshot<TData = unknown> {
-  data: TData;
-  id: string;
-  updatedAt: number;
-}

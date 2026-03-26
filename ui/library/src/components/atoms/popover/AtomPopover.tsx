@@ -1,11 +1,7 @@
 import { Popover } from "@kobalte/core/popover";
-import { createSignal, type JSX } from "solid-js";
+import { createSignal } from "solid-js";
+import type { AtomPopoverProps } from "@lib/components/atoms/popover/AtomPopover.types";
 import "./AtomPopover.css";
-
-export type AtomPopoverProps = {
-  trigger: JSX.Element;
-  content: JSX.Element;
-};
 
 export default function AtomPopover({ trigger, content }: AtomPopoverProps) {
   const [open, setOpen] = createSignal(false);

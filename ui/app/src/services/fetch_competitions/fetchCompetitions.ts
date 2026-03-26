@@ -1,11 +1,20 @@
-import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
+import { defineQuery } from "@/utils/http/query-factory";
 import { getQuerySnapshot, saveQuerySnapshot } from "@/services/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
-import type { CompetitionLocation } from "@/services/competition_crud/competitionCrudTypes";
+import type {
+  CompetitionLocation,
+  CompetitionStage,
+  Competitions,
+} from "@/services/fetch_competitions/fetchCompetitions.types";
+import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 
-export type { CompetitionLocation };
+export type {
+  CompetitionLocation,
+  CompetitionStage,
+  Competitions,
+} from "@/services/fetch_competitions/fetchCompetitions.types";
 
 export const COMPETITIONS_SNAPSHOT_ID = "competitions";
 
@@ -49,20 +58,3 @@ export const useCompetitions = (options?: TanstackCreateQuery) =>
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
   });
-
-export interface Competitions {
-  country: string;
-  description: string;
-  id: string;
-  location?: CompetitionLocation;
-  name: string;
-  stages: CompetitionStage[];
-  status: string;
-}
-
-export interface CompetitionStage {
-  dateFrom: number;
-  dateTo: number;
-  id: string;
-  name: string;
-}

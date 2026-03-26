@@ -1,13 +1,9 @@
 import { createMemo } from "solid-js";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import {
-  type AnimalName,
   availableAnimalNames,
 } from "@lib/components/molecules/animal-icon/animals.constants";
-
-export type AnimalIconProps = {
-  animal?: AnimalName | string;
-};
+import type { AnimalIconProps } from "@lib/components/molecules/animal-icon/AnimalIcon.types";
 
 export default function AnimalIcon(props: AnimalIconProps) {
   const basePath = (

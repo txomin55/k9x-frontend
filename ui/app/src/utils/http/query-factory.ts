@@ -1,66 +1,30 @@
 import {
   createMutation,
-  type CreateMutationOptions,
   createQuery,
-  type CreateQueryResult,
-  type MutationFunction,
   type QueryKey,
 } from "@tanstack/solid-query";
 import { getCurrentLocale, useI18n } from "@/stores/i18n";
+import type {
+  MutationFactoryOptions,
+  MutationOverride,
+  ParameterizedQueryDefinition,
+  ParameterizedQueryFactoryOptions,
+  QueryDefinition,
+  QueryFactoryOptions,
+} from "@/utils/http/query-factory.types";
 
-export type TanstackCreateQuery = {
-  staleTime?: number;
-  gcTime?: number;
-  refetchOnMount?: boolean;
-};
-
-type QueryFactoryOptions<TData, TKey extends QueryKey> = {
-  fetcher: () => Promise<TData>;
-  queryKey: TKey;
-};
-
-type ParameterizedQueryFactoryOptions<
-  TData,
-  TArgs extends readonly unknown[],
-  TKey extends QueryKey,
-> = {
-  fetcher: (...args: TArgs) => Promise<TData>;
-  queryKey: (...args: TArgs) => TKey;
-};
-
-type MutationFactoryOptions<TData, TVariables> = {
-  mutate: MutationFunction<TData, TVariables>;
-};
+export type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 
 export function defineQuery<TData, const TKey extends QueryKey>(
   options: QueryFactoryOptions<TData, TKey>,
-): {
-  key: TKey;
-  options: () => {
-    queryFn: () => Promise<TData>;
-    queryKey: readonly [...TKey, string];
-  };
-  useQuery: (
-    override?: Record<string, unknown>,
-  ) => CreateQueryResult<TData, Error>;
-};
+): QueryDefinition<TData, TKey>;
 export function defineQuery<
   TData,
   const TArgs extends readonly unknown[],
   const TKey extends QueryKey,
 >(
   options: ParameterizedQueryFactoryOptions<TData, TArgs, TKey>,
-): {
-  key: (...args: TArgs) => TKey;
-  options: (...args: TArgs) => {
-    queryFn: () => Promise<TData>;
-    queryKey: readonly [...TKey, string];
-  };
-  useQuery: (
-    args: TArgs,
-    override?: Record<string, unknown>,
-  ) => CreateQueryResult<TData, Error>;
-};
+): ParameterizedQueryDefinition<TData, TArgs, TKey>;
 export function defineQuery(options: any) {
   const createLocalizedKey = (queryKey: QueryKey, locale: string) =>
     [...queryKey, locale] as const;
@@ -121,9 +85,7 @@ export const defineMutation = <
   options: MutationFactoryOptions<TData, TVariables>,
 ) => ({
   useMutation: (
-    override?: Partial<
-      CreateMutationOptions<TData, Error, TVariables, TOnMutateResult>
-    >,
+    override?: MutationOverride<TData, TVariables, TOnMutateResult>,
   ) =>
     createMutation(() => ({
       mutationFn: options.mutate,

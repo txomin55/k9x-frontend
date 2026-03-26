@@ -1,6 +1,9 @@
-import { defineQuery, TanstackCreateQuery } from "@/utils/http/query-factory";
+import { defineQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
-import { CompetitionLocation } from "@/services/fetch_competitions/fetchCompetitions";
+import type { Stage } from "@/services/fetch_stages/fetchStages.types";
+import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
+
+export type { Stage, StageEvent } from "@/services/fetch_stages/fetchStages.types";
 
 const fetchStages = () =>
   rawRequest<Stage[]>({
@@ -18,21 +21,3 @@ export const useStages = (options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
   });
-
-export interface Stage {
-  country: string;
-  dateFrom: number;
-  dateTo: number;
-  description?: string;
-  events: StageEvent[];
-  id: string;
-  location?: CompetitionLocation;
-  name: string;
-}
-
-export interface StageEvent {
-  competitors: number;
-  discipline: string;
-  id: string;
-  name: string;
-}

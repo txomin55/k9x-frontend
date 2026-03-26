@@ -1,21 +1,10 @@
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
-import type { StageEvent } from "@/services/fetch_stages/fetchStages";
 import { Index } from "solid-js";
 import "./styles.css";
 import CountryFlag from "@/components/common/CountryFlag";
-
-interface StageCardProps {
-  id: string;
-  country: string;
-  name: string;
-  from: number;
-  to: number;
-  description?: string;
-  events: StageEvent[];
-  address?: string;
-}
+import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
 
 export default ({
   country,

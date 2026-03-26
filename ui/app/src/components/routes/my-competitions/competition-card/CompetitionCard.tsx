@@ -5,17 +5,7 @@ import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
 import "./styles.css";
 import CountryFlag from "@/components/common/CountryFlag";
-import { CompetitionStage } from "@/services/fetch_competitions/fetchCompetitions";
-
-interface CompetitionCardProps {
-  id: string;
-  country: string;
-  name: string;
-  status: string;
-  description: string;
-  address?: string;
-  stages: CompetitionStage[];
-}
+import type { CompetitionCardProps } from "@/components/routes/my-competitions/competition-card/CompetitionCard.types";
 
 export default ({
   id,

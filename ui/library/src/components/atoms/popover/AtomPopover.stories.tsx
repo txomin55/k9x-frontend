@@ -1,7 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomPopover, {
-  type AtomPopoverProps,
-} from "@lib/components/atoms/popover/AtomPopover";
+import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
+import type { AtomPopoverProps } from "@lib/components/atoms/popover/AtomPopover.types";
 
 const meta = {
   title: "Atoms/AtomPopover",

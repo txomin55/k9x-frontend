@@ -7,8 +7,13 @@ import {
   getRetryablePendingTasks,
   removePendingTask,
   updatePendingTask,
-  type PendingTask,
 } from "./pendingTasksStore";
+import type {
+  PendingTask,
+  PendingTaskHandler,
+} from "@/services/pending_tasks/pendingTasks.types";
+
+export type { PendingTaskHandler } from "@/services/pending_tasks/pendingTasks.types";
 
 const STALE_PROCESSING_MS = 60 * 1000;
 
@@ -96,14 +101,3 @@ export const setupPendingTasksProcessing = () => {
     globalThis.removeEventListener("online", handleOnline);
   };
 };
-
-export interface PendingTaskHandler {
-  onHttpError?: (
-    task: PendingTask,
-    error: HttpRequestError,
-  ) => Promise<void> | void;
-  onNetworkError?: (
-    task: PendingTask,
-    error: NetworkRequestError,
-  ) => Promise<void> | void;
-}

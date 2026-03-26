@@ -1,17 +1,8 @@
 import "@lib/components/atoms/button/styles.css";
 import type { JSX } from "solid-js";
-import {
-  BUTTON_TYPES,
-  type ButtonType,
-} from "@lib/components/atoms/button/atomButton.constants";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { Button } from "@kobalte/core/button";
-
-export type CoreButtonProps = {
-  children: JSX.Element;
-  disabled?: boolean;
-  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
-  type?: ButtonType;
-};
+import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.types";
 
 export default function AtomButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);

@@ -3,18 +3,10 @@ import {
   startGoogleInteractiveLogin,
 } from "@/services/google_auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
+import type { RequestOptions } from "@/utils/http/client.types";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 const LOGIN_ENDPOINT_PATH = "/login";
-
-type RequestOptions = {
-  auth?: boolean;
-  body?: unknown;
-  headers?: HeadersInit;
-  method?: string;
-  path: string;
-  retryOnUnauthorized?: boolean;
-};
 
 class HttpRequestError extends Error {
   kind = "http" as const;

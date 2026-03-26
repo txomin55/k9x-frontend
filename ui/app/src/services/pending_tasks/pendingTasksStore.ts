@@ -2,6 +2,16 @@ import {
   LOCAL_FIRST_STORE_NAMES,
   localFirstDatabase,
 } from "@/services/storage/localFirstDatabase";
+import type {
+  PendingTask,
+  PendingTaskMethod,
+} from "@/services/pending_tasks/pendingTasks.types";
+
+export type {
+  PendingTask,
+  PendingTaskMethod,
+  PendingTaskStatus,
+} from "@/services/pending_tasks/pendingTasks.types";
 
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
@@ -54,20 +64,3 @@ export const updatePendingTask = async (
 
 export const removePendingTask = (id: string) =>
   pendingTasksTable.delete(id);
-
-export type PendingTaskStatus = "pending" | "processing" | "failed";
-export type PendingTaskMethod = "POST" | "PUT" | "DELETE";
-
-export interface PendingTask {
-  attemptCount: number;
-  entityId: string;
-  entityType: string;
-  id: string;
-  method: PendingTaskMethod;
-  payload: unknown;
-  rollbackPayload?: unknown;
-  status: PendingTaskStatus;
-  timestamp: number;
-  updatedAt: number;
-  url: string;
-}

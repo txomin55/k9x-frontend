@@ -1,7 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomSvgIcon, {
-  type CoreSvgIconProps,
-} from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import type { CoreSvgIconProps } from "@lib/components/atoms/svg-icon/AtomSvgIcon.types";
 import dog from "@lib/assets/svg/animals/dog.svg";
 
 const meta = {

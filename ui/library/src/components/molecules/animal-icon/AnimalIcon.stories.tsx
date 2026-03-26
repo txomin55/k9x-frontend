@@ -1,7 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AnimalIcon, {
-  type AnimalIconProps,
-} from "@lib/components/molecules/animal-icon/AnimalIcon";
+import AnimalIcon from "@lib/components/molecules/animal-icon/AnimalIcon";
+import type { AnimalIconProps } from "@lib/components/molecules/animal-icon/AnimalIcon.types";
 import { availableAnimalNames } from "@lib/components/molecules/animal-icon/animals.constants";
 
 const meta = {

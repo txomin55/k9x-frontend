@@ -1,12 +1,7 @@
-import { UserModel } from "@/services/fetch_user_data/fetchUserData";
+import type { UserModel } from "@/services/fetch_user_data/fetchUserData.types";
+import type { User } from "@/services/fetch_user_data/UserResponse.types";
 
-export type User = {
-  getName: () => string;
-  getImage: () => string;
-  getEmail: () => string;
-  getInitials: () => string;
-  getNews: () => [];
-};
+export type { User } from "@/services/fetch_user_data/UserResponse.types";
 
 export default (data: UserModel): User => ({
   getName: () => data.name,

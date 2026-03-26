@@ -1,7 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomButton, {
-  type CoreButtonProps,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
+import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.types";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { fn } from "storybook/test";
 

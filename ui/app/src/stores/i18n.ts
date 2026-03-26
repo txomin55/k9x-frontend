@@ -2,6 +2,7 @@ import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { createAppStore } from "@/utils/store/createAppStore";
+import type { I18nState, Locale } from "@/stores/i18n.types";
 
 enum TranslationLocale {
   EN = "en",
@@ -9,12 +10,7 @@ enum TranslationLocale {
 }
 
 const locales = Object.values(TranslationLocale);
-type Locale = TranslationLocale;
-
-type I18nState = {
-  locale: Locale;
-  ready: boolean;
-};
+const supportedLocales = locales as Locale[];
 
 const { getState, setState, useAppStore } = createAppStore<I18nState>({
   locale: TranslationLocale.EN,
@@ -28,13 +24,13 @@ const normalizeLocale = (inputLocale: unknown): Locale => {
 
   const canonicalLocale = String(inputLocale).trim().toLowerCase();
 
-  if (locales.includes(canonicalLocale as Locale)) {
+  if (supportedLocales.includes(canonicalLocale as Locale)) {
     return canonicalLocale as Locale;
   }
 
   const [baseLocale] = canonicalLocale.split("-");
 
-  if (baseLocale && locales.includes(baseLocale as Locale)) {
+  if (baseLocale && supportedLocales.includes(baseLocale as Locale)) {
     return baseLocale as Locale;
   }
 
@@ -53,7 +49,7 @@ const initI18n = async () => {
     .init({
       fallbackLng: TranslationLocale.EN,
       debug: true,
-      supportedLngs: locales,
+      supportedLngs: supportedLocales,
       load: "currentOnly",
       backend: {
         ns: ["translation"],
@@ -83,7 +79,7 @@ const useI18n = () => {
     init: initI18n,
     locale,
     ready,
-    locales,
+    locales: supportedLocales,
     setLocale: async (nextLocale: string) => {
       if (!ready()) return;
       await i18n.changeLanguage(normalizeLocale(nextLocale));
