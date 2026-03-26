@@ -21,8 +21,9 @@ export default function Navigation(props) {
         <nav class="navigation__sidebar-panel--navigation">
           <Link to={AppRoutePath.HOME as "/"}>--Events</Link>
           <Show when={user()}>
+            <p>--My</p>
             <Link to={AppRoutePath.MY_COMPETITIONS as never}>
-              --My competitions
+              --Competitions
             </Link>
           </Show>
         </nav>
