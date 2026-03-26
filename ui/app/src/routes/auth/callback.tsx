@@ -12,6 +12,8 @@ import {
 } from "@/utils/google_auth/googleAuth";
 import { useLogin } from "@/services/api/do_login/doLogin";
 import { setUser } from "@/stores/auth";
+import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
+import { clearLocalFirstData } from "@/utils/local_first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
@@ -71,6 +73,8 @@ function AuthCallbackPage() {
 
       const token = await login.mutateAsync({ idToken: code });
       globalThis.localStorage.setItem("k9x_access_token", token);
+      clearLocalFirstQueryCache();
+      await clearLocalFirstData();
       clearCachedUserData();
       setUser(await fetchCachedUserData());
       globalThis.sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);

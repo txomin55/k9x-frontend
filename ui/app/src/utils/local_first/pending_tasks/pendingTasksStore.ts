@@ -2,6 +2,7 @@ import {
   LOCAL_FIRST_STORE_NAMES,
   localFirstDatabase,
 } from "@/utils/local_first/storage/localFirstDatabase";
+import { shouldPersistLocalFirstData } from "@/utils/local_first/localFirstPolicy";
 import type {
   PendingTask,
   PendingTaskMethod,
@@ -32,12 +33,19 @@ export const createPendingTaskId = ({
   timestamp: number;
 }) => `${entityId}-${entityType}-${method.toLowerCase()}-${timestamp}`;
 
-export const enqueuePendingTask = (task: PendingTask) =>
-  pendingTasksTable.put(toSerializable(task));
+export const enqueuePendingTask = (task: PendingTask) => {
+  if (!shouldPersistLocalFirstData()) {
+    return Promise.resolve(task.id);
+  }
+
+  return pendingTasksTable.put(toSerializable(task));
+};
 
 export const getPendingTask = (id: string) => pendingTasksTable.get(id);
 
 export const getRetryablePendingTasks = async (processingStaleMs: number) => {
+  if (!shouldPersistLocalFirstData()) return [];
+
   const tasks = await pendingTasksTable.toArray();
   const staleProcessingBefore = Date.now() - processingStaleMs;
 
@@ -55,9 +63,17 @@ export const updatePendingTask = async (
   id: string,
   updater: (task: PendingTask) => PendingTask,
 ) => {
+  if (!shouldPersistLocalFirstData()) return;
+
   const existingTask = await pendingTasksTable.get(id);
   if (!existingTask) return;
   await pendingTasksTable.put(toSerializable(updater(existingTask)));
 };
 
-export const removePendingTask = (id: string) => pendingTasksTable.delete(id);
+export const removePendingTask = (id: string) => {
+  if (!shouldPersistLocalFirstData()) {
+    return Promise.resolve();
+  }
+
+  return pendingTasksTable.delete(id);
+};

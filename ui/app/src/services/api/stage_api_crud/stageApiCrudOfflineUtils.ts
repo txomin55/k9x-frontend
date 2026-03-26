@@ -11,16 +11,14 @@ import {
 import { type Competitions, getCompetitionsQueryKey } from "@/services/api/competition_crud/competitionCrud";
 import {
   type PendingTaskHandler,
-  processPendingTasks,
   registerPendingTaskHandler
 } from "@/utils/local_first/pending_tasks/pendingTasksRunner";
 import {
-  createPendingTaskId,
-  enqueuePendingTask,
   type PendingTask,
   type PendingTaskMethod
 } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
+import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
 
 const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
   dateFrom: stage.dateFrom,
@@ -163,7 +161,7 @@ export const createApiStageRollbackPayload = async ({
   previousStage,
 });
 
-export const queueApiStageMutation = async ({
+export const commitApiStageMutation = async ({
   entityId,
   method,
   payload,
@@ -175,30 +173,16 @@ export const queueApiStageMutation = async ({
   payload?: unknown;
   rollbackPayload: ApiStageRollbackPayload;
   url: string;
-}) => {
-  const timestamp = Date.now();
-
-  await enqueuePendingTask({
-    attemptCount: 0,
+}) =>
+  commitOptimisticMutation({
     entityId,
     entityType: "stage",
-    id: createPendingTaskId({
-      entityId,
-      entityType: "stage",
-      method,
-      timestamp,
-    }),
     method,
     payload,
+    rollback: rollbackApiStagePayload,
     rollbackPayload,
-    status: "pending",
-    timestamp,
-    updatedAt: timestamp,
     url,
   });
-
-  void processPendingTasks();
-};
 
 const isApiStageRollbackPayload = (
   rollbackPayload: unknown,
@@ -213,8 +197,12 @@ const rollbackApiStageTask = async (task: PendingTask) => {
     return;
   }
 
-  const rollbackPayload = task.rollbackPayload;
+  await rollbackApiStagePayload(task.rollbackPayload);
+};
 
+const rollbackApiStagePayload = async (
+  rollbackPayload: ApiStageRollbackPayload,
+) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
     queryClient.setQueryData(

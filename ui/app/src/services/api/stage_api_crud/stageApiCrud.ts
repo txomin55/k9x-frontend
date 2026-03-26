@@ -1,8 +1,8 @@
 import {
   applyApiStageRemoval,
   applyApiStageUpsert,
+  commitApiStageMutation,
   createApiStageRollbackPayload,
-  queueApiStageMutation
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import { createMemo } from "solid-js";
 import {
@@ -272,7 +272,7 @@ export const useApiStage = () => {
     applyApiStageUpsert(draftApiStage);
 
     void (async () => {
-      await queueApiStageMutation({
+      await commitApiStageMutation({
         entityId: draftApiStage.id,
         method: "POST",
         payload: draftApiStage,
@@ -306,7 +306,7 @@ export const useApiStage = () => {
     applyApiStageUpsert(nextApiStage);
 
     void (async () => {
-      await queueApiStageMutation({
+      await commitApiStageMutation({
         entityId: nextApiStage.id,
         method: "PUT",
         payload: nextApiStage,
@@ -332,7 +332,7 @@ export const useApiStage = () => {
     applyApiStageRemoval(competitionId, id);
 
     void (async () => {
-      await queueApiStageMutation({
+      await commitApiStageMutation({
         entityId: id,
         method: "DELETE",
         rollbackPayload: await createApiStageRollbackPayload({

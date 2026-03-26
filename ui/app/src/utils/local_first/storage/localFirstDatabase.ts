@@ -15,3 +15,8 @@ localFirstDatabase.version(DATABASE_VERSION).stores({
     "id,status,entityId,entityType,timestamp,[status+timestamp]",
   [LOCAL_FIRST_STORE_NAMES.querySnapshots]: "id,updatedAt",
 });
+
+export const clearLocalFirstData = () =>
+  Promise.all(localFirstDatabase.tables.map((table) => table.clear())).then(
+    () => undefined,
+  );

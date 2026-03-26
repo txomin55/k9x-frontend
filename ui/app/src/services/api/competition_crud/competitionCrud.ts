@@ -1,5 +1,4 @@
 import {
-  getQuerySnapshot,
   saveQuerySnapshot,
 } from "@/utils/local_first/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
@@ -10,8 +9,8 @@ import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import {
   applyCompetitionRemoval,
   applyCompetitionUpsert,
+  commitCompetitionMutation,
   createCompetitionRollbackPayload,
-  queueCompetitionMutation,
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
 import type {
   Competition,
@@ -22,6 +21,7 @@ import type {
   Stage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { queryClient } from "@/utils/http/query-client";
+import { fetchWithOfflineSnapshot } from "@/utils/local_first/query_snapshots/querySnapshotFetch";
 
 export type {
   CompetitionLocation,
@@ -47,17 +47,8 @@ const refreshCompetitionsSnapshot = async () => {
   return competitions;
 };
 
-const fetchCompetitions = async () => {
-  const snapshot = await getQuerySnapshot<Competitions[]>(
-    COMPETITIONS_SNAPSHOT_ID,
-  );
-
-  if (snapshot) {
-    return snapshot;
-  }
-
-  return refreshCompetitionsSnapshot();
-};
+const fetchCompetitions = () =>
+  fetchWithOfflineSnapshot(COMPETITIONS_SNAPSHOT_ID, refreshCompetitionsSnapshot);
 
 const competitionsQuery = defineQuery({
   fetcher: fetchCompetitions,
@@ -160,7 +151,7 @@ export const useCompetition = () => {
     applyCompetitionUpsert(draftCompetition);
 
     void (async () => {
-      await queueCompetitionMutation({
+      await commitCompetitionMutation({
         entityId: draftCompetition.id,
         method: "POST",
         payload,
@@ -195,7 +186,7 @@ export const useCompetition = () => {
     applyCompetitionUpsert(nextCompetition);
 
     void (async () => {
-      await queueCompetitionMutation({
+      await commitCompetitionMutation({
         entityId,
         method: "PUT",
         payload,
@@ -221,7 +212,7 @@ export const useCompetition = () => {
     applyCompetitionRemoval(id);
 
     void (async () => {
-      await queueCompetitionMutation({
+      await commitCompetitionMutation({
         entityId: id,
         method: "DELETE",
         rollbackPayload: await createCompetitionRollbackPayload(

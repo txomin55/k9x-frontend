@@ -2,6 +2,10 @@ import {
   LOCAL_FIRST_STORE_NAMES,
   localFirstDatabase,
 } from "@/utils/local_first/storage/localFirstDatabase";
+import {
+  shouldPersistLocalFirstData,
+  shouldReadFromIndexedDb,
+} from "@/utils/local_first/localFirstPolicy";
 import type { QuerySnapshot } from "@/utils/local_first/query_snapshots/querySnapshots.types";
 
 export type { QuerySnapshot } from "@/utils/local_first/query_snapshots/querySnapshots.types";
@@ -13,17 +17,34 @@ const querySnapshotsTable = localFirstDatabase.table<QuerySnapshot, string>(
   LOCAL_FIRST_STORE_NAMES.querySnapshots,
 );
 
-export const saveQuerySnapshot = <TData>(id: string, data: TData) =>
-  querySnapshotsTable.put({
+const readPersistedQuerySnapshot = <TData>(
+  id: string,
+): Promise<TData | undefined> =>
+  querySnapshotsTable
+    .get(id)
+    .then((snapshot) => snapshot?.data as TData | undefined);
+
+export const saveQuerySnapshot = <TData>(id: string, data: TData) => {
+  if (!shouldPersistLocalFirstData()) {
+    return Promise.resolve(id);
+  }
+
+  return querySnapshotsTable.put({
     data: toSerializable(data),
     id,
     updatedAt: Date.now(),
   } satisfies QuerySnapshot<TData>);
+};
 
-export const getQuerySnapshot = <TData>(id: string) =>
-  querySnapshotsTable
-    .get(id)
-    .then((snapshot) => snapshot?.data as TData | undefined);
+export const getQuerySnapshot = <TData>(id: string) => {
+  if (!shouldReadFromIndexedDb()) {
+    return Promise.resolve(undefined as TData | undefined);
+  }
+
+  return readPersistedQuerySnapshot(id);
+};
+
+export const getPersistedQuerySnapshot = readPersistedQuerySnapshot;
 
 export const removeQuerySnapshot = (id: string) =>
   querySnapshotsTable.delete(id);

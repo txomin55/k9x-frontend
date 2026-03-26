@@ -5,6 +5,8 @@ import {
 } from "@/services/api/fetch_user_data/fetchUserData";
 import type { User } from "@/services/api/fetch_user_data/UserResponse.types";
 import type { AuthState } from "@/stores/auth.types";
+import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
+import { clearLocalFirstData } from "@/utils/local_first/storage/localFirstDatabase";
 import { createAppStore } from "@/utils/store/createAppStore";
 import { stripBasePath } from "@/utils/paths/app-paths";
 
@@ -63,6 +65,8 @@ const fetchUserIfAuthenticated = async (
 
 const clearAuth = () => {
   clearCachedUserData();
+  clearLocalFirstQueryCache();
+  void clearLocalFirstData();
   setUser(null);
 };
 

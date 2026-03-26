@@ -5,17 +5,14 @@ import {
 } from "@/services/api/competition_crud/competitionCrud";
 import {
   type PendingTaskHandler,
-  processPendingTasks,
   registerPendingTaskHandler,
 } from "@/utils/local_first/pending_tasks/pendingTasksRunner";
 import {
-  createPendingTaskId,
-  enqueuePendingTask,
   type PendingTask,
   type PendingTaskMethod,
 } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import {
-  getQuerySnapshot,
+  getPersistedQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
   saveQuerySnapshot,
@@ -26,6 +23,7 @@ import type {
   CompetitionLocation,
   CompetitionRollbackPayload,
 } from "@/services/api/competition_crud/competitionCrudTypes";
+import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
 
 export const toCompetitionListItem = (
   competition: Competition,
@@ -97,7 +95,7 @@ export const removeCompetitionFromListCache = (id: string) => {
 
 export const readCompetitionsSnapshot = () =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
-    getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID),
   );
 
 export const saveCompetitionsSnapshot = (competitions: Competitions[]) =>
@@ -130,7 +128,7 @@ export const createCompetitionRollbackPayload = async (
     previousCompetitionsFromCache ?? (await readCompetitionsSnapshot()) ?? null,
 });
 
-export const queueCompetitionMutation = async ({
+export const commitCompetitionMutation = async ({
   entityId,
   method,
   payload,
@@ -142,30 +140,16 @@ export const queueCompetitionMutation = async ({
   payload?: unknown;
   rollbackPayload: CompetitionRollbackPayload;
   url: string;
-}) => {
-  const timestamp = Date.now();
-
-  await enqueuePendingTask({
-    attemptCount: 0,
+}) =>
+  commitOptimisticMutation({
     entityId,
     entityType: "competition",
-    id: createPendingTaskId({
-      entityId,
-      entityType: "competition",
-      method,
-      timestamp,
-    }),
     method,
     payload,
+    rollback: rollbackCompetitionPayload,
     rollbackPayload,
-    status: "pending",
-    timestamp,
-    updatedAt: timestamp,
     url,
   });
-
-  void processPendingTasks();
-};
 
 const isCompetitionRollbackPayload = (
   rollbackPayload: unknown,
@@ -179,8 +163,12 @@ const rollbackCompetitionTask = async (task: PendingTask) => {
     return;
   }
 
-  const rollbackPayload = task.rollbackPayload;
+  await rollbackCompetitionPayload(task.rollbackPayload);
+};
 
+const rollbackCompetitionPayload = async (
+  rollbackPayload: CompetitionRollbackPayload,
+) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
     queryClient.setQueryData(
