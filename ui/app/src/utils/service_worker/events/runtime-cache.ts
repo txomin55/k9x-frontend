@@ -2,6 +2,8 @@ export const APP_SHELL_CACHE = "app-shell-v1";
 
 const CACHEABLE_EXTENSIONS =
   /\.(?:js|css|ico|png|svg|webp|woff2?|json|webmanifest|html)$/;
+const PWA_BRANDING_ASSET_PATTERN =
+  /(?:^|\/)(?:manifest\.webmanifest|pwa-192x192\.png|pwa-512x512\.png)$/;
 
 const isCacheableAssetRequest = (scope, request) => {
   const url = new URL(request.url);
@@ -20,6 +22,11 @@ const isCacheableAssetRequest = (scope, request) => {
 const getAppShellRequest = (scope) => {
   const appShellUrl = new URL(scope.registration.scope);
   return new Request(appShellUrl.href, { credentials: "same-origin" });
+};
+
+const isPwaBrandingAssetRequest = (request) => {
+  const url = new URL(request.url);
+  return PWA_BRANDING_ASSET_PATTERN.test(url.pathname);
 };
 
 const networkFirst = async (scope, request, cacheName) => {
@@ -84,6 +91,11 @@ export const registerAppShellCache = (scope) => {
     }
 
     if (request.mode === "navigate") {
+      event.respondWith(networkFirst(scope, request, APP_SHELL_CACHE));
+      return;
+    }
+
+    if (isPwaBrandingAssetRequest(request)) {
       event.respondWith(networkFirst(scope, request, APP_SHELL_CACHE));
       return;
     }
