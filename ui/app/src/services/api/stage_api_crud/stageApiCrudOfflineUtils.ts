@@ -116,10 +116,6 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
     return;
   }
 
-  const nextCompetition = buildNextCompetitionDetail(
-    parentCompetition,
-    apiStage,
-  );
   const nextCompetitions = buildNextCompetitionsList(
     previousCompetitions,
     apiStage,

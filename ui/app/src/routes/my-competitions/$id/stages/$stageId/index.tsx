@@ -1,6 +1,17 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, For, onCleanup, Show, Suspense } from "solid-js";
-import { type ApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  For,
+  onCleanup,
+  Show,
+  Suspense,
+} from "solid-js";
+import {
+  type ApiStage,
+  useApiStage,
+} from "@/services/api/stage_api_crud/stageApiCrud";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -87,6 +98,7 @@ function CompetitionStageDetailContent(props: {
         >
           --Edit stage
         </button>
+        draftStage().name - {draftStage().name}
         <Show
           when={isEditing()}
           fallback={

@@ -139,10 +139,12 @@ export const useCompetition = () => {
     createCompetitionsQuery(options);
 
   const getCompetition = (id: string) => {
+    const competitionsQuery = createCompetitionsQuery({
+      staleTime: Number.POSITIVE_INFINITY,
+    });
+
     return createMemo(() =>
-      queryClient
-        .getQueryData<Competitions[]>(getCompetitionsQueryKey())
-        ?.find((competition) => competition.id === id),
+      competitionsQuery.data?.find((competition) => competition.id === id),
     );
   };
 
