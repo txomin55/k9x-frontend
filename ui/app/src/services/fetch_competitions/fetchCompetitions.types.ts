@@ -1,20 +1,26 @@
-import type { CompetitionLocation } from "@/services/competition_crud/competitionCrudTypes";
+import type {
+  Competition,
+  CompetitionLocation,
+  Competitor,
+  Event,
+  EventConfiguration,
+  EventScore,
+  Exercise,
+  Judge,
+  Notification,
+  Stage,
+} from "@/services/competition_crud/competitionCrudTypes";
 
-export type { CompetitionLocation };
+export type {
+  CompetitionLocation,
+  Competitor,
+  Event,
+  EventConfiguration,
+  EventScore,
+  Exercise,
+  Judge,
+  Notification,
+};
 
-export interface Competitions {
-  country: string;
-  description: string;
-  id: string;
-  location?: CompetitionLocation;
-  name: string;
-  stages: CompetitionStage[];
-  status: string;
-}
-
-export interface CompetitionStage {
-  dateFrom: number;
-  dateTo: number;
-  id: string;
-  name: string;
-}
+export type Competitions = Competition;
+export type CompetitionStage = Stage;

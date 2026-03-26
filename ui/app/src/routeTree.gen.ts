@@ -13,8 +13,10 @@ import { Route as MyCompetitionsRouteRouteImport } from './routes/my-competition
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MyCompetitionsIndexRouteImport } from './routes/my-competitions/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as MyCompetitionsIdRouteRouteImport } from './routes/my-competitions/$id/route'
 import { Route as MyCompetitionsListIndexRouteImport } from './routes/my-competitions/list/index'
 import { Route as MyCompetitionsIdIndexRouteImport } from './routes/my-competitions/$id/index'
+import { Route as MyCompetitionsIdStagesStageIdIndexRouteImport } from './routes/my-competitions/$id/stages/$stageId/index'
 
 const MyCompetitionsRouteRoute = MyCompetitionsRouteRouteImport.update({
   id: '/my-competitions',
@@ -36,24 +38,37 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MyCompetitionsIdRouteRoute = MyCompetitionsIdRouteRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => MyCompetitionsRouteRoute,
+} as any)
 const MyCompetitionsListIndexRoute = MyCompetitionsListIndexRouteImport.update({
   id: '/list/',
   path: '/list/',
   getParentRoute: () => MyCompetitionsRouteRoute,
 } as any)
 const MyCompetitionsIdIndexRoute = MyCompetitionsIdIndexRouteImport.update({
-  id: '/$id/',
-  path: '/$id/',
-  getParentRoute: () => MyCompetitionsRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => MyCompetitionsIdRouteRoute,
 } as any)
+const MyCompetitionsIdStagesStageIdIndexRoute =
+  MyCompetitionsIdStagesStageIdIndexRouteImport.update({
+    id: '/stages/$stageId/',
+    path: '/stages/$stageId/',
+    getParentRoute: () => MyCompetitionsIdRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/my-competitions': typeof MyCompetitionsRouteRouteWithChildren
+  '/my-competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/my-competitions/': typeof MyCompetitionsIndexRoute
   '/my-competitions/$id/': typeof MyCompetitionsIdIndexRoute
   '/my-competitions/list/': typeof MyCompetitionsListIndexRoute
+  '/my-competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,25 +76,30 @@ export interface FileRoutesByTo {
   '/my-competitions': typeof MyCompetitionsIndexRoute
   '/my-competitions/$id': typeof MyCompetitionsIdIndexRoute
   '/my-competitions/list': typeof MyCompetitionsListIndexRoute
+  '/my-competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/my-competitions': typeof MyCompetitionsRouteRouteWithChildren
+  '/my-competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/my-competitions/': typeof MyCompetitionsIndexRoute
   '/my-competitions/$id/': typeof MyCompetitionsIdIndexRoute
   '/my-competitions/list/': typeof MyCompetitionsListIndexRoute
+  '/my-competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/my-competitions'
+    | '/my-competitions/$id'
     | '/auth/callback'
     | '/my-competitions/'
     | '/my-competitions/$id/'
     | '/my-competitions/list/'
+    | '/my-competitions/$id/stages/$stageId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -87,14 +107,17 @@ export interface FileRouteTypes {
     | '/my-competitions'
     | '/my-competitions/$id'
     | '/my-competitions/list'
+    | '/my-competitions/$id/stages/$stageId'
   id:
     | '__root__'
     | '/'
     | '/my-competitions'
+    | '/my-competitions/$id'
     | '/auth/callback'
     | '/my-competitions/'
     | '/my-competitions/$id/'
     | '/my-competitions/list/'
+    | '/my-competitions/$id/stages/$stageId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -133,6 +156,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my-competitions/$id': {
+      id: '/my-competitions/$id'
+      path: '/$id'
+      fullPath: '/my-competitions/$id'
+      preLoaderRoute: typeof MyCompetitionsIdRouteRouteImport
+      parentRoute: typeof MyCompetitionsRouteRoute
+    }
     '/my-competitions/list/': {
       id: '/my-competitions/list/'
       path: '/list'
@@ -142,23 +172,46 @@ declare module '@tanstack/solid-router' {
     }
     '/my-competitions/$id/': {
       id: '/my-competitions/$id/'
-      path: '/$id'
+      path: '/'
       fullPath: '/my-competitions/$id/'
       preLoaderRoute: typeof MyCompetitionsIdIndexRouteImport
-      parentRoute: typeof MyCompetitionsRouteRoute
+      parentRoute: typeof MyCompetitionsIdRouteRoute
+    }
+    '/my-competitions/$id/stages/$stageId/': {
+      id: '/my-competitions/$id/stages/$stageId/'
+      path: '/stages/$stageId'
+      fullPath: '/my-competitions/$id/stages/$stageId/'
+      preLoaderRoute: typeof MyCompetitionsIdStagesStageIdIndexRouteImport
+      parentRoute: typeof MyCompetitionsIdRouteRoute
     }
   }
 }
 
-interface MyCompetitionsRouteRouteChildren {
-  MyCompetitionsIndexRoute: typeof MyCompetitionsIndexRoute
+interface MyCompetitionsIdRouteRouteChildren {
   MyCompetitionsIdIndexRoute: typeof MyCompetitionsIdIndexRoute
+  MyCompetitionsIdStagesStageIdIndexRoute: typeof MyCompetitionsIdStagesStageIdIndexRoute
+}
+
+const MyCompetitionsIdRouteRouteChildren: MyCompetitionsIdRouteRouteChildren = {
+  MyCompetitionsIdIndexRoute: MyCompetitionsIdIndexRoute,
+  MyCompetitionsIdStagesStageIdIndexRoute:
+    MyCompetitionsIdStagesStageIdIndexRoute,
+}
+
+const MyCompetitionsIdRouteRouteWithChildren =
+  MyCompetitionsIdRouteRoute._addFileChildren(
+    MyCompetitionsIdRouteRouteChildren,
+  )
+
+interface MyCompetitionsRouteRouteChildren {
+  MyCompetitionsIdRouteRoute: typeof MyCompetitionsIdRouteRouteWithChildren
+  MyCompetitionsIndexRoute: typeof MyCompetitionsIndexRoute
   MyCompetitionsListIndexRoute: typeof MyCompetitionsListIndexRoute
 }
 
 const MyCompetitionsRouteRouteChildren: MyCompetitionsRouteRouteChildren = {
+  MyCompetitionsIdRouteRoute: MyCompetitionsIdRouteRouteWithChildren,
   MyCompetitionsIndexRoute: MyCompetitionsIndexRoute,
-  MyCompetitionsIdIndexRoute: MyCompetitionsIdIndexRoute,
   MyCompetitionsListIndexRoute: MyCompetitionsListIndexRoute,
 }
 

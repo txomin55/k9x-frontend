@@ -25,3 +25,6 @@ export const getQuerySnapshot = <TData>(id: string) =>
 
 export const removeQuerySnapshot = (id: string) =>
   querySnapshotsTable.delete(id);
+
+export const removeQuerySnapshotsByPrefix = (prefix: string) =>
+  querySnapshotsTable.where("id").startsWith(prefix).delete();

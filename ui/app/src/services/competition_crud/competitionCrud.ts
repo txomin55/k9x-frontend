@@ -1,69 +1,23 @@
-import { type CreateQueryResult } from "@tanstack/solid-query";
 import {
   applyCompetitionRemoval,
   applyCompetitionUpsert,
-  buildNextCompetitions,
   createCompetitionRollbackPayload,
-  getCompetitionDetailKey,
-  getCompetitionsListKey,
   queueCompetitionMutation,
-  readCompetitionsSnapshot,
-  saveCompetitionsSnapshot
 } from "@/services/competition_crud/competitionCrudOfflineUtils";
 import type {
   Competition,
   CompetitionLocation,
   CompetitionStage,
   PostCompetition,
-  Stage
+  Stage,
 } from "@/services/competition_crud/competitionCrudTypes";
-import type { Competitions } from "@/services/fetch_competitions/fetchCompetitions";
-import { rawRequest } from "@/utils/http/client";
+import {
+  getCompetitionsQueryKey,
+  type Competitions,
+} from "@/services/fetch_competitions/fetchCompetitions";
 import { queryClient } from "@/utils/http/query-client";
-import { defineQuery, type TanstackCreateQuery } from "@/utils/http/query-factory";
 
 const DRAFT_COMPETITION_STATUS = "draft";
-
-const refreshCompetitionSnapshot = async (id: string) => {
-  const competition = await rawRequest<Competition>({
-    path: `/api/competitions/${id}`,
-  });
-
-  queryClient.setQueryData(getCompetitionDetailKey(id), competition);
-
-  const previousCompetitions = (await readCompetitionsSnapshot()) ?? [];
-  const nextCompetitions = buildNextCompetitions(
-    previousCompetitions,
-    competition,
-  );
-
-  await saveCompetitionsSnapshot(nextCompetitions);
-  queryClient.setQueryData(getCompetitionsListKey(), nextCompetitions);
-
-  return competition;
-};
-
-const fetchCompetition = async (id: string) => {
-  const competitionsSnapshot = await readCompetitionsSnapshot();
-  const competitionSnapshot = competitionsSnapshot?.find(
-    (competition) => competition.id === id,
-  );
-
-  if (competitionSnapshot) {
-    if (globalThis.navigator.onLine) {
-      void refreshCompetitionSnapshot(id).catch(() => undefined);
-    }
-
-    return competitionSnapshot as Competition;
-  }
-
-  return refreshCompetitionSnapshot(id);
-};
-
-const competitionQuery = defineQuery({
-  fetcher: fetchCompetition,
-  queryKey: (id: string) => ["competition", id] as const,
-});
 
 const toCompetitionStage = (
   stage: CompetitionStage,
@@ -125,21 +79,10 @@ export const createDefaultCompetition = (): PostCompetition => ({
 });
 
 export const useCompetition = () => {
-  const getCompetition = (
-    id: string,
-    options?: TanstackCreateQuery,
-  ): CreateQueryResult<Competition, Error> =>
-    competitionQuery.useQuery([id], {
-      gcTime: options?.gcTime,
-      networkMode: "always",
-      refetchOnMount: options?.refetchOnMount,
-      staleTime: options?.staleTime,
-    });
-
   const createCompetition = (payload: PostCompetition) => {
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsListKey());
+    const previousCompetitionsFromCache = queryClient.getQueryData<Competitions[]>(
+      getCompetitionsQueryKey(),
+    );
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
     applyCompetitionUpsert(draftCompetition);
@@ -165,12 +108,14 @@ export const useCompetition = () => {
     }
 
     const entityId = payload.id;
-    const previousCompetition = queryClient.getQueryData<Competition>(
-      getCompetitionDetailKey(entityId),
+    const previousCompetitionsFromCache = queryClient.getQueryData<Competitions[]>(
+      getCompetitionsQueryKey(),
     );
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsListKey());
+    const previousCompetition =
+      previousCompetitionsFromCache?.find(
+        (competition) => competition.id === entityId,
+      ) ??
+      undefined;
     const nextCompetition = mergeCompetitionWithPayload(
       payload,
       previousCompetition,
@@ -194,12 +139,12 @@ export const useCompetition = () => {
   };
 
   const deleteCompetition = (id: string) => {
-    const previousCompetition = queryClient.getQueryData<Competition>(
-      getCompetitionDetailKey(id),
+    const previousCompetitionsFromCache = queryClient.getQueryData<Competitions[]>(
+      getCompetitionsQueryKey(),
     );
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsListKey());
+    const previousCompetition =
+      previousCompetitionsFromCache?.find((competition) => competition.id === id) ??
+      undefined;
 
     applyCompetitionRemoval(id);
 
@@ -220,7 +165,6 @@ export const useCompetition = () => {
   return {
     createCompetition,
     deleteCompetition,
-    getCompetition,
     updateCompetition,
   };
 };

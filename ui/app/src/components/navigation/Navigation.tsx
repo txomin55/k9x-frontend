@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/solid-router";
-import { AppRoutePath } from "@/components/router/paths";
+import { AppRoutePath } from "@/components/app_shell/paths";
 import { useAuthUser } from "@/stores/auth";
 import "@/components/navigation/styles.css";
 import { Show } from "solid-js";

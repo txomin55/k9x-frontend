@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { AppRoutePath } from "@/components/router/paths";
+import { AppRoutePath } from "@/components/app_shell/paths";
 import { test } from "@test/utils/testFixture";
 
 test("Visits the app root url", async ({ page }) => {

@@ -1,5 +1,8 @@
 import { defineQuery } from "@/utils/http/query-factory";
-import { getQuerySnapshot, saveQuerySnapshot } from "@/services/query_snapshots/querySnapshotsStore";
+import {
+  getQuerySnapshot,
+  saveQuerySnapshot,
+} from "@/services/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
@@ -18,7 +21,7 @@ export type {
 
 export const COMPETITIONS_SNAPSHOT_ID = "competitions";
 
-const getCompetitionsQueryKey = () =>
+export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionsSnapshot = async () => {
@@ -33,13 +36,11 @@ const refreshCompetitionsSnapshot = async () => {
 };
 
 const fetchCompetitions = async () => {
-  const snapshot = await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID);
+  const snapshot = await getQuerySnapshot<Competitions[]>(
+    COMPETITIONS_SNAPSHOT_ID,
+  );
 
   if (snapshot) {
-    if (globalThis.navigator.onLine) {
-      void refreshCompetitionsSnapshot().catch(() => undefined);
-    }
-
     return snapshot;
   }
 

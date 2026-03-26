@@ -1,5 +1,3 @@
-import type { Competitions } from "@/services/fetch_competitions/fetchCompetitions";
-
 export interface Competition {
   country: string;
   description?: string;
@@ -23,7 +21,7 @@ export interface PostCompetition {
 export interface CompetitionRollbackPayload {
   entityId: string;
   previousCompetition: Competition | null;
-  previousCompetitions: Competitions[] | null;
+  previousCompetitions: Competition[] | null;
 }
 
 export interface CompetitionLocation {

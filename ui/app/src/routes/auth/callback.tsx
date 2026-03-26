@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
-import { AppRoutePath } from "@/components/router/paths";
+import { AppRoutePath } from "@/components/app_shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
@@ -33,6 +33,7 @@ function readCallbackParams() {
 function AuthCallbackPage() {
   const navigate = useNavigate();
   const [status, setStatus] = createSignal("pending");
+  const [errorMessage, setErrorMessage] = createSignal("");
   const login = useLogin();
 
   onMount(async () => {
@@ -79,7 +80,15 @@ function AuthCallbackPage() {
       await navigate({ to: AppRoutePath.HOME as "/", replace: true });
     };
 
-    await runCallback();
+    try {
+      await runCallback();
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error.message : "--Authentication failed.",
+      );
+    }
   });
 
   return (
@@ -91,6 +100,9 @@ function AuthCallbackPage() {
         </Match>
         <Match when={status() === "loaded"}>
           <p>--Autenticado. Redirigiendo...</p>
+        </Match>
+        <Match when={status() === "error"}>
+          <p>{`--Error de autenticacion: ${errorMessage()}`}</p>
         </Match>
       </Switch>
     </>

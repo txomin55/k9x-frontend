@@ -1,0 +1,320 @@
+import type {
+  Competition,
+  Stage as CompetitionStage,
+} from "@/services/competition_crud/competitionCrudTypes";
+import {
+  readCompetitionsSnapshot,
+  saveCompetitionsSnapshot,
+} from "@/services/competition_crud/competitionCrudOfflineUtils";
+import {
+  getCompetitionsQueryKey,
+  type Competitions,
+} from "@/services/fetch_competitions/fetchCompetitions";
+import {
+  processPendingTasks,
+  registerPendingTaskHandler,
+  type PendingTaskHandler,
+} from "@/services/pending_tasks/pendingTasksRunner";
+import {
+  createPendingTaskId,
+  enqueuePendingTask,
+  type PendingTask,
+  type PendingTaskMethod,
+} from "@/services/pending_tasks/pendingTasksStore";
+import { queryClient } from "@/utils/http/query-client";
+import type {
+  ApiStage,
+  ApiStageRollbackPayload,
+} from "@/services/stage_api_crud/stageApiCrudTypes";
+
+const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
+  dateFrom: stage.dateFrom,
+  dateTo: stage.dateTo,
+  events: stage.events,
+  id: stage.id,
+  name: stage.name,
+});
+
+const buildNextCompetitionDetail = (
+  competition: Competition,
+  stage: ApiStage,
+): Competition => {
+  const nextStage = toCompetitionDetailStage(stage);
+  const previousStages = competition.stages ?? [];
+  const existingIndex = previousStages.findIndex(
+    ({ id }) => String(id) === String(stage.id),
+  );
+
+  return {
+    ...competition,
+    stages:
+      existingIndex === -1
+        ? [...previousStages, nextStage]
+        : previousStages.map((previousStage) =>
+            String(previousStage.id) === String(stage.id)
+              ? nextStage
+              : previousStage,
+          ),
+  };
+};
+
+const buildCompetitionDetailWithoutStage = (
+  competition: Competition,
+  stageId: string,
+): Competition => ({
+  ...competition,
+  stages: (competition.stages ?? []).filter(
+    ({ id }) => String(id) !== String(stageId),
+  ),
+});
+
+const buildNextCompetitionsList = (
+  competitions: Competitions[],
+  apiStage: ApiStage,
+): Competitions[] =>
+  competitions.map((competition) => {
+    if (String(competition.id) !== String(apiStage.competitionId)) {
+      return competition;
+    }
+    return buildNextCompetitionDetail(competition, apiStage);
+  });
+
+const buildCompetitionsListWithoutStage = (
+  competitions: Competitions[],
+  competitionId: string,
+  stageId: string,
+): Competitions[] =>
+  competitions.map((competition) =>
+    String(competition.id) === String(competitionId)
+      ? buildCompetitionDetailWithoutStage(competition, stageId)
+      : competition,
+  );
+
+const removeApiStageFromCompetitionCache = (
+  competitionId: string,
+  stageId: string,
+) => {
+  queryClient.setQueryData<Competitions[] | undefined>(
+    getCompetitionsQueryKey(),
+    (previousCompetitions) =>
+      previousCompetitions
+        ? buildCompetitionsListWithoutStage(
+            previousCompetitions,
+            competitionId,
+            stageId,
+          )
+        : previousCompetitions,
+  );
+};
+
+const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
+  const cachedCompetitions = queryClient.getQueryData<Competitions[]>(
+    getCompetitionsQueryKey(),
+  );
+  const previousCompetitions =
+    cachedCompetitions ?? (await readCompetitionsSnapshot()) ?? [];
+  const parentCompetition = previousCompetitions.find(
+    (competition) =>
+      String(competition.id) === String(apiStage.competitionId),
+  );
+
+  console.log(
+    `[stageApiCrudOfflineUtils] persistApiStageCompetitionSnapshot ${JSON.stringify(
+      {
+        apiStage,
+        cachedCompetitionsCount: cachedCompetitions?.length ?? 0,
+        previousCompetitionsCount: previousCompetitions.length,
+        parentCompetitionFound: Boolean(parentCompetition),
+      },
+      null,
+      2,
+    )}`,
+  );
+
+  if (!parentCompetition) {
+    console.warn(
+      `[stageApiCrudOfflineUtils] parent competition not found for stage update ${JSON.stringify(
+        {
+          competitionId: apiStage.competitionId,
+          stageId: apiStage.id,
+        },
+        null,
+        2,
+      )}`,
+    );
+    return;
+  }
+
+  const nextCompetition = buildNextCompetitionDetail(parentCompetition, apiStage);
+  const nextCompetitions = buildNextCompetitionsList(
+    previousCompetitions,
+    apiStage,
+  );
+
+  console.log(
+    `[stageApiCrudOfflineUtils] nextCompetition ${JSON.stringify(
+      {
+        competitionId: nextCompetition.id,
+        stageBefore: parentCompetition.stages?.find(
+          (stage) => String(stage.id) === String(apiStage.id),
+        ),
+        stageAfter: nextCompetition.stages?.find(
+          (stage) => String(stage.id) === String(apiStage.id),
+        ),
+        nextCompetitionsCompetition: nextCompetitions.find(
+          (competition) =>
+            String(competition.id) === String(apiStage.competitionId),
+        ),
+      },
+      null,
+      2,
+    )}`,
+  );
+
+  queryClient.setQueryData(getCompetitionsQueryKey(), nextCompetitions);
+  await saveCompetitionsSnapshot(nextCompetitions);
+  const savedCompetitions = await readCompetitionsSnapshot();
+
+  console.log(
+    `[stageApiCrudOfflineUtils] savedSnapshot ${JSON.stringify(
+      {
+        savedCompetition: savedCompetitions?.find(
+          (competition) =>
+            String(competition.id) === String(apiStage.competitionId),
+        ),
+      },
+      null,
+      2,
+    )}`,
+  );
+};
+
+const removeApiStageFromCompetitionSnapshot = async (
+  competitionId: string,
+  stageId: string,
+) => {
+  const cachedCompetitions = queryClient.getQueryData<Competitions[]>(
+    getCompetitionsQueryKey(),
+  );
+  const previousCompetitions =
+    cachedCompetitions ?? (await readCompetitionsSnapshot()) ?? [];
+  const nextCompetitions = buildCompetitionsListWithoutStage(
+    previousCompetitions,
+    competitionId,
+    stageId,
+  );
+
+  queryClient.setQueryData(getCompetitionsQueryKey(), nextCompetitions);
+  await saveCompetitionsSnapshot(nextCompetitions);
+};
+
+export const createApiStageRollbackPayload = async ({
+  competitionId,
+  entityId,
+  previousCompetitionsFromCache,
+  previousStage,
+}: {
+  competitionId: string;
+  entityId: string;
+  previousCompetitionsFromCache?: Competitions[];
+  previousStage: ApiStage | null;
+}): Promise<ApiStageRollbackPayload> => ({
+  competitionId,
+  entityId,
+  previousCompetition: null,
+  previousCompetitions:
+    previousCompetitionsFromCache ?? (await readCompetitionsSnapshot()) ?? null,
+  previousStage,
+});
+
+export const queueApiStageMutation = async ({
+  entityId,
+  method,
+  payload,
+  rollbackPayload,
+  url,
+}: {
+  entityId: string;
+  method: PendingTaskMethod;
+  payload?: unknown;
+  rollbackPayload: ApiStageRollbackPayload;
+  url: string;
+}) => {
+  const timestamp = Date.now();
+
+  await enqueuePendingTask({
+    attemptCount: 0,
+    entityId,
+    entityType: "stage",
+    id: createPendingTaskId({
+      entityId,
+      entityType: "stage",
+      method,
+      timestamp,
+    }),
+    method,
+    payload,
+    rollbackPayload,
+    status: "pending",
+    timestamp,
+    updatedAt: timestamp,
+    url,
+  });
+
+  void processPendingTasks();
+};
+
+const isApiStageRollbackPayload = (
+  rollbackPayload: unknown,
+): rollbackPayload is ApiStageRollbackPayload =>
+  typeof rollbackPayload === "object" &&
+  rollbackPayload !== null &&
+  "competitionId" in rollbackPayload &&
+  "entityId" in rollbackPayload;
+
+const rollbackApiStageTask = async (task: PendingTask) => {
+  if (!isApiStageRollbackPayload(task.rollbackPayload)) {
+    return;
+  }
+
+  const rollbackPayload = task.rollbackPayload;
+
+  if (rollbackPayload.previousCompetitions) {
+    await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
+    queryClient.setQueryData(
+      getCompetitionsQueryKey(),
+      rollbackPayload.previousCompetitions,
+    );
+  } else {
+    queryClient.removeQueries({ queryKey: getCompetitionsQueryKey(), exact: true });
+  }
+};
+
+const apiStagePendingTaskHandler: PendingTaskHandler = {
+  onHttpError: rollbackApiStageTask,
+};
+
+registerPendingTaskHandler("stage", apiStagePendingTaskHandler);
+
+export const applyApiStageUpsert = (apiStage: ApiStage) => {
+  console.log(
+    `[stageApiCrudOfflineUtils] applyApiStageUpsert ${JSON.stringify(
+      {
+        competitionId: apiStage.competitionId,
+        stageId: apiStage.id,
+        name: apiStage.name,
+      },
+      null,
+      2,
+    )}`,
+  );
+  void persistApiStageCompetitionSnapshot(apiStage);
+};
+
+export const applyApiStageRemoval = (
+  competitionId: string,
+  stageId: string,
+) => {
+  removeApiStageFromCompetitionCache(competitionId, stageId);
+  void removeApiStageFromCompetitionSnapshot(competitionId, stageId);
+};

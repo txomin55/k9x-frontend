@@ -1,4 +1,4 @@
-import { AppRoutePath } from "@/components/router/paths";
+import { AppRoutePath } from "@/components/app_shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,

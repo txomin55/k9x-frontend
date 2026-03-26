@@ -1,6 +1,10 @@
-import { createFileRoute, useLocation, useNavigate } from "@tanstack/solid-router";
+import {
+  createFileRoute,
+  useLocation,
+  useNavigate,
+} from "@tanstack/solid-router";
 import { For, onMount, Suspense } from "solid-js";
-import { AppRoutePath } from "@/components/router/paths";
+import { AppRoutePath } from "@/components/app_shell/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
 import { useStages } from "@/services/fetch_stages/fetchStages";
 

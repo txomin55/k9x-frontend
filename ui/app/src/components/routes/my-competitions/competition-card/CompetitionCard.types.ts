@@ -3,9 +3,9 @@ import type { CompetitionStage } from "@/services/fetch_competitions/fetchCompet
 export interface CompetitionCardProps {
   address?: string;
   country: string;
-  description: string;
+  description?: string;
   id: string;
   name: string;
-  stages: CompetitionStage[];
+  stages?: CompetitionStage[];
   status: string;
 }

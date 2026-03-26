@@ -1,5 +1,5 @@
 import { createRootRoute } from "@tanstack/solid-router";
-import AppShell from "@/components/router/AppShell";
+import AppShell from "@/components/app_shell/AppShell";
 
 export const Route = createRootRoute({
   component: AppShell,
