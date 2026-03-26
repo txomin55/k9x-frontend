@@ -1,17 +1,14 @@
 import {
   LOCAL_FIRST_STORE_NAMES,
-  toRequestPromise,
-  withLocalFirstStore,
+  localFirstDatabase,
 } from "@/services/storage/localFirstDatabase";
 
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
 
-const withPendingTasksStore = <TResult>(
-  mode: IDBTransactionMode,
-  callback: (store: IDBObjectStore) => Promise<TResult> | TResult,
-) =>
-  withLocalFirstStore(LOCAL_FIRST_STORE_NAMES.pendingTasks, mode, callback);
+const pendingTasksTable = localFirstDatabase.table<PendingTask, string>(
+  LOCAL_FIRST_STORE_NAMES.pendingTasks,
+);
 
 export const createPendingTaskId = ({
   entityId,
@@ -26,16 +23,14 @@ export const createPendingTaskId = ({
 }) => `${entityId}-${entityType}-${method.toLowerCase()}-${timestamp}`;
 
 export const enqueuePendingTask = (task: PendingTask) =>
-  withPendingTasksStore("readwrite", async (store) => {
-    await toRequestPromise(store.put(toSerializable(task)));
-  });
+  pendingTasksTable.put(toSerializable(task));
 
 export const getPendingTask = (id: string) =>
-  withPendingTasksStore("readonly", (store) => toRequestPromise(store.get(id)));
+  pendingTasksTable.get(id);
 
 export const getRetryablePendingTasks = async (processingStaleMs: number) =>
-  withPendingTasksStore("readonly", async (store) => {
-    const tasks = (await toRequestPromise(store.getAll())) as PendingTask[];
+  {
+    const tasks = await pendingTasksTable.toArray();
     const staleProcessingBefore = Date.now() - processingStaleMs;
 
     return tasks
@@ -46,23 +41,19 @@ export const getRetryablePendingTasks = async (processingStaleMs: number) =>
         );
       })
       .sort((left, right) => left.timestamp - right.timestamp);
-  });
+  };
 
 export const updatePendingTask = async (
   id: string,
   updater: (task: PendingTask) => PendingTask,
-) =>
-  withPendingTasksStore("readwrite", async (store) => {
-    const existingTask =
-      (await toRequestPromise(store.get(id))) as PendingTask | undefined;
-    if (!existingTask) return;
-    await toRequestPromise(store.put(toSerializable(updater(existingTask))));
-  });
+) => {
+  const existingTask = await pendingTasksTable.get(id);
+  if (!existingTask) return;
+  await pendingTasksTable.put(toSerializable(updater(existingTask)));
+};
 
 export const removePendingTask = (id: string) =>
-  withPendingTasksStore("readwrite", async (store) => {
-    await toRequestPromise(store.delete(id));
-  });
+  pendingTasksTable.delete(id);
 
 export type PendingTaskStatus = "pending" | "processing" | "failed";
 export type PendingTaskMethod = "POST" | "PUT" | "DELETE";
