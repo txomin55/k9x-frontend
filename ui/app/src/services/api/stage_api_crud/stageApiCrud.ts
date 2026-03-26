@@ -2,13 +2,13 @@ import {
   applyApiStageRemoval,
   applyApiStageUpsert,
   createApiStageRollbackPayload,
-  queueApiStageMutation,
+  queueApiStageMutation
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import { createMemo } from "solid-js";
 import {
   type Competitions,
-  getCompetitionsQueryKey,
-  useCompetition,
+  getCachedCompetitions,
+  useCompetition
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
   ApiPostStage,
@@ -25,9 +25,8 @@ import type {
   ApiStageEventScore,
   ApiStageExercise,
   ApiStageJudge,
-  Stage,
+  Stage
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import { queryClient } from "@/utils/http/query-client";
 
 export type {
   ApiPostStage,
@@ -193,9 +192,6 @@ const createDefaultApiStage = (competitionId: string): ApiPostStage => ({
   id: createId(),
   name: "--Default stage",
 });
-
-const getCachedCompetitions = () =>
-  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey());
 
 const toApiStage = (stage: Stage, competitionId: string): ApiStage => ({
   competitionId,

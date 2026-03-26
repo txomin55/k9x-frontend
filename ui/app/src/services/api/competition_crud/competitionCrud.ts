@@ -134,6 +134,9 @@ const createDefaultCompetition = (): PostCompetition => ({
   name: "--Default competition",
 });
 
+export const getCachedCompetitions = () =>
+  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey());
+
 export const useCompetition = () => {
   const getCompetitions = (options?: TanstackCreateQuery) =>
     createCompetitionsQuery(options);
