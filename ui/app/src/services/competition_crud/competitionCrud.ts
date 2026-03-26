@@ -8,15 +8,14 @@ import {
   getCompetitionsListKey,
   queueCompetitionMutation,
   readCompetitionsSnapshot,
-  saveCompetitionsSnapshot,
+  saveCompetitionsSnapshot
 } from "@/services/competition_crud/competitionCrudOfflineUtils";
 import type {
   Competition,
   CompetitionLocation,
-  CompetitionRollbackPayload,
   CompetitionStage,
   PostCompetition,
-  Stage,
+  Stage
 } from "@/services/competition_crud/competitionCrudTypes";
 import type { Competitions } from "@/services/fetch_competitions/fetchCompetitions";
 import { rawRequest } from "@/utils/http/client";
@@ -137,8 +136,9 @@ export const useCompetition = () => {
     });
 
   const createCompetition = (payload: PostCompetition) => {
-    const previousCompetitionsFromCache =
-      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
+    const previousCompetitionsFromCache = queryClient.getQueryData<
+      Competitions[]
+    >(getCompetitionsListKey());
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
     applyCompetitionUpsert(draftCompetition);
@@ -167,8 +167,9 @@ export const useCompetition = () => {
     const previousCompetition = queryClient.getQueryData<Competition>(
       getCompetitionDetailKey(entityId),
     );
-    const previousCompetitionsFromCache =
-      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
+    const previousCompetitionsFromCache = queryClient.getQueryData<
+      Competitions[]
+    >(getCompetitionsListKey());
     const nextCompetition = mergeCompetitionWithPayload(
       payload,
       previousCompetition,
@@ -195,8 +196,9 @@ export const useCompetition = () => {
     const previousCompetition = queryClient.getQueryData<Competition>(
       getCompetitionDetailKey(id),
     );
-    const previousCompetitionsFromCache =
-      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
+    const previousCompetitionsFromCache = queryClient.getQueryData<
+      Competitions[]
+    >(getCompetitionsListKey());
 
     applyCompetitionRemoval(id);
 
