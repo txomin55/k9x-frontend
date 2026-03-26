@@ -3,7 +3,7 @@ import { getQuerySnapshot, saveQuerySnapshot } from "@/services/query_snapshots/
 import { getCurrentLocale } from "@/stores/i18n";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
-import { CompetitionLocation } from "@/services/competition_crud/competitionCrud";
+import type { CompetitionLocation } from "@/services/competition_crud/competitionCrudTypes";
 
 export type { CompetitionLocation };
 

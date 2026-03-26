@@ -1,34 +1,29 @@
 import { type CreateQueryResult } from "@tanstack/solid-query";
 import {
-  COMPETITIONS_SNAPSHOT_ID,
-  type Competitions,
+  applyCompetitionRemoval,
+  applyCompetitionUpsert,
+  buildNextCompetitions,
+  createCompetitionRollbackPayload,
+  getCompetitionDetailKey,
+  getCompetitionsListKey,
+  queueCompetitionMutation,
+  readCompetitionsSnapshot,
+  saveCompetitionsSnapshot,
+} from "@/services/competition_crud/competitionCrudOfflineUtils";
+import type {
+  Competition,
+  CompetitionLocation,
+  CompetitionRollbackPayload,
   CompetitionStage,
-  type CompetitionStage as CompetitionListStage
-} from "@/services/fetch_competitions/fetchCompetitions";
-import {
-  processPendingTasks,
-} from "@/services/pending_tasks/pendingTasksRunner";
-import {
-  createPendingTaskId,
-  enqueuePendingTask,
-  type PendingTaskMethod,
-} from "@/services/pending_tasks/pendingTasksStore";
-import {
-  getQuerySnapshot,
-  saveQuerySnapshot,
-} from "@/services/query_snapshots/querySnapshotsStore";
-import { getCurrentLocale } from "@/stores/i18n";
+  PostCompetition,
+  Stage,
+} from "@/services/competition_crud/competitionCrudTypes";
+import type { Competitions } from "@/services/fetch_competitions/fetchCompetitions";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery, type TanstackCreateQuery } from "@/utils/http/query-factory";
 
 const DRAFT_COMPETITION_STATUS = "draft";
-
-const getCompetitionDetailKey = (id: string) =>
-  ["competition", id, getCurrentLocale()] as const;
-
-const getCompetitionsListKey = () =>
-  ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionSnapshot = async (id: string) => {
   const competition = await rawRequest<Competition>({
@@ -37,31 +32,20 @@ const refreshCompetitionSnapshot = async (id: string) => {
 
   queryClient.setQueryData(getCompetitionDetailKey(id), competition);
 
-  const previousCompetitions =
-    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
-  const nextCompetition = toCompetitionListItem(
+  const previousCompetitions = (await readCompetitionsSnapshot()) ?? [];
+  const nextCompetitions = buildNextCompetitions(
+    previousCompetitions,
     competition,
-    previousCompetitions.find((candidate) => candidate.id === competition.id),
   );
-  const existingIndex = previousCompetitions.findIndex(
-    (candidate) => candidate.id === competition.id,
-  );
-  const nextCompetitions =
-    existingIndex === -1
-      ? [nextCompetition, ...previousCompetitions]
-      : previousCompetitions.map((candidate) =>
-          candidate.id === competition.id ? nextCompetition : candidate,
-        );
 
-  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
+  await saveCompetitionsSnapshot(nextCompetitions);
   queryClient.setQueryData(getCompetitionsListKey(), nextCompetitions);
 
   return competition;
 };
 
 const fetchCompetition = async (id: string) => {
-  const competitionsSnapshot =
-    await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID);
+  const competitionsSnapshot = await readCompetitionsSnapshot();
   const competitionSnapshot = competitionsSnapshot?.find(
     (competition) => competition.id === id,
   );
@@ -135,147 +119,6 @@ const mergeCompetitionWithPayload = (
   };
 };
 
-const toCompetitionListItem = (
-  competition: Competition,
-  previousCompetition?: Competitions,
-): Competitions => ({
-  country: competition.country,
-  description:
-    competition.description ?? previousCompetition?.description ?? "",
-  id: competition.id,
-  location: competition.location
-    ? ({
-        address: competition.location.address,
-        latitude: competition.location.latitude,
-        longitude: competition.location.longitude,
-      } satisfies CompetitionLocation)
-    : previousCompetition?.location,
-  name: competition.name,
-  stages:
-    competition.stages?.map(
-      (stage): CompetitionListStage => ({
-        dateFrom: stage.dateFrom,
-        dateTo: stage.dateTo,
-        id: stage.id,
-        name: stage.name,
-      }),
-    ) ??
-    previousCompetition?.stages ??
-    [],
-  status:
-    competition.status ??
-    previousCompetition?.status ??
-    DRAFT_COMPETITION_STATUS,
-});
-
-const upsertCompetitionInListCache = (competition: Competition) => {
-  const listKey = getCompetitionsListKey();
-
-  queryClient.setQueryData<Competitions[] | undefined>(
-    listKey,
-    (previousCompetitions) => {
-      if (!previousCompetitions) return previousCompetitions;
-
-      const nextCompetition = toCompetitionListItem(
-        competition,
-        previousCompetitions.find(({ id }) => id === competition.id),
-      );
-      const existingIndex = previousCompetitions.findIndex(
-        ({ id }) => id === competition.id,
-      );
-
-      if (existingIndex === -1) {
-        return [nextCompetition, ...previousCompetitions];
-      }
-
-      return previousCompetitions.map((previousCompetition) =>
-        previousCompetition.id === competition.id
-          ? nextCompetition
-          : previousCompetition,
-      );
-    },
-  );
-};
-
-const removeCompetitionFromListCache = (id: string) => {
-  const listKey = getCompetitionsListKey();
-
-  queryClient.setQueryData<Competitions[] | undefined>(
-    listKey,
-    (previousCompetitions) => {
-      if (!previousCompetitions) return previousCompetitions;
-      return previousCompetitions.filter(
-        (competition) => competition.id !== id,
-      );
-    },
-  );
-};
-
-const persistCompetitionSnapshot = async (competition: Competition) => {
-  const previousCompetitions =
-    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
-  const nextCompetition = toCompetitionListItem(
-    competition,
-    previousCompetitions.find(({ id }) => id === competition.id),
-  );
-  const existingIndex = previousCompetitions.findIndex(
-    ({ id }) => id === competition.id,
-  );
-
-  const nextCompetitions =
-    existingIndex === -1
-      ? [nextCompetition, ...previousCompetitions]
-      : previousCompetitions.map((previousCompetition) =>
-          previousCompetition.id === competition.id
-            ? nextCompetition
-            : previousCompetition,
-        );
-
-  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
-};
-
-const removeCompetitionSnapshot = async (id: string) => {
-  const previousCompetitions =
-    (await getQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID)) ?? [];
-  const nextCompetitions = previousCompetitions.filter(
-    (competition) => competition.id !== id,
-  );
-
-  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
-};
-
-const enqueueCompetitionTask = async ({
-  entityId,
-  method,
-  payload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  payload?: unknown;
-  url: string;
-}) => {
-  const timestamp = Date.now();
-
-  await enqueuePendingTask({
-    attemptCount: 0,
-    entityId,
-    entityType: "competition",
-    id: createPendingTaskId({
-      entityId,
-      entityType: "competition",
-      method,
-      timestamp,
-    }),
-    method,
-    payload,
-    status: "pending",
-    timestamp,
-    updatedAt: timestamp,
-    url,
-  });
-};
-
 export const createDefaultCompetition = (): PostCompetition => ({
   country: "pt",
   id: globalThis.crypto.randomUUID(),
@@ -294,19 +137,25 @@ export const useCompetition = () => {
     });
 
   const createCompetition = (payload: PostCompetition) => {
-    const detailKey = getCompetitionDetailKey(payload.id ?? "");
+    const previousCompetitionsFromCache =
+      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
-    queryClient.setQueryData(detailKey, draftCompetition);
-    upsertCompetitionInListCache(draftCompetition);
-    void persistCompetitionSnapshot(draftCompetition);
+    applyCompetitionUpsert(draftCompetition);
 
-    void enqueueCompetitionTask({
-      entityId: draftCompetition.id,
-      method: "POST",
-      payload,
-      url: "/api/competitions",
-    }).then(() => processPendingTasks());
+    void (async () => {
+      await queueCompetitionMutation({
+        entityId: draftCompetition.id,
+        method: "POST",
+        payload,
+        rollbackPayload: await createCompetitionRollbackPayload(
+          draftCompetition.id,
+          null,
+          previousCompetitionsFromCache,
+        ),
+        url: "/api/competitions",
+      });
+    })();
   };
 
   const updateCompetition = (payload: PostCompetition) => {
@@ -314,38 +163,55 @@ export const useCompetition = () => {
       throw new Error("updateCompetition requires an id");
     }
 
-    const detailKey = getCompetitionDetailKey(payload.id);
-    const previousCompetition =
-      queryClient.getQueryData<Competition>(detailKey);
+    const entityId = payload.id;
+    const previousCompetition = queryClient.getQueryData<Competition>(
+      getCompetitionDetailKey(entityId),
+    );
+    const previousCompetitionsFromCache =
+      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
     const nextCompetition = mergeCompetitionWithPayload(
       payload,
       previousCompetition,
     );
 
-    queryClient.setQueryData(detailKey, nextCompetition);
-    upsertCompetitionInListCache(nextCompetition);
-    void persistCompetitionSnapshot(nextCompetition);
+    applyCompetitionUpsert(nextCompetition);
 
-    void enqueueCompetitionTask({
-      entityId: payload.id,
-      method: "PUT",
-      payload,
-      url: `/api/competitions/${payload.id}`,
-    }).then(() => processPendingTasks());
+    void (async () => {
+      await queueCompetitionMutation({
+        entityId,
+        method: "PUT",
+        payload,
+        rollbackPayload: await createCompetitionRollbackPayload(
+          entityId,
+          previousCompetition ?? null,
+          previousCompetitionsFromCache,
+        ),
+        url: `/api/competitions/${entityId}`,
+      });
+    })();
   };
 
   const deleteCompetition = (id: string) => {
-    const detailKey = getCompetitionDetailKey(id);
+    const previousCompetition = queryClient.getQueryData<Competition>(
+      getCompetitionDetailKey(id),
+    );
+    const previousCompetitionsFromCache =
+      queryClient.getQueryData<Competitions[]>(getCompetitionsListKey());
 
-    queryClient.removeQueries({ queryKey: detailKey, exact: true });
-    removeCompetitionFromListCache(id);
-    void removeCompetitionSnapshot(id);
+    applyCompetitionRemoval(id);
 
-    void enqueueCompetitionTask({
-      entityId: id,
-      method: "DELETE",
-      url: `/api/competitions/${id}`,
-    }).then(() => processPendingTasks());
+    void (async () => {
+      await queueCompetitionMutation({
+        entityId: id,
+        method: "DELETE",
+        rollbackPayload: await createCompetitionRollbackPayload(
+          id,
+          previousCompetition ?? null,
+          previousCompetitionsFromCache,
+        ),
+        url: `/api/competitions/${id}`,
+      });
+    })();
   };
 
   return {
@@ -355,87 +221,3 @@ export const useCompetition = () => {
     updateCompetition,
   };
 };
-
-export interface Competition {
-  country: string;
-  description?: string;
-  id: string;
-  location?: CompetitionLocation;
-  name: string;
-  notifications?: Notification[];
-  stages?: Stage[];
-  status: string;
-}
-
-export interface PostCompetition {
-  country?: string;
-  description?: string;
-  id?: string;
-  location?: CompetitionLocation;
-  name?: string;
-  stages?: CompetitionStage[];
-}
-
-export interface CompetitionLocation {
-  address?: string;
-  latitude?: number;
-  longitude?: number;
-}
-
-interface Notification {
-  date: number;
-  id: string;
-  text: string;
-}
-
-interface Stage {
-  dateFrom: number;
-  dateTo: number;
-  events: Event[];
-  id: string;
-  name: string;
-}
-
-interface Event {
-  competitors?: Competitor[];
-  configuration?: EventConfiguration;
-  discipline: string;
-  exercises: Exercise[];
-  id: string;
-  judges?: Judge[];
-  name: string;
-  status: string;
-}
-
-interface Competitor {
-  finalScore: number;
-  id: string;
-  identity: string;
-  name: string;
-  owner: string;
-  scores: EventScore[];
-}
-
-interface EventScore {
-  exerciseId: string;
-  id: string;
-  score: number;
-}
-
-interface EventConfiguration {
-  federation: string;
-  id: string;
-  name: string;
-  version: number;
-}
-
-interface Exercise {
-  id: string;
-  order: number;
-  text: string;
-}
-
-interface Judge {
-  collectorEmail: string;
-  name?: string;
-}
