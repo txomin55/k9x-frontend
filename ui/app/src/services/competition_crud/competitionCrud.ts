@@ -131,6 +131,7 @@ export const useCompetition = () => {
   ): CreateQueryResult<Competition, Error> =>
     competitionQuery.useQuery([id], {
       gcTime: options?.gcTime,
+      networkMode: "always",
       refetchOnMount: options?.refetchOnMount,
       staleTime: options?.staleTime,
     });

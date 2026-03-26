@@ -46,6 +46,7 @@ export const useCompetitions = (options?: TanstackCreateQuery) =>
   competitionsQuery.useQuery({
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
+    networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
   });
 
