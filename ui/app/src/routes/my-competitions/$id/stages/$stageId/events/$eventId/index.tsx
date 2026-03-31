@@ -1,18 +1,6 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import {
-  type Accessor,
-  For,
-  Show,
-  Suspense,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-} from "solid-js";
-import type {
-  EventResponse,
-  UpdateApiEvent,
-} from "@/services/api/event_api_crud/eventApiCrud";
+import { type Accessor, createEffect, createMemo, createSignal, For, Index, onCleanup, Show, Suspense } from "solid-js";
+import type { EventResponse, UpdateApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
 import type { EventCompetitorsWeb } from "@/services/api/competition_crud/competitionCrudTypes";
 
@@ -270,7 +258,7 @@ function CompetitionEventDetailContent(props: {
               gap: "0.75rem",
             }}
           >
-            <For each={draftEvent().competitors}>
+            <Index each={draftEvent().competitors}>
               {(competitor, index) => (
                 <article style={cardStyle}>
                   <div
@@ -280,15 +268,15 @@ function CompetitionEventDetailContent(props: {
                       "justify-content": "space-between",
                     }}
                   >
-                    <strong>{competitor.name || "--No name"}</strong>
+                    <strong>{competitor().name || "--No name"}</strong>
                     <Show when={isEditing()}>
                       <button
-                        aria-label={`--Delete ${competitor.name || "competitor"}`}
+                        aria-label={`--Delete ${competitor().name || "competitor"}`}
                         onClick={() =>
                           setDraftEvent((current) => ({
                             ...current,
                             competitors: current.competitors.filter(
-                              (_, competitorIndex) => competitorIndex !== index(),
+                              (_, competitorIndex) => competitorIndex !== index,
                             ),
                           }))
                         }
@@ -320,76 +308,80 @@ function CompetitionEventDetailContent(props: {
                     when={isEditing()}
                     fallback={
                       <>
-                        <p>{`--Owner: ${competitor.owner}`}</p>
-                        <p>{`--Identity: ${competitor.identity}`}</p>
-                        <p>{`--Final score: ${competitor.finalScore}`}</p>
+                        <p>{`--Owner: ${competitor().owner}`}</p>
+                        <p>{`--Identity: ${competitor().identity}`}</p>
+                        <p>{`--Final score: ${competitor().finalScore}`}</p>
                       </>
                     }
                   >
-                    <label for={`competitor-name-${competitor.id}`}>--Name</label>
+                    <label for={`competitor-name-${competitor().id}`}>
+                      --Name
+                    </label>
                     <input
-                      id={`competitor-name-${competitor.id}`}
+                      id={`competitor-name-${competitor().id}`}
                       onInput={(event) =>
                         updateCompetitorField(
-                          index(),
+                          index,
                           "name",
                           event.currentTarget.value,
                           setDraftEvent,
                         )
                       }
                       type="text"
-                      value={competitor.name}
+                      value={competitor().name}
                     />
-                    <label for={`competitor-owner-${competitor.id}`}>--Owner</label>
+                    <label for={`competitor-owner-${competitor().id}`}>
+                      --Owner
+                    </label>
                     <input
-                      id={`competitor-owner-${competitor.id}`}
+                      id={`competitor-owner-${competitor().id}`}
                       onInput={(event) =>
                         updateCompetitorField(
-                          index(),
+                          index,
                           "owner",
                           event.currentTarget.value,
                           setDraftEvent,
                         )
                       }
                       type="text"
-                      value={competitor.owner}
+                      value={competitor().owner}
                     />
-                    <label for={`competitor-identity-${competitor.id}`}>
+                    <label for={`competitor-identity-${competitor().id}`}>
                       --Identity
                     </label>
                     <input
-                      id={`competitor-identity-${competitor.id}`}
+                      id={`competitor-identity-${competitor().id}`}
                       onInput={(event) =>
                         updateCompetitorField(
-                          index(),
+                          index,
                           "identity",
                           event.currentTarget.value,
                           setDraftEvent,
                         )
                       }
                       type="text"
-                      value={competitor.identity}
+                      value={competitor().identity}
                     />
-                    <label for={`competitor-score-${competitor.id}`}>
+                    <label for={`competitor-score-${competitor().id}`}>
                       --Final score
                     </label>
                     <input
-                      id={`competitor-score-${competitor.id}`}
+                      id={`competitor-score-${competitor().id}`}
                       onInput={(event) =>
                         updateCompetitorField(
-                          index(),
+                          index,
                           "finalScore",
                           Number(event.currentTarget.value) || 0,
                           setDraftEvent,
                         )
                       }
                       type="number"
-                      value={String(competitor.finalScore)}
+                      value={String(competitor().finalScore)}
                     />
                   </Show>
                 </article>
               )}
-            </For>
+            </Index>
           </div>
         </Show>
       </section>
@@ -538,9 +530,7 @@ function updateCompetitorField(
   competitorIndex: number,
   field: "name" | "owner" | "identity" | "finalScore",
   value: string | number,
-  setDraftEvent: (
-    setter: (current: EventResponse) => EventResponse,
-  ) => void,
+  setDraftEvent: (setter: (current: EventResponse) => EventResponse) => void,
 ) {
   setDraftEvent((current) => ({
     ...current,

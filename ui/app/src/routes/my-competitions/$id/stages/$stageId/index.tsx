@@ -5,6 +5,7 @@ import {
   createMemo,
   createSignal,
   For,
+  Index,
   onCleanup,
   Show,
   Suspense,
@@ -353,7 +354,7 @@ function CompetitionStageDetailContent(props: {
       <section>
         <h2>--Events</h2>
         <Show when={visibleEvents().length > 0} fallback={<p>--No events.</p>}>
-          <For each={visibleEvents()}>
+          <Index each={visibleEvents()}>
             {(event) => (
               <Show
                 when={isEditing()}
@@ -361,7 +362,7 @@ function CompetitionStageDetailContent(props: {
                   <Link
                     class="competition-stage-detail__event"
                     params={{
-                      eventId: event.id,
+                      eventId: event().id,
                       id: draftStage().competitionId,
                       stageId: draftStage().id,
                     }}
@@ -376,9 +377,9 @@ function CompetitionStageDetailContent(props: {
                     }}
                     to="/my-competitions/$id/stages/$stageId/events/$eventId"
                   >
-                    <strong>{event.name || "--No name"}</strong>
-                    <p>{`--Discipline: ${event.discipline || "--No discipline"}`}</p>
-                    <p>{`--Participants: ${event.competitors.length}`}</p>
+                    <strong>{event().name || "--No name"}</strong>
+                    <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
+                    <p>{`--Participants: ${event().competitors.length}`}</p>
                   </Link>
                 }
               >
@@ -399,11 +400,11 @@ function CompetitionStageDetailContent(props: {
                       "justify-content": "space-between",
                     }}
                   >
-                    <h3>{event.name}</h3>
+                    <h3>{event().name}</h3>
                     <button
-                      aria-label={`--Delete ${event.name}`}
+                      aria-label={`--Delete ${event().name}`}
                       onClick={() =>
-                        props.onDeleteEvent(event.id)
+                        props.onDeleteEvent(event().id)
                       }
                       style={iconButtonStyle}
                       type="button"
@@ -428,50 +429,50 @@ function CompetitionStageDetailContent(props: {
                       </svg>
                     </button>
                   </div>
-                  <label for={`stage-event-name-${event.id}`}>
+                  <label for={`stage-event-name-${event().id}`}>
                     --Event title
                   </label>
                   <input
-                    id={`stage-event-name-${event.id}`}
+                    id={`stage-event-name-${event().id}`}
                     onInput={(stageEvent) =>
-                      updateEventDraft(event.id, (current) => ({
+                      updateEventDraft(event().id, (current) => ({
                         ...current,
                         name: stageEvent.currentTarget.value,
                       }))
                     }
                     type="text"
-                    value={event.name}
+                    value={event().name}
                   />
-                  <label for={`stage-event-status-${event.id}`}>--Status</label>
+                  <label for={`stage-event-status-${event().id}`}>--Status</label>
                   <input
-                    id={`stage-event-status-${event.id}`}
+                    id={`stage-event-status-${event().id}`}
                     onInput={(stageEvent) =>
-                      updateEventDraft(event.id, (current) => ({
+                      updateEventDraft(event().id, (current) => ({
                         ...current,
                         status: stageEvent.currentTarget.value,
                       }))
                     }
                     type="text"
-                    value={event.status}
+                    value={event().status}
                   />
-                  <label for={`stage-event-discipline-${event.id}`}>
+                  <label for={`stage-event-discipline-${event().id}`}>
                     --Discipline
                   </label>
                   <input
-                    id={`stage-event-discipline-${event.id}`}
+                    id={`stage-event-discipline-${event().id}`}
                     onInput={(stageEvent) =>
-                      updateEventDraft(event.id, (current) => ({
+                      updateEventDraft(event().id, (current) => ({
                         ...current,
                         discipline: stageEvent.currentTarget.value,
                       }))
                     }
                     type="text"
-                    value={event.discipline}
+                    value={event().discipline}
                   />
                 </article>
               </Show>
             )}
-          </For>
+          </Index>
         </Show>
       </section>
       <Show when={isEditing()}>

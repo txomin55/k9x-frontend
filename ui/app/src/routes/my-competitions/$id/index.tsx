@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/solid-router";
-import { createEffect, createSignal, For, onCleanup, Show, Suspense, untrack } from "solid-js";
+import { createEffect, createSignal, For, Index, onCleanup, Show, Suspense, untrack } from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
 import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
 import {
@@ -374,20 +374,20 @@ function CompetitionDetailBody(props: {
         </p>
       </Show>
       <div class="competition-detail__content--stages">
-        <For each={props.competition.stages ?? []}>
+        <Index each={props.competition.stages ?? []}>
           {(stage) => (
             <Show
               when={isEditing()}
               fallback={
                 <Show
-                  when={stage.id}
+                  when={stage().id}
                   fallback={
                     <div
                       class="competition-detail__content--stage"
                       style={stageCardStyle}
                     >
-                      <strong>{stage.name}</strong>
-                      <p>{formatStageDateRange(stage)}</p>
+                      <strong>{stage().name}</strong>
+                      <p>{formatStageDateRange(stage())}</p>
                     </div>
                   }
                 >
@@ -398,8 +398,8 @@ function CompetitionDetailBody(props: {
                       style={stageCardStyle}
                       to="/my-competitions/$id/stages/$stageId"
                     >
-                      <strong>{stage.name}</strong>
-                      <p>{formatStageDateRange(stage)}</p>
+                      <strong>{stage().name}</strong>
+                      <p>{formatStageDateRange(stage())}</p>
                     </Link>
                   )}
                 </Show>
@@ -423,26 +423,26 @@ function CompetitionDetailBody(props: {
                   <strong>--Stage</strong>
                   <button
                     type="button"
-                    aria-label={`--Delete ${stage.name}`}
+                    aria-label={`--Delete ${stage().name}`}
                     onClick={() => {
-                      const timeoutId = stageUpdateTimeouts.get(stage.id);
+                      const timeoutId = stageUpdateTimeouts.get(stage().id);
 
                       if (timeoutId) {
                         globalThis.clearTimeout(timeoutId);
-                        stageUpdateTimeouts.delete(stage.id);
+                        stageUpdateTimeouts.delete(stage().id);
                       }
 
                       setStageDrafts((current) => {
                         const nextDrafts = { ...current };
-                        delete nextDrafts[stage.id];
+                        delete nextDrafts[stage().id];
                         return nextDrafts;
                       });
                       setQueuedStageKeys((current) => {
                         const nextQueuedStageKeys = { ...current };
-                        delete nextQueuedStageKeys[stage.id];
+                        delete nextQueuedStageKeys[stage().id];
                         return nextQueuedStageKeys;
                       });
-                      deleteApiStage(stage.id, props.competition.id);
+                      deleteApiStage(stage().id, props.competition.id);
                     }}
                     style={iconButtonStyle}
                   >
@@ -466,27 +466,27 @@ function CompetitionDetailBody(props: {
                     </svg>
                   </button>
                 </div>
-                <label for={`stage-name-${stage.id}`}>--Stage title</label>
+                <label for={`stage-name-${stage().id}`}>--Stage title</label>
                 <input
-                  id={`stage-name-${stage.id}`}
+                  id={`stage-name-${stage().id}`}
                   type="text"
-                  value={stageDrafts()[stage.id]?.name ?? stage.name}
+                  value={stageDrafts()[stage().id]?.name ?? stage().name}
                   onInput={(event) =>
-                    upsertStageDraft(stage.id, (current) => ({
+                    upsertStageDraft(stage().id, (current) => ({
                       ...current,
                       name: event.currentTarget.value,
                     }))
                   }
                 />
-                <label for={`stage-date-from-${stage.id}`}>--Date from</label>
+                <label for={`stage-date-from-${stage().id}`}>--Date from</label>
                 <input
-                  id={`stage-date-from-${stage.id}`}
+                  id={`stage-date-from-${stage().id}`}
                   type="date"
                   value={toDateInputValue(
-                    stageDrafts()[stage.id]?.dateFrom ?? stage.dateFrom,
+                    stageDrafts()[stage().id]?.dateFrom ?? stage().dateFrom,
                   )}
                   onInput={(event) =>
-                    upsertStageDraft(stage.id, (current) => ({
+                    upsertStageDraft(stage().id, (current) => ({
                       ...current,
                       dateFrom: parseDateInputValue(
                         event.currentTarget.value,
@@ -495,15 +495,15 @@ function CompetitionDetailBody(props: {
                     }))
                   }
                 />
-                <label for={`stage-date-to-${stage.id}`}>--Date to</label>
+                <label for={`stage-date-to-${stage().id}`}>--Date to</label>
                 <input
-                  id={`stage-date-to-${stage.id}`}
+                  id={`stage-date-to-${stage().id}`}
                   type="date"
                   value={toDateInputValue(
-                    stageDrafts()[stage.id]?.dateTo ?? stage.dateTo,
+                    stageDrafts()[stage().id]?.dateTo ?? stage().dateTo,
                   )}
                   onInput={(event) =>
-                    upsertStageDraft(stage.id, (current) => ({
+                    upsertStageDraft(stage().id, (current) => ({
                       ...current,
                       dateTo: parseDateInputValue(
                         event.currentTarget.value,
@@ -515,7 +515,7 @@ function CompetitionDetailBody(props: {
               </div>
             </Show>
           )}
-        </For>
+        </Index>
       </div>
       <Show when={isEditing()}>
         <button
