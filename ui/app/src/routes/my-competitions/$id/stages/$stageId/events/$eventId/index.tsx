@@ -1,6 +1,22 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Index, onCleanup, Show, Suspense } from "solid-js";
-import type { EventResponse, UpdateApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Index,
+  onCleanup,
+  Show,
+  Suspense,
+} from "solid-js";
+import type {
+  EventResponse,
+  UpdateApiEvent,
+} from "@/services/api/event_api_crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
 import type {
   EventCompetitorsWeb,
@@ -67,18 +83,21 @@ function CompetitionEventDetailContent(props: {
   const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
     string | null
   >(null);
-  const [editingCompetitorIndex, setEditingCompetitorIndex] = createSignal<number | null>(null);
-  const [competitorDialogDraft, setCompetitorDialogDraft] = createSignal<EventCompetitorsWeb | null>(
+  const [editingCompetitorIndex, setEditingCompetitorIndex] = createSignal<
+    number | null
+  >(null);
+  const [competitorDialogDraft, setCompetitorDialogDraft] =
+    createSignal<EventCompetitorsWeb | null>(null);
+  const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(
     null,
   );
-  const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(null);
-  const [judgeDialogDraft, setJudgeDialogDraft] = createSignal<StageJudgesWeb | null>(
-    null,
-  );
-  const [editingExerciseIndex, setEditingExerciseIndex] = createSignal<number | null>(null);
-  const [exerciseDialogDraft, setExerciseDialogDraft] = createSignal<EventExercisesWeb | null>(
-    null,
-  );
+  const [judgeDialogDraft, setJudgeDialogDraft] =
+    createSignal<StageJudgesWeb | null>(null);
+  const [editingExerciseIndex, setEditingExerciseIndex] = createSignal<
+    number | null
+  >(null);
+  const [exerciseDialogDraft, setExerciseDialogDraft] =
+    createSignal<EventExercisesWeb | null>(null);
 
   const event = createMemo(() => props.event());
 
@@ -373,7 +392,8 @@ function CompetitionEventDetailContent(props: {
                                         current
                                           ? {
                                               ...current,
-                                              collectorEmail: event.currentTarget.value,
+                                              collectorEmail:
+                                                event.currentTarget.value,
                                             }
                                           : current,
                                       )
@@ -399,10 +419,11 @@ function CompetitionEventDetailContent(props: {
 
                                         setDraftEvent((current) => ({
                                           ...current,
-                                          judges: current.judges.map((entry, judgeIndex) =>
-                                            judgeIndex === index
-                                              ? draft
-                                              : entry,
+                                          judges: current.judges.map(
+                                            (entry, judgeIndex) =>
+                                              judgeIndex === index
+                                                ? draft
+                                                : entry,
                                           ),
                                         }));
                                         closeJudgeEditor();
@@ -415,7 +436,6 @@ function CompetitionEventDetailContent(props: {
                               )}
                             </Show>
                           }
-                          modal
                           onOpenChange={(isOpen) => {
                             if (isOpen) {
                               setEditingJudgeIndex(index);
@@ -578,7 +598,9 @@ function CompetitionEventDetailContent(props: {
                                     gap: "0.75rem",
                                   }}
                                 >
-                                  <label for={`exercise-dialog-order-${draft().id}`}>
+                                  <label
+                                    for={`exercise-dialog-order-${draft().id}`}
+                                  >
                                     --Order
                                   </label>
                                   <input
@@ -588,7 +610,10 @@ function CompetitionEventDetailContent(props: {
                                         current
                                           ? {
                                               ...current,
-                                              order: Number(event.currentTarget.value) || 0,
+                                              order:
+                                                Number(
+                                                  event.currentTarget.value,
+                                                ) || 0,
                                             }
                                           : current,
                                       )
@@ -596,7 +621,9 @@ function CompetitionEventDetailContent(props: {
                                     type="number"
                                     value={String(draft().order)}
                                   />
-                                  <label for={`exercise-dialog-text-${draft().id}`}>
+                                  <label
+                                    for={`exercise-dialog-text-${draft().id}`}
+                                  >
                                     --Text
                                   </label>
                                   <input
@@ -632,10 +659,11 @@ function CompetitionEventDetailContent(props: {
 
                                         setDraftEvent((current) => ({
                                           ...current,
-                                          exercises: current.exercises.map((entry, exerciseIndex) =>
-                                            exerciseIndex === index
-                                              ? draft
-                                              : entry,
+                                          exercises: current.exercises.map(
+                                            (entry, exerciseIndex) =>
+                                              exerciseIndex === index
+                                                ? draft
+                                                : entry,
                                           ),
                                         }));
                                         closeExerciseEditor();
@@ -648,7 +676,6 @@ function CompetitionEventDetailContent(props: {
                               )}
                             </Show>
                           }
-                          modal
                           onOpenChange={(isOpen) => {
                             if (isOpen) {
                               setEditingExerciseIndex(index);
@@ -748,7 +775,10 @@ function CompetitionEventDetailContent(props: {
               onClick={() =>
                 setDraftEvent((current) => ({
                   ...current,
-                  competitors: [...current.competitors, createDefaultCompetitor()],
+                  competitors: [
+                    ...current.competitors,
+                    createDefaultCompetitor(),
+                  ],
                 }))
               }
               style={iconButtonStyle}
@@ -811,7 +841,9 @@ function CompetitionEventDetailContent(props: {
                                     gap: "0.75rem",
                                   }}
                                 >
-                                  <label for={`competitor-dialog-name-${draft().id}`}>
+                                  <label
+                                    for={`competitor-dialog-name-${draft().id}`}
+                                  >
                                     --Name
                                   </label>
                                   <input
@@ -829,7 +861,9 @@ function CompetitionEventDetailContent(props: {
                                     type="text"
                                     value={draft().name}
                                   />
-                                  <label for={`competitor-dialog-owner-${draft().id}`}>
+                                  <label
+                                    for={`competitor-dialog-owner-${draft().id}`}
+                                  >
                                     --Owner
                                   </label>
                                   <input
@@ -847,7 +881,9 @@ function CompetitionEventDetailContent(props: {
                                     type="text"
                                     value={draft().owner}
                                   />
-                                  <label for={`competitor-dialog-identity-${draft().id}`}>
+                                  <label
+                                    for={`competitor-dialog-identity-${draft().id}`}
+                                  >
                                     --Identity
                                   </label>
                                   <input
@@ -857,7 +893,8 @@ function CompetitionEventDetailContent(props: {
                                         current
                                           ? {
                                               ...current,
-                                              identity: event.currentTarget.value,
+                                              identity:
+                                                event.currentTarget.value,
                                             }
                                           : current,
                                       )
@@ -865,7 +902,9 @@ function CompetitionEventDetailContent(props: {
                                     type="text"
                                     value={draft().identity}
                                   />
-                                  <label for={`competitor-dialog-score-${draft().id}`}>
+                                  <label
+                                    for={`competitor-dialog-score-${draft().id}`}
+                                  >
                                     --Final score
                                   </label>
                                   <input
@@ -875,7 +914,10 @@ function CompetitionEventDetailContent(props: {
                                         current
                                           ? {
                                               ...current,
-                                              finalScore: Number(event.currentTarget.value) || 0,
+                                              finalScore:
+                                                Number(
+                                                  event.currentTarget.value,
+                                                ) || 0,
                                             }
                                           : current,
                                       )
@@ -901,10 +943,11 @@ function CompetitionEventDetailContent(props: {
 
                                         setDraftEvent((current) => ({
                                           ...current,
-                                          competitors: current.competitors.map((entry, competitorIndex) =>
-                                            competitorIndex === index
-                                              ? draft
-                                              : entry,
+                                          competitors: current.competitors.map(
+                                            (entry, competitorIndex) =>
+                                              competitorIndex === index
+                                                ? draft
+                                                : entry,
                                           ),
                                         }));
                                         closeCompetitorEditor();
@@ -917,7 +960,6 @@ function CompetitionEventDetailContent(props: {
                               )}
                             </Show>
                           }
-                          modal
                           onOpenChange={(isOpen) => {
                             if (isOpen) {
                               setEditingCompetitorIndex(index);
@@ -964,7 +1006,8 @@ function CompetitionEventDetailContent(props: {
                             setDraftEvent((current) => ({
                               ...current,
                               competitors: current.competitors.filter(
-                                (_, competitorIndex) => competitorIndex !== index,
+                                (_, competitorIndex) =>
+                                  competitorIndex !== index,
                               ),
                             }));
                           }}

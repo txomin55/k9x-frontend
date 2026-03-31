@@ -1,0 +1,226 @@
+:root {
+    /* radius */
+    --radius-sm: var(--unit-05);
+    --radius-md: var(--unit-075);
+    --radius-lg: var(--unit-1);
+    --radius-xl: var(--unit-2);
+    --radius-full: 999px;
+
+    /* sizing */
+    --control-height-md: 40px;
+    --dialog-max-width-md: 32rem;
+
+    /* overlay */
+    --overlay-backdrop: rgba(15, 23, 32, 0.48);
+
+    /* shadows */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 32, 0.08);
+    --shadow-md: 0 8px 24px rgba(15, 23, 32, 0.10);
+    --shadow-lg: 0 24px 60px rgba(15, 23, 32, 0.16);
+
+    /* focus */
+    --focus-ring-color: var(--accent);
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+}
+
+.atom-dialog {
+    display: inline-flex;
+}
+
+/* Trigger stays visually agnostic */
+.atom-dialog__trigger {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.atom-dialog__trigger:focus-visible,
+.atom-dialog__close-button:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+}
+
+.atom-dialog__trigger:disabled,
+.atom-dialog__trigger[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Overlay */
+.atom-dialog__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: var(--overlay-backdrop);
+    animation: atom-dialog-overlay-hide 160ms ease-in forwards;
+}
+
+.atom-dialog__overlay[data-expanded] {
+    animation: atom-dialog-overlay-show 180ms ease-out forwards;
+}
+
+/* Content */
+.atom-dialog__content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 21;
+
+    width: min(calc(100vw - (var(--unit-1) * 2)), var(--dialog-max-width-md));
+    max-height: calc(100vh - (var(--unit-1) * 2));
+    overflow: auto;
+
+    padding: var(--unit-2);
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+
+    transform: translate(-50%, -50%);
+    outline: none;
+
+    animation: atom-dialog-content-hide 160ms ease-in forwards;
+}
+
+.atom-dialog__content[data-expanded] {
+    animation: atom-dialog-content-show 180ms ease-out forwards;
+}
+
+/* Header */
+.atom-dialog__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--unit-1);
+}
+
+.atom-dialog__title {
+    margin: 0;
+    font-size: var(--text-heading-md);
+    line-height: var(--text-heading-line-height);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.atom-dialog__description {
+    margin: var(--unit-05) 0 0;
+    color: var(--text-secondary);
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-line-height);
+    font-weight: var(--font-weight-regular);
+}
+
+/* Body */
+.atom-dialog__body {
+    margin-top: var(--unit-1);
+    color: var(--text-primary);
+}
+
+/* Close button */
+.atom-dialog__close-button {
+    appearance: none;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--control-height-md);
+    padding: 0 var(--unit-1);
+
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-line-height);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+
+    transition: background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
+}
+
+.atom-dialog__close-button:hover {
+    background: var(--surface-hover);
+}
+
+.atom-dialog__close-button:active {
+    background: var(--surface-muted);
+}
+
+.atom-dialog__close-button:disabled,
+.atom-dialog__close-button[aria-disabled="true"] {
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    border-color: var(--border-muted);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Motion */
+@keyframes atom-dialog-overlay-show {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes atom-dialog-overlay-hide {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes atom-dialog-content-show {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes atom-dialog-content-hide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.96);
+    }
+}
+
+@media (max-width: 640px) {
+    .atom-dialog__content {
+        width: calc(100vw - (var(--unit-1) * 2));
+        max-height: calc(100vh - (var(--unit-1) * 2));
+        padding: var(--unit-1);
+        border-radius: var(--radius-md);
+    }
+
+    .atom-dialog__header {
+        gap: var(--unit-05);
+    }
+}

@@ -1,11 +1,9 @@
 import type { JSX } from "solid-js";
 
-export type AtomDialogProps = {
+export type AtomCollapsibleProps = {
   trigger: JSX.Element;
-  title?: JSX.Element;
-  description?: JSX.Element;
   content: JSX.Element;
-  closeButtonText?: string;
+  disabled?: boolean;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
 };

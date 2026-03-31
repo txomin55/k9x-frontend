@@ -1,13 +1,13 @@
-import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/solid-router";
-import { createEffect, createSignal, For, Index, onCleanup, Show, Suspense } from "solid-js";
+import {createFileRoute, Link, useNavigate, useParams,} from "@tanstack/solid-router";
+import {createEffect, createSignal, For, Index, onCleanup, Show, Suspense,} from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
-import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
+import {useCompetition} from "@/services/api/competition_crud/competitionCrud";
 import {
   type Competition,
   type PostCompetition,
-  type Stage
+  type Stage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import {type StageEditorModel, useApiStage,} from "@/services/api/stage_api_crud/stageApiCrud";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import "./styles.css";
@@ -86,10 +86,7 @@ function CompetitionDetailBody(props: {
   onUpdate: (competition: PostCompetition) => void;
 }) {
   const navigate = useNavigate();
-  const {
-    deleteApiStage,
-    updateApiStage,
-  } = useApiStage();
+  const { deleteApiStage, updateApiStage } = useApiStage();
   const [isEditing, setIsEditing] = createSignal(false);
   const [title, setTitle] = createSignal(props.competition.name);
   const [country, setCountry] = createSignal(props.competition.country);
@@ -106,9 +103,8 @@ function CompetitionDetailBody(props: {
     props.competition.location?.longitude?.toString() ?? "",
   );
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
-  const [stageDialogDraft, setStageDialogDraft] = createSignal<StageEditorModel | null>(
-    null,
-  );
+  const [stageDialogDraft, setStageDialogDraft] =
+    createSignal<StageEditorModel | null>(null);
 
   createEffect(() => {
     if (isEditing()) return;
@@ -408,7 +404,9 @@ function CompetitionDetailBody(props: {
                                   )
                                 }
                               />
-                              <label for={`stage-dialog-date-from-${draft().id}`}>
+                              <label
+                                for={`stage-dialog-date-from-${draft().id}`}
+                              >
                                 --Date from
                               </label>
                               <input
@@ -468,7 +466,6 @@ function CompetitionDetailBody(props: {
                           )}
                         </Show>
                       }
-                      modal
                       onOpenChange={(isOpen) => {
                         if (isOpen) {
                           openStageEditor(stage());
@@ -648,7 +645,7 @@ const visuallyHiddenStyle = {
   padding: "0",
   position: "absolute",
   width: "1px",
-};
+} as const;
 
 function toApiStage(stage: Stage, competitionId: string): StageEditorModel {
   return {

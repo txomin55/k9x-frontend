@@ -1,13 +1,5 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  onCleanup,
-  Show,
-  Suspense,
-} from "solid-js";
+import { type Accessor, createEffect, createSignal, Index, onCleanup, Show, Suspense } from "solid-js";
 import {
   type CreateApiEvent,
   type EventResponse,
@@ -124,9 +116,8 @@ function CompetitionStageDetailContent(props: {
     string | null
   >(null);
   const [editingEventId, setEditingEventId] = createSignal<string | null>(null);
-  const [eventDialogDraft, setEventDialogDraft] = createSignal<EventResponse | null>(
-    null,
-  );
+  const [eventDialogDraft, setEventDialogDraft] =
+    createSignal<EventResponse | null>(null);
 
   const draftKey = (stage: StageEditorModel) =>
     JSON.stringify({
@@ -296,7 +287,10 @@ function CompetitionStageDetailContent(props: {
             </button>
           </Show>
         </div>
-        <Show when={props.stage().events.length > 0} fallback={<p>--No events.</p>}>
+        <Show
+          when={props.stage().events.length > 0}
+          fallback={<p>--No events.</p>}
+        >
           <Index each={props.stage().events}>
             {(event) => (
               <Show
@@ -371,7 +365,8 @@ function CompetitionStageDetailContent(props: {
                                       current
                                         ? {
                                             ...current,
-                                            name: stageEvent.currentTarget.value,
+                                            name: stageEvent.currentTarget
+                                              .value,
                                           }
                                         : current,
                                     )
@@ -379,7 +374,9 @@ function CompetitionStageDetailContent(props: {
                                   type="text"
                                   value={draft().name}
                                 />
-                                <label for={`event-dialog-status-${draft().id}`}>
+                                <label
+                                  for={`event-dialog-status-${draft().id}`}
+                                >
                                   --Status
                                 </label>
                                 <input
@@ -389,7 +386,8 @@ function CompetitionStageDetailContent(props: {
                                       current
                                         ? {
                                             ...current,
-                                            status: stageEvent.currentTarget.value,
+                                            status:
+                                              stageEvent.currentTarget.value,
                                           }
                                         : current,
                                     )
@@ -397,7 +395,9 @@ function CompetitionStageDetailContent(props: {
                                   type="text"
                                   value={draft().status}
                                 />
-                                <label for={`event-dialog-discipline-${draft().id}`}>
+                                <label
+                                  for={`event-dialog-discipline-${draft().id}`}
+                                >
                                   --Discipline
                                 </label>
                                 <input
@@ -407,7 +407,8 @@ function CompetitionStageDetailContent(props: {
                                       current
                                         ? {
                                             ...current,
-                                            discipline: stageEvent.currentTarget.value,
+                                            discipline:
+                                              stageEvent.currentTarget.value,
                                           }
                                         : current,
                                     )
@@ -433,7 +434,6 @@ function CompetitionStageDetailContent(props: {
                             )}
                           </Show>
                         }
-                        modal
                         onOpenChange={(isOpen) => {
                           if (isOpen) {
                             openEventEditor(event());

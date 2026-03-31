@@ -1,0 +1,133 @@
+:root {
+    /* motion */
+    --motion-fast: 160ms;
+    --motion-normal: 200ms;
+
+    /* focus */
+    --focus-ring-color: var(--accent);
+    --focus-ring-width: 2px;
+}
+
+.atom-collapsible {
+    width: 100%;
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    overflow: hidden;
+}
+
+/* TRIGGER */
+.atom-collapsible__trigger {
+    appearance: none;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--unit-1);
+
+    padding: var(--unit-1) var(--unit-2);
+
+    background: transparent;
+    border: none;
+
+    color: inherit;
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+
+    text-align: left;
+    cursor: pointer;
+
+    transition: background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+
+/* hover */
+.atom-collapsible__trigger:hover {
+    background: var(--surface-hover);
+}
+
+/* focus */
+.atom-collapsible__trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: calc(var(--focus-ring-width) * -1);
+}
+
+/* disabled */
+.atom-collapsible__trigger:disabled,
+.atom-collapsible__trigger[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* label */
+.atom-collapsible__trigger-label {
+    flex: 1;
+    min-width: 0;
+}
+
+/* indicator */
+.atom-collapsible__indicator {
+    flex-shrink: 0;
+
+    font-size: var(--text-heading-sm);
+    line-height: 1;
+
+    color: var(--text-secondary);
+
+    transition: transform var(--motion-normal) ease,
+    color var(--motion-fast) ease;
+}
+
+/* expanded state */
+.atom-collapsible__trigger[data-expanded] .atom-collapsible__indicator {
+    transform: rotate(45deg);
+    color: var(--text-primary);
+}
+
+/* CONTENT */
+.atom-collapsible__content {
+    overflow: hidden;
+    border-top: 1px solid transparent;
+}
+
+/* expanded */
+.atom-collapsible__content[data-expanded] {
+    border-top-color: var(--border);
+    animation: atom-collapsible-expand var(--motion-normal) ease-out;
+}
+
+/* collapsed */
+.atom-collapsible__content[data-closed] {
+    animation: atom-collapsible-collapse var(--motion-normal) ease-in;
+}
+
+/* inner */
+.atom-collapsible__content-inner {
+    padding: var(--unit-1) var(--unit-2) var(--unit-2);
+
+    color: var(--text-secondary);
+    line-height: var(--text-body-line-height);
+}
+
+/* animations */
+@keyframes atom-collapsible-expand {
+    from {
+        height: 0;
+    }
+    to {
+        height: var(--kb-collapsible-content-height);
+    }
+}
+
+@keyframes atom-collapsible-collapse {
+    from {
+        height: var(--kb-collapsible-content-height);
+    }
+    to {
+        height: 0;
+    }
+}

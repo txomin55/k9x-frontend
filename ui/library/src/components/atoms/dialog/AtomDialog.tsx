@@ -1,15 +1,10 @@
 import * as Dialog from "@kobalte/core/dialog";
 import type { AtomDialogProps } from "@lib/components/atoms/dialog/AtomDialog.types";
-import "./AtomDialog.css";
+import "./styles.css";
 
 export default function AtomDialog(props: AtomDialogProps) {
   return (
-    <Dialog.Root
-      open={props.open}
-      defaultOpen={props.defaultOpen}
-      onOpenChange={props.onOpenChange}
-      modal={props.modal}
-    >
+    <Dialog.Root open={props.open} onOpenChange={props.onOpenChange} modal>
       <div class="atom-dialog">
         <Dialog.Trigger class="atom-dialog__trigger">
           {props.trigger}
@@ -20,13 +15,12 @@ export default function AtomDialog(props: AtomDialogProps) {
         <Dialog.Content class="atom-dialog__content">
           <div class="atom-dialog__header">
             {props.title ? (
-              <Dialog.Title class="atom-dialog__title">{props.title}</Dialog.Title>
+              <Dialog.Title class="atom-dialog__title">
+                {props.title}
+              </Dialog.Title>
             ) : null}
-            <Dialog.CloseButton
-              class="atom-dialog__close-button"
-              aria-label={props.closeButtonText ?? "Close dialog"}
-            >
-              {props.closeButtonText ?? "Close"}
+            <Dialog.CloseButton class="atom-dialog__close-button">
+              x
             </Dialog.CloseButton>
           </div>
           {props.description ? (
