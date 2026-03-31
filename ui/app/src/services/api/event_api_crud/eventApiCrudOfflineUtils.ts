@@ -8,9 +8,9 @@ import {
   getCompetitionsQueryKey,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
-  ApiEvent,
   ApiEventRollbackPayload,
   Competition,
+  EventResponse,
   Stage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import {
@@ -29,7 +29,7 @@ import {
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
 
-const buildNextStageDetail = (stage: Stage, event: ApiEvent): Stage => {
+const buildNextStageDetail = (stage: Stage, event: EventResponse): Stage => {
   const previousEvents = stage.events ?? [];
   const existingIndex = previousEvents.findIndex(
     ({ id }) => String(id) === String(event.id),
@@ -58,7 +58,7 @@ const buildStageDetailWithoutEvent = (stage: Stage, eventId: string): Stage => (
 const buildNextCompetitionDetail = (
   competition: Competition,
   stageId: string,
-  event: ApiEvent,
+  event: EventResponse,
 ): Competition => ({
   ...competition,
   stages: (competition.stages ?? []).map((stage) =>
@@ -85,7 +85,7 @@ const buildNextCompetitionsList = (
   competitions: Competitions[],
   competitionId: string,
   stageId: string,
-  event: ApiEvent,
+  event: EventResponse,
 ): Competitions[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
@@ -111,7 +111,7 @@ const getBaseCompetitionsFromCache = () =>
 const persistApiEventCompetitionSnapshot = async (
   competitionId: string,
   stageId: string,
-  event: ApiEvent,
+  event: EventResponse,
 ) => {
   const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
@@ -174,7 +174,7 @@ export const createApiEventRollbackPayload = async ({
   competitionId: string;
   entityId: string;
   previousCompetitionsFromCache?: Competitions[];
-  previousEvent: ApiEvent | null;
+  previousEvent: EventResponse | null;
   stageId: string;
 }): Promise<ApiEventRollbackPayload> => ({
   competitionId,
@@ -244,7 +244,7 @@ const rollbackApiEventPayload = async (
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
 
-const isApiEventPayload = (payload: unknown): payload is ApiEvent =>
+const isApiEventPayload = (payload: unknown): payload is EventResponse =>
   typeof payload === "object" &&
   payload !== null &&
   "id" in payload &&
@@ -319,7 +319,7 @@ registerPendingTaskHandler("event", apiEventPendingTaskHandler);
 export const applyApiEventUpsert = (
   competitionId: string,
   stageId: string,
-  event: ApiEvent,
+  event: EventResponse,
 ) => {
   void persistApiEventCompetitionSnapshot(competitionId, stageId, event);
 };

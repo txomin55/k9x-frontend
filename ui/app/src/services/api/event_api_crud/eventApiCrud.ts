@@ -11,50 +11,53 @@ import {
   useCompetition,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
-  ApiEvent,
-  ApiPostEvent,
-  ApiPostStageCompetitor,
-  ApiPostStageEventConfiguration,
-  ApiPostStageEventScore,
-  ApiPostStageExercise,
-  ApiPostStageJudge,
-  ApiStageCompetitor,
-  ApiStageEventConfiguration,
-  ApiStageEventScore,
-  ApiStageExercise,
-  ApiStageJudge,
+  CreateApiEvent,
+  EventResponse,
   Competitions,
+  EventCompetitorsWeb,
+  EventConfigurationWeb,
+  EventExercisesWeb,
+  EventMutationPayload,
+  EventScoresWeb,
+  PostEventCompetitorsWeb,
+  PostEventConfigurationWeb,
+  PostEventExercisesWeb,
+  PostStageEventScoreWeb,
+  PostStageJudgesWeb,
+  StageJudgesWeb,
+  UpdateApiEvent,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 export type {
-  ApiEvent,
-  ApiPostEvent,
+  CreateApiEvent,
+  EventResponse,
+  UpdateApiEvent,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiEventScore = (
-  score: ApiPostStageEventScore,
-  previousScore?: ApiStageEventScore,
-): ApiStageEventScore => ({
+  score: PostStageEventScoreWeb,
+  previousScore?: EventScoresWeb,
+): EventScoresWeb => ({
   exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
   id: score.id ?? previousScore?.id ?? createId(),
   score: score.score ?? previousScore?.score ?? 0,
 });
 
 const toApiExercise = (
-  exercise: ApiPostStageExercise,
-  previousExercise?: ApiStageExercise,
-): ApiStageExercise => ({
+  exercise: PostEventExercisesWeb,
+  previousExercise?: EventExercisesWeb,
+): EventExercisesWeb => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
   text: exercise.text ?? previousExercise?.text ?? "",
 });
 
 const toApiEventConfiguration = (
-  configuration?: ApiPostStageEventConfiguration,
-  previousConfiguration?: ApiStageEventConfiguration,
-): ApiStageEventConfiguration => ({
+  configuration?: PostEventConfigurationWeb,
+  previousConfiguration?: EventConfigurationWeb,
+): EventConfigurationWeb => ({
   federation:
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
@@ -63,17 +66,17 @@ const toApiEventConfiguration = (
 });
 
 const toApiJudge = (
-  judge: ApiPostStageJudge,
-  previousJudge?: ApiStageJudge,
-): ApiStageJudge => ({
+  judge: PostStageJudgesWeb,
+  previousJudge?: StageJudgesWeb,
+): StageJudgesWeb => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   name: judge.name ?? previousJudge?.name ?? "",
 });
 
 const toApiCompetitor = (
-  competitor: ApiPostStageCompetitor,
-  previousCompetitor?: ApiStageCompetitor,
-): ApiStageCompetitor => {
+  competitor: PostEventCompetitorsWeb,
+  previousCompetitor?: EventCompetitorsWeb,
+): EventCompetitorsWeb => {
   const previousScoresById = new Map(
     (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
   );
@@ -97,9 +100,22 @@ const toApiCompetitor = (
 };
 
 const mergeApiEventWithPayload = (
-  payload: ApiPostEvent,
-  previousEvent?: ApiEvent,
-): ApiEvent => {
+  payload: EventMutationPayload | CreateApiEvent | UpdateApiEvent,
+  previousEvent?: EventResponse,
+): EventResponse => {
+  const mutationPayload: EventMutationPayload =
+    "competitors" in payload ||
+    "configuration" in payload ||
+    "discipline" in payload ||
+    "exercises" in payload ||
+    "judges" in payload ||
+    "status" in payload
+      ? payload
+      : {
+          id: payload.id,
+          name: payload.name,
+          stageId: payload.stageId,
+        };
   const nextEventId = payload.id ?? previousEvent?.id ?? createId();
   const nextStageId = payload.stageId ?? previousEvent?.stageId ?? "";
   const previousCompetitorsById = new Map(
@@ -114,7 +130,7 @@ const mergeApiEventWithPayload = (
 
   return {
     competitors:
-      payload.competitors?.map((competitor) =>
+      mutationPayload.competitors?.map((competitor) =>
         toApiCompetitor(
           competitor,
           competitor.id
@@ -125,12 +141,12 @@ const mergeApiEventWithPayload = (
       previousEvent?.competitors ??
       [],
     configuration: toApiEventConfiguration(
-      payload.configuration,
+      mutationPayload.configuration,
       previousEvent?.configuration,
     ),
-    discipline: payload.discipline ?? previousEvent?.discipline ?? "",
+    discipline: mutationPayload.discipline ?? previousEvent?.discipline ?? "",
     exercises:
-      payload.exercises?.map((exercise) =>
+      mutationPayload.exercises?.map((exercise) =>
         toApiExercise(
           exercise,
           exercise.id ? previousExercisesById.get(exercise.id) : undefined,
@@ -140,18 +156,18 @@ const mergeApiEventWithPayload = (
       [],
     id: nextEventId,
     judges:
-      payload.judges?.map((judge, index) =>
+      mutationPayload.judges?.map((judge, index) =>
         toApiJudge(judge, previousEvent?.judges?.[index]),
       ) ??
       previousEvent?.judges ??
       [],
     name: payload.name ?? previousEvent?.name ?? "",
     stageId: nextStageId,
-    status: payload.status ?? previousEvent?.status ?? "",
+    status: mutationPayload.status ?? previousEvent?.status ?? "",
   };
 };
 
-const createDefaultApiEvent = (stageId: string): ApiPostEvent => ({
+const createDefaultApiEvent = (stageId: string): CreateApiEvent => ({
   id: createId(),
   name: "--Default event",
   stageId,
@@ -227,7 +243,7 @@ export const useApiEvent = () => {
   };
 
   const createApiEvent = (
-    payload: ApiPostEvent,
+    payload: CreateApiEvent,
     options?: { competitionId?: string },
   ) => {
     if (!payload.stageId) {
@@ -279,7 +295,7 @@ export const useApiEvent = () => {
   };
 
   const updateApiEvent = (
-    payload: ApiPostEvent,
+    payload: UpdateApiEvent,
     options?: { competitionId?: string },
   ) => {
     if (!payload.id) {

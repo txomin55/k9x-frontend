@@ -3,6 +3,7 @@ import {
   startGoogleInteractiveLogin,
 } from "@/utils/google_auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
+import type { PostLoginWeb } from "@/services/api/do_login/doLogin.types";
 import type { RequestOptions } from "@/utils/http/client.types";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
@@ -124,7 +125,7 @@ const rawRequest = async <TResponse>({
   return (await response.text()) as TResponse;
 };
 
-const loginWithToken = (payload: { idToken: string }) =>
+const loginWithToken = (payload: PostLoginWeb) =>
   rawRequest<string>({
     body: payload,
     method: "POST",
@@ -134,7 +135,7 @@ const loginWithToken = (payload: { idToken: string }) =>
 
 const getSilentAuthToken = async () => {
   const code = await getSilentGoogleAuthCode();
-  return loginWithToken({ idToken: code });
+  return loginWithToken({ code });
 };
 
 const shouldAttemptSilentLogin = (path: string) => {

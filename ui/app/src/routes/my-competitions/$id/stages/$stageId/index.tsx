@@ -10,8 +10,13 @@ import {
   Suspense,
   untrack
 } from "solid-js";
-import { type ApiEvent, type ApiPostEvent, useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
-import { type ApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import {
+  type CreateApiEvent,
+  type EventResponse,
+  type UpdateApiEvent,
+  useApiEvent,
+} from "@/services/api/event_api_crud/eventApiCrud";
+import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -105,20 +110,20 @@ function CompetitionStageDetailPage() {
 }
 
 function CompetitionStageDetailContent(props: {
-  createDefaultEvent: (stageId: string) => ApiPostEvent;
-  onCreateEvent: (event: ApiPostEvent) => void;
+  createDefaultEvent: (stageId: string) => CreateApiEvent;
+  onCreateEvent: (event: CreateApiEvent) => void;
   onDelete: () => void;
-  onDeleteEvent: (eventId: string, stageId: string) => void;
-  onUpdate: (stage: ApiStage) => void;
-  onUpdateEvent: (event: ApiEvent) => void;
-  stage: Accessor<ApiStage>;
+  onDeleteEvent: (eventId: string) => void;
+  onUpdate: (stage: StageEditorModel) => void;
+  onUpdateEvent: (event: UpdateApiEvent) => void;
+  stage: Accessor<StageEditorModel>;
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftStage, setDraftStage] = createSignal(props.stage());
   const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
     string | null
   >(null);
-  const [eventDrafts, setEventDrafts] = createSignal<Record<string, ApiEvent>>(
+  const [eventDrafts, setEventDrafts] = createSignal<Record<string, EventResponse>>(
     {},
   );
   const [queuedEventKeys, setQueuedEventKeys] = createSignal<
@@ -130,7 +135,7 @@ function CompetitionStageDetailContent(props: {
     ReturnType<typeof globalThis.setTimeout>
   >();
 
-  const draftKey = (stage: ApiStage) =>
+  const draftKey = (stage: StageEditorModel) =>
     JSON.stringify({
       dateFrom: stage.dateFrom,
       dateTo: stage.dateTo,
@@ -158,7 +163,7 @@ function CompetitionStageDetailContent(props: {
     const externalEvents = props.stage().events;
     const currentDrafts = untrack(eventDrafts);
     const currentQueuedEventKeys = untrack(queuedEventKeys);
-    const nextDrafts: Record<string, ApiEvent> = {};
+    const nextDrafts: Record<string, EventResponse> = {};
     const nextQueuedEventKeys: Record<string, string> = {};
 
     for (const event of externalEvents) {
@@ -261,7 +266,7 @@ function CompetitionStageDetailContent(props: {
 
   const updateEventDraft = (
     eventId: string,
-    updater: (current: ApiEvent) => ApiEvent,
+    updater: (current: EventResponse) => EventResponse,
   ) => {
     setEventDrafts((current) => {
       const currentEvent = current[eventId];
@@ -398,7 +403,7 @@ function CompetitionStageDetailContent(props: {
                     <button
                       aria-label={`--Delete ${event.name}`}
                       onClick={() =>
-                        props.onDeleteEvent(event.id, draftStage().id)
+                        props.onDeleteEvent(event.id)
                       }
                       style={iconButtonStyle}
                       type="button"
@@ -579,7 +584,7 @@ const floatingActionButtonStyle = {
   "z-index": "10",
 } as const;
 
-function getEventDraftKey(event: ApiEvent) {
+function getEventDraftKey(event: EventResponse) {
   return JSON.stringify({
     discipline: event.discipline,
     name: event.name,

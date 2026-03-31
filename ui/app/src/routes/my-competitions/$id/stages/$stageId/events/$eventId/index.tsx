@@ -10,10 +10,11 @@ import {
   onCleanup,
 } from "solid-js";
 import type {
-  ApiEvent,
+  EventResponse,
+  UpdateApiEvent,
 } from "@/services/api/event_api_crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
-import type { ApiStageCompetitor } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { EventCompetitorsWeb } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -63,9 +64,9 @@ function CompetitionEventDetailPage() {
 }
 
 function CompetitionEventDetailContent(props: {
-  event: Accessor<ApiEvent>;
+  event: Accessor<EventResponse>;
   onDelete: () => void;
-  onUpdate: (event: ApiEvent) => void;
+  onUpdate: (event: UpdateApiEvent) => void;
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal(props.event());
@@ -512,7 +513,7 @@ const floatingActionButtonStyle = {
   "z-index": "10",
 } as const;
 
-function getEventDraftKey(event: ApiEvent) {
+function getEventDraftKey(event: EventResponse) {
   return JSON.stringify({
     competitors: event.competitors,
     configuration: event.configuration,
@@ -522,7 +523,7 @@ function getEventDraftKey(event: ApiEvent) {
   });
 }
 
-function createDefaultCompetitor(): ApiStageCompetitor {
+function createDefaultCompetitor(): EventCompetitorsWeb {
   return {
     finalScore: 0,
     id: globalThis.crypto.randomUUID(),
@@ -538,7 +539,7 @@ function updateCompetitorField(
   field: "name" | "owner" | "identity" | "finalScore",
   value: string | number,
   setDraftEvent: (
-    setter: (current: ApiEvent) => ApiEvent,
+    setter: (current: EventResponse) => EventResponse,
   ) => void,
 ) {
   setDraftEvent((current) => ({

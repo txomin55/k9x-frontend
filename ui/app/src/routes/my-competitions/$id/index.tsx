@@ -7,7 +7,7 @@ import {
   type PostCompetition,
   type Stage
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import { type ApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import "./styles.css";
 
@@ -104,7 +104,7 @@ function CompetitionDetailBody(props: {
   const [longitude, setLongitude] = createSignal(
     props.competition.location?.longitude?.toString() ?? "",
   );
-  const [stageDrafts, setStageDrafts] = createSignal<Record<string, ApiStage>>(
+  const [stageDrafts, setStageDrafts] = createSignal<Record<string, StageEditorModel>>(
     {},
   );
   const [queuedStageKeys, setQueuedStageKeys] = createSignal<
@@ -165,7 +165,7 @@ function CompetitionDetailBody(props: {
     const externalStages = props.competition.stages ?? [];
     const currentDrafts = untrack(stageDrafts);
     const currentQueuedStageKeys = untrack(queuedStageKeys);
-    const nextDrafts: Record<string, ApiStage> = {};
+    const nextDrafts: Record<string, StageEditorModel> = {};
     const nextQueuedStageKeys: Record<string, string> = {};
 
     for (const stage of externalStages) {
@@ -253,7 +253,7 @@ function CompetitionDetailBody(props: {
 
   const upsertStageDraft = (
     stageId: string,
-    updater: (current: ApiStage) => ApiStage,
+    updater: (current: StageEditorModel) => StageEditorModel,
   ) => {
     setStageDrafts((current) => {
       const currentStage = current[stageId];
@@ -650,7 +650,7 @@ const iconButtonStyle = {
   height: "2.5rem",
 };
 
-function toApiStage(stage: Stage, competitionId: string): ApiStage {
+function toApiStage(stage: Stage, competitionId: string): StageEditorModel {
   return {
     competitionId,
     dateFrom: stage.dateFrom,
@@ -661,7 +661,7 @@ function toApiStage(stage: Stage, competitionId: string): ApiStage {
   };
 }
 
-function getStageDraftKey(stage: ApiStage) {
+function getStageDraftKey(stage: StageEditorModel) {
   return JSON.stringify({
     dateFrom: stage.dateFrom,
     dateTo: stage.dateTo,

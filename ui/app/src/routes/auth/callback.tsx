@@ -72,7 +72,7 @@ function AuthCallbackPage() {
 
       setStatus("loading");
 
-      const token = await login.mutateAsync({ idToken: code });
+      const token = await login.mutateAsync({ code });
       globalThis.localStorage.setItem("k9x_access_token", token);
       clearLocalFirstQueryCache();
       await clearLocalFirstData();

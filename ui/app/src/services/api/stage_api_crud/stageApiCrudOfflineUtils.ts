@@ -1,9 +1,9 @@
 import type {
-  ApiStage,
   ApiStageRollbackPayload,
   Competition,
   Stage as CompetitionStage
 } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { StageEditorModel } from "@/services/api/competition_crud/competitionCrudTypes";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
@@ -26,7 +26,7 @@ import {
   upsertCompetitionDraft,
 } from "@/services/api/competition_crud/competitionDraftStore";
 
-const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
+const toCompetitionDetailStage = (stage: StageEditorModel): CompetitionStage => ({
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,
   events: stage.events,
@@ -36,7 +36,7 @@ const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
 
 const buildNextCompetitionDetail = (
   competition: Competition,
-  stage: ApiStage,
+  stage: StageEditorModel,
 ): Competition => {
   const nextStage = toCompetitionDetailStage(stage);
   const previousStages = competition.stages ?? [];
@@ -69,7 +69,7 @@ const buildCompetitionDetailWithoutStage = (
 
 const buildNextCompetitionsList = (
   competitions: Competitions[],
-  apiStage: ApiStage,
+  apiStage: StageEditorModel,
 ): Competitions[] =>
   competitions.map((competition) => {
     if (String(competition.id) !== String(apiStage.competitionId)) {
@@ -92,7 +92,7 @@ const buildCompetitionsListWithoutStage = (
 const getBaseCompetitionsFromCache = () =>
   queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
 
-const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
+const persistApiStageCompetitionSnapshot = async (apiStage: StageEditorModel) => {
   const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
     (competition) => String(competition.id) === String(apiStage.competitionId),
@@ -151,7 +151,7 @@ export const createApiStageRollbackPayload = async ({
   competitionId: string;
   entityId: string;
   previousCompetitionsFromCache?: Competitions[];
-  previousStage: ApiStage | null;
+  previousStage: StageEditorModel | null;
 }): Promise<ApiStageRollbackPayload> => ({
   competitionId,
   entityId,
@@ -218,7 +218,7 @@ const rollbackApiStagePayload = async (
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
 
-const isApiStagePayload = (payload: unknown): payload is ApiStage =>
+const isApiStagePayload = (payload: unknown): payload is StageEditorModel =>
   typeof payload === "object" &&
   payload !== null &&
   "competitionId" in payload &&
@@ -281,7 +281,7 @@ const apiStagePendingTaskHandler: PendingTaskHandler = {
 
 registerPendingTaskHandler("stage", apiStagePendingTaskHandler);
 
-export const applyApiStageUpsert = (apiStage: ApiStage) => {
+export const applyApiStageUpsert = (apiStage: StageEditorModel) => {
   void persistApiStageCompetitionSnapshot(apiStage);
 };
 
