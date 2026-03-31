@@ -1,0 +1,17 @@
+.competition-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.competition-info__view {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.competition-info__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}

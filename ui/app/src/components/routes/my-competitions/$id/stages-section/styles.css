@@ -1,0 +1,5 @@
+.stages-section__title {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--unit-2);
+}
