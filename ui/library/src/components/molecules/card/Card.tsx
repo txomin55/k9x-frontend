@@ -2,35 +2,28 @@ import { Show } from "solid-js";
 import type { CardProps } from "@lib/components/molecules/card/Card.types";
 import "./styles.css";
 
-export default function Card({
-  topLeft,
-  topRight,
-  subHeader,
-  description,
-  content,
-  actions,
-}: CardProps) {
+export default function Card(props: CardProps) {
   return (
     <article class="data-card">
       <header class="data-card__top">
-        <div class="data-card__top-left">{topLeft}</div>
-        <div class="data-card__top-right">{topRight}</div>
+        <div class="data-card__top-left">{props.topLeft}</div>
+        <div class="data-card__top-right">{props.topRight}</div>
       </header>
 
-      <Show when={subHeader !== undefined}>
-        <span class="data-card__sub-header text-caption-sm">{subHeader}</span>
+      <Show when={props.subHeader !== undefined}>
+        <span class="data-card__sub-header text-caption-sm">{props.subHeader}</span>
       </Show>
 
-      <Show when={description !== undefined}>
-        <p class="data-card__description text-body-md">{description}</p>
+      <Show when={props.description !== undefined}>
+        <p class="data-card__description text-body-md">{props.description}</p>
       </Show>
 
-      <Show when={content !== undefined}>
-        <section class="data-card__content">{content}</section>
+      <Show when={props.content !== undefined}>
+        <section class="data-card__content">{props.content}</section>
       </Show>
 
-      <Show when={actions !== undefined}>
-        <footer class="data-card__actions">{actions}</footer>
+      <Show when={props.actions !== undefined}>
+        <footer class="data-card__actions">{props.actions}</footer>
       </Show>
     </article>
   );

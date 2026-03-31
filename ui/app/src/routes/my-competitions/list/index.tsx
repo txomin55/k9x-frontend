@@ -1,8 +1,8 @@
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my-competitions/competition-card/CompetitionCard";
 import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
+import FloatingCircle from "@/components/floating_circle/FloatingCircle";
 
 export const Route = createFileRoute("/my-competitions/list/")({
   component: MyCompetitionsIndexPage,
@@ -33,24 +33,16 @@ function MyCompetitionsIndexPage() {
           )}
         </For>
       </Suspense>
-      <div
-        style={{
-          position: "fixed",
-          right: "var(--unit-2)",
-          bottom: "var(--unit-2)",
-        }}
+      <FloatingCircle
+        onClick={() =>
+          navigate({
+            to: "/my-competitions/$id",
+            params: { id: "new" },
+          })
+        }
       >
-        <CircleButton
-          onClick={() =>
-            navigate({
-              to: "/my-competitions/$id",
-              params: { id: "new" },
-            })
-          }
-        >
-          +
-        </CircleButton>
-      </div>
+        +
+      </FloatingCircle>
     </div>
   );
 }

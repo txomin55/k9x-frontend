@@ -186,7 +186,7 @@ const createDefaultApiStage = (competitionId: string): StageMutationPayload => (
   name: "--Default stage",
 });
 
-const toApiStage = (stage: Stage, competitionId: string): StageEditorModel => ({
+export const toApiStage = (stage: Stage, competitionId: string): StageEditorModel => ({
   competitionId,
   dateFrom: stage.dateFrom ?? 0,
   dateTo: stage.dateTo ?? 0,

@@ -1,16 +1,21 @@
-import {createFileRoute, Link, useNavigate, useParams,} from "@tanstack/solid-router";
-import {createEffect, createSignal, For, Index, onCleanup, Show, Suspense,} from "solid-js";
+import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
+import {type Accessor, createEffect, createSignal, Index, onCleanup, Show, Suspense,} from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
+import StageDialog from "@/components/routes/my-competitions/$id/stage-dialog/StageDialog";
 import {useCompetition} from "@/services/api/competition_crud/competitionCrud";
-import {
-  type Competition,
-  type PostCompetition,
-  type Stage,
-} from "@/services/api/competition_crud/competitionCrudTypes";
-import {type StageEditorModel, useApiStage,} from "@/services/api/stage_api_crud/stageApiCrud";
+import {type Competition, type PostCompetition,} from "@/services/api/competition_crud/competitionCrudTypes";
+import {type StageEditorModel, toApiStage, useApiStage,} from "@/services/api/stage_api_crud/stageApiCrud";
+import {formatStageDateRange, parseOptionalNumber, toUndefinedIfBlank,} from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomInput from "@lib/components/atoms/input/AtomInput";
+import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
+import FloatingCircle from "@/components/floating_circle/FloatingCircle";
+import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import "./styles.css";
+import Card from "@lib/components/molecules/card/Card";
 
 const COUNTRY_OPTIONS = [
   { code: "pt", label: "Portugal" },
@@ -19,6 +24,11 @@ const COUNTRY_OPTIONS = [
   { code: "it", label: "Italy" },
   { code: "gb", label: "United Kingdom" },
 ];
+
+const COUNTRY_SELECT_OPTIONS = COUNTRY_OPTIONS.map((countryOption) => ({
+  label: countryOption.label,
+  value: countryOption.code,
+}));
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -65,9 +75,13 @@ function CompetitionDetailContent(props: { id: string }) {
       <Suspense fallback={<span>--Loading competition</span>}>
         <Show when={competition()} fallback={<p>--Competition not found.</p>}>
           <CompetitionDetailBody
-            competition={competition()!}
+            competition={competition}
             onDelete={() => {
-              deleteCompetition(competition()!.id);
+              const currentCompetition = competition();
+
+              if (!currentCompetition) return;
+
+              deleteCompetition(currentCompetition.id);
               void navigate({
                 to: "/my-competitions/list",
               });
@@ -81,49 +95,63 @@ function CompetitionDetailContent(props: { id: string }) {
 }
 
 function CompetitionDetailBody(props: {
-  competition: Competition;
+  competition: Accessor<Competition | undefined>;
   onDelete: () => void;
   onUpdate: (competition: PostCompetition) => void;
 }) {
   const navigate = useNavigate();
-  const { deleteApiStage, updateApiStage } = useApiStage();
+  const {
+    createApiStage,
+    createDefaultApiStage,
+    deleteApiStage,
+    updateApiStage,
+  } = useApiStage();
   const [isEditing, setIsEditing] = createSignal(false);
-  const [title, setTitle] = createSignal(props.competition.name);
-  const [country, setCountry] = createSignal(props.competition.country);
+  const [title, setTitle] = createSignal(props.competition()?.name ?? "");
+  const [country, setCountry] = createSignal(
+    props.competition()?.country ?? "",
+  );
   const [description, setDescription] = createSignal(
-    props.competition.description ?? "",
+    props.competition()?.description ?? "",
   );
   const [address, setAddress] = createSignal(
-    props.competition.location?.address ?? "",
+    props.competition()?.location?.address ?? "",
   );
   const [latitude, setLatitude] = createSignal(
-    props.competition.location?.latitude?.toString() ?? "",
+    props.competition()?.location?.latitude?.toString() ?? "",
   );
   const [longitude, setLongitude] = createSignal(
-    props.competition.location?.longitude?.toString() ?? "",
+    props.competition()?.location?.longitude?.toString() ?? "",
   );
+  const [isCreatingStage, setIsCreatingStage] = createSignal(false);
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
   const [stageDialogDraft, setStageDialogDraft] =
     createSignal<StageEditorModel | null>(null);
 
   createEffect(() => {
     if (isEditing()) return;
+    const competition = props.competition();
 
-    setTitle(props.competition.name);
-    setCountry(props.competition.country);
-    setDescription(props.competition.description ?? "");
-    setAddress(props.competition.location?.address ?? "");
-    setLatitude(props.competition.location?.latitude?.toString() ?? "");
-    setLongitude(props.competition.location?.longitude?.toString() ?? "");
+    if (!competition) return;
+
+    setTitle(competition.name);
+    setCountry(competition.country);
+    setDescription(competition.description ?? "");
+    setAddress(competition.location?.address ?? "");
+    setLatitude(competition.location?.latitude?.toString() ?? "");
+    setLongitude(competition.location?.longitude?.toString() ?? "");
   });
 
   createEffect(() => {
     if (!isEditing()) return;
+    const competition = props.competition();
+
+    if (!competition) return;
 
     const nextCompetition: PostCompetition = {
       country: country(),
       description: description(),
-      id: props.competition.id,
+      id: competition.id,
       location: {
         address: toUndefinedIfBlank(address()),
         latitude: parseOptionalNumber(latitude()),
@@ -132,15 +160,13 @@ function CompetitionDetailBody(props: {
       name: title(),
     };
     const hasChanges =
-      nextCompetition.name !== props.competition.name ||
-      nextCompetition.country !== props.competition.country ||
-      nextCompetition.description !== (props.competition.description ?? "") ||
+      nextCompetition.name !== competition.name ||
+      nextCompetition.country !== competition.country ||
+      nextCompetition.description !== (competition.description ?? "") ||
       nextCompetition.location?.address !==
-        (props.competition.location?.address ?? "") ||
-      nextCompetition.location?.latitude !==
-        props.competition.location?.latitude ||
-      nextCompetition.location?.longitude !==
-        props.competition.location?.longitude;
+        (competition.location?.address ?? "") ||
+      nextCompetition.location?.latitude !== competition.location?.latitude ||
+      nextCompetition.location?.longitude !== competition.location?.longitude;
 
     if (!hasChanges) return;
 
@@ -157,14 +183,47 @@ function CompetitionDetailBody(props: {
     closeStageEditor();
   });
 
-  const openStageEditor = (stage: Stage) => {
+  const openStageEditor = (
+    stage: NonNullable<Competition["stages"]>[number],
+  ) => {
+    const competition = props.competition();
+
+    if (!competition) return;
+
+    setIsCreatingStage(false);
     setEditingStageId(stage.id);
-    setStageDialogDraft(toApiStage(stage, props.competition.id));
+    setStageDialogDraft(toApiStage(stage, competition.id));
+  };
+
+  const openNewStageEditor = () => {
+    const competition = props.competition();
+
+    if (!competition) return;
+
+    const draft = createDefaultApiStage(competition.id);
+
+    setIsCreatingStage(true);
+    setEditingStageId(draft.id ?? null);
+    setStageDialogDraft({
+      competitionId: draft.competitionId ?? competition.id,
+      dateFrom: draft.dateFrom ?? Date.now(),
+      dateTo: draft.dateTo ?? Date.now(),
+      events: [],
+      id: draft.id ?? globalThis.crypto.randomUUID(),
+      name: draft.name ?? "",
+    });
   };
 
   const closeStageEditor = () => {
+    setIsCreatingStage(false);
     setEditingStageId(null);
     setStageDialogDraft(null);
+  };
+
+  const updateStageDialogDraft = (
+    updater: (current: StageEditorModel | null) => StageEditorModel | null,
+  ) => {
+    setStageDialogDraft(updater);
   };
 
   const saveStageEditor = () => {
@@ -172,96 +231,70 @@ function CompetitionDetailBody(props: {
 
     if (!draft) return;
 
-    updateApiStage(draft);
+    if (isCreatingStage()) {
+      createApiStage(draft);
+    } else {
+      updateApiStage(draft);
+    }
+
     closeStageEditor();
   };
 
+  const selectedCountryOption = () =>
+    COUNTRY_SELECT_OPTIONS.find(
+      (countryOption) => countryOption.value === country(),
+    ) ?? null;
+
   return (
-    <div
-      class="competition-detail__content"
-      style={{
-        display: "grid",
-        gap: "1.25rem",
-        "padding-bottom": "5rem",
-        position: "relative",
-      }}
-    >
-      <div class="competition-detail__content--header">
+    <div class="competition-detail">
+      <div class="competition-detail__content--info">
         <CountryFlag country={country()} alt={`${title()} flag`} />
         <Show
           when={isEditing()}
           fallback={
             <>
               <h1>{title()}</h1>
-              <span>{props.competition.status}</span>
+              <span>--Status: {props.competition()?.status}</span>
             </>
           }
         >
-          <div
-            style={{
-              display: "grid",
-              gap: "0.75rem",
-              "max-width": "32rem",
-            }}
-          >
+          <div>
             <p>--Editing mode active.</p>
-            <label for="competition-name">--Title</label>
-            <input
-              id="competition-name"
+            <AtomInput
+              label="--Title"
               name="name"
-              type="text"
               value={title()}
-              onInput={(event) => setTitle(event.currentTarget.value)}
+              onChange={setTitle}
             />
-            <label for="competition-country">--Country</label>
-            <select
-              id="competition-country"
-              name="country"
-              value={country()}
-              onChange={(event) => setCountry(event.currentTarget.value)}
-            >
-              <For each={COUNTRY_OPTIONS}>
-                {(countryOption) => (
-                  <option value={countryOption.code}>
-                    {countryOption.label}
-                  </option>
-                )}
-              </For>
-            </select>
-            <label for="competition-description">--Description</label>
-            <textarea
-              id="competition-description"
+            <AtomSelect
+              label="--Country"
+              onChange={(value) => setCountry(value?.value ?? "")}
+              options={COUNTRY_SELECT_OPTIONS}
+              value={selectedCountryOption()}
+            />
+            <AtomTextArea
+              label="--Description"
               name="description"
               value={description()}
-              onInput={(event) => setDescription(event.currentTarget.value)}
+              onChange={setDescription}
             />
-            <label for="competition-address">--Address</label>
-            <input
-              id="competition-address"
+            <AtomInput
+              label="--Address"
               name="address"
-              type="text"
               value={address()}
-              onInput={(event) => setAddress(event.currentTarget.value)}
+              onChange={setAddress}
             />
-            <label for="competition-latitude">--Latitude</label>
-            <input
-              id="competition-latitude"
+            <AtomNumberInput
+              label="--Latitude"
               name="latitude"
-              type="number"
-              inputMode="decimal"
-              step="any"
               value={latitude()}
-              onInput={(event) => setLatitude(event.currentTarget.value)}
+              onChange={setLatitude}
             />
-            <label for="competition-longitude">--Longitude</label>
-            <input
-              id="competition-longitude"
+            <AtomNumberInput
+              label="--Longitude"
               name="longitude"
-              type="number"
-              inputMode="decimal"
-              step="any"
               value={longitude()}
-              onInput={(event) => setLongitude(event.currentTarget.value)}
+              onChange={setLongitude}
             />
           </div>
         </Show>
@@ -269,344 +302,129 @@ function CompetitionDetailBody(props: {
       <Show when={!isEditing() && description()}>
         <p>{description()}</p>
       </Show>
-      <Show when={props.competition.location?.address}>
-        <p>{props.competition.location?.address}</p>
+      <Show when={props.competition()?.location?.address}>
+        <p>{props.competition()?.location?.address}</p>
       </Show>
       <Show
         when={
-          props.competition.location?.latitude !== undefined ||
-          props.competition.location?.longitude !== undefined
+          props.competition()?.location?.latitude !== undefined ||
+          props.competition()?.location?.longitude !== undefined
         }
       >
         <p>
-          {`${props.competition.location?.latitude ?? "--"} / ${props.competition.location?.longitude ?? "--"}`}
+          {`${props.competition()?.location?.latitude ?? "--"} / ${props.competition()?.location?.longitude ?? "--"}`}
         </p>
       </Show>
-      <div
-        style={{
-          display: "flex",
-          "justify-content": "space-between",
-          "align-items": "center",
-          gap: "1rem",
-        }}
-      >
+      <div class="competition-detail__content--stage-title">
         <h2>--Stages</h2>
         <Show when={isEditing()}>
-          <button
-            type="button"
-            aria-label="--Add stage"
-            onClick={() =>
-              void navigate({
-                params: { id: props.competition.id, stageId: "new" },
-                to: "/my-competitions/$id/stages/$stageId",
-              })
+          <CircleButton aria-label="--Add stage" onClick={openNewStageEditor}>
+            +
+          </CircleButton>
+          <AtomDialog
+            closeButtonText="--Close dialog"
+            content={
+              <StageDialog
+                draft={stageDialogDraft}
+                onCancel={closeStageEditor}
+                onDraftChange={updateStageDialogDraft}
+                onSave={saveStageEditor}
+              />
             }
-            style={iconButtonStyle}
-          >
-            <svg
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M12 5v14" />
-              <path d="M5 12h14" />
-            </svg>
-          </button>
+            onOpenChange={(isOpen) => {
+              if (!isOpen && isCreatingStage()) {
+                closeStageEditor();
+              }
+            }}
+            open={isCreatingStage()}
+            title="--New stage"
+            trigger={<span />}
+          />
         </Show>
       </div>
       <div class="competition-detail__content--stages">
-        <Index each={props.competition.stages ?? []}>
+        <Index each={props.competition()?.stages ?? []}>
           {(stage) => (
-            <Show
-              when={isEditing()}
-              fallback={
-                <Show
-                  when={stage().id}
-                  fallback={
-                    <div
-                      class="competition-detail__content--stage"
-                      style={stageCardStyle}
-                    >
-                      <strong>{stage().name}</strong>
-                      <p>{formatStageDateRange(stage())}</p>
-                    </div>
-                  }
-                >
-                  {(stageId) => (
-                    <Link
-                      class="competition-detail__content--stage"
-                      params={{ id: props.competition.id, stageId: stageId() }}
-                      style={stageCardStyle}
-                      to="/my-competitions/$id/stages/$stageId"
-                    >
-                      <strong>{stage().name}</strong>
-                      <p>{formatStageDateRange(stage())}</p>
-                    </Link>
-                  )}
-                </Show>
-              }
-            >
-              <div
-                class="competition-detail__content--stage"
-                style={{
-                  ...stageCardStyle,
-                  display: "grid",
-                  gap: "0.75rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    "justify-content": "space-between",
-                    gap: "1rem",
-                  }}
-                >
-                  <strong>--Stage</strong>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "0.5rem",
-                    }}
-                  >
-                    <AtomDialog
-                      closeButtonText="Close dialog"
-                      content={
-                        <Show when={stageDialogDraft()}>
-                          {(draft) => (
-                            <div
-                              style={{
-                                display: "grid",
-                                gap: "0.75rem",
-                              }}
-                            >
-                              <label for={`stage-dialog-name-${draft().id}`}>
-                                --Stage title
-                              </label>
-                              <input
-                                id={`stage-dialog-name-${draft().id}`}
-                                type="text"
-                                value={draft().name}
-                                onInput={(event) =>
-                                  setStageDialogDraft((current) =>
-                                    current
-                                      ? {
-                                          ...current,
-                                          name: event.currentTarget.value,
-                                        }
-                                      : current,
-                                  )
-                                }
-                              />
-                              <label
-                                for={`stage-dialog-date-from-${draft().id}`}
-                              >
-                                --Date from
-                              </label>
-                              <input
-                                id={`stage-dialog-date-from-${draft().id}`}
-                                type="date"
-                                value={toDateInputValue(draft().dateFrom)}
-                                onInput={(event) =>
-                                  setStageDialogDraft((current) =>
-                                    current
-                                      ? {
-                                          ...current,
-                                          dateFrom: parseDateInputValue(
-                                            event.currentTarget.value,
-                                            current.dateFrom,
-                                          ),
-                                        }
-                                      : current,
-                                  )
-                                }
-                              />
-                              <label for={`stage-dialog-date-to-${draft().id}`}>
-                                --Date to
-                              </label>
-                              <input
-                                id={`stage-dialog-date-to-${draft().id}`}
-                                type="date"
-                                value={toDateInputValue(draft().dateTo)}
-                                onInput={(event) =>
-                                  setStageDialogDraft((current) =>
-                                    current
-                                      ? {
-                                          ...current,
-                                          dateTo: parseDateInputValue(
-                                            event.currentTarget.value,
-                                            current.dateTo,
-                                          ),
-                                        }
-                                      : current,
-                                  )
-                                }
-                              />
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "0.75rem",
-                                  "justify-content": "flex-end",
-                                }}
-                              >
-                                <AtomButton onClick={closeStageEditor}>
-                                  --Cancel
-                                </AtomButton>
-                                <AtomButton onClick={saveStageEditor}>
-                                  --Save
-                                </AtomButton>
-                              </div>
-                            </div>
-                          )}
-                        </Show>
-                      }
-                      onOpenChange={(isOpen) => {
-                        if (isOpen) {
-                          openStageEditor(stage());
-                          return;
+            <Card
+              topLeft={stage().name}
+              subHeader={<p>{formatStageDateRange(stage())}</p>}
+              actions={
+                <>
+                  <Show when={isEditing()}>
+                    <>
+                      <AtomDialog
+                        closeButtonText="--Close dialog"
+                        content={
+                          <StageDialog
+                            draft={stageDialogDraft}
+                            onCancel={closeStageEditor}
+                            onDraftChange={updateStageDialogDraft}
+                            onSave={saveStageEditor}
+                          />
                         }
+                        onOpenChange={(isOpen) => {
+                          if (isOpen) {
+                            openStageEditor(stage());
+                            return;
+                          }
 
-                        if (editingStageId() === stage().id) {
-                          closeStageEditor();
-                        }
-                      }}
-                      open={editingStageId() === stage().id}
-                      title={`--Edit ${stage().name || "stage"}`}
-                      trigger={
-                        <span style={iconButtonStyle}>
-                          <svg
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path d="M12 20h9" />
-                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                          </svg>
-                          <span style={visuallyHiddenStyle}>
-                            {`--Edit ${stage().name || "stage"}`}
-                          </span>
-                        </span>
-                      }
-                    />
-                    <button
-                      type="button"
-                      aria-label={`--Delete ${stage().name}`}
-                      onClick={() => {
-                        if (editingStageId() === stage().id) {
-                          closeStageEditor();
-                        }
+                          if (editingStageId() === stage().id) {
+                            closeStageEditor();
+                          }
+                        }}
+                        open={editingStageId() === stage().id}
+                        title={`--Edit ${stage().name}`}
+                        trigger={<span>{`--Edit`}</span>}
+                      />
+                      <CircleButton
+                        aria-label={`--Delete ${stage().name}`}
+                        onClick={() => {
+                          if (editingStageId() === stage().id) {
+                            closeStageEditor();
+                          }
 
-                        deleteApiStage(stage().id, props.competition.id);
-                      }}
-                      style={iconButtonStyle}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                          const competition = props.competition();
+
+                          if (!competition) return;
+
+                          deleteApiStage(stage().id, competition.id);
+                        }}
                       >
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4h8v2" />
-                        <path d="M19 6v14H5V6" />
-                        <path d="M10 11v6" />
-                        <path d="M14 11v6" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-                <strong>{stage().name || "--No name"}</strong>
-                <p>{formatStageDateRange(stage())}</p>
-              </div>
-            </Show>
+                        -
+                      </CircleButton>
+                    </>
+                  </Show>
+                  <Show when={!isEditing()}>
+                    <AtomButton
+                      onClick={() => {
+                        const competition = props.competition();
+
+                        if (!competition) return;
+
+                        void navigate({
+                          params: {
+                            id: competition.id,
+                            stageId: stage().id,
+                          },
+                          to: "/my-competitions/$id/stages/$stageId",
+                        });
+                      }}
+                    >
+                      --+Info
+                    </AtomButton>
+                  </Show>
+                </>
+              }
+            />
           )}
         </Index>
       </div>
-      <Show when={isEditing()}>
-        <button
-          type="button"
-          aria-label={isEditing() ? "--Close edit" : "--Edit competition"}
-          onClick={() => setIsEditing((current) => !current)}
-          style={{
-            ...iconButtonStyle,
-            bottom: "5.75rem",
-            "box-shadow": "0 0.75rem 1.75rem rgba(0, 0, 0, 0.15)",
-            height: "3.5rem",
-            position: "fixed",
-            right: "1.5rem",
-            width: "3.5rem",
-            "z-index": "10",
-          }}
-        >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
-      </Show>
-      <Show when={!isEditing()}>
-        <button
-          type="button"
-          aria-label="--Edit competition"
-          onClick={() => setIsEditing(true)}
-          style={{
-            ...iconButtonStyle,
-            bottom: "1.5rem",
-            "box-shadow": "0 0.75rem 1.75rem rgba(0, 0, 0, 0.15)",
-            height: "3.5rem",
-            position: "fixed",
-            right: "1.5rem",
-            width: "3.5rem",
-            "z-index": "10",
-          }}
-        >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
-        </button>
-      </Show>
+      <FloatingCircle
+        aria-label={isEditing() ? "--Close edit" : "--Edit competition"}
+        onClick={() => setIsEditing((current) => !current)}
+      >
+        {isEditing() ? "--Close" : "--Edit"}
+      </FloatingCircle>
       <Show when={isEditing()}>
         <AtomButton type="destructive" onClick={props.onDelete}>
           --Delete
@@ -614,74 +432,4 @@ function CompetitionDetailBody(props: {
       </Show>
     </div>
   );
-}
-
-const stageCardStyle = {
-  border: "1px solid rgba(0, 0, 0, 0.12)",
-  "border-radius": "1rem",
-  color: "inherit",
-  padding: "1rem",
-  "text-decoration": "none",
-};
-
-const iconButtonStyle = {
-  "align-items": "center",
-  background: "white",
-  border: "1px solid rgba(0, 0, 0, 0.12)",
-  "border-radius": "999px",
-  cursor: "pointer",
-  display: "inline-flex",
-  "justify-content": "center",
-  width: "2.5rem",
-  height: "2.5rem",
-};
-
-const visuallyHiddenStyle = {
-  border: "0",
-  clip: "rect(0 0 0 0)",
-  height: "1px",
-  margin: "-1px",
-  overflow: "hidden",
-  padding: "0",
-  position: "absolute",
-  width: "1px",
-} as const;
-
-function toApiStage(stage: Stage, competitionId: string): StageEditorModel {
-  return {
-    competitionId,
-    dateFrom: stage.dateFrom,
-    dateTo: stage.dateTo,
-    events: stage.events,
-    id: stage.id,
-    name: stage.name,
-  };
-}
-
-function formatStageDateRange(stage: Stage) {
-  return `${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`;
-}
-
-function toUndefinedIfBlank(value: string) {
-  const trimmedValue = value.trim();
-  return trimmedValue ? trimmedValue : undefined;
-}
-
-function parseOptionalNumber(value: string) {
-  const trimmedValue = value.trim();
-
-  if (!trimmedValue) return undefined;
-
-  const parsedValue = Number(trimmedValue);
-
-  return Number.isFinite(parsedValue) ? parsedValue : undefined;
-}
-
-function toDateInputValue(timestamp: number) {
-  return new Date(timestamp).toISOString().slice(0, 10);
-}
-
-function parseDateInputValue(value: string, fallback: number) {
-  if (!value) return fallback;
-  return new Date(`${value}T00:00:00`).getTime();
 }

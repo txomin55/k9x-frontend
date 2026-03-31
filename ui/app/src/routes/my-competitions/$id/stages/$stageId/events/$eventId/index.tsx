@@ -25,6 +25,7 @@ import type {
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -1047,61 +1048,41 @@ function CompetitionEventDetailContent(props: {
       </section>
 
       <Show when={isEditing()}>
-        <button
-          aria-label="--Close edit"
-          onClick={() => setIsEditing(false)}
+        <div
           style={{
-            ...floatingActionButtonStyle,
+            position: "fixed",
+            right: "1.5rem",
             bottom: "9.75rem",
+            "z-index": "10",
           }}
-          type="button"
         >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
+          <CircleButton onClick={() => setIsEditing(false)}>
+            <>
+              <span style={visuallyHiddenStyle}>--Close edit</span>
+              <span aria-hidden="true">X</span>
+            </>
+          </CircleButton>
+        </div>
         <button onClick={props.onDelete} type="button">
           --Delete event
         </button>
       </Show>
       <Show when={!isEditing()}>
-        <button
-          aria-label="--Edit event"
-          onClick={() => setIsEditing(true)}
+        <div
           style={{
-            ...floatingActionButtonStyle,
+            position: "fixed",
+            right: "1.5rem",
             bottom: "1.75rem",
+            "z-index": "10",
           }}
-          type="button"
         >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
-        </button>
+          <CircleButton onClick={() => setIsEditing(true)}>
+            <>
+              <span style={visuallyHiddenStyle}>--Edit event</span>
+              <span aria-hidden="true">--edit</span>
+            </>
+          </CircleButton>
+        </div>
       </Show>
     </div>
   );
@@ -1123,16 +1104,6 @@ const iconButtonStyle = {
   height: "2.5rem",
   "justify-content": "center",
   width: "2.5rem",
-} as const;
-
-const floatingActionButtonStyle = {
-  ...iconButtonStyle,
-  "box-shadow": "0 0.75rem 1.75rem rgba(0, 0, 0, 0.15)",
-  height: "3.5rem",
-  position: "fixed",
-  right: "1.5rem",
-  width: "3.5rem",
-  "z-index": "10",
 } as const;
 
 const visuallyHiddenStyle = {

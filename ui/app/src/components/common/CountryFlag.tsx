@@ -13,7 +13,8 @@ const FLAG_BY_COUNTRY: Record<string, string> = {
   pt: ptFlag,
 };
 
-const normalizeCountry = (country?: string) => country?.trim().toLowerCase() ?? "";
+const normalizeCountry = (country?: string) =>
+  country?.trim().toLowerCase() ?? "";
 
 export default function CountryFlag(props: {
   alt?: string;
@@ -21,8 +22,8 @@ export default function CountryFlag(props: {
   height?: number;
   width?: number;
 }) {
-  const country = normalizeCountry(props.country);
-  const src = FLAG_BY_COUNTRY[country];
+  const country = () => normalizeCountry(props.country);
+  const src = () => FLAG_BY_COUNTRY[country()];
 
   if (!src) {
     return <span>--N/A</span>;
@@ -36,9 +37,9 @@ export default function CountryFlag(props: {
       }}
     >
       <ProfileImage
-        alt={props.alt ?? `${country} flag`}
-        fallback={country.toUpperCase()}
-        src={src}
+        alt={props.alt ?? `${country()} flag`}
+        fallback={country().toUpperCase()}
+        src={src()}
       />
     </div>
   );

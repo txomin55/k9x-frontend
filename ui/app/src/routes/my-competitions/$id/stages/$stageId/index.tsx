@@ -7,8 +7,10 @@ import {
   useApiEvent
 } from "@/services/api/event_api_crud/eventApiCrud";
 import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import FloatingCircle from "@/components/floating_circle/FloatingCircle";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -19,13 +21,7 @@ export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
 function CompetitionStageDetailPage() {
   const navigate = useNavigate();
   const params = useParams({ from: "/my-competitions/$id/stages/$stageId/" });
-  const {
-    createApiStage,
-    createDefaultApiStage,
-    deleteApiStage,
-    getStage,
-    updateApiStage,
-  } = useApiStage();
+  const { deleteApiStage, getStage, updateApiStage } = useApiStage();
   const {
     createApiEvent,
     createDefaultApiEvent,
@@ -33,21 +29,6 @@ function CompetitionStageDetailPage() {
     updateApiEvent,
   } = useApiEvent();
   let hasCreatedDraftStage = false;
-
-  createEffect(() => {
-    if (params().stageId !== "new" || hasCreatedDraftStage) return;
-
-    hasCreatedDraftStage = true;
-
-    const draftStage = createDefaultApiStage(params().id);
-
-    createApiStage(draftStage);
-    void navigate({
-      params: { id: params().id, stageId: draftStage.id ?? "" },
-      replace: true,
-      to: "/my-competitions/$id/stages/$stageId",
-    });
-  });
 
   const stage = getStage(params().id, params().stageId);
 
@@ -512,61 +493,41 @@ function CompetitionStageDetailContent(props: {
         </Show>
       </section>
       <Show when={isEditing()}>
-        <button
-          aria-label="--Close edit"
-          onClick={() => setIsEditing(false)}
+        <div
           style={{
-            ...floatingActionButtonStyle,
+            position: "fixed",
+            right: "1.5rem",
             bottom: "9.75rem",
+            "z-index": "10",
           }}
-          type="button"
         >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
+          <FloatingCircle onClick={() => setIsEditing(false)}>
+            <>
+              <span style={visuallyHiddenStyle}>--Close edit</span>
+              <span aria-hidden="true">X</span>
+            </>
+          </FloatingCircle>
+        </div>
         <button onClick={props.onDelete} type="button">
           --Delete stage
         </button>
       </Show>
       <Show when={!isEditing()}>
-        <button
-          aria-label="--Edit stage"
-          onClick={() => setIsEditing(true)}
+        <div
           style={{
-            ...floatingActionButtonStyle,
+            position: "fixed",
+            right: "1.5rem",
             bottom: "1.75rem",
+            "z-index": "10",
           }}
-          type="button"
         >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 20h9" />
-            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-          </svg>
-        </button>
+          <FloatingCircle onClick={() => setIsEditing(true)}>
+            <>
+              <span style={visuallyHiddenStyle}>--Edit stage</span>
+              <span aria-hidden="true">--edit</span>
+            </>
+          </FloatingCircle>
+        </div>
       </Show>
     </div>
   );
@@ -584,16 +545,6 @@ const iconButtonStyle = {
   width: "2.5rem",
 } as const;
 
-const floatingActionButtonStyle = {
-  ...iconButtonStyle,
-  "box-shadow": "0 0.75rem 1.75rem rgba(0, 0, 0, 0.15)",
-  height: "3.5rem",
-  position: "fixed",
-  right: "1.5rem",
-  width: "3.5rem",
-  "z-index": "10",
-} as const;
-
 const visuallyHiddenStyle = {
   border: "0",
   clip: "rect(0 0 0 0)",
@@ -605,15 +556,6 @@ const visuallyHiddenStyle = {
   width: "1px",
 } as const;
 
-function toDateInputValue(timestamp: number) {
-  return new Date(timestamp).toISOString().slice(0, 10);
-}
-
 function formatDateLabel(value: string) {
   return value ? new Date(value).toDateString() : "";
-}
-
-function parseDateInputValue(value: string, fallback: number) {
-  if (!value) return fallback;
-  return new Date(`${value}T00:00:00`).getTime();
 }

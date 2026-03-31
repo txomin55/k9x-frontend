@@ -3,7 +3,7 @@ import { createSignal } from "solid-js";
 import type { AtomPopoverProps } from "@lib/components/atoms/popover/AtomPopover.types";
 import "./styles.css";
 
-export default function AtomPopover({ trigger, content }: AtomPopoverProps) {
+export default function AtomPopover(props: AtomPopoverProps) {
   const [open, setOpen] = createSignal(false);
 
   return (
@@ -15,10 +15,12 @@ export default function AtomPopover({ trigger, content }: AtomPopoverProps) {
     >
       <div class="atom-popover">
         <Popover.Trigger class="atom-popover__trigger">
-          {trigger}
+          {props.trigger}
         </Popover.Trigger>
       </div>
-      <Popover.Content class="atom-popover__content">{content}</Popover.Content>
+      <Popover.Content class="atom-popover__content">
+        {props.content}
+      </Popover.Content>
     </Popover>
   );
 }

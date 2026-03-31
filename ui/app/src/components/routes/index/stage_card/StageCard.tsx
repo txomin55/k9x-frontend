@@ -6,23 +6,15 @@ import "./styles.css";
 import CountryFlag from "@/components/common/CountryFlag";
 import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
 
-export default ({
-  country,
-  name,
-  from,
-  to,
-  description,
-  events,
-  address,
-}: StageCardProps) => {
+export default function StageCard(props: StageCardProps) {
   return (
     <Card
       topLeft={
         <div class="stage-card__main-info">
           <div class="stage-card__country-flag">
-            <CountryFlag country={country} alt={`${name} flag`} />
+            <CountryFlag country={props.country} alt={`${props.name} flag`} />
           </div>
-          <span class="text-heading-sm">{name}</span>
+          <span class="text-heading-sm">{props.name}</span>
         </div>
       }
       topRight={
@@ -32,21 +24,21 @@ export default ({
       }
       subHeader={
         <div class="stage-card__meta">
-          <span class="stage-card__address text-caption-md">{address}</span>
+          <span class="stage-card__address text-caption-md">{props.address}</span>
           <span class="stage-card__date text-caption-sm">
-            {`${new Date(from).toDateString()} - ${new Date(to).toDateString()}`}
+            {`${new Date(props.from).toDateString()} - ${new Date(props.to).toDateString()}`}
           </span>
         </div>
       }
       description={
-        description ? (
+        props.description ? (
           <span class="stage-card__description text-body-md">
-            {description}
+            {props.description}
           </span>
         ) : undefined
       }
       content={
-        <Index each={events}>
+        <Index each={props.events}>
           {(event) => (
             <div class="stage-card__events-content">
               <div>
@@ -66,4 +58,4 @@ export default ({
       actions={<></>}
     />
   );
-};
+}

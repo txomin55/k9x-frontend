@@ -12,7 +12,6 @@
 }
 
 .atom-text-area__control {
-    width: 100%;
     min-height: 112px;
     padding: var(--unit-1);
 

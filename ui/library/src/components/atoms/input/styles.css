@@ -12,7 +12,6 @@
 }
 
 .atom-input__control {
-    width: 100%;
     min-height: var(--control-height-md);
     padding: var(--unit-075) var(--unit-1);
 
