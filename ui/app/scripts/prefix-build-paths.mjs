@@ -1,7 +1,14 @@
 import { promises as fs } from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 
 const OUTPUT_DIR = path.resolve(".output/public");
+const OFFLINE_PRELOAD_MANIFEST_PATH = "/offline-preload-manifest.json";
+const OFFLINE_PRELOAD_EXCLUDED_PATHS = new Set([
+  "/sw.js",
+  OFFLINE_PRELOAD_MANIFEST_PATH,
+  "/.nojekyll",
+]);
 
 const normalizeBasePath = (value = "") => {
   if (!value) return "";
@@ -40,12 +47,77 @@ const walkHtmlFiles = async (directory) => {
   return files.flat();
 };
 
+const walkAllFiles = async (directory) => {
+  const entries = await fs.readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(async (entry) => {
+      const entryPath = path.join(directory, entry.name);
+
+      if (entry.isDirectory()) {
+        return walkAllFiles(entryPath);
+      }
+
+      return entry.isFile() ? [entryPath] : [];
+    }),
+  );
+
+  return files.flat();
+};
+
+const toPublicPath = (filePath) => {
+  const relativePath = path.relative(OUTPUT_DIR, filePath);
+  return `/${relativePath.split(path.sep).join("/")}`;
+};
+
+const normalizePublicFilePath = (filePath) => {
+  const normalizedPath = filePath.startsWith("/") ? filePath : `/${filePath}`;
+
+  if (normalizedPath === "/index.html") {
+    return "/";
+  }
+
+  if (normalizedPath.endsWith("/index.html")) {
+    return normalizedPath.slice(0, -"/index.html".length) || "/";
+  }
+
+  return normalizedPath;
+};
+
+const shouldIncludeInOfflinePreload = (filePath) => {
+  if (!filePath || filePath.endsWith(".map")) {
+    return false;
+  }
+
+  return !OFFLINE_PRELOAD_EXCLUDED_PATHS.has(normalizePublicFilePath(filePath));
+};
+
+const createOfflinePreloadManifest = (publicFilePaths) => {
+  const assets = [...new Set(publicFilePaths.map(normalizePublicFilePath))]
+    .filter(shouldIncludeInOfflinePreload)
+    .sort();
+  const version = createHash("sha256")
+    .update(JSON.stringify({ assets }))
+    .digest("hex")
+    .slice(0, 12);
+
+  return {
+    version,
+    assets,
+  };
+};
+
+const writeOfflinePreloadManifest = async () => {
+  const allFiles = await walkAllFiles(OUTPUT_DIR);
+  const manifest = createOfflinePreloadManifest(allFiles.map(toPublicPath));
+
+  await fs.writeFile(
+    path.join(OUTPUT_DIR, OFFLINE_PRELOAD_MANIFEST_PATH.slice(1)),
+    JSON.stringify(manifest, null, 2),
+  );
+};
+
 const main = async () => {
   const basePath = normalizeBasePath(process.env.VITE_APP_BASE_PATH);
-
-  if (!basePath) {
-    return;
-  }
 
   const htmlFiles = await walkHtmlFiles(OUTPUT_DIR);
 
@@ -59,6 +131,13 @@ const main = async () => {
       }
     }),
   );
+
+  if (!basePath) {
+    await writeOfflinePreloadManifest();
+    return;
+  }
+
+  await writeOfflinePreloadManifest();
 };
 
 await main();

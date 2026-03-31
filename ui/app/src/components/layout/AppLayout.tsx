@@ -102,8 +102,8 @@ export default function AppLayout(props: ParentProps) {
               trigger={
                 <div class="app-layout__user-img">
                   <ProfileImage
-                    src={currentUser().getImage()}
-                    fallback={currentUser().getInitials()}
+                    src={currentUser().image}
+                    fallback={currentUser().initials}
                   />
                 </div>
               }

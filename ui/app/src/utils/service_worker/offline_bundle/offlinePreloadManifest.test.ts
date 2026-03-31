@@ -1,0 +1,47 @@
+import { describe, expect, it } from "vitest";
+import {
+  createOfflinePreloadManifest,
+  shouldIncludeInOfflinePreload,
+} from "@/utils/service_worker/offline_bundle/offlinePreloadManifest";
+
+describe("offlinePreloadManifest", () => {
+  it("includes every public file needed for offline mode", () => {
+    const manifest = createOfflinePreloadManifest([
+      "/_build/assets/main-123.js",
+      "/_build/assets/main-123.css",
+      "/_build/assets/my-competitions-456.js",
+      "/img/icons/favicon.svg",
+      "/index.html",
+      "/my-competitions/index.html",
+      "/locales/es/translation.json",
+      "/manifest.webmanifest",
+      "/sw.js",
+      "/offline-preload-manifest.json",
+      "/_build/assets/main-123.js.map",
+    ]);
+
+    expect(manifest.assets).toEqual([
+      "/",
+      "/_build/assets/main-123.css",
+      "/_build/assets/main-123.js",
+      "/_build/assets/my-competitions-456.js",
+      "/img/icons/favicon.svg",
+      "/locales/es/translation.json",
+      "/manifest.webmanifest",
+      "/my-competitions",
+    ]);
+    expect(manifest.version).toHaveLength(12);
+  });
+
+  it("filters out excluded files from the preload manifest", () => {
+    expect(shouldIncludeInOfflinePreload("sw.js")).toBe(false);
+    expect(shouldIncludeInOfflinePreload("offline-preload-manifest.json")).toBe(
+      false,
+    );
+    expect(shouldIncludeInOfflinePreload("assets/main.js.map")).toBe(false);
+    expect(shouldIncludeInOfflinePreload("assets/data.txt")).toBe(true);
+    expect(shouldIncludeInOfflinePreload("my-competitions/index.html")).toBe(
+      true,
+    );
+  });
+});

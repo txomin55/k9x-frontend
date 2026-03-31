@@ -1,7 +1,9 @@
 import {
   getQuerySnapshot,
+  getPersistedQuerySnapshot,
   saveQuerySnapshot,
 } from "@/utils/local_first/query_snapshots/querySnapshotsStore";
+import { NetworkRequestError } from "@/utils/http/client";
 
 export const fetchWithOfflineSnapshot = async <TData>(
   snapshotId: string,
@@ -13,8 +15,22 @@ export const fetchWithOfflineSnapshot = async <TData>(
     return snapshot as TData;
   }
 
-  const data = await fetcher();
-  await saveQuerySnapshot(snapshotId, data);
+  try {
+    const data = await fetcher();
+    await saveQuerySnapshot(snapshotId, data);
 
-  return data;
+    return data;
+  } catch (error) {
+    if (!(error instanceof NetworkRequestError)) {
+      throw error;
+    }
+
+    const persistedSnapshot = await getPersistedQuerySnapshot<TData>(snapshotId);
+
+    if (persistedSnapshot !== undefined) {
+      return persistedSnapshot;
+    }
+
+    throw error;
+  }
 };

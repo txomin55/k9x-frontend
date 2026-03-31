@@ -15,6 +15,7 @@ import { setUser } from "@/stores/auth";
 import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local_first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
+import { warmOfflineBundle } from "@/utils/service_worker/offline_bundle/warmOfflineBundle";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -78,6 +79,7 @@ function AuthCallbackPage() {
       clearCachedUserData();
       setUser(await fetchCachedUserData());
       globalThis.sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);
+      await warmOfflineBundle({ force: true });
 
       setStatus("loaded");
 

@@ -1,7 +1,7 @@
 export type User = {
-  getName: () => string;
-  getImage: () => string;
-  getEmail: () => string;
-  getInitials: () => string;
-  getNews: () => [];
+  name: string;
+  image: string;
+  email: string;
+  initials: string;
+  news: string[];
 };

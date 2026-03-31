@@ -8,3 +8,18 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+export const setupQueryRefetchOnReconnect = () => {
+  const handleOnline = () => {
+    queryClient.refetchQueries({
+      stale: true,
+      type: "all",
+    });
+  };
+
+  globalThis.addEventListener("online", handleOnline);
+
+  return () => {
+    globalThis.removeEventListener("online", handleOnline);
+  };
+};

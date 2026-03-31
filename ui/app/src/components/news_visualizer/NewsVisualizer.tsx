@@ -4,7 +4,7 @@ import { useAuthUser } from "@/stores/auth";
 
 export default function NewsVisualizer() {
   const user = useAuthUser();
-  const updateNotes = () => user()?.getNews() ?? [];
+  const updateNotes = () => user()?.news ?? [];
   const showUpdateNotes = () => updateNotes().length > 0;
 
   return (

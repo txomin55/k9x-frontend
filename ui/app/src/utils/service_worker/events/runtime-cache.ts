@@ -1,3 +1,8 @@
+import {
+  OFFLINE_PRELOAD_MESSAGE,
+  OFFLINE_PRELOAD_RESPONSE_MESSAGE,
+} from "@/utils/service_worker/offline_bundle/offlinePreloadConstants";
+
 export const APP_SHELL_CACHE = "app-shell-v1";
 
 const CACHEABLE_EXTENSIONS =
@@ -78,7 +83,61 @@ const staleWhileRevalidate = async (request, cacheName) => {
   return cachedResponse || fetchPromise;
 };
 
+const cacheOfflineUrl = async (scope, requestUrl, cacheName) => {
+  const url = new URL(requestUrl, scope.location.origin);
+
+  if (url.origin !== scope.location.origin) {
+    return;
+  }
+
+  const request = new Request(url.href, { credentials: "same-origin" });
+  const response = await fetch(request);
+
+  if (!response.ok) {
+    return;
+  }
+
+  const cache = await caches.open(cacheName);
+  await cache.put(request, response.clone());
+};
+
+const respondToWarmupRequest = (event, payload) => {
+  const replyPort = event.ports?.[0];
+
+  if (!replyPort) {
+    return;
+  }
+
+  replyPort.postMessage({
+    type: OFFLINE_PRELOAD_RESPONSE_MESSAGE,
+    ...payload,
+  });
+};
+
 export const registerAppShellCache = (scope) => {
+  scope.addEventListener("message", (event) => {
+    if (event.data.type !== OFFLINE_PRELOAD_MESSAGE) {
+      return;
+    }
+
+    const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
+
+    event.waitUntil(
+      Promise.allSettled(
+        urls.map((url) => cacheOfflineUrl(scope, url, APP_SHELL_CACHE)),
+      ).then((results) => {
+        const failedUrls = results.flatMap((result, index) =>
+          result.status === "rejected" ? [urls[index]] : [],
+        );
+
+        respondToWarmupRequest(event, {
+          failedUrls,
+          ok: failedUrls.length === 0,
+        });
+      }),
+    );
+  });
+
   scope.addEventListener("fetch", (event) => {
     const { request } = event;
 

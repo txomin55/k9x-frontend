@@ -4,9 +4,9 @@ import type { User } from "@/services/api/fetch_user_data/UserResponse.types";
 export type { User } from "@/services/api/fetch_user_data/UserResponse.types";
 
 export default (data: UserModel): User => ({
-  getName: () => data.name,
-  getImage: () => data.image,
-  getEmail: () => data.email,
-  getInitials: () => data.name.slice(0, 2),
-  getNews: () => [],
+  email: data.email,
+  image: data.image,
+  initials: data.name.slice(0, 2),
+  name: data.name,
+  news: [],
 });

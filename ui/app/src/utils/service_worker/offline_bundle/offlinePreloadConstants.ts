@@ -1,0 +1,3 @@
+export const OFFLINE_PRELOAD_MANIFEST_PATH = "/offline-preload-manifest.json";
+export const OFFLINE_PRELOAD_MESSAGE = "WARM_APP_OFFLINE";
+export const OFFLINE_PRELOAD_RESPONSE_MESSAGE = "WARM_APP_OFFLINE_RESULT";

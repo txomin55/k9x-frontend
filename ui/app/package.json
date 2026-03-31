@@ -2,14 +2,13 @@
   "name": "app",
   "type": "module",
   "scripts": {
-    "build:sw": "vite build --config vite.sw.config.ts --mode ${CI_BUILD_ENV:-production}",
+    "build:sw": "vite build --config vite.sw.config.ts --mode ${CI_BUILD_ENV:-standalone}",
     "build:sw:develop": "vite build --config vite.sw.config.ts --mode standalone",
     "dev": "pnpm run start:integrated",
     "start:integrated": "pnpm run build:sw:develop && vite dev --mode integrated",
     "start:standalone": "pnpm run build:sw:develop && vite dev --mode standalone",
-    "build": "pnpm run build:sw && vite build --mode ${CI_BUILD_ENV:-production} && node ./scripts/prefix-build-paths.mjs",
-    "serve": "vite start",
-    "preview": "vite preview",
+    "build": "pnpm run build:sw && vite build --mode ${CI_BUILD_ENV:-standalone} && node ./scripts/prefix-build-paths.mjs",
+    "preview": "npx serve .output/public -l 5173",
     "test:unit:coverage": "vitest --coverage",
     "test:e2e:coverage": "playwright test"
   },
