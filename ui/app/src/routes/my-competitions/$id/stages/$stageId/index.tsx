@@ -2,22 +2,21 @@ import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/solid-r
 import {
   type Accessor,
   createEffect,
-  createMemo,
   createSignal,
-  For,
   Index,
   onCleanup,
   Show,
   Suspense,
-  untrack
 } from "solid-js";
 import {
   type CreateApiEvent,
   type EventResponse,
   type UpdateApiEvent,
-  useApiEvent,
+  useApiEvent
 } from "@/services/api/event_api_crud/eventApiCrud";
 import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -124,17 +123,10 @@ function CompetitionStageDetailContent(props: {
   const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
     string | null
   >(null);
-  const [eventDrafts, setEventDrafts] = createSignal<Record<string, EventResponse>>(
-    {},
+  const [editingEventId, setEditingEventId] = createSignal<string | null>(null);
+  const [eventDialogDraft, setEventDialogDraft] = createSignal<EventResponse | null>(
+    null,
   );
-  const [queuedEventKeys, setQueuedEventKeys] = createSignal<
-    Record<string, string>
-  >({});
-
-  const eventUpdateTimeouts = new Map<
-    string,
-    ReturnType<typeof globalThis.setTimeout>
-  >();
 
   const draftKey = (stage: StageEditorModel) =>
     JSON.stringify({
@@ -143,14 +135,6 @@ function CompetitionStageDetailContent(props: {
       name: stage.name,
     });
 
-  const visibleEvents = createMemo(() => {
-    if (!isEditing()) return props.stage().events;
-
-    const drafts = eventDrafts();
-
-    return props.stage().events.map((event) => drafts[event.id] ?? event);
-  });
-
   createEffect(() => {
     const externalStage = props.stage();
 
@@ -158,39 +142,6 @@ function CompetitionStageDetailContent(props: {
 
     setDraftStage(externalStage);
     setLastQueuedDraftKey(null);
-  });
-
-  createEffect(() => {
-    const externalEvents = props.stage().events;
-    const currentDrafts = untrack(eventDrafts);
-    const currentQueuedEventKeys = untrack(queuedEventKeys);
-    const nextDrafts: Record<string, EventResponse> = {};
-    const nextQueuedEventKeys: Record<string, string> = {};
-
-    for (const event of externalEvents) {
-      const nextEventKey = getEventDraftKey(event);
-      const queuedEventKey = currentQueuedEventKeys[event.id];
-
-      if (
-        isEditing() &&
-        queuedEventKey &&
-        queuedEventKey !== nextEventKey &&
-        currentDrafts[event.id]
-      ) {
-        nextDrafts[event.id] = currentDrafts[event.id];
-        nextQueuedEventKeys[event.id] = queuedEventKey;
-        continue;
-      }
-
-      nextDrafts[event.id] = event;
-
-      if (queuedEventKey && queuedEventKey !== nextEventKey) {
-        nextQueuedEventKeys[event.id] = queuedEventKey;
-      }
-    }
-
-    setEventDrafts(nextDrafts);
-    setQueuedEventKeys(nextQueuedEventKeys);
   });
 
   createEffect(() => {
@@ -213,72 +164,29 @@ function CompetitionStageDetailContent(props: {
   });
 
   createEffect(() => {
-    if (!isEditing()) return;
+    if (isEditing()) return;
 
-    const drafts = eventDrafts();
-    const externalEvents = new Map(
-      props.stage().events.map((event) => [event.id, event]),
-    );
-    const queuedKeys = queuedEventKeys();
-    const timeoutIds: Array<ReturnType<typeof globalThis.setTimeout>> = [];
-
-    for (const draftEvent of Object.values(drafts)) {
-      const externalEvent = externalEvents.get(draftEvent.id);
-
-      if (!externalEvent) continue;
-
-      const nextEventKey = getEventDraftKey(draftEvent);
-      const externalEventKey = getEventDraftKey(externalEvent);
-
-      if (nextEventKey === externalEventKey) continue;
-      if (queuedKeys[draftEvent.id] === nextEventKey) continue;
-
-      const existingTimeoutId = eventUpdateTimeouts.get(draftEvent.id);
-
-      if (existingTimeoutId) {
-        globalThis.clearTimeout(existingTimeoutId);
-      }
-
-      const timeoutId = globalThis.setTimeout(() => {
-        setQueuedEventKeys((current) => ({
-          ...current,
-          [draftEvent.id]: nextEventKey,
-        }));
-        props.onUpdateEvent(draftEvent);
-      }, EDIT_DEBOUNCE_MS);
-
-      eventUpdateTimeouts.set(draftEvent.id, timeoutId);
-      timeoutIds.push(timeoutId);
-    }
-
-    onCleanup(() => {
-      for (const timeoutId of timeoutIds) {
-        globalThis.clearTimeout(timeoutId);
-      }
-    });
+    setEditingEventId(null);
+    setEventDialogDraft(null);
   });
 
-  onCleanup(() => {
-    for (const timeoutId of eventUpdateTimeouts.values()) {
-      globalThis.clearTimeout(timeoutId);
-    }
-    eventUpdateTimeouts.clear();
-  });
+  const openEventEditor = (event: EventResponse) => {
+    setEditingEventId(event.id);
+    setEventDialogDraft(event);
+  };
 
-  const updateEventDraft = (
-    eventId: string,
-    updater: (current: EventResponse) => EventResponse,
-  ) => {
-    setEventDrafts((current) => {
-      const currentEvent = current[eventId];
+  const closeEventEditor = () => {
+    setEditingEventId(null);
+    setEventDialogDraft(null);
+  };
 
-      if (!currentEvent) return current;
+  const saveEventEditor = () => {
+    const draft = eventDialogDraft();
 
-      return {
-        ...current,
-        [eventId]: updater(currentEvent),
-      };
-    });
+    if (!draft) return;
+
+    props.onUpdateEvent(draft);
+    closeEventEditor();
   };
 
   return (
@@ -352,9 +260,44 @@ function CompetitionStageDetailContent(props: {
       </header>
 
       <section>
-        <h2>--Events</h2>
-        <Show when={visibleEvents().length > 0} fallback={<p>--No events.</p>}>
-          <Index each={visibleEvents()}>
+        <div
+          style={{
+            display: "flex",
+            "justify-content": "space-between",
+            "align-items": "center",
+            gap: "1rem",
+          }}
+        >
+          <h2>--Events</h2>
+          <Show when={isEditing()}>
+            <button
+              aria-label="--Add event"
+              onClick={() =>
+                props.onCreateEvent(props.createDefaultEvent(draftStage().id))
+              }
+              style={iconButtonStyle}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+          </Show>
+        </div>
+        <Show when={props.stage().events.length > 0} fallback={<p>--No events.</p>}>
+          <Index each={props.stage().events}>
             {(event) => (
               <Show
                 when={isEditing()}
@@ -401,74 +344,167 @@ function CompetitionStageDetailContent(props: {
                     }}
                   >
                     <h3>{event().name}</h3>
-                    <button
-                      aria-label={`--Delete ${event().name}`}
-                      onClick={() =>
-                        props.onDeleteEvent(event().id)
-                      }
-                      style={iconButtonStyle}
-                      type="button"
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.5rem",
+                      }}
                     >
-                      <svg
-                        aria-hidden="true"
-                        fill="none"
-                        height="16"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <AtomDialog
+                        closeButtonText="Close dialog"
+                        content={
+                          <Show when={eventDialogDraft()}>
+                            {(draft) => (
+                              <div
+                                style={{
+                                  display: "grid",
+                                  gap: "0.75rem",
+                                }}
+                              >
+                                <label for={`event-dialog-name-${draft().id}`}>
+                                  --Event title
+                                </label>
+                                <input
+                                  id={`event-dialog-name-${draft().id}`}
+                                  onInput={(stageEvent) =>
+                                    setEventDialogDraft((current) =>
+                                      current
+                                        ? {
+                                            ...current,
+                                            name: stageEvent.currentTarget.value,
+                                          }
+                                        : current,
+                                    )
+                                  }
+                                  type="text"
+                                  value={draft().name}
+                                />
+                                <label for={`event-dialog-status-${draft().id}`}>
+                                  --Status
+                                </label>
+                                <input
+                                  id={`event-dialog-status-${draft().id}`}
+                                  onInput={(stageEvent) =>
+                                    setEventDialogDraft((current) =>
+                                      current
+                                        ? {
+                                            ...current,
+                                            status: stageEvent.currentTarget.value,
+                                          }
+                                        : current,
+                                    )
+                                  }
+                                  type="text"
+                                  value={draft().status}
+                                />
+                                <label for={`event-dialog-discipline-${draft().id}`}>
+                                  --Discipline
+                                </label>
+                                <input
+                                  id={`event-dialog-discipline-${draft().id}`}
+                                  onInput={(stageEvent) =>
+                                    setEventDialogDraft((current) =>
+                                      current
+                                        ? {
+                                            ...current,
+                                            discipline: stageEvent.currentTarget.value,
+                                          }
+                                        : current,
+                                    )
+                                  }
+                                  type="text"
+                                  value={draft().discipline}
+                                />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "0.75rem",
+                                    "justify-content": "flex-end",
+                                  }}
+                                >
+                                  <AtomButton onClick={closeEventEditor}>
+                                    --Cancel
+                                  </AtomButton>
+                                  <AtomButton onClick={saveEventEditor}>
+                                    --Save
+                                  </AtomButton>
+                                </div>
+                              </div>
+                            )}
+                          </Show>
+                        }
+                        modal
+                        onOpenChange={(isOpen) => {
+                          if (isOpen) {
+                            openEventEditor(event());
+                            return;
+                          }
+
+                          if (editingEventId() === event().id) {
+                            closeEventEditor();
+                          }
+                        }}
+                        open={editingEventId() === event().id}
+                        title={`--Edit ${event().name || "event"}`}
+                        trigger={
+                          <span style={iconButtonStyle}>
+                            <svg
+                              aria-hidden="true"
+                              fill="none"
+                              height="16"
+                              stroke="currentColor"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              viewBox="0 0 24 24"
+                              width="16"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M12 20h9" />
+                              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                            </svg>
+                            <span style={visuallyHiddenStyle}>
+                              {`--Edit ${event().name || "event"}`}
+                            </span>
+                          </span>
+                        }
+                      />
+                      <button
+                        aria-label={`--Delete ${event().name}`}
+                        onClick={() => {
+                          if (editingEventId() === event().id) {
+                            closeEventEditor();
+                          }
+
+                          props.onDeleteEvent(event().id);
+                        }}
+                        style={iconButtonStyle}
+                        type="button"
                       >
-                        <path d="M3 6h18" />
-                        <path d="M8 6V4h8v2" />
-                        <path d="M19 6v14H5V6" />
-                        <path d="M10 11v6" />
-                        <path d="M14 11v6" />
-                      </svg>
-                    </button>
+                        <svg
+                          aria-hidden="true"
+                          fill="none"
+                          height="16"
+                          stroke="currentColor"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M8 6V4h8v2" />
+                          <path d="M19 6v14H5V6" />
+                          <path d="M10 11v6" />
+                          <path d="M14 11v6" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                  <label for={`stage-event-name-${event().id}`}>
-                    --Event title
-                  </label>
-                  <input
-                    id={`stage-event-name-${event().id}`}
-                    onInput={(stageEvent) =>
-                      updateEventDraft(event().id, (current) => ({
-                        ...current,
-                        name: stageEvent.currentTarget.value,
-                      }))
-                    }
-                    type="text"
-                    value={event().name}
-                  />
-                  <label for={`stage-event-status-${event().id}`}>--Status</label>
-                  <input
-                    id={`stage-event-status-${event().id}`}
-                    onInput={(stageEvent) =>
-                      updateEventDraft(event().id, (current) => ({
-                        ...current,
-                        status: stageEvent.currentTarget.value,
-                      }))
-                    }
-                    type="text"
-                    value={event().status}
-                  />
-                  <label for={`stage-event-discipline-${event().id}`}>
-                    --Discipline
-                  </label>
-                  <input
-                    id={`stage-event-discipline-${event().id}`}
-                    onInput={(stageEvent) =>
-                      updateEventDraft(event().id, (current) => ({
-                        ...current,
-                        discipline: stageEvent.currentTarget.value,
-                      }))
-                    }
-                    type="text"
-                    value={event().discipline}
-                  />
+                  <p>{`--Status: ${event().status || "--No status"}`}</p>
+                  <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
+                  <p>{`--Participants: ${event().competitors.length}`}</p>
                 </article>
               </Show>
             )}
@@ -499,33 +535,6 @@ function CompetitionStageDetailContent(props: {
           >
             <path d="M18 6 6 18" />
             <path d="m6 6 12 12" />
-          </svg>
-        </button>
-        <button
-          aria-label="--Add event"
-          onClick={() =>
-            props.onCreateEvent(props.createDefaultEvent(draftStage().id))
-          }
-          style={{
-            ...floatingActionButtonStyle,
-            bottom: "5.75rem",
-          }}
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
           </svg>
         </button>
         <button onClick={props.onDelete} type="button">
@@ -585,13 +594,16 @@ const floatingActionButtonStyle = {
   "z-index": "10",
 } as const;
 
-function getEventDraftKey(event: EventResponse) {
-  return JSON.stringify({
-    discipline: event.discipline,
-    name: event.name,
-    status: event.status,
-  });
-}
+const visuallyHiddenStyle = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+} as const;
 
 function toDateInputValue(timestamp: number) {
   return new Date(timestamp).toISOString().slice(0, 10);

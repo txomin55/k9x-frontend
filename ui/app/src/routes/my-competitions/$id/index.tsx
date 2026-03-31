@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/solid-router";
-import { createEffect, createSignal, For, Index, onCleanup, Show, Suspense, untrack } from "solid-js";
+import { createEffect, createSignal, For, Index, onCleanup, Show, Suspense } from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
 import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import "./styles.css";
 
 const COUNTRY_OPTIONS = [
@@ -104,17 +105,10 @@ function CompetitionDetailBody(props: {
   const [longitude, setLongitude] = createSignal(
     props.competition.location?.longitude?.toString() ?? "",
   );
-  const [stageDrafts, setStageDrafts] = createSignal<Record<string, StageEditorModel>>(
-    {},
+  const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
+  const [stageDialogDraft, setStageDialogDraft] = createSignal<StageEditorModel | null>(
+    null,
   );
-  const [queuedStageKeys, setQueuedStageKeys] = createSignal<
-    Record<string, string>
-  >({});
-
-  const stageUpdateTimeouts = new Map<
-    string,
-    ReturnType<typeof globalThis.setTimeout>
-  >();
 
   createEffect(() => {
     if (isEditing()) return;
@@ -162,109 +156,28 @@ function CompetitionDetailBody(props: {
   });
 
   createEffect(() => {
-    const externalStages = props.competition.stages ?? [];
-    const currentDrafts = untrack(stageDrafts);
-    const currentQueuedStageKeys = untrack(queuedStageKeys);
-    const nextDrafts: Record<string, StageEditorModel> = {};
-    const nextQueuedStageKeys: Record<string, string> = {};
+    if (isEditing()) return;
 
-    for (const stage of externalStages) {
-      const nextStage = toApiStage(stage, props.competition.id);
-      const nextStageKey = getStageDraftKey(nextStage);
-      const queuedStageKey = currentQueuedStageKeys[nextStage.id];
-
-      if (
-        isEditing() &&
-        queuedStageKey &&
-        queuedStageKey !== nextStageKey &&
-        currentDrafts[nextStage.id]
-      ) {
-        nextDrafts[nextStage.id] = currentDrafts[nextStage.id];
-        nextQueuedStageKeys[nextStage.id] = queuedStageKey;
-        continue;
-      }
-
-      nextDrafts[nextStage.id] = nextStage;
-
-      if (queuedStageKey && queuedStageKey !== nextStageKey) {
-        nextQueuedStageKeys[nextStage.id] = queuedStageKey;
-      }
-    }
-
-    setStageDrafts(nextDrafts);
-    setQueuedStageKeys(nextQueuedStageKeys);
+    closeStageEditor();
   });
 
-  createEffect(() => {
-    if (!isEditing()) return;
+  const openStageEditor = (stage: Stage) => {
+    setEditingStageId(stage.id);
+    setStageDialogDraft(toApiStage(stage, props.competition.id));
+  };
 
-    const drafts = stageDrafts();
-    const externalStages = new Map(
-      (props.competition.stages ?? []).map((stage) => [
-        stage.id,
-        toApiStage(stage, props.competition.id),
-      ]),
-    );
-    const queuedKeys = queuedStageKeys();
-    const timeoutIds: Array<ReturnType<typeof globalThis.setTimeout>> = [];
+  const closeStageEditor = () => {
+    setEditingStageId(null);
+    setStageDialogDraft(null);
+  };
 
-    for (const draftStage of Object.values(drafts)) {
-      const externalStage = externalStages.get(draftStage.id);
+  const saveStageEditor = () => {
+    const draft = stageDialogDraft();
 
-      if (!externalStage) continue;
+    if (!draft) return;
 
-      const nextStageKey = getStageDraftKey(draftStage);
-      const externalStageKey = getStageDraftKey(externalStage);
-
-      if (nextStageKey === externalStageKey) continue;
-      if (queuedKeys[draftStage.id] === nextStageKey) continue;
-
-      const existingTimeoutId = stageUpdateTimeouts.get(draftStage.id);
-
-      if (existingTimeoutId) {
-        globalThis.clearTimeout(existingTimeoutId);
-      }
-
-      const timeoutId = globalThis.setTimeout(() => {
-        setQueuedStageKeys((current) => ({
-          ...current,
-          [draftStage.id]: nextStageKey,
-        }));
-        updateApiStage(draftStage);
-      }, EDIT_DEBOUNCE_MS);
-
-      stageUpdateTimeouts.set(draftStage.id, timeoutId);
-      timeoutIds.push(timeoutId);
-    }
-
-    onCleanup(() => {
-      for (const timeoutId of timeoutIds) {
-        globalThis.clearTimeout(timeoutId);
-      }
-    });
-  });
-
-  onCleanup(() => {
-    for (const timeoutId of stageUpdateTimeouts.values()) {
-      globalThis.clearTimeout(timeoutId);
-    }
-    stageUpdateTimeouts.clear();
-  });
-
-  const upsertStageDraft = (
-    stageId: string,
-    updater: (current: StageEditorModel) => StageEditorModel,
-  ) => {
-    setStageDrafts((current) => {
-      const currentStage = current[stageId];
-
-      if (!currentStage) return current;
-
-      return {
-        ...current,
-        [stageId]: updater(currentStage),
-      };
-    });
+    updateApiStage(draft);
+    closeStageEditor();
   };
 
   return (
@@ -373,6 +286,45 @@ function CompetitionDetailBody(props: {
           {`${props.competition.location?.latitude ?? "--"} / ${props.competition.location?.longitude ?? "--"}`}
         </p>
       </Show>
+      <div
+        style={{
+          display: "flex",
+          "justify-content": "space-between",
+          "align-items": "center",
+          gap: "1rem",
+        }}
+      >
+        <h2>--Stages</h2>
+        <Show when={isEditing()}>
+          <button
+            type="button"
+            aria-label="--Add stage"
+            onClick={() =>
+              void navigate({
+                params: { id: props.competition.id, stageId: "new" },
+                to: "/my-competitions/$id/stages/$stageId",
+              })
+            }
+            style={iconButtonStyle}
+          >
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 5v14" />
+              <path d="M5 12h14" />
+            </svg>
+          </button>
+        </Show>
+      </div>
       <div class="competition-detail__content--stages">
         <Index each={props.competition.stages ?? []}>
           {(stage) => (
@@ -421,97 +373,172 @@ function CompetitionDetailBody(props: {
                   }}
                 >
                   <strong>--Stage</strong>
-                  <button
-                    type="button"
-                    aria-label={`--Delete ${stage().name}`}
-                    onClick={() => {
-                      const timeoutId = stageUpdateTimeouts.get(stage().id);
-
-                      if (timeoutId) {
-                        globalThis.clearTimeout(timeoutId);
-                        stageUpdateTimeouts.delete(stage().id);
-                      }
-
-                      setStageDrafts((current) => {
-                        const nextDrafts = { ...current };
-                        delete nextDrafts[stage().id];
-                        return nextDrafts;
-                      });
-                      setQueuedStageKeys((current) => {
-                        const nextQueuedStageKeys = { ...current };
-                        delete nextQueuedStageKeys[stage().id];
-                        return nextQueuedStageKeys;
-                      });
-                      deleteApiStage(stage().id, props.competition.id);
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "0.5rem",
                     }}
-                    style={iconButtonStyle}
                   >
-                    <svg
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                    <AtomDialog
+                      closeButtonText="Close dialog"
+                      content={
+                        <Show when={stageDialogDraft()}>
+                          {(draft) => (
+                            <div
+                              style={{
+                                display: "grid",
+                                gap: "0.75rem",
+                              }}
+                            >
+                              <label for={`stage-dialog-name-${draft().id}`}>
+                                --Stage title
+                              </label>
+                              <input
+                                id={`stage-dialog-name-${draft().id}`}
+                                type="text"
+                                value={draft().name}
+                                onInput={(event) =>
+                                  setStageDialogDraft((current) =>
+                                    current
+                                      ? {
+                                          ...current,
+                                          name: event.currentTarget.value,
+                                        }
+                                      : current,
+                                  )
+                                }
+                              />
+                              <label for={`stage-dialog-date-from-${draft().id}`}>
+                                --Date from
+                              </label>
+                              <input
+                                id={`stage-dialog-date-from-${draft().id}`}
+                                type="date"
+                                value={toDateInputValue(draft().dateFrom)}
+                                onInput={(event) =>
+                                  setStageDialogDraft((current) =>
+                                    current
+                                      ? {
+                                          ...current,
+                                          dateFrom: parseDateInputValue(
+                                            event.currentTarget.value,
+                                            current.dateFrom,
+                                          ),
+                                        }
+                                      : current,
+                                  )
+                                }
+                              />
+                              <label for={`stage-dialog-date-to-${draft().id}`}>
+                                --Date to
+                              </label>
+                              <input
+                                id={`stage-dialog-date-to-${draft().id}`}
+                                type="date"
+                                value={toDateInputValue(draft().dateTo)}
+                                onInput={(event) =>
+                                  setStageDialogDraft((current) =>
+                                    current
+                                      ? {
+                                          ...current,
+                                          dateTo: parseDateInputValue(
+                                            event.currentTarget.value,
+                                            current.dateTo,
+                                          ),
+                                        }
+                                      : current,
+                                  )
+                                }
+                              />
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "0.75rem",
+                                  "justify-content": "flex-end",
+                                }}
+                              >
+                                <AtomButton onClick={closeStageEditor}>
+                                  --Cancel
+                                </AtomButton>
+                                <AtomButton onClick={saveStageEditor}>
+                                  --Save
+                                </AtomButton>
+                              </div>
+                            </div>
+                          )}
+                        </Show>
+                      }
+                      modal
+                      onOpenChange={(isOpen) => {
+                        if (isOpen) {
+                          openStageEditor(stage());
+                          return;
+                        }
+
+                        if (editingStageId() === stage().id) {
+                          closeStageEditor();
+                        }
+                      }}
+                      open={editingStageId() === stage().id}
+                      title={`--Edit ${stage().name || "stage"}`}
+                      trigger={
+                        <span style={iconButtonStyle}>
+                          <svg
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                          </svg>
+                          <span style={visuallyHiddenStyle}>
+                            {`--Edit ${stage().name || "stage"}`}
+                          </span>
+                        </span>
+                      }
+                    />
+                    <button
+                      type="button"
+                      aria-label={`--Delete ${stage().name}`}
+                      onClick={() => {
+                        if (editingStageId() === stage().id) {
+                          closeStageEditor();
+                        }
+
+                        deleteApiStage(stage().id, props.competition.id);
+                      }}
+                      style={iconButtonStyle}
                     >
-                      <path d="M3 6h18" />
-                      <path d="M8 6V4h8v2" />
-                      <path d="M19 6v14H5V6" />
-                      <path d="M10 11v6" />
-                      <path d="M14 11v6" />
-                    </svg>
-                  </button>
+                      <svg
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4h8v2" />
+                        <path d="M19 6v14H5V6" />
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
-                <label for={`stage-name-${stage().id}`}>--Stage title</label>
-                <input
-                  id={`stage-name-${stage().id}`}
-                  type="text"
-                  value={stageDrafts()[stage().id]?.name ?? stage().name}
-                  onInput={(event) =>
-                    upsertStageDraft(stage().id, (current) => ({
-                      ...current,
-                      name: event.currentTarget.value,
-                    }))
-                  }
-                />
-                <label for={`stage-date-from-${stage().id}`}>--Date from</label>
-                <input
-                  id={`stage-date-from-${stage().id}`}
-                  type="date"
-                  value={toDateInputValue(
-                    stageDrafts()[stage().id]?.dateFrom ?? stage().dateFrom,
-                  )}
-                  onInput={(event) =>
-                    upsertStageDraft(stage().id, (current) => ({
-                      ...current,
-                      dateFrom: parseDateInputValue(
-                        event.currentTarget.value,
-                        current.dateFrom,
-                      ),
-                    }))
-                  }
-                />
-                <label for={`stage-date-to-${stage().id}`}>--Date to</label>
-                <input
-                  id={`stage-date-to-${stage().id}`}
-                  type="date"
-                  value={toDateInputValue(
-                    stageDrafts()[stage().id]?.dateTo ?? stage().dateTo,
-                  )}
-                  onInput={(event) =>
-                    upsertStageDraft(stage().id, (current) => ({
-                      ...current,
-                      dateTo: parseDateInputValue(
-                        event.currentTarget.value,
-                        current.dateTo,
-                      ),
-                    }))
-                  }
-                />
+                <strong>{stage().name || "--No name"}</strong>
+                <p>{formatStageDateRange(stage())}</p>
               </div>
             </Show>
           )}
@@ -547,44 +574,6 @@ function CompetitionDetailBody(props: {
           >
             <path d="M18 6 6 18" />
             <path d="m6 6 12 12" />
-          </svg>
-        </button>
-      </Show>
-      <Show when={isEditing()}>
-        <button
-          type="button"
-          aria-label="--Add stage"
-          onClick={() =>
-            void navigate({
-              params: { id: props.competition.id, stageId: "new" },
-              to: "/my-competitions/$id/stages/$stageId",
-            })
-          }
-          style={{
-            ...iconButtonStyle,
-            bottom: "1.5rem",
-            "box-shadow": "0 0.75rem 1.75rem rgba(0, 0, 0, 0.15)",
-            height: "3.5rem",
-            position: "fixed",
-            right: "1.5rem",
-            width: "3.5rem",
-            "z-index": "10",
-          }}
-        >
-          <svg
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
           </svg>
         </button>
       </Show>
@@ -650,6 +639,17 @@ const iconButtonStyle = {
   height: "2.5rem",
 };
 
+const visuallyHiddenStyle = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+};
+
 function toApiStage(stage: Stage, competitionId: string): StageEditorModel {
   return {
     competitionId,
@@ -659,14 +659,6 @@ function toApiStage(stage: Stage, competitionId: string): StageEditorModel {
     id: stage.id,
     name: stage.name,
   };
-}
-
-function getStageDraftKey(stage: StageEditorModel) {
-  return JSON.stringify({
-    dateFrom: stage.dateFrom,
-    dateTo: stage.dateTo,
-    name: stage.name,
-  });
 }
 
 function formatStageDateRange(stage: Stage) {

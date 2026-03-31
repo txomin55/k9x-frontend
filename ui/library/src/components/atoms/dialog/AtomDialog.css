@@ -1,0 +1,94 @@
+.atom-dialog {
+  display: inline-flex;
+}
+
+.atom-dialog__trigger {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.atom-dialog__trigger:focus-visible,
+.atom-dialog__close-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.atom-dialog__trigger:disabled,
+.atom-dialog__trigger[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.atom-dialog__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(15, 23, 32, 0.56);
+}
+
+.atom-dialog__content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 21;
+  width: min(calc(100vw - 2rem), 32rem);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 32, 0.22);
+  transform: translate(-50%, -50%);
+  outline: none;
+}
+
+.atom-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.atom-dialog__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.atom-dialog__description {
+  margin: 0.75rem 0 0;
+  color: var(--text-secondary, var(--text-primary));
+  line-height: 1.5;
+}
+
+.atom-dialog__body {
+  margin-top: 1rem;
+}
+
+.atom-dialog__close-button {
+  appearance: none;
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  color: inherit;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.atom-dialog__close-button:hover {
+  background: rgba(15, 23, 32, 0.06);
+}

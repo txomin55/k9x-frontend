@@ -1,8 +1,14 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, For, Index, onCleanup, Show, Suspense } from "solid-js";
+import { type Accessor, createEffect, createMemo, createSignal, Index, onCleanup, Show, Suspense } from "solid-js";
 import type { EventResponse, UpdateApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
-import type { EventCompetitorsWeb } from "@/services/api/competition_crud/competitionCrudTypes";
+import type {
+  EventCompetitorsWeb,
+  EventExercisesWeb,
+  StageJudgesWeb,
+} from "@/services/api/competition_crud/competitionCrudTypes";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 
 const EDIT_DEBOUNCE_MS = 400;
 
@@ -61,6 +67,18 @@ function CompetitionEventDetailContent(props: {
   const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
     string | null
   >(null);
+  const [editingCompetitorIndex, setEditingCompetitorIndex] = createSignal<number | null>(null);
+  const [competitorDialogDraft, setCompetitorDialogDraft] = createSignal<EventCompetitorsWeb | null>(
+    null,
+  );
+  const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(null);
+  const [judgeDialogDraft, setJudgeDialogDraft] = createSignal<StageJudgesWeb | null>(
+    null,
+  );
+  const [editingExerciseIndex, setEditingExerciseIndex] = createSignal<number | null>(null);
+  const [exerciseDialogDraft, setExerciseDialogDraft] = createSignal<EventExercisesWeb | null>(
+    null,
+  );
 
   const event = createMemo(() => props.event());
 
@@ -95,6 +113,32 @@ function CompetitionEventDetailContent(props: {
 
     onCleanup(() => globalThis.clearTimeout(timeoutId));
   });
+
+  createEffect(() => {
+    if (isEditing()) return;
+
+    setEditingCompetitorIndex(null);
+    setCompetitorDialogDraft(null);
+    setEditingJudgeIndex(null);
+    setJudgeDialogDraft(null);
+    setEditingExerciseIndex(null);
+    setExerciseDialogDraft(null);
+  });
+
+  const closeCompetitorEditor = () => {
+    setEditingCompetitorIndex(null);
+    setCompetitorDialogDraft(null);
+  };
+
+  const closeJudgeEditor = () => {
+    setEditingJudgeIndex(null);
+    setJudgeDialogDraft(null);
+  };
+
+  const closeExerciseEditor = () => {
+    setEditingExerciseIndex(null);
+    setExerciseDialogDraft(null);
+  };
 
   return (
     <div
@@ -223,7 +267,45 @@ function CompetitionEventDetailContent(props: {
       </section>
 
       <section>
-        <h2>--Judges</h2>
+        <div
+          style={{
+            display: "flex",
+            "justify-content": "space-between",
+            "align-items": "center",
+            gap: "1rem",
+          }}
+        >
+          <h2>--Judges</h2>
+          <Show when={isEditing()}>
+            <button
+              aria-label="--Add judge"
+              onClick={() =>
+                setDraftEvent((current) => ({
+                  ...current,
+                  judges: [...current.judges, createDefaultJudge()],
+                }))
+              }
+              style={iconButtonStyle}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+          </Show>
+        </div>
         <Show
           when={draftEvent().judges.length > 0}
           fallback={<p>--No judges.</p>}
@@ -234,20 +316,462 @@ function CompetitionEventDetailContent(props: {
               gap: "0.75rem",
             }}
           >
-            <For each={draftEvent().judges}>
-              {(judge) => (
+            <Index each={draftEvent().judges}>
+              {(judge, index) => (
                 <article style={cardStyle}>
-                  <p>{`--Name: ${judge.name}`}</p>
-                  <p>{`--Email: ${judge.collectorEmail}`}</p>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      "justify-content": "space-between",
+                    }}
+                  >
+                    <strong>{judge().name || "--No name"}</strong>
+                    <Show when={isEditing()}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <AtomDialog
+                          closeButtonText="Close dialog"
+                          content={
+                            <Show when={judgeDialogDraft()}>
+                              {(draft) => (
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    gap: "0.75rem",
+                                  }}
+                                >
+                                  <label for={`judge-dialog-name-${index}`}>
+                                    --Name
+                                  </label>
+                                  <input
+                                    id={`judge-dialog-name-${index}`}
+                                    onInput={(event) =>
+                                      setJudgeDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              name: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="text"
+                                    value={draft().name}
+                                  />
+                                  <label for={`judge-dialog-email-${index}`}>
+                                    --Email
+                                  </label>
+                                  <input
+                                    id={`judge-dialog-email-${index}`}
+                                    onInput={(event) =>
+                                      setJudgeDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              collectorEmail: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="email"
+                                    value={draft().collectorEmail}
+                                  />
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: "0.75rem",
+                                      "justify-content": "flex-end",
+                                    }}
+                                  >
+                                    <AtomButton onClick={closeJudgeEditor}>
+                                      --Cancel
+                                    </AtomButton>
+                                    <AtomButton
+                                      onClick={() => {
+                                        const draft = judgeDialogDraft();
+
+                                        if (!draft) return;
+
+                                        setDraftEvent((current) => ({
+                                          ...current,
+                                          judges: current.judges.map((entry, judgeIndex) =>
+                                            judgeIndex === index
+                                              ? draft
+                                              : entry,
+                                          ),
+                                        }));
+                                        closeJudgeEditor();
+                                      }}
+                                    >
+                                      --Save
+                                    </AtomButton>
+                                  </div>
+                                </div>
+                              )}
+                            </Show>
+                          }
+                          modal
+                          onOpenChange={(isOpen) => {
+                            if (isOpen) {
+                              setEditingJudgeIndex(index);
+                              setJudgeDialogDraft(judge());
+                              return;
+                            }
+
+                            if (editingJudgeIndex() === index) {
+                              closeJudgeEditor();
+                            }
+                          }}
+                          open={editingJudgeIndex() === index}
+                          title={`--Edit ${judge().name || "judge"}`}
+                          trigger={
+                            <span style={iconButtonStyle}>
+                              <svg
+                                aria-hidden="true"
+                                fill="none"
+                                height="16"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                              </svg>
+                              <span style={visuallyHiddenStyle}>
+                                {`--Edit ${judge().name || "judge"}`}
+                              </span>
+                            </span>
+                          }
+                        />
+                        <button
+                          aria-label={`--Delete ${judge().name || "judge"}`}
+                          onClick={() => {
+                            if (editingJudgeIndex() === index) {
+                              closeJudgeEditor();
+                            }
+
+                            setDraftEvent((current) => ({
+                              ...current,
+                              judges: current.judges.filter(
+                                (_, judgeIndex) => judgeIndex !== index,
+                              ),
+                            }));
+                          }}
+                          style={iconButtonStyle}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            fill="none"
+                            height="16"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4h8v2" />
+                            <path d="M19 6v14H5V6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </Show>
+                  </div>
+                  <p>{`--Email: ${judge().collectorEmail || "--No email"}`}</p>
                 </article>
               )}
-            </For>
+            </Index>
           </div>
         </Show>
       </section>
 
       <section>
-        <h2>--Competitors</h2>
+        <div
+          style={{
+            display: "flex",
+            "justify-content": "space-between",
+            "align-items": "center",
+            gap: "1rem",
+          }}
+        >
+          <h2>--Exercises</h2>
+          <Show when={isEditing()}>
+            <button
+              aria-label="--Add exercise"
+              onClick={() =>
+                setDraftEvent((current) => ({
+                  ...current,
+                  exercises: [...current.exercises, createDefaultExercise()],
+                }))
+              }
+              style={iconButtonStyle}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+          </Show>
+        </div>
+        <Show
+          when={draftEvent().exercises.length > 0}
+          fallback={<p>--No exercises.</p>}
+        >
+          <div
+            style={{
+              display: "grid",
+              gap: "0.75rem",
+            }}
+          >
+            <Index each={draftEvent().exercises}>
+              {(exercise, index) => (
+                <article style={cardStyle}>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      "justify-content": "space-between",
+                    }}
+                  >
+                    <strong>{`--#${exercise().order}`}</strong>
+                    <Show when={isEditing()}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <AtomDialog
+                          closeButtonText="Close dialog"
+                          content={
+                            <Show when={exerciseDialogDraft()}>
+                              {(draft) => (
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    gap: "0.75rem",
+                                  }}
+                                >
+                                  <label for={`exercise-dialog-order-${draft().id}`}>
+                                    --Order
+                                  </label>
+                                  <input
+                                    id={`exercise-dialog-order-${draft().id}`}
+                                    onInput={(event) =>
+                                      setExerciseDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              order: Number(event.currentTarget.value) || 0,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="number"
+                                    value={String(draft().order)}
+                                  />
+                                  <label for={`exercise-dialog-text-${draft().id}`}>
+                                    --Text
+                                  </label>
+                                  <input
+                                    id={`exercise-dialog-text-${draft().id}`}
+                                    onInput={(event) =>
+                                      setExerciseDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              text: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="text"
+                                    value={draft().text}
+                                  />
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: "0.75rem",
+                                      "justify-content": "flex-end",
+                                    }}
+                                  >
+                                    <AtomButton onClick={closeExerciseEditor}>
+                                      --Cancel
+                                    </AtomButton>
+                                    <AtomButton
+                                      onClick={() => {
+                                        const draft = exerciseDialogDraft();
+
+                                        if (!draft) return;
+
+                                        setDraftEvent((current) => ({
+                                          ...current,
+                                          exercises: current.exercises.map((entry, exerciseIndex) =>
+                                            exerciseIndex === index
+                                              ? draft
+                                              : entry,
+                                          ),
+                                        }));
+                                        closeExerciseEditor();
+                                      }}
+                                    >
+                                      --Save
+                                    </AtomButton>
+                                  </div>
+                                </div>
+                              )}
+                            </Show>
+                          }
+                          modal
+                          onOpenChange={(isOpen) => {
+                            if (isOpen) {
+                              setEditingExerciseIndex(index);
+                              setExerciseDialogDraft(exercise());
+                              return;
+                            }
+
+                            if (editingExerciseIndex() === index) {
+                              closeExerciseEditor();
+                            }
+                          }}
+                          open={editingExerciseIndex() === index}
+                          title={`--Edit exercise ${exercise().order}`}
+                          trigger={
+                            <span style={iconButtonStyle}>
+                              <svg
+                                aria-hidden="true"
+                                fill="none"
+                                height="16"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                              </svg>
+                              <span style={visuallyHiddenStyle}>
+                                {`--Edit exercise ${exercise().order}`}
+                              </span>
+                            </span>
+                          }
+                        />
+                        <button
+                          aria-label={`--Delete exercise ${exercise().order}`}
+                          onClick={() => {
+                            if (editingExerciseIndex() === index) {
+                              closeExerciseEditor();
+                            }
+
+                            setDraftEvent((current) => ({
+                              ...current,
+                              exercises: current.exercises.filter(
+                                (_, exerciseIndex) => exerciseIndex !== index,
+                              ),
+                            }));
+                          }}
+                          style={iconButtonStyle}
+                          type="button"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            fill="none"
+                            height="16"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4h8v2" />
+                            <path d="M19 6v14H5V6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                          </svg>
+                        </button>
+                      </div>
+                    </Show>
+                  </div>
+                  <p>{exercise().text || "--No text"}</p>
+                </article>
+              )}
+            </Index>
+          </div>
+        </Show>
+      </section>
+
+      <section>
+        <div
+          style={{
+            display: "flex",
+            "justify-content": "space-between",
+            "align-items": "center",
+            gap: "1rem",
+          }}
+        >
+          <h2>--Competitors</h2>
+          <Show when={isEditing()}>
+            <button
+              aria-label="--Add competitor"
+              onClick={() =>
+                setDraftEvent((current) => ({
+                  ...current,
+                  competitors: [...current.competitors, createDefaultCompetitor()],
+                }))
+              }
+              style={iconButtonStyle}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                height="16"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+              </svg>
+            </button>
+          </Show>
+        </div>
         <Show
           when={draftEvent().competitors.length > 0}
           fallback={<p>--No competitors.</p>}
@@ -270,115 +794,208 @@ function CompetitionEventDetailContent(props: {
                   >
                     <strong>{competitor().name || "--No name"}</strong>
                     <Show when={isEditing()}>
-                      <button
-                        aria-label={`--Delete ${competitor().name || "competitor"}`}
-                        onClick={() =>
-                          setDraftEvent((current) => ({
-                            ...current,
-                            competitors: current.competitors.filter(
-                              (_, competitorIndex) => competitorIndex !== index,
-                            ),
-                          }))
-                        }
-                        style={iconButtonStyle}
-                        type="button"
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                        }}
                       >
-                        <svg
-                          aria-hidden="true"
-                          fill="none"
-                          height="16"
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                          width="16"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <AtomDialog
+                          closeButtonText="Close dialog"
+                          content={
+                            <Show when={competitorDialogDraft()}>
+                              {(draft) => (
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    gap: "0.75rem",
+                                  }}
+                                >
+                                  <label for={`competitor-dialog-name-${draft().id}`}>
+                                    --Name
+                                  </label>
+                                  <input
+                                    id={`competitor-dialog-name-${draft().id}`}
+                                    onInput={(event) =>
+                                      setCompetitorDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              name: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="text"
+                                    value={draft().name}
+                                  />
+                                  <label for={`competitor-dialog-owner-${draft().id}`}>
+                                    --Owner
+                                  </label>
+                                  <input
+                                    id={`competitor-dialog-owner-${draft().id}`}
+                                    onInput={(event) =>
+                                      setCompetitorDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              owner: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="text"
+                                    value={draft().owner}
+                                  />
+                                  <label for={`competitor-dialog-identity-${draft().id}`}>
+                                    --Identity
+                                  </label>
+                                  <input
+                                    id={`competitor-dialog-identity-${draft().id}`}
+                                    onInput={(event) =>
+                                      setCompetitorDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              identity: event.currentTarget.value,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="text"
+                                    value={draft().identity}
+                                  />
+                                  <label for={`competitor-dialog-score-${draft().id}`}>
+                                    --Final score
+                                  </label>
+                                  <input
+                                    id={`competitor-dialog-score-${draft().id}`}
+                                    onInput={(event) =>
+                                      setCompetitorDialogDraft((current) =>
+                                        current
+                                          ? {
+                                              ...current,
+                                              finalScore: Number(event.currentTarget.value) || 0,
+                                            }
+                                          : current,
+                                      )
+                                    }
+                                    type="number"
+                                    value={String(draft().finalScore)}
+                                  />
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: "0.75rem",
+                                      "justify-content": "flex-end",
+                                    }}
+                                  >
+                                    <AtomButton onClick={closeCompetitorEditor}>
+                                      --Cancel
+                                    </AtomButton>
+                                    <AtomButton
+                                      onClick={() => {
+                                        const draft = competitorDialogDraft();
+
+                                        if (!draft) return;
+
+                                        setDraftEvent((current) => ({
+                                          ...current,
+                                          competitors: current.competitors.map((entry, competitorIndex) =>
+                                            competitorIndex === index
+                                              ? draft
+                                              : entry,
+                                          ),
+                                        }));
+                                        closeCompetitorEditor();
+                                      }}
+                                    >
+                                      --Save
+                                    </AtomButton>
+                                  </div>
+                                </div>
+                              )}
+                            </Show>
+                          }
+                          modal
+                          onOpenChange={(isOpen) => {
+                            if (isOpen) {
+                              setEditingCompetitorIndex(index);
+                              setCompetitorDialogDraft(competitor());
+                              return;
+                            }
+
+                            if (editingCompetitorIndex() === index) {
+                              closeCompetitorEditor();
+                            }
+                          }}
+                          open={editingCompetitorIndex() === index}
+                          title={`--Edit ${competitor().name || "competitor"}`}
+                          trigger={
+                            <span style={iconButtonStyle}>
+                              <svg
+                                aria-hidden="true"
+                                fill="none"
+                                height="16"
+                                stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                                width="16"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                              </svg>
+                              <span style={visuallyHiddenStyle}>
+                                {`--Edit ${competitor().name || "competitor"}`}
+                              </span>
+                            </span>
+                          }
+                        />
+                        <button
+                          aria-label={`--Delete ${competitor().name || "competitor"}`}
+                          onClick={() => {
+                            if (editingCompetitorIndex() === index) {
+                              closeCompetitorEditor();
+                            }
+
+                            setDraftEvent((current) => ({
+                              ...current,
+                              competitors: current.competitors.filter(
+                                (_, competitorIndex) => competitorIndex !== index,
+                              ),
+                            }));
+                          }}
+                          style={iconButtonStyle}
+                          type="button"
                         >
-                          <path d="M3 6h18" />
-                          <path d="M8 6V4h8v2" />
-                          <path d="M19 6v14H5V6" />
-                          <path d="M10 11v6" />
-                          <path d="M14 11v6" />
-                        </svg>
-                      </button>
+                          <svg
+                            aria-hidden="true"
+                            fill="none"
+                            height="16"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4h8v2" />
+                            <path d="M19 6v14H5V6" />
+                            <path d="M10 11v6" />
+                            <path d="M14 11v6" />
+                          </svg>
+                        </button>
+                      </div>
                     </Show>
                   </div>
-                  <Show
-                    when={isEditing()}
-                    fallback={
-                      <>
-                        <p>{`--Owner: ${competitor().owner}`}</p>
-                        <p>{`--Identity: ${competitor().identity}`}</p>
-                        <p>{`--Final score: ${competitor().finalScore}`}</p>
-                      </>
-                    }
-                  >
-                    <label for={`competitor-name-${competitor().id}`}>
-                      --Name
-                    </label>
-                    <input
-                      id={`competitor-name-${competitor().id}`}
-                      onInput={(event) =>
-                        updateCompetitorField(
-                          index,
-                          "name",
-                          event.currentTarget.value,
-                          setDraftEvent,
-                        )
-                      }
-                      type="text"
-                      value={competitor().name}
-                    />
-                    <label for={`competitor-owner-${competitor().id}`}>
-                      --Owner
-                    </label>
-                    <input
-                      id={`competitor-owner-${competitor().id}`}
-                      onInput={(event) =>
-                        updateCompetitorField(
-                          index,
-                          "owner",
-                          event.currentTarget.value,
-                          setDraftEvent,
-                        )
-                      }
-                      type="text"
-                      value={competitor().owner}
-                    />
-                    <label for={`competitor-identity-${competitor().id}`}>
-                      --Identity
-                    </label>
-                    <input
-                      id={`competitor-identity-${competitor().id}`}
-                      onInput={(event) =>
-                        updateCompetitorField(
-                          index,
-                          "identity",
-                          event.currentTarget.value,
-                          setDraftEvent,
-                        )
-                      }
-                      type="text"
-                      value={competitor().identity}
-                    />
-                    <label for={`competitor-score-${competitor().id}`}>
-                      --Final score
-                    </label>
-                    <input
-                      id={`competitor-score-${competitor().id}`}
-                      onInput={(event) =>
-                        updateCompetitorField(
-                          index,
-                          "finalScore",
-                          Number(event.currentTarget.value) || 0,
-                          setDraftEvent,
-                        )
-                      }
-                      type="number"
-                      value={String(competitor().finalScore)}
-                    />
-                  </Show>
+                  <p>{`--Owner: ${competitor().owner}`}</p>
+                  <p>{`--Identity: ${competitor().identity}`}</p>
+                  <p>{`--Final score: ${competitor().finalScore}`}</p>
                 </article>
               )}
             </Index>
@@ -410,36 +1027,6 @@ function CompetitionEventDetailContent(props: {
           >
             <path d="M18 6 6 18" />
             <path d="m6 6 12 12" />
-          </svg>
-        </button>
-        <button
-          aria-label="--Add competitor"
-          onClick={() =>
-            setDraftEvent((current) => ({
-              ...current,
-              competitors: [...current.competitors, createDefaultCompetitor()],
-            }))
-          }
-          style={{
-            ...floatingActionButtonStyle,
-            bottom: "5.75rem",
-          }}
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="20"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
           </svg>
         </button>
         <button onClick={props.onDelete} type="button">
@@ -505,6 +1092,17 @@ const floatingActionButtonStyle = {
   "z-index": "10",
 } as const;
 
+const visuallyHiddenStyle = {
+  border: "0",
+  clip: "rect(0 0 0 0)",
+  height: "1px",
+  margin: "-1px",
+  overflow: "hidden",
+  padding: "0",
+  position: "absolute",
+  width: "1px",
+} as const;
+
 function getEventDraftKey(event: EventResponse) {
   return JSON.stringify({
     competitors: event.competitors,
@@ -526,21 +1124,17 @@ function createDefaultCompetitor(): EventCompetitorsWeb {
   };
 }
 
-function updateCompetitorField(
-  competitorIndex: number,
-  field: "name" | "owner" | "identity" | "finalScore",
-  value: string | number,
-  setDraftEvent: (setter: (current: EventResponse) => EventResponse) => void,
-) {
-  setDraftEvent((current) => ({
-    ...current,
-    competitors: current.competitors.map((entry, index) =>
-      index === competitorIndex
-        ? {
-            ...entry,
-            [field]: value,
-          }
-        : entry,
-    ),
-  }));
+function createDefaultJudge(): StageJudgesWeb {
+  return {
+    collectorEmail: "",
+    name: "--Default judge",
+  };
+}
+
+function createDefaultExercise(): EventExercisesWeb {
+  return {
+    id: globalThis.crypto.randomUUID(),
+    order: 0,
+    text: "--Default exercise",
+  };
 }
