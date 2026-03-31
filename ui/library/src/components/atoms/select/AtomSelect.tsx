@@ -22,6 +22,7 @@ export default function AtomSelect(props: AtomSelectProps) {
       placeholder={props.placeholder ?? "--Select an option"}
       required={props.required}
       sameWidth
+      validationState={props.validationState}
       value={props.value}
       itemComponent={(itemProps) => (
         <Select.Item class="atom-select__item" item={itemProps.item}>
@@ -48,6 +49,11 @@ export default function AtomSelect(props: AtomSelectProps) {
         <Select.Description class="atom-select__description">
           {props.description}
         </Select.Description>
+      ) : null}
+      {props.errorMessage ? (
+        <Select.ErrorMessage class="atom-select__error-message">
+          {props.errorMessage}
+        </Select.ErrorMessage>
       ) : null}
       <Select.Portal>
         <Select.Content class="atom-select__content">

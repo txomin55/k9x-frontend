@@ -34,4 +34,16 @@ describe("AtomSelect", () => {
 
     expect(getByRole("button")).toHaveAttribute("aria-expanded", "true");
   });
+
+  test("renders error message when invalid", () => {
+    const { getByText } = render(() => (
+      <AtomSelect
+        errorMessage="Select one option"
+        options={OPTIONS}
+        validationState="invalid"
+      />
+    ));
+
+    expect(getByText("Select one option")).toBeInTheDocument();
+  });
 });

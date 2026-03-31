@@ -1,0 +1,141 @@
+.atom-number-input {
+    display: grid;
+    gap: var(--unit-05);
+    width: 100%;
+}
+
+/* LABEL */
+.atom-number-input__label {
+    font-size: var(--text-label-md);
+    line-height: var(--text-label-line-height);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+/* FIELD WRAPPER */
+.atom-number-input__field {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: stretch;
+    width: 100%;
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+
+    overflow: hidden;
+
+    transition: border-color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease,
+    background-color var(--motion-fast) ease;
+}
+
+/* hover (whole control) */
+.atom-number-input__field:hover {
+    border-color: var(--border-strong);
+}
+
+/* focus (delegated via input) */
+.atom-number-input__control:focus-visible {
+    outline: none;
+}
+
+.atom-number-input__field:has(.atom-number-input__control:focus-visible) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+/* CONTROL (input) */
+.atom-number-input__control {
+    width: 100%;
+    min-height: var(--control-height-md);
+
+    padding: var(--unit-075) var(--unit-1);
+
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+
+    font: inherit;
+    text-align: center;
+
+    transition: color var(--motion-fast) ease;
+}
+
+.atom-number-input__control::placeholder {
+    color: var(--text-secondary);
+}
+
+/* invalid */
+.atom-number-input__field:has(.atom-number-input__control[aria-invalid="true"]) {
+    border-color: var(--error);
+}
+
+/* TRIGGERS (+ / -) */
+.atom-number-input__trigger {
+    appearance: none;
+
+    min-width: var(--control-height-md);
+    min-height: var(--control-height-md);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 var(--unit-075);
+
+    border: none;
+    background: transparent;
+
+    color: var(--text-primary);
+    font: inherit;
+    font-weight: var(--font-weight-medium);
+
+    cursor: pointer;
+
+    transition: background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+
+/* separator lines (internal borders) */
+.atom-number-input__trigger:first-child {
+    border-right: 1px solid var(--border);
+}
+
+.atom-number-input__trigger:last-child {
+    border-left: 1px solid var(--border);
+}
+
+/* hover */
+.atom-number-input__trigger:hover {
+    background: var(--surface-hover);
+}
+
+/* active */
+.atom-number-input__trigger:active {
+    background: var(--surface-muted);
+}
+
+/* disabled */
+.atom-number-input__trigger:disabled,
+.atom-number-input__trigger[aria-disabled="true"] {
+    cursor: not-allowed;
+    background: var(--surface-muted);
+    color: var(--text-muted);
+}
+
+/* DESCRIPTION */
+.atom-number-input__description {
+    font-size: var(--text-caption-md);
+    line-height: var(--text-caption-line-height);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+}
+
+/* ERROR */
+.atom-number-input__error-message {
+    font-size: var(--text-caption-md);
+    line-height: var(--text-caption-line-height);
+    font-weight: var(--font-weight-regular);
+    color: var(--error-text);
+}

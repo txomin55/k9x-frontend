@@ -1,0 +1,73 @@
+.atom-input {
+    display: grid;
+    gap: var(--unit-05);
+    width: 100%;
+}
+
+.atom-input__label {
+    font-size: var(--text-label-md);
+    line-height: var(--text-label-line-height);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.atom-input__control {
+    width: 100%;
+    min-height: var(--control-height-md);
+    padding: var(--unit-075) var(--unit-1);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+
+    background: var(--surface);
+    color: var(--text-primary);
+
+    font: inherit;
+
+    transition: background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease,
+    color var(--motion-fast) ease;
+}
+
+.atom-input__control::placeholder {
+    color: var(--text-secondary);
+}
+
+.atom-input__control:hover {
+    border-color: var(--border-strong);
+    background: var(--surface);
+}
+
+.atom-input__control:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-color: var(--accent);
+}
+
+.atom-input__control[aria-invalid="true"] {
+    border-color: var(--error);
+}
+
+.atom-input__control:disabled,
+.atom-input__control[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    border-color: var(--border-muted);
+}
+
+.atom-input__description {
+    font-size: var(--text-caption-md);
+    line-height: var(--text-caption-line-height);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+}
+
+.atom-input__error-message {
+    font-size: var(--text-caption-md);
+    line-height: var(--text-caption-line-height);
+    font-weight: var(--font-weight-regular);
+    color: var(--error, #dc2626);
+}

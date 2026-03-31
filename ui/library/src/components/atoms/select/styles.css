@@ -31,6 +31,13 @@
     color: var(--text-secondary);
 }
 
+.atom-select__error-message {
+    font-size: var(--text-caption-md);
+    line-height: var(--text-caption-line-height);
+    font-weight: var(--font-weight-regular);
+    color: var(--error, #dc2626);
+}
+
 .atom-select__trigger {
     appearance: none;
     width: 100%;
@@ -67,6 +74,10 @@
 .atom-select__trigger:focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring-color);
     outline-offset: var(--focus-ring-offset);
+}
+
+.atom-select__trigger[aria-invalid="true"] {
+    border-color: var(--error);
 }
 
 .atom-select__trigger:disabled,

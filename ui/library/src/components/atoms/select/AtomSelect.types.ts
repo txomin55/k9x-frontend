@@ -16,6 +16,8 @@ export type AtomSelectProps = {
   placeholder?: JSX.Element;
   label?: JSX.Element;
   description?: JSX.Element;
+  errorMessage?: JSX.Element;
   disabled?: boolean;
   required?: boolean;
+  validationState?: "valid" | "invalid";
 };
