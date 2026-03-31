@@ -1,4 +1,4 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import {
   type Accessor,
   createEffect,
@@ -20,21 +20,39 @@ export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
 });
 
 function CompetitionStageDetailPage() {
+  const navigate = useNavigate();
   const params = useParams({ from: "/my-competitions/$id/stages/$stageId/" });
-  const { updateApiStage, getStage } = useApiStage();
+  const { createApiStage, createDefaultApiStage, updateApiStage, getStage } =
+    useApiStage();
+  let hasCreatedDraftStage = false;
+
+  createEffect(() => {
+    if (params().stageId !== "new" || hasCreatedDraftStage) return;
+
+    hasCreatedDraftStage = true;
+
+    const draftStage = createDefaultApiStage(params().id);
+
+    createApiStage(draftStage);
+    void navigate({
+      params: { id: params().id, stageId: draftStage.id ?? "" },
+      replace: true,
+      to: "/my-competitions/$id/stages/$stageId",
+    });
+  });
 
   const stage = getStage(params().id, params().stageId);
 
   return (
     <div class="competition-stage-detail">
       <Suspense fallback={<span>--Loading stage detail</span>}>
-        <Show when={stage()} fallback={<p>--Stage not found.</p>}>
-          {(stageData) => (
+        <Show when={params().stageId !== "new"} fallback={<span>--Creating stage</span>}>
+          <Show when={stage()} fallback={<p>--Stage not found.</p>}>
             <CompetitionStageDetailContent
               onUpdate={updateApiStage}
-              stage={stageData}
+              stage={() => stage()!}
             />
-          )}
+          </Show>
         </Show>
       </Suspense>
     </div>
