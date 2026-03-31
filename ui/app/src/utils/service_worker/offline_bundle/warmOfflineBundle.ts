@@ -12,11 +12,6 @@ type OfflinePreloadManifest = {
   assets: string[];
 };
 
-const isJsonLikeContentType = (contentType: string) =>
-  contentType.includes("application/json") ||
-  contentType.includes("application/manifest+json") ||
-  contentType.includes("text/json");
-
 const scheduleIdleTask = (callback: () => void) => {
   if ("requestIdleCallback" in globalThis) {
     globalThis.requestIdleCallback(callback, { timeout: 3_000 });
@@ -101,27 +96,13 @@ export const warmOfflineBundle = async (options?: { force?: boolean }) => {
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Offline preload manifest request failed with status ${response.status}`,
-    );
-  }
-
-  const contentType = response.headers.get("content-type") ?? "";
-
-  if (!isJsonLikeContentType(contentType)) {
-    const responsePreview = (await response.text()).slice(0, 120).trim();
-
-    throw new Error(
-      `Offline preload manifest returned unexpected content-type "${contentType}" at ${resolveAppPath(
-        OFFLINE_PRELOAD_MANIFEST_PATH,
-      )}. Response starts with: ${responsePreview}`,
-    );
+    return;
   }
 
   const manifest = await response.json();
 
   if (!isValidManifest(manifest)) {
-    throw new Error("Offline preload manifest has an invalid shape");
+    return;
   }
 
   if (!force && getCachedOfflineBundleVersion() === manifest.version) {
