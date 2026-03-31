@@ -4,14 +4,13 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      refetchOnWindowFocus: false,
     },
   },
 });
 
 export const setupQueryRefetchOnReconnect = () => {
-  const handleOnline = () => {
-    queryClient.refetchQueries({
+  const handleOnline = async () => {
+    await queryClient.refetchQueries({
       stale: true,
       type: "all",
     });

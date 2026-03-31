@@ -1,5 +1,3 @@
-import type { Decorator } from "@storybook/html";
-
 export const DEFAULT_THEME = "light";
 const DARK_THEME = "dark";
 
@@ -135,7 +133,7 @@ function ensureManagerThemeSync(): void {
   }
 }
 
-export const withDarkTheme: Decorator = (Story, context) => {
+export const withDarkTheme = (Story, context) => {
   const finalTheme =
     getThemeFromExplicitGlobals(context.globals.theme) ??
     getThemeFromBackgroundGlobals(context.globals.backgrounds) ??

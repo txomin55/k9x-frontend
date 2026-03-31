@@ -6,4 +6,6 @@ export type CoreButtonProps = {
   disabled?: boolean;
   onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
   type?: ButtonType;
+  class?: string;
+  style?: JSX.CSSProperties;
 };

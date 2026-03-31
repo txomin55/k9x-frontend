@@ -7,6 +7,8 @@ import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.ty
 export default function AtomButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);
   const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
+  const className = () =>
+    props.class ? `button ${typeClass()} ${props.class}` : `button ${typeClass()}`;
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event,
@@ -18,9 +20,10 @@ export default function AtomButton(props: CoreButtonProps) {
 
   return (
     <Button
-      class={`button ${typeClass()}`}
+      class={className()}
       disabled={disabled()}
       onClick={handleClick}
+      style={props.style}
     >
       {props.children}
     </Button>

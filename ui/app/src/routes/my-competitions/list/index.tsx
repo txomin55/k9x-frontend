@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/solid-router";
+import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my-competitions/competition-card/CompetitionCard";
 import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/my-competitions/list/")({
 });
 
 function MyCompetitionsIndexPage() {
+  const navigate = useNavigate();
   const fetchedCompetitions = useCompetitions({
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
@@ -31,31 +33,24 @@ function MyCompetitionsIndexPage() {
           )}
         </For>
       </Suspense>
-      <Link
-        to="/my-competitions/$id"
-        params={{ id: "new" }}
+      <div
         style={{
           position: "fixed",
-          right: "24px",
-          bottom: "24px",
-          width: "56px",
-          height: "56px",
-          "border-radius": "9999px",
-          display: "flex",
-          "align-items": "center",
-          "justify-content": "center",
-          "font-size": "32px",
-          "line-height": "1",
-          "text-decoration": "none",
-          color: "white",
-          background: "#111827",
-          "box-shadow": "0 12px 32px rgba(0, 0, 0, 0.24)",
-          border: "none",
-          "z-index": "10",
+          right: "var(--unit-2)",
+          bottom: "var(--unit-2)",
         }}
       >
-        +
-      </Link>
+        <CircleButton
+          onClick={() =>
+            navigate({
+              to: "/my-competitions/$id",
+              params: { id: "new" },
+            })
+          }
+        >
+          +
+        </CircleButton>
+      </div>
     </div>
   );
 }

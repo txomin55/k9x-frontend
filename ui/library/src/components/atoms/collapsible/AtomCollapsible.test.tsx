@@ -1,9 +1,11 @@
-import { fireEvent, render } from "@solidjs/testing-library";
+import { render } from "@solidjs/testing-library";
+import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 
 describe("AtomCollapsible", () => {
   test("renders the trigger and toggles content when uncontrolled", async () => {
+    const user = userEvent.setup();
     const { getByRole, queryByText, findByText } = render(() => (
       <AtomCollapsible
         trigger={<span>More details</span>}
@@ -17,17 +19,18 @@ describe("AtomCollapsible", () => {
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(queryByText("Collapsible content")).not.toBeInTheDocument();
 
-    fireEvent.click(trigger);
+    await user.click(trigger);
     expect(await findByText("Collapsible content")).toBeInTheDocument();
     expect(trigger).toHaveAttribute("aria-expanded", "true");
 
-    fireEvent.click(trigger);
+    await user.click(trigger);
     await Promise.resolve();
 
     expect(trigger).toHaveAttribute("aria-expanded", "false");
   });
 
   test("calls onOpenChange in controlled mode", async () => {
+    const user = userEvent.setup();
     const onOpenChange = vi.fn();
     const { getByRole, findByText } = render(() => (
       <AtomCollapsible
@@ -42,7 +45,7 @@ describe("AtomCollapsible", () => {
 
     expect(await findByText("Collapsible content")).toBeInTheDocument();
 
-    fireEvent.click(trigger);
+    await user.click(trigger);
     await Promise.resolve();
 
     expect(onOpenChange).toHaveBeenCalledWith(false);

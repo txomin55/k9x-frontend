@@ -1,8 +1,7 @@
 import "../src/assets/styles/index.css";
-import type { Preview } from "@storybook/html";
 import { withDarkTheme } from "./withDarkTheme.decorator";
 
-const preview: Preview = {
+const preview = {
   decorators: [withDarkTheme],
   parameters: {
     docs: {
