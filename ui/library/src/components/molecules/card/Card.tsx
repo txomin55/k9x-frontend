@@ -17,12 +17,19 @@ export default function Card({
         <div class="data-card__top-right">{topRight}</div>
       </header>
 
-      <span class="data-card__sub-header text-caption-sm">{subHeader}</span>
+      <Show when={subHeader !== undefined}>
+        <span class="data-card__sub-header text-caption-sm">{subHeader}</span>
+      </Show>
 
-      <p class="data-card__description text-body-md">{description}</p>
-      <section class="data-card__content">{content}</section>
+      <Show when={description !== undefined}>
+        <p class="data-card__description text-body-md">{description}</p>
+      </Show>
 
-      <Show when={actions !== null}>
+      <Show when={content !== undefined}>
+        <section class="data-card__content">{content}</section>
+      </Show>
+
+      <Show when={actions !== undefined}>
         <footer class="data-card__actions">{actions}</footer>
       </Show>
     </article>
