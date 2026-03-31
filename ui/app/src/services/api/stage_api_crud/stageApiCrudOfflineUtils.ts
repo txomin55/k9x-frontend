@@ -5,6 +5,7 @@ import type {
   Stage as CompetitionStage
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import {
+  getVisibleCompetitions,
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
@@ -19,6 +20,11 @@ import {
 } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
+import {
+  clearCompetitionDraft,
+  replaceCompetitionDrafts,
+  upsertCompetitionDraft,
+} from "@/services/api/competition_crud/competitionDraftStore";
 
 const toCompetitionDetailStage = (stage: ApiStage): CompetitionStage => ({
   dateFrom: stage.dateFrom,
@@ -83,29 +89,11 @@ const buildCompetitionsListWithoutStage = (
       : competition,
   );
 
-const removeApiStageFromCompetitionCache = (
-  competitionId: string,
-  stageId: string,
-) => {
-  queryClient.setQueryData<Competitions[] | undefined>(
-    getCompetitionsQueryKey(),
-    (previousCompetitions) =>
-      previousCompetitions
-        ? buildCompetitionsListWithoutStage(
-            previousCompetitions,
-            competitionId,
-            stageId,
-          )
-        : previousCompetitions,
-  );
-};
+const getBaseCompetitionsFromCache = () =>
+  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
 
 const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
-  const cachedCompetitions = queryClient.getQueryData<Competitions[]>(
-    getCompetitionsQueryKey(),
-  );
-  const previousCompetitions =
-    cachedCompetitions ?? (await readCompetitionsSnapshot()) ?? [];
+  const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
     (competition) => String(competition.id) === String(apiStage.competitionId),
   );
@@ -119,7 +107,14 @@ const persistApiStageCompetitionSnapshot = async (apiStage: ApiStage) => {
     apiStage,
   );
 
-  queryClient.setQueryData(getCompetitionsQueryKey(), nextCompetitions);
+  const nextCompetition = nextCompetitions.find(
+    (competition) => String(competition.id) === String(apiStage.competitionId),
+  );
+
+  if (nextCompetition) {
+    upsertCompetitionDraft(nextCompetition);
+  }
+
   await saveCompetitionsSnapshot(nextCompetitions);
 };
 
@@ -127,18 +122,23 @@ const removeApiStageFromCompetitionSnapshot = async (
   competitionId: string,
   stageId: string,
 ) => {
-  const cachedCompetitions = queryClient.getQueryData<Competitions[]>(
-    getCompetitionsQueryKey(),
-  );
-  const previousCompetitions =
-    cachedCompetitions ?? (await readCompetitionsSnapshot()) ?? [];
+  const previousCompetitions = getVisibleCompetitions();
   const nextCompetitions = buildCompetitionsListWithoutStage(
     previousCompetitions,
     competitionId,
     stageId,
   );
 
-  queryClient.setQueryData(getCompetitionsQueryKey(), nextCompetitions);
+  const nextCompetition = nextCompetitions.find(
+    (competition) => String(competition.id) === String(competitionId),
+  );
+
+  if (nextCompetition) {
+    upsertCompetitionDraft(nextCompetition);
+  } else {
+    clearCompetitionDraft(competitionId);
+  }
+
   await saveCompetitionsSnapshot(nextCompetitions);
 };
 
@@ -164,12 +164,14 @@ export const createApiStageRollbackPayload = async ({
 export const commitApiStageMutation = async ({
   entityId,
   method,
+  onCommitted,
   payload,
   rollbackPayload,
   url,
 }: {
   entityId: string;
   method: PendingTaskMethod;
+  onCommitted?: () => Promise<void> | void;
   payload?: unknown;
   rollbackPayload: ApiStageRollbackPayload;
   url: string;
@@ -178,6 +180,7 @@ export const commitApiStageMutation = async ({
     entityId,
     entityType: "stage",
     method,
+    onCommitted,
     payload,
     rollback: rollbackApiStagePayload,
     rollbackPayload,
@@ -205,20 +208,75 @@ const rollbackApiStagePayload = async (
 ) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
-    queryClient.setQueryData(
-      getCompetitionsQueryKey(),
+    replaceCompetitionDrafts(
       rollbackPayload.previousCompetitions,
+      getBaseCompetitionsFromCache(),
+    );
+    return;
+  }
+
+  replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
+};
+
+const isApiStagePayload = (payload: unknown): payload is ApiStage =>
+  typeof payload === "object" &&
+  payload !== null &&
+  "competitionId" in payload &&
+  "id" in payload;
+
+export const commitApiStageMutationSuccess = async ({
+  competitionId,
+  method,
+  payload,
+  stageId,
+}: {
+  competitionId: string;
+  method: PendingTaskMethod;
+  payload?: unknown;
+  stageId: string;
+}) => {
+  const visibleCompetitions = getVisibleCompetitions();
+
+  if (method === "DELETE") {
+    queryClient.setQueryData<Competitions[] | undefined>(
+      getCompetitionsQueryKey(),
+      (previousCompetitions) =>
+        buildCompetitionsListWithoutStage(
+          previousCompetitions ?? [],
+          competitionId,
+          stageId,
+        ),
+    );
+  } else if (isApiStagePayload(payload)) {
+    queryClient.setQueryData<Competitions[] | undefined>(
+      getCompetitionsQueryKey(),
+      (previousCompetitions) =>
+        buildNextCompetitionsList(previousCompetitions ?? [], payload),
     );
   } else {
-    queryClient.removeQueries({
-      queryKey: getCompetitionsQueryKey(),
-      exact: true,
-    });
+    return;
   }
+
+  replaceCompetitionDrafts(visibleCompetitions, getBaseCompetitionsFromCache());
+  await saveCompetitionsSnapshot(getVisibleCompetitions());
+};
+
+const commitApiStageTask = async (task: PendingTask) => {
+  if (!isApiStageRollbackPayload(task.rollbackPayload)) {
+    return;
+  }
+
+  await commitApiStageMutationSuccess({
+    competitionId: task.rollbackPayload.competitionId,
+    method: task.method,
+    payload: task.payload,
+    stageId: task.entityId,
+  });
 };
 
 const apiStagePendingTaskHandler: PendingTaskHandler = {
   onHttpError: rollbackApiStageTask,
+  onSuccess: commitApiStageTask,
 };
 
 registerPendingTaskHandler("stage", apiStagePendingTaskHandler);
@@ -231,6 +289,5 @@ export const applyApiStageRemoval = (
   competitionId: string,
   stageId: string,
 ) => {
-  removeApiStageFromCompetitionCache(competitionId, stageId);
   void removeApiStageFromCompetitionSnapshot(competitionId, stageId);
 };

@@ -117,6 +117,8 @@ function CompetitionDetailBody(props: {
   >();
 
   createEffect(() => {
+    if (isEditing()) return;
+
     setTitle(props.competition.name);
     setCountry(props.competition.country);
     setDescription(props.competition.description ?? "");

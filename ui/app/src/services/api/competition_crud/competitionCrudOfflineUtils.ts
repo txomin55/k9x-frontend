@@ -24,6 +24,12 @@ import type {
   CompetitionRollbackPayload,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
+import {
+  mergeCompetitionsWithDrafts,
+  removeCompetitionDraft,
+  replaceCompetitionDrafts,
+  upsertCompetitionDraft,
+} from "@/services/api/competition_crud/competitionDraftStore";
 
 export const toCompetitionListItem = (
   competition: Competition,
@@ -73,24 +79,49 @@ export const buildCompetitionsWithoutEntity = (
   id: string,
 ) => previousCompetitions.filter((competition) => competition.id !== id);
 
-export const upsertCompetitionInListCache = (competition: Competition) => {
+const getBaseCompetitionsFromCache = () =>
+  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
+
+export const getVisibleCompetitions = () =>
+  mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
+
+const syncCompetitionUpsertToCache = (competition: Competition) => {
   queryClient.setQueryData<Competitions[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
-      previousCompetitions
-        ? buildNextCompetitions(previousCompetitions, competition)
-        : previousCompetitions,
+      buildNextCompetitions(previousCompetitions ?? [], competition),
   );
 };
 
-export const removeCompetitionFromListCache = (id: string) => {
+const syncCompetitionRemovalToCache = (id: string) => {
   queryClient.setQueryData<Competitions[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
-      previousCompetitions
-        ? buildCompetitionsWithoutEntity(previousCompetitions, id)
-        : previousCompetitions,
+      buildCompetitionsWithoutEntity(previousCompetitions ?? [], id),
   );
+};
+
+export const commitCompetitionMutationSuccess = async ({
+  entityId,
+  method,
+  payload,
+}: {
+  entityId: string;
+  method: PendingTaskMethod;
+  payload?: unknown;
+}) => {
+  const visibleCompetitions = getVisibleCompetitions();
+
+  if (method === "DELETE") {
+    syncCompetitionRemovalToCache(entityId);
+  } else if (isCompetitionPayload(payload)) {
+    syncCompetitionUpsertToCache(payload);
+  } else {
+    return;
+  }
+
+  replaceCompetitionDrafts(visibleCompetitions, getBaseCompetitionsFromCache());
+  await saveCompetitionsSnapshot(getVisibleCompetitions());
 };
 
 export const readCompetitionsSnapshot = () =>
@@ -131,12 +162,14 @@ export const createCompetitionRollbackPayload = async (
 export const commitCompetitionMutation = async ({
   entityId,
   method,
+  onCommitted,
   payload,
   rollbackPayload,
   url,
 }: {
   entityId: string;
   method: PendingTaskMethod;
+  onCommitted?: () => Promise<void> | void;
   payload?: unknown;
   rollbackPayload: CompetitionRollbackPayload;
   url: string;
@@ -145,6 +178,7 @@ export const commitCompetitionMutation = async ({
     entityId,
     entityType: "competition",
     method,
+    onCommitted,
     payload,
     rollback: rollbackCompetitionPayload,
     rollbackPayload,
@@ -171,31 +205,44 @@ const rollbackCompetitionPayload = async (
 ) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
-    queryClient.setQueryData(
-      getCompetitionsQueryKey(),
+    replaceCompetitionDrafts(
       rollbackPayload.previousCompetitions,
+      getBaseCompetitionsFromCache(),
     );
   } else {
     await removeQuerySnapshot(COMPETITIONS_SNAPSHOT_ID);
-    queryClient.removeQueries({
-      queryKey: getCompetitionsQueryKey(),
-      exact: true,
-    });
+    replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
   }
+};
+
+const isCompetitionPayload = (payload: unknown): payload is Competition =>
+  typeof payload === "object" && payload !== null && "id" in payload;
+
+const commitCompetitionTask = async (task: PendingTask) => {
+  await commitCompetitionMutationSuccess({
+    entityId: task.entityId,
+    method: task.method,
+    payload: task.payload,
+  });
 };
 
 const competitionPendingTaskHandler: PendingTaskHandler = {
   onHttpError: rollbackCompetitionTask,
+  onSuccess: commitCompetitionTask,
 };
 
 registerPendingTaskHandler("competition", competitionPendingTaskHandler);
 
 export const applyCompetitionUpsert = (competition: Competition) => {
-  upsertCompetitionInListCache(competition);
-  void persistCompetitionSnapshot(competition);
+  upsertCompetitionDraft(competition);
+  void saveCompetitionsSnapshot(
+    buildNextCompetitions(getVisibleCompetitions(), competition),
+  );
 };
 
 export const applyCompetitionRemoval = (id: string) => {
-  removeCompetitionFromListCache(id);
-  void removeCompetitionSnapshot(id);
+  removeCompetitionDraft(id);
+  void saveCompetitionsSnapshot(
+    buildCompetitionsWithoutEntity(getVisibleCompetitions(), id),
+  );
 };

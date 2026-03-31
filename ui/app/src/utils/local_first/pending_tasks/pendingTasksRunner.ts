@@ -59,6 +59,8 @@ export const processPendingTasks = () => {
 
       try {
         await executePendingTask(task);
+        const successHandler = pendingTaskHandlers.get(task.entityType);
+        await successHandler?.onSuccess?.(task);
         await removePendingTask(task.id);
       } catch (error) {
         if (error instanceof NetworkRequestError) {

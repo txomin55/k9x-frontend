@@ -2,7 +2,8 @@ import {
   applyApiStageRemoval,
   applyApiStageUpsert,
   commitApiStageMutation,
-  createApiStageRollbackPayload,
+  commitApiStageMutationSuccess,
+  createApiStageRollbackPayload
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import { createMemo } from "solid-js";
 import {
@@ -106,6 +107,7 @@ const toApiStageCompetitor = (
 
 const toApiStageEvent = (
   event: ApiPostStageEvent,
+  stageId: string,
   previousEvent?: ApiStageEvent,
 ): ApiStageEvent => {
   const previousCompetitorsById = new Map(
@@ -152,6 +154,7 @@ const toApiStageEvent = (
       previousEvent?.judges ??
       [],
     name: event.name ?? previousEvent?.name ?? "",
+    stageId: event.stageId ?? previousEvent?.stageId ?? stageId,
     status: event.status ?? previousEvent?.status ?? "",
   };
 };
@@ -160,6 +163,7 @@ const mergeApiStageWithPayload = (
   payload: ApiPostStage,
   previousStage?: ApiStage,
 ): ApiStage => {
+  const nextStageId = payload.id ?? previousStage?.id ?? createId();
   const previousEventsById = new Map(
     (previousStage?.events ?? []).map((event) => [event.id, event]),
   );
@@ -172,23 +176,19 @@ const mergeApiStageWithPayload = (
       payload.events?.map((event) =>
         toApiStageEvent(
           event,
+          nextStageId,
           event.id ? previousEventsById.get(event.id) : undefined,
         ),
       ) ??
       previousStage?.events ??
       [],
-    id: payload.id ?? previousStage?.id ?? createId(),
+    id: nextStageId,
     name: payload.name ?? previousStage?.name ?? "",
   };
 };
 
 const createDefaultApiStage = (competitionId: string): ApiPostStage => ({
   competitionId,
-  dateFrom: Date.now(),
-  dateTo: Date.now(),
-  discipline: "",
-  events: [],
-  federation: "",
   id: createId(),
   name: "--Default stage",
 });
@@ -233,6 +233,7 @@ const toApiStage = (stage: Stage, competitionId: string): ApiStage => ({
           name: judge.name ?? "",
         })) ?? [],
       name: event.name ?? "",
+      stageId: event.stageId ?? stage.id,
       status: event.status ?? "",
     })) ?? [],
   id: stage.id ?? "",
@@ -276,6 +277,13 @@ export const useApiStage = () => {
         entityId: draftApiStage.id,
         method: "POST",
         payload: draftApiStage,
+        onCommitted: () =>
+          commitApiStageMutationSuccess({
+            competitionId: draftApiStage.competitionId,
+            method: "POST",
+            payload: draftApiStage,
+            stageId: draftApiStage.id,
+          }),
         rollbackPayload: await createApiStageRollbackPayload({
           competitionId: draftApiStage.competitionId,
           entityId: draftApiStage.id,
@@ -310,6 +318,13 @@ export const useApiStage = () => {
         entityId: nextApiStage.id,
         method: "PUT",
         payload: nextApiStage,
+        onCommitted: () =>
+          commitApiStageMutationSuccess({
+            competitionId: nextApiStage.competitionId,
+            method: "PUT",
+            payload: nextApiStage,
+            stageId: nextApiStage.id,
+          }),
         rollbackPayload: await createApiStageRollbackPayload({
           competitionId: nextApiStage.competitionId,
           entityId: nextApiStage.id,
@@ -335,6 +350,12 @@ export const useApiStage = () => {
       await commitApiStageMutation({
         entityId: id,
         method: "DELETE",
+        onCommitted: () =>
+          commitApiStageMutationSuccess({
+            competitionId,
+            method: "DELETE",
+            stageId: id,
+          }),
         rollbackPayload: await createApiStageRollbackPayload({
           competitionId,
           entityId: id,

@@ -21,6 +21,7 @@ export interface PendingTask {
 }
 
 export interface PendingTaskHandler {
+  onSuccess?: (task: PendingTask) => Promise<void> | void;
   onHttpError?: (
     task: PendingTask,
     error: HttpRequestError,

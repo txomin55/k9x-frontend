@@ -1,6 +1,4 @@
-import {
-  saveQuerySnapshot,
-} from "@/utils/local_first/query_snapshots/querySnapshotsStore";
+import { saveQuerySnapshot } from "@/utils/local_first/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
 import { createMemo } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
@@ -10,7 +8,8 @@ import {
   applyCompetitionRemoval,
   applyCompetitionUpsert,
   commitCompetitionMutation,
-  createCompetitionRollbackPayload,
+  commitCompetitionMutationSuccess,
+  createCompetitionRollbackPayload
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
 import type {
   Competition,
@@ -18,10 +17,11 @@ import type {
   Competitions,
   PostCompetition,
   PostCompetitionStage,
-  Stage,
+  Stage
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local_first/query_snapshots/querySnapshotFetch";
+import { mergeCompetitionsWithDrafts } from "@/services/api/competition_crud/competitionDraftStore";
 
 export type {
   CompetitionLocation,
@@ -48,7 +48,10 @@ const refreshCompetitionsSnapshot = async () => {
 };
 
 const fetchCompetitions = () =>
-  fetchWithOfflineSnapshot(COMPETITIONS_SNAPSHOT_ID, refreshCompetitionsSnapshot);
+  fetchWithOfflineSnapshot(
+    COMPETITIONS_SNAPSHOT_ID,
+    refreshCompetitionsSnapshot,
+  );
 
 const competitionsQuery = defineQuery({
   fetcher: fetchCompetitions,
@@ -63,8 +66,22 @@ const createCompetitionsQuery = (options?: TanstackCreateQuery) =>
     refetchOnMount: options?.refetchOnMount,
   });
 
-export const useCompetitions = (options?: TanstackCreateQuery) =>
-  createCompetitionsQuery(options);
+export const useCompetitions = (options?: TanstackCreateQuery) => {
+  const competitions = createCompetitionsQuery(options);
+  const mergedData = createMemo(() =>
+    mergeCompetitionsWithDrafts(competitions.data),
+  );
+
+  return new Proxy(competitions, {
+    get(target, property, receiver) {
+      if (property === "data") {
+        return mergedData();
+      }
+
+      return Reflect.get(target, property, receiver);
+    },
+  });
+};
 
 const toCompetitionStage = (
   stage: PostCompetitionStage,
@@ -120,17 +137,18 @@ const mergeCompetitionWithPayload = (
 };
 
 const createDefaultCompetition = (): PostCompetition => ({
-  country: "pt",
   id: globalThis.crypto.randomUUID(),
   name: "--Default competition",
 });
 
 export const getCachedCompetitions = () =>
-  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey());
+  mergeCompetitionsWithDrafts(
+    queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()),
+  );
 
 export const useCompetition = () => {
   const getCompetitions = (options?: TanstackCreateQuery) =>
-    createCompetitionsQuery(options);
+    useCompetitions(options);
 
   const getCompetition = (id: string) => {
     const competitionsQuery = createCompetitionsQuery({
@@ -138,14 +156,14 @@ export const useCompetition = () => {
     });
 
     return createMemo(() =>
-      competitionsQuery.data?.find((competition) => competition.id === id),
+      mergeCompetitionsWithDrafts(competitionsQuery.data).find(
+        (competition) => competition.id === id,
+      ),
     );
   };
 
   const createCompetition = (payload: PostCompetition) => {
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsQueryKey());
+    const previousCompetitionsFromCache = getCachedCompetitions();
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
     applyCompetitionUpsert(draftCompetition);
@@ -155,6 +173,12 @@ export const useCompetition = () => {
         entityId: draftCompetition.id,
         method: "POST",
         payload,
+        onCommitted: () =>
+          commitCompetitionMutationSuccess({
+            entityId: draftCompetition.id,
+            method: "POST",
+            payload: draftCompetition,
+          }),
         rollbackPayload: await createCompetitionRollbackPayload(
           draftCompetition.id,
           null,
@@ -171,9 +195,7 @@ export const useCompetition = () => {
     }
 
     const entityId = payload.id;
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsQueryKey());
+    const previousCompetitionsFromCache = getCachedCompetitions();
     const previousCompetition =
       previousCompetitionsFromCache?.find(
         (competition) => competition.id === entityId,
@@ -190,6 +212,12 @@ export const useCompetition = () => {
         entityId,
         method: "PUT",
         payload,
+        onCommitted: () =>
+          commitCompetitionMutationSuccess({
+            entityId,
+            method: "PUT",
+            payload: nextCompetition,
+          }),
         rollbackPayload: await createCompetitionRollbackPayload(
           entityId,
           previousCompetition ?? null,
@@ -201,9 +229,7 @@ export const useCompetition = () => {
   };
 
   const deleteCompetition = (id: string) => {
-    const previousCompetitionsFromCache = queryClient.getQueryData<
-      Competitions[]
-    >(getCompetitionsQueryKey());
+    const previousCompetitionsFromCache = getCachedCompetitions();
     const previousCompetition =
       previousCompetitionsFromCache?.find(
         (competition) => competition.id === id,
@@ -215,6 +241,11 @@ export const useCompetition = () => {
       await commitCompetitionMutation({
         entityId: id,
         method: "DELETE",
+        onCommitted: () =>
+          commitCompetitionMutationSuccess({
+            entityId: id,
+            method: "DELETE",
+          }),
         rollbackPayload: await createCompetitionRollbackPayload(
           id,
           previousCompetition ?? null,

@@ -131,6 +131,7 @@ export interface PostStageEvent {
   id?: string;
   judges?: PostStageJudge[];
   name?: string;
+  stageId?: string;
   status?: string;
 }
 
@@ -170,6 +171,15 @@ export interface ApiStageRollbackPayload {
   previousStage: ApiStage | null;
 }
 
+export interface ApiEventRollbackPayload {
+  competitionId: string;
+  entityId: string;
+  previousCompetition: Competition | null;
+  previousCompetitions: Competitions[] | null;
+  previousEvent: ApiEvent | null;
+  stageId: string;
+}
+
 export type ApiStageEvent = StageEvent;
 export type ApiPostStageEvent = PostStageEvent;
 export type ApiStageCompetitor = StageCompetitor;
@@ -182,3 +192,5 @@ export type ApiStageEventConfiguration = StageEventConfiguration;
 export type ApiPostStageEventConfiguration = PostStageEventConfiguration;
 export type ApiStageJudge = StageJudge;
 export type ApiPostStageJudge = PostStageJudge;
+export type ApiEvent = StageEvent;
+export type ApiPostEvent = PostStageEvent;
