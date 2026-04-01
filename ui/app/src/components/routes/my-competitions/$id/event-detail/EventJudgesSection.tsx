@@ -8,6 +8,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 
 type EventJudgesSectionProps = {
   editingJudgeIndex: number | null;
+  isCreatingJudge: boolean;
   isEditing: boolean;
   judgeDialogDraft: PublicStageJudge | null;
   judges: PublicStageJudge[];
@@ -18,7 +19,7 @@ type EventJudgesSectionProps = {
     updater: (current: PublicStageJudge | null) => PublicStageJudge | null,
   ) => void;
   onOpenJudgeEditor: (index: number, judge: PublicStageJudge) => void;
-  onSaveJudge: (index: number) => void;
+  onSaveJudge: () => void;
 };
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
@@ -30,6 +31,60 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           <CircleButton aria-label="--Add judge" onClick={props.onAddJudge}>
             +
           </CircleButton>
+          <AtomDialog
+            closeButtonText="Close dialog"
+            content={
+              <Show when={props.judgeDialogDraft}>
+                {(draft) => (
+                  <div>
+                    <AtomInput
+                      label="--Name"
+                      value={draft().name}
+                      onChange={(value) =>
+                        props.onJudgeDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                name: value,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <AtomInput
+                      label="--Email"
+                      type="email"
+                      value={draft().collectorEmail}
+                      onChange={(value) =>
+                        props.onJudgeDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                collectorEmail: value,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <div>
+                      <AtomButton onClick={props.onCloseJudgeEditor}>
+                        --Cancel
+                      </AtomButton>
+                      <AtomButton onClick={props.onSaveJudge}>--Save</AtomButton>
+                    </div>
+                  </div>
+                )}
+              </Show>
+            }
+            onOpenChange={(isOpen) => {
+              if (!isOpen && props.isCreatingJudge) {
+                props.onCloseJudgeEditor();
+              }
+            }}
+            open={props.isCreatingJudge}
+            title="--New judge"
+            trigger={<span />}
+          />
         </Show>
       </div>
       <Show when={props.judges.length > 0} fallback={<p>--No judges.</p>}>
@@ -86,7 +141,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                                     --Cancel
                                   </AtomButton>
                                   <AtomButton
-                                    onClick={() => props.onSaveJudge(index)}
+                                    onClick={props.onSaveJudge}
                                   >
                                     --Save
                                   </AtomButton>

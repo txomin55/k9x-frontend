@@ -94,6 +94,8 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
 - The current prerender seed is intentionally minimal (`/` and `/404.html`); client-side routing handles the rest.
 - The service worker claims clients immediately, clears stale caches on activation, listens to `notificationclick`
   events, applies runtime caching for app shell assets, and can warm the full offline bundle after login.
+- On mobile-oriented edit screens, do not autosave on every keystroke. Commit changes when the interaction ends
+  (`blur`, date field blur, or select change) so focused fields do not lose the keyboard while the user is typing.
 - For offline verification, do not use `vite preview`. Use the built artifact in `.output/public` via
   `pnpm run preview`, complete the login flow, wait for the redirect to finish, verify IndexedDB and Cache Storage,
   and only then switch DevTools to offline mode.

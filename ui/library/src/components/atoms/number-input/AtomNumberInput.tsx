@@ -32,6 +32,7 @@ export default function AtomNumberInput(props: AtomNumberInputProps) {
         </NumberField.DecrementTrigger>
         <NumberField.Input
           class="atom-number-input__control"
+          onBlur={props.onBlur}
           placeholder={props.placeholder}
         />
         <NumberField.HiddenInput />

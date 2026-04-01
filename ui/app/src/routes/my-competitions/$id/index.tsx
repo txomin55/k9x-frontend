@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, onCleanup, Show, Suspense } from "solid-js";
+import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
@@ -9,8 +9,6 @@ import { parseOptionalNumber, toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingCircle from "@/components/floating_circle/FloatingCircle";
 import "./styles.css";
-
-const EDIT_DEBOUNCE_MS = 400;
 
 export const Route = createFileRoute("/my-competitions/$id/")({
   component: CompetitionDetailPage,
@@ -123,41 +121,6 @@ function CompetitionDetailBody(props: {
   });
 
   createEffect(() => {
-    if (!isEditing()) return;
-    const competition = props.competition();
-
-    if (!competition) return;
-
-    const nextCompetition: PostCompetition = {
-      country: country(),
-      description: description(),
-      id: competition.id,
-      location: {
-        address: toUndefinedIfBlank(address()),
-        latitude: parseOptionalNumber(latitude()),
-        longitude: parseOptionalNumber(longitude()),
-      },
-      name: title(),
-    };
-    const hasChanges =
-      nextCompetition.name !== competition.name ||
-      nextCompetition.country !== competition.country ||
-      nextCompetition.description !== (competition.description ?? "") ||
-      nextCompetition.location?.address !==
-        (competition.location?.address ?? "") ||
-      nextCompetition.location?.latitude !== competition.location?.latitude ||
-      nextCompetition.location?.longitude !== competition.location?.longitude;
-
-    if (!hasChanges) return;
-
-    const timeoutId = globalThis.setTimeout(() => {
-      props.onUpdate(nextCompetition);
-    }, EDIT_DEBOUNCE_MS);
-
-    onCleanup(() => globalThis.clearTimeout(timeoutId));
-  });
-
-  createEffect(() => {
     if (isEditing()) return;
 
     closeStageEditor();
@@ -248,6 +211,38 @@ function CompetitionDetailBody(props: {
     });
   };
 
+  const commitCompetitionEdits = () => {
+    if (!isEditing()) return;
+
+    const competition = props.competition();
+
+    if (!competition) return;
+
+    const nextCompetition: PostCompetition = {
+      country: country(),
+      description: description(),
+      id: competition.id,
+      location: {
+        address: toUndefinedIfBlank(address()),
+        latitude: parseOptionalNumber(latitude()),
+        longitude: parseOptionalNumber(longitude()),
+      },
+      name: title(),
+    };
+    const hasChanges =
+      nextCompetition.name !== competition.name ||
+      nextCompetition.country !== competition.country ||
+      nextCompetition.description !== (competition.description ?? "") ||
+      nextCompetition.location?.address !==
+        (competition.location?.address ?? "") ||
+      nextCompetition.location?.latitude !== competition.location?.latitude ||
+      nextCompetition.location?.longitude !== competition.location?.longitude;
+
+    if (!hasChanges) return;
+
+    props.onUpdate(nextCompetition);
+  };
+
   return (
     <div class="competition-detail">
       <CompetitionInfo
@@ -262,6 +257,7 @@ function CompetitionDetailBody(props: {
         latitude={latitude()}
         longitude={longitude()}
         onAddressChange={setAddress}
+        onCommit={commitCompetitionEdits}
         onCountryChange={setCountry}
         onDescriptionChange={setDescription}
         onLatitudeChange={setLatitude}

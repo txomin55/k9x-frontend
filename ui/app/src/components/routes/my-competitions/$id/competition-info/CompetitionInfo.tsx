@@ -27,6 +27,7 @@ type CompetitionInfoProps = {
   latitude: string;
   longitude: string;
   onAddressChange: (value: string) => void;
+  onCommit: () => void;
   onCountryChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onLatitudeChange: (value: string) => void;
@@ -50,11 +51,15 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             label="--Title"
             name="name"
             value={props.title}
+            onBlur={props.onCommit}
             onChange={props.onTitleChange}
           />
           <AtomSelect
             label="--Country"
-            onChange={(value) => props.onCountryChange(value?.value ?? "")}
+            onChange={(value) => {
+              props.onCountryChange(value?.value ?? "");
+              props.onCommit();
+            }}
             options={COUNTRY_SELECT_OPTIONS}
             value={selectedCountryOption}
           />
@@ -62,24 +67,28 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             label="--Description"
             name="description"
             value={props.description}
+            onBlur={props.onCommit}
             onChange={props.onDescriptionChange}
           />
           <AtomInput
             label="--Address"
             name="address"
             value={props.address}
+            onBlur={props.onCommit}
             onChange={props.onAddressChange}
           />
           <AtomNumberInput
             label="--Latitude"
             name="latitude"
             value={props.latitude}
+            onBlur={props.onCommit}
             onChange={props.onLatitudeChange}
           />
           <AtomNumberInput
             label="--Longitude"
             name="longitude"
             value={props.longitude}
+            onBlur={props.onCommit}
             onChange={props.onLongitudeChange}
           />
         </div>

@@ -1,27 +1,12 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  onCleanup,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, type JSX, Show, Suspense } from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent,
+  useApiEvent
 } from "@/services/api/event_api_crud/eventApiCrud";
-import {
-  type StageEditorModel,
-  useApiStage,
-} from "@/services/api/stage_api_crud/stageApiCrud";
+import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -29,8 +14,6 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingCircle from "@/components/floating_circle/FloatingCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
-
-const EDIT_DEBOUNCE_MS = 400;
 
 export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -53,6 +36,16 @@ function CompetitionStageDetailPage() {
     updateApiEvent,
   } = useApiEvent();
   let hasCreatedDraftStage = false;
+  const handleCreateEvent = (event: CreateEventRequest) =>
+    createApiEvent(event, { competitionId: params().id });
+  const handleDeleteStage = (stageId: string) =>
+    deleteApiStage(stageId, params().id);
+  const handleDeleteEvent = (eventId: string, stageId: string) =>
+    deleteApiEvent(eventId, stageId, {
+      competitionId: params().id,
+    });
+  const handleUpdateEvent = (event: UpdateEventRequest) =>
+    updateApiEvent(event, { competitionId: params().id });
 
   createEffect(() => {
     if (params().stageId !== "new" || hasCreatedDraftStage) return;
@@ -77,19 +70,11 @@ function CompetitionStageDetailPage() {
     <CompetitionStageDetailContentContainer
       competitionId={params().id}
       createDefaultEvent={createDefaultApiEvent}
-      onCreateEvent={(event) =>
-        createApiEvent(event, { competitionId: params().id })
-      }
-      onDeleteStage={(stageId) => deleteApiStage(stageId, params().id)}
-      onDeleteEvent={(eventId, stageId) =>
-        deleteApiEvent(eventId, stageId, {
-          competitionId: params().id,
-        })
-      }
+      onCreateEvent={handleCreateEvent}
+      onDeleteStage={handleDeleteStage}
+      onDeleteEvent={handleDeleteEvent}
       onUpdateStage={updateApiStage}
-      onUpdateEvent={(event) =>
-        updateApiEvent(event, { competitionId: params().id })
-      }
+      onUpdateEvent={handleUpdateEvent}
       stageId={params().stageId}
       stage={getStage(params().id, params().stageId)}
     />
@@ -108,6 +93,16 @@ function CompetitionStageDetailContentContainer(props: {
   stageId: string;
 }) {
   const navigate = useNavigate();
+  const handleDelete = () => {
+    props.onDeleteStage(props.stageId);
+    void navigate({
+      params: { id: props.competitionId },
+      to: "/my-competitions/$id",
+    });
+  };
+  const handleDeleteEvent = (eventId: string) =>
+    props.onDeleteEvent(eventId, props.stageId);
+  const stageAccessor = () => props.stage()!;
 
   return (
     <div class="competition-stage-detail">
@@ -116,19 +111,11 @@ function CompetitionStageDetailContentContainer(props: {
           <CompetitionStageDetailBody
             createDefaultEvent={props.createDefaultEvent}
             onCreateEvent={props.onCreateEvent}
-            onDelete={() => {
-              props.onDeleteStage(props.stageId);
-              void navigate({
-                params: { id: props.competitionId },
-                to: "/my-competitions/$id",
-              });
-            }}
-            onDeleteEvent={(eventId) =>
-              props.onDeleteEvent(eventId, props.stageId)
-            }
+            onDelete={handleDelete}
+            onDeleteEvent={handleDeleteEvent}
             onUpdateEvent={props.onUpdateEvent}
             onUpdateStage={props.onUpdateStage}
-            stage={() => props.stage()!}
+            stage={stageAccessor}
           />
         </Show>
       </Suspense>
@@ -166,32 +153,6 @@ function CompetitionStageDetailBody(props: {
     setTitle(stage.name);
     setDateFrom(toDateInputValue(stage.dateFrom));
     setDateTo(toDateInputValue(stage.dateTo));
-  });
-
-  createEffect(() => {
-    if (!isEditing()) return;
-
-    const stage = props.stage();
-    const nextStage: StageEditorModel = {
-      competitionId: stage.competitionId,
-      dateFrom: parseDateInputValue(dateFrom(), stage.dateFrom),
-      dateTo: parseDateInputValue(dateTo(), stage.dateTo),
-      events: stage.events,
-      id: stage.id,
-      name: title(),
-    };
-    const hasChanges =
-      nextStage.name !== stage.name ||
-      nextStage.dateFrom !== stage.dateFrom ||
-      nextStage.dateTo !== stage.dateTo;
-
-    if (!hasChanges) return;
-
-    const timeoutId = globalThis.setTimeout(() => {
-      props.onUpdateStage(nextStage);
-    }, EDIT_DEBOUNCE_MS);
-
-    onCleanup(() => globalThis.clearTimeout(timeoutId));
   });
 
   createEffect(() => {
@@ -234,6 +195,128 @@ function CompetitionStageDetailBody(props: {
     setEditingEventId(null);
     setEventDialogDraft(null);
   };
+  const commitStageEdits = () => {
+    if (!isEditing()) return;
+
+    const stage = props.stage();
+    const nextStage: StageEditorModel = {
+      competitionId: stage.competitionId,
+      dateFrom: parseDateInputValue(dateFrom(), stage.dateFrom),
+      dateTo: parseDateInputValue(dateTo(), stage.dateTo),
+      events: stage.events,
+      id: stage.id,
+      name: title(),
+    };
+    const hasChanges =
+      nextStage.name !== stage.name ||
+      nextStage.dateFrom !== stage.dateFrom ||
+      nextStage.dateTo !== stage.dateTo;
+
+    if (!hasChanges) return;
+
+    props.onUpdateStage(nextStage);
+  };
+  const handleDateFromInput: JSX.EventHandlerUnion<
+    HTMLInputElement,
+    InputEvent
+  > = (event) => setDateFrom(event.currentTarget.value);
+  const handleDateToInput: JSX.EventHandlerUnion<
+    HTMLInputElement,
+    InputEvent
+  > = (event) => setDateTo(event.currentTarget.value);
+  const renderEventDialogDraft = (draft: Accessor<EventResponse>) => (
+    <EventDialogContent
+      draft={draft()}
+      onCancel={closeEventEditor}
+      onChange={setEventDialogDraft}
+      onSave={saveEventEditor}
+    />
+  );
+  const renderEventDialogContent = () => (
+    <Show when={eventDialogDraft()}>{renderEventDialogDraft}</Show>
+  );
+  const handleCreateDialogOpenChange = (isOpen: boolean) => {
+    if (!isOpen && isCreatingEvent()) {
+      closeEventEditor();
+    }
+  };
+  const createNavigateToEvent = (event: Accessor<EventResponse>) => () =>
+    void navigate({
+      params: {
+        eventId: event().id,
+        id: props.stage().competitionId,
+        stageId: props.stage().id,
+      },
+      to: "/my-competitions/$id/stages/$stageId/events/$eventId",
+    });
+  const createEditDialogOpenChange =
+    (event: Accessor<EventResponse>) => (isOpen: boolean) => {
+      if (isOpen) {
+        openEventEditor(event());
+        return;
+      }
+
+      if (editingEventId() === event().id) {
+        closeEventEditor();
+      }
+    };
+  const createDeleteEventClick = (event: Accessor<EventResponse>) => () => {
+    if (editingEventId() === event().id) {
+      closeEventEditor();
+    }
+
+    props.onDeleteEvent(event().id);
+  };
+  const handleStopEditing = () => setIsEditing(false);
+  const handleStartEditing = () => setIsEditing(true);
+  const renderEvent = (event: Accessor<EventResponse>) => (
+    <Show
+      when={isEditing()}
+      fallback={
+        <Card
+          topLeft={event().name || "--No name"}
+          subHeader={
+            <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
+          }
+          content={<p>{`--Participants: ${event().competitors.length}`}</p>}
+          actions={
+            <AtomButton type="accent" onClick={createNavigateToEvent(event)}>
+              --+Info
+            </AtomButton>
+          }
+        />
+      }
+    >
+      <Card
+        topLeft={event().name || "--No name"}
+        subHeader={<p>{`--Status: ${event().status || "--No status"}`}</p>}
+        content={
+          <>
+            <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
+            <p>{`--Participants: ${event().competitors.length}`}</p>
+          </>
+        }
+        actions={
+          <>
+            <AtomDialog
+              closeButtonText="Close dialog"
+              content={renderEventDialogContent()}
+              onOpenChange={createEditDialogOpenChange(event)}
+              open={editingEventId() === event().id}
+              title={`--Edit ${event().name || "event"}`}
+              trigger={<span>--Edit</span>}
+            />
+            <CircleButton
+              aria-label={`--Delete ${event().name || "event"}`}
+              onClick={createDeleteEventClick(event)}
+            >
+              -
+            </CircleButton>
+          </>
+        }
+      />
+    </Show>
+  );
 
   const saveEventEditor = () => {
     const draft = eventDialogDraft();
@@ -268,20 +351,27 @@ function CompetitionStageDetailBody(props: {
         >
           <div>
             <p>--Editing mode active.</p>
-            <AtomInput label="--Title" value={title()} onChange={setTitle} />
+            <AtomInput
+              label="--Title"
+              value={title()}
+              onBlur={commitStageEdits}
+              onChange={setTitle}
+            />
             <label for="stage-date-from">--Date from</label>
             <input
               id="stage-date-from"
               type="date"
               value={dateFrom()}
-              onInput={(event) => setDateFrom(event.currentTarget.value)}
+              onBlur={commitStageEdits}
+              onInput={handleDateFromInput}
             />
             <label for="stage-date-to">--Date to</label>
             <input
               id="stage-date-to"
               type="date"
               value={dateTo()}
-              onInput={(event) => setDateTo(event.currentTarget.value)}
+              onBlur={commitStageEdits}
+              onInput={handleDateToInput}
             />
           </div>
         </Show>
@@ -294,23 +384,8 @@ function CompetitionStageDetailBody(props: {
             <CircleButton onClick={openNewEventEditor}>+</CircleButton>
             <AtomDialog
               closeButtonText="--Close dialog"
-              content={
-                <Show when={eventDialogDraft()}>
-                  {(draft) => (
-                    <EventDialogContent
-                      draft={draft()}
-                      onCancel={closeEventEditor}
-                      onChange={setEventDialogDraft}
-                      onSave={saveEventEditor}
-                    />
-                  )}
-                </Show>
-              }
-              onOpenChange={(isOpen) => {
-                if (!isOpen && isCreatingEvent()) {
-                  closeEventEditor();
-                }
-              }}
+              content={renderEventDialogContent()}
+              onOpenChange={handleCreateDialogOpenChange}
               open={isCreatingEvent()}
               title="--New event"
               trigger={<span />}
@@ -321,103 +396,12 @@ function CompetitionStageDetailBody(props: {
           when={props.stage().events.length > 0}
           fallback={<p>--No events.</p>}
         >
-          <Index each={props.stage().events}>
-            {(event) => (
-              <Show
-                when={isEditing()}
-                fallback={
-                  <Card
-                    topLeft={event().name || "--No name"}
-                    subHeader={
-                      <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
-                    }
-                    content={
-                      <p>{`--Participants: ${event().competitors.length}`}</p>
-                    }
-                    actions={
-                      <AtomButton
-                        type="accent"
-                        onClick={() =>
-                          void navigate({
-                            params: {
-                              eventId: event().id,
-                              id: props.stage().competitionId,
-                              stageId: props.stage().id,
-                            },
-                            to: "/my-competitions/$id/stages/$stageId/events/$eventId",
-                          })
-                        }
-                      >
-                        --+Info
-                      </AtomButton>
-                    }
-                  />
-                }
-              >
-                <Card
-                  topLeft={event().name || "--No name"}
-                  subHeader={
-                    <p>{`--Status: ${event().status || "--No status"}`}</p>
-                  }
-                  content={
-                    <>
-                      <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
-                      <p>{`--Participants: ${event().competitors.length}`}</p>
-                    </>
-                  }
-                  actions={
-                    <>
-                      <AtomDialog
-                        closeButtonText="Close dialog"
-                        content={
-                          <Show when={eventDialogDraft()}>
-                            {(draft) => (
-                              <EventDialogContent
-                                draft={draft()}
-                                onCancel={closeEventEditor}
-                                onChange={setEventDialogDraft}
-                                onSave={saveEventEditor}
-                              />
-                            )}
-                          </Show>
-                        }
-                        onOpenChange={(isOpen) => {
-                          if (isOpen) {
-                            openEventEditor(event());
-                            return;
-                          }
-
-                          if (editingEventId() === event().id) {
-                            closeEventEditor();
-                          }
-                        }}
-                        open={editingEventId() === event().id}
-                        title={`--Edit ${event().name || "event"}`}
-                        trigger={<span>--Edit</span>}
-                      />
-                      <CircleButton
-                        aria-label={`--Delete ${event().name || "event"}`}
-                        onClick={() => {
-                          if (editingEventId() === event().id) {
-                            closeEventEditor();
-                          }
-
-                          props.onDeleteEvent(event().id);
-                        }}
-                      >
-                        -
-                      </CircleButton>
-                    </>
-                  }
-                />
-              </Show>
-            )}
-          </Index>
+          <Index each={props.stage().events}>{renderEvent}</Index>
         </Show>
       </section>
       <Show when={isEditing()}>
         <div>
-          <FloatingCircle onClick={() => setIsEditing(false)}>
+          <FloatingCircle onClick={handleStopEditing}>
             <>
               <span>--Close edit</span>
               <span>X</span>
@@ -430,7 +414,7 @@ function CompetitionStageDetailBody(props: {
       </Show>
       <Show when={!isEditing()}>
         <div>
-          <FloatingCircle onClick={() => setIsEditing(true)}>
+          <FloatingCircle onClick={handleStartEditing}>
             <>
               <span>--Edit stage</span>
               <span>--edit</span>
@@ -450,35 +434,36 @@ function EventDialogContent(props: {
   ) => void;
   onSave: () => void;
 }) {
+  const handleNameChange = (value: string) =>
+    props.onChange((current) =>
+      current
+        ? {
+            ...current,
+            name: value,
+          }
+        : current,
+    );
+  const handleStatusChange = (value: string) =>
+    props.onChange((current) =>
+      current
+        ? {
+            ...current,
+            status: value,
+          }
+        : current,
+    );
+
   return (
     <div>
       <AtomInput
         label="--Event title"
         value={props.draft.name}
-        onChange={(value) =>
-          props.onChange((current) =>
-            current
-              ? {
-                  ...current,
-                  name: value,
-                }
-              : current,
-          )
-        }
+        onChange={handleNameChange}
       />
       <AtomInput
         label="--Status"
         value={props.draft.status}
-        onChange={(value) =>
-          props.onChange((current) =>
-            current
-              ? {
-                  ...current,
-                  status: value,
-                }
-              : current,
-          )
-        }
+        onChange={handleStatusChange}
       />
       <div>
         <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>

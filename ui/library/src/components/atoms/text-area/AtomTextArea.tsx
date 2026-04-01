@@ -23,6 +23,7 @@ export default function AtomTextArea(props: AtomTextAreaProps) {
       <TextField.TextArea
         autoResize={props.autoResize}
         class="atom-text-area__control"
+        onBlur={props.onBlur}
         placeholder={props.placeholder}
         rows={props.rows ?? 4}
       />

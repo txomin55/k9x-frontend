@@ -4,6 +4,7 @@ export type AtomInputProps = {
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLInputElement, FocusEvent>;
   label?: JSX.Element;
   description?: JSX.Element;
   errorMessage?: JSX.Element;

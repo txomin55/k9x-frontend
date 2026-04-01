@@ -6,6 +6,7 @@ export type AtomNumberInputProps = {
   rawValue?: number;
   onChange?: (value: string) => void;
   onRawValueChange?: (value: number) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLInputElement, FocusEvent>;
   label?: JSX.Element;
   description?: JSX.Element;
   errorMessage?: JSX.Element;

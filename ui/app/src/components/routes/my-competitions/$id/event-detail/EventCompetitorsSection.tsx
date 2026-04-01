@@ -10,7 +10,8 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: PublicEventCompetitor | null;
   competitors: PublicEventCompetitor[];
-  editingCompetitorIndex: number | null;
+  editingCompetitorId: string | null;
+  isCreatingCompetitor: boolean;
   isEditing: boolean;
   onAddCompetitor: () => void;
   onCloseCompetitorEditor: () => void;
@@ -19,12 +20,9 @@ type EventCompetitorsSectionProps = {
       current: PublicEventCompetitor | null,
     ) => PublicEventCompetitor | null,
   ) => void;
-  onDeleteCompetitor: (index: number) => void;
-  onOpenCompetitorEditor: (
-    index: number,
-    competitor: PublicEventCompetitor,
-  ) => void;
-  onSaveCompetitor: (index: number) => void;
+  onDeleteCompetitor: (competitorId: string) => void;
+  onOpenCompetitorEditor: (competitor: PublicEventCompetitor) => void;
+  onSaveCompetitor: () => void;
 };
 
 export default function EventCompetitorsSection(
@@ -41,6 +39,89 @@ export default function EventCompetitorsSection(
           >
             +
           </CircleButton>
+          <AtomDialog
+            closeButtonText="Close dialog"
+            content={
+              <Show when={props.competitorDialogDraft}>
+                {(draft) => (
+                  <div>
+                    <AtomInput
+                      label="--Name"
+                      value={draft().name}
+                      onChange={(value) =>
+                        props.onCompetitorDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                name: value,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <AtomInput
+                      label="--Owner"
+                      value={draft().owner}
+                      onChange={(value) =>
+                        props.onCompetitorDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                owner: value,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <AtomInput
+                      label="--Identity"
+                      value={draft().identity}
+                      onChange={(value) =>
+                        props.onCompetitorDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                identity: value,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <AtomNumberInput
+                      label="--Final score"
+                      value={draft().finalScore}
+                      onChange={(value) =>
+                        props.onCompetitorDraftChange((current) =>
+                          current
+                            ? {
+                                ...current,
+                                finalScore: Number(value) || 0,
+                              }
+                            : current,
+                        )
+                      }
+                    />
+                    <div>
+                      <AtomButton onClick={props.onCloseCompetitorEditor}>
+                        --Cancel
+                      </AtomButton>
+                      <AtomButton onClick={props.onSaveCompetitor}>
+                        --Save
+                      </AtomButton>
+                    </div>
+                  </div>
+                )}
+              </Show>
+            }
+            onOpenChange={(isOpen) => {
+              if (!isOpen && props.isCreatingCompetitor) {
+                props.onCloseCompetitorEditor();
+              }
+            }}
+            open={props.isCreatingCompetitor}
+            title="--New competitor"
+            trigger={<span />}
+          />
         </Show>
       </div>
       <Show
@@ -49,7 +130,7 @@ export default function EventCompetitorsSection(
       >
         <div>
           <Index each={props.competitors}>
-            {(competitor, index) => (
+            {(competitor) => (
               <Card
                 topLeft={competitor().name || "--No name"}
                 content={
@@ -130,11 +211,7 @@ export default function EventCompetitorsSection(
                                   >
                                     --Cancel
                                   </AtomButton>
-                                  <AtomButton
-                                    onClick={() =>
-                                      props.onSaveCompetitor(index)
-                                    }
-                                  >
+                                  <AtomButton onClick={props.onSaveCompetitor}>
                                     --Save
                                   </AtomButton>
                                 </div>
@@ -144,21 +221,23 @@ export default function EventCompetitorsSection(
                         }
                         onOpenChange={(isOpen) => {
                           if (isOpen) {
-                            props.onOpenCompetitorEditor(index, competitor());
+                            props.onOpenCompetitorEditor(competitor());
                             return;
                           }
 
-                          if (props.editingCompetitorIndex === index) {
+                          if (props.editingCompetitorId === competitor().id) {
                             props.onCloseCompetitorEditor();
                           }
                         }}
-                        open={props.editingCompetitorIndex === index}
+                        open={props.editingCompetitorId === competitor().id}
                         title={`--Edit ${competitor().name || "competitor"}`}
                         trigger={<span>--Edit</span>}
                       />
                       <CircleButton
                         aria-label={`--Delete ${competitor().name || "competitor"}`}
-                        onClick={() => props.onDeleteCompetitor(index)}
+                        onClick={() =>
+                          props.onDeleteCompetitor(competitor().id)
+                        }
                       >
                         -
                       </CircleButton>

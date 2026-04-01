@@ -25,63 +25,77 @@ export default function EventOverview(props: EventOverviewProps) {
     <div>
       <header>
         <Show
-          when={props.isEditing}
-          fallback={
-            <>
-              <h1>{props.displayEvent.name}</h1>
-              <p>{`--Discipline: ${props.displayEvent.discipline || "--No discipline"}`}</p>
-              <p>{`--Participants: ${props.displayEvent.competitors.length}`}</p>
-              <p>{`--Status: ${props.displayEvent.status || "--No status"}`}</p>
-            </>
-          }
+          when={!props.isEditing}
+          fallback={<EventOverviewEditFields {...props} />}
         >
-          <AtomInput
-            label="--Event title"
-            value={props.name}
-            onChange={props.onNameChange}
-          />
-          <AtomInput
-            label="--Discipline"
-            value={props.discipline}
-            onChange={props.onDisciplineChange}
-          />
-          <AtomInput
-            label="--Status"
-            value={props.status}
-            onChange={props.onStatusChange}
-          />
+          <>
+            <h1>{props.displayEvent.name}</h1>
+            <p>{`--Discipline: ${props.displayEvent.discipline || "--No discipline"}`}</p>
+            <p>{`--Participants: ${props.displayEvent.competitors.length}`}</p>
+            <p>{`--Status: ${props.displayEvent.status || "--No status"}`}</p>
+          </>
         </Show>
       </header>
 
       <section>
         <h2>--Configuration</h2>
         <Show
-          when={props.isEditing}
+          when={!props.isEditing}
           fallback={
-            <>
-              <p>{`--Name: ${props.displayEvent.configuration.name || "--No name"}`}</p>
-              <p>{`--Version: ${props.displayEvent.configuration.version}`}</p>
-              <p>{`--Federation: ${props.displayEvent.configuration.federation || "--No federation"}`}</p>
-            </>
+            <EventConfigurationEditFields {...props} />
           }
         >
-          <AtomInput
-            label="--Configuration name"
-            value={props.configurationName}
-            onChange={props.onConfigurationNameChange}
-          />
-          <AtomNumberInput
-            label="--Version"
-            value={props.configurationVersion}
-            onChange={props.onConfigurationVersionChange}
-          />
-          <AtomInput
-            label="--Federation"
-            value={props.configurationFederation}
-            onChange={props.onConfigurationFederationChange}
-          />
+          <>
+            <p>{`--Name: ${props.displayEvent.configuration.name || "--No name"}`}</p>
+            <p>{`--Version: ${props.displayEvent.configuration.version}`}</p>
+            <p>{`--Federation: ${props.displayEvent.configuration.federation || "--No federation"}`}</p>
+          </>
         </Show>
       </section>
     </div>
+  );
+}
+
+function EventOverviewEditFields(props: EventOverviewProps) {
+  return (
+    <>
+      <AtomInput
+        label="--Event title"
+        value={props.name}
+        onChange={props.onNameChange}
+      />
+      <AtomInput
+        label="--Discipline"
+        value={props.discipline}
+        onChange={props.onDisciplineChange}
+      />
+      <AtomInput
+        label="--Status"
+        value={props.status}
+        onChange={props.onStatusChange}
+      />
+    </>
+  );
+}
+
+function EventConfigurationEditFields(props: EventOverviewProps) {
+  return (
+    <>
+      <AtomInput
+        label="--Configuration name"
+        value={props.configurationName}
+        onChange={props.onConfigurationNameChange}
+      />
+      <AtomNumberInput
+        label="--Version"
+        value={props.configurationVersion}
+        onChange={props.onConfigurationVersionChange}
+      />
+      <AtomInput
+        label="--Federation"
+        value={props.configurationFederation}
+        onChange={props.onConfigurationFederationChange}
+      />
+    </>
   );
 }

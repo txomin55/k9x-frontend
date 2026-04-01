@@ -22,6 +22,7 @@ export default function AtomInput(props: AtomInputProps) {
       ) : null}
       <TextField.Input
         class="atom-input__control"
+        onBlur={props.onBlur}
         placeholder={props.placeholder}
         type={props.type ?? "text"}
       />

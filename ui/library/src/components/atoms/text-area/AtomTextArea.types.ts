@@ -4,6 +4,7 @@ export type AtomTextAreaProps = {
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLTextAreaElement, FocusEvent>;
   label?: JSX.Element;
   description?: JSX.Element;
   errorMessage?: JSX.Element;

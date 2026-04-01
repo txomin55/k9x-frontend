@@ -7,14 +7,12 @@ import {
   type Accessor,
   createEffect,
   createSignal,
-  onCleanup,
   Show,
   Suspense,
 } from "solid-js";
 import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/EventJudgesSection";
-import EventOverview from "@/components/routes/my-competitions/$id/event-detail/EventOverview";
 import type {
   EventResponse,
   UpdateEventRequest,
@@ -26,9 +24,9 @@ import type {
   PublicStageJudge,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomInput from "@lib/components/atoms/input/AtomInput";
+import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-
-const EDIT_DEBOUNCE_MS = 400;
 
 export const Route = createFileRoute(
   "/my-competitions/$id/stages/$stageId/events/$eventId/",
@@ -109,7 +107,19 @@ function CompetitionEventDetailContentContainer(props: {
   stageId: string;
 }) {
   const navigate = useNavigate();
-  const eventAccessor = () => props.event()!;
+  const [resolvedEvent, setResolvedEvent] = createSignal<
+    EventResponse | undefined
+  >(props.event());
+
+  createEffect(() => {
+    const currentEvent = props.event();
+
+    if (!currentEvent) return;
+
+    setResolvedEvent(currentEvent);
+  });
+
+  const eventAccessor = () => resolvedEvent()!;
 
   const handleDelete = () => {
     props.onDeleteEvent(props.eventId);
@@ -122,7 +132,7 @@ function CompetitionEventDetailContentContainer(props: {
   return (
     <div class="competition-event-detail">
       <Suspense fallback={<span>--Loading event detail</span>}>
-        <Show when={props.event()} fallback={<p>--Event not found.</p>}>
+        <Show when={resolvedEvent()} fallback={<p>--Event not found.</p>}>
           <CompetitionEventDetailBody
             event={eventAccessor}
             onDelete={handleDelete}
@@ -153,22 +163,22 @@ function CompetitionEventDetailBody(props: {
   const [configurationFederation, setConfigurationFederation] = createSignal(
     props.event().configuration.federation,
   );
-  const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
+  const [isCreatingCompetitor, setIsCreatingCompetitor] = createSignal(false);
+  const [editingCompetitorId, setEditingCompetitorId] = createSignal<
     string | null
-  >(null);
-  const [editingCompetitorIndex, setEditingCompetitorIndex] = createSignal<
-    number | null
   >(null);
   const [competitorDialogDraft, setCompetitorDialogDraft] =
     createSignal<PublicEventCompetitor | null>(null);
+  const [isCreatingJudge, setIsCreatingJudge] = createSignal(false);
   const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(
     null,
   );
   const [judgeDialogDraft, setJudgeDialogDraft] =
     createSignal<PublicStageJudge | null>(null);
-  const [editingExerciseIndex, setEditingExerciseIndex] = createSignal<
-    number | null
-  >(null);
+  const [isCreatingExercise, setIsCreatingExercise] = createSignal(false);
+  const [editingExerciseId, setEditingExerciseId] = createSignal<string | null>(
+    null,
+  );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
     createSignal<PublicEventExercise | null>(null);
 
@@ -184,10 +194,202 @@ function CompetitionEventDetailBody(props: {
     setConfigurationName(event.configuration.name);
     setConfigurationVersion(String(event.configuration.version));
     setConfigurationFederation(event.configuration.federation);
-    setLastQueuedDraftKey(null);
   });
 
   createEffect(() => {
+    if (isEditing()) return;
+
+    closeCompetitorEditor();
+    closeJudgeEditor();
+    closeExerciseEditor();
+  });
+
+  const closeCompetitorEditor = () => {
+    setIsCreatingCompetitor(false);
+    setEditingCompetitorId(null);
+    setCompetitorDialogDraft(null);
+  };
+
+  const closeJudgeEditor = () => {
+    setIsCreatingJudge(false);
+    setEditingJudgeIndex(null);
+    setJudgeDialogDraft(null);
+  };
+
+  const closeExerciseEditor = () => {
+    setIsCreatingExercise(false);
+    setEditingExerciseId(null);
+    setExerciseDialogDraft(null);
+  };
+
+  const saveJudgeEditor = () => {
+    const draft = judgeDialogDraft();
+
+    if (!draft) return;
+
+    if (isCreatingJudge()) {
+      setDraftEvent((current) => ({
+        ...current,
+        judges: [...current.judges, draft],
+      }));
+    } else {
+      const currentEditingJudgeIndex = editingJudgeIndex();
+
+      if (currentEditingJudgeIndex === null) return;
+
+      setDraftEvent((current) => ({
+        ...current,
+        judges: current.judges.map((entry, judgeIndex) =>
+          judgeIndex === currentEditingJudgeIndex ? draft : entry,
+        ),
+      }));
+    }
+
+    closeJudgeEditor();
+  };
+
+  const saveExerciseEditor = () => {
+    const draft = exerciseDialogDraft();
+
+    if (!draft) return;
+
+    if (isCreatingExercise()) {
+      setDraftEvent((current) => ({
+        ...current,
+        exercises: [...current.exercises, draft],
+      }));
+    } else {
+      const currentEditingExerciseId = editingExerciseId();
+
+      if (!currentEditingExerciseId) return;
+
+      setDraftEvent((current) => ({
+        ...current,
+        exercises: current.exercises.map((entry) =>
+          entry.id === currentEditingExerciseId ? draft : entry,
+        ),
+      }));
+    }
+
+    closeExerciseEditor();
+  };
+
+  const saveCompetitorEditor = () => {
+    const draft = competitorDialogDraft();
+
+    if (!draft) return;
+
+    if (isCreatingCompetitor()) {
+      setDraftEvent((current) => ({
+        ...current,
+        competitors: [...current.competitors, draft],
+      }));
+    } else {
+      const currentEditingCompetitorId = editingCompetitorId();
+
+      if (!currentEditingCompetitorId) return;
+
+      setDraftEvent((current) => ({
+        ...current,
+        competitors: current.competitors.map((entry) =>
+          entry.id === currentEditingCompetitorId ? draft : entry,
+        ),
+      }));
+    }
+
+    closeCompetitorEditor();
+  };
+
+  const handleAddJudge = () => {
+    const draft = createDefaultJudge();
+
+    setIsCreatingJudge(true);
+    setEditingJudgeIndex(null);
+    setJudgeDialogDraft({ ...draft });
+  };
+
+  const handleDeleteJudge = (judgeIndexToDelete: number) => {
+    if (editingJudgeIndex() === judgeIndexToDelete) {
+      closeJudgeEditor();
+    }
+
+    setDraftEvent((current) => ({
+      ...current,
+      judges: current.judges.filter(
+        (_, judgeIndex) => judgeIndex !== judgeIndexToDelete,
+      ),
+    }));
+  };
+
+  const handleOpenJudgeEditor = (index: number, judge: PublicStageJudge) => {
+    setIsCreatingJudge(false);
+    setEditingJudgeIndex(index);
+    setJudgeDialogDraft({ ...judge });
+  };
+
+  const handleAddExercise = () => {
+    const draft = createDefaultExercise();
+
+    setIsCreatingExercise(true);
+    setEditingExerciseId(draft.id);
+    setExerciseDialogDraft({ ...draft });
+  };
+
+  const handleDeleteExercise = (exerciseId: string) => {
+    if (editingExerciseId() === exerciseId) {
+      closeExerciseEditor();
+    }
+
+    setDraftEvent((current) => ({
+      ...current,
+      exercises: current.exercises.filter(
+        (entry) => entry.id !== exerciseId,
+      ),
+    }));
+  };
+
+  const handleOpenExerciseEditor = (exercise: PublicEventExercise) => {
+    setIsCreatingExercise(false);
+    setEditingExerciseId(exercise.id);
+    setExerciseDialogDraft({ ...exercise });
+  };
+
+  const handleAddCompetitor = () => {
+    const draft = createDefaultCompetitor();
+
+    setIsCreatingCompetitor(true);
+    setEditingCompetitorId(draft.id);
+    setCompetitorDialogDraft({
+      ...draft,
+      scores: [...draft.scores],
+    });
+  };
+
+  const handleDeleteCompetitor = (competitorId: string) => {
+    if (editingCompetitorId() === competitorId) {
+      closeCompetitorEditor();
+    }
+
+    setDraftEvent((current) => ({
+      ...current,
+      competitors: current.competitors.filter(
+        (entry) => entry.id !== competitorId,
+      ),
+    }));
+  };
+
+  const handleOpenCompetitorEditor = (competitor: PublicEventCompetitor) => {
+    setIsCreatingCompetitor(false);
+    setEditingCompetitorId(competitor.id);
+    setCompetitorDialogDraft({
+      ...competitor,
+      scores: [...competitor.scores],
+    });
+  };
+
+  const handleCloseEdit = () => setIsEditing(false);
+  const handleOpenEdit = () => setIsEditing(true);
+  const commitEventEdits = () => {
     if (!isEditing()) return;
 
     const externalEvent = props.event();
@@ -204,185 +406,87 @@ function CompetitionEventDetailBody(props: {
       name: name(),
       status: status(),
     };
-    const nextDraftKey = getEventDraftKey(nextEvent);
-    const currentEventKey = getEventDraftKey(externalEvent);
 
-    if (nextDraftKey === currentEventKey) return;
-    if (lastQueuedDraftKey() === nextDraftKey) return;
+    if (getEventDraftKey(nextEvent) === getEventDraftKey(externalEvent)) return;
 
-    const timeoutId = globalThis.setTimeout(() => {
-      setLastQueuedDraftKey(nextDraftKey);
-      props.onUpdate(nextEvent);
-    }, EDIT_DEBOUNCE_MS);
-
-    onCleanup(() => globalThis.clearTimeout(timeoutId));
-  });
-
-  createEffect(() => {
-    if (isEditing()) return;
-
-    closeCompetitorEditor();
-    closeJudgeEditor();
-    closeExerciseEditor();
-  });
-
-  const closeCompetitorEditor = () => {
-    setEditingCompetitorIndex(null);
-    setCompetitorDialogDraft(null);
+    props.onUpdate(nextEvent);
   };
-
-  const closeJudgeEditor = () => {
-    setEditingJudgeIndex(null);
-    setJudgeDialogDraft(null);
-  };
-
-  const closeExerciseEditor = () => {
-    setEditingExerciseIndex(null);
-    setExerciseDialogDraft(null);
-  };
-
-  const saveJudgeEditor = (index: number) => {
-    const draft = judgeDialogDraft();
-
-    if (!draft) return;
-
-    setDraftEvent((current) => ({
-      ...current,
-      judges: current.judges.map((entry, judgeIndex) =>
-        judgeIndex === index ? draft : entry,
-      ),
-    }));
-    closeJudgeEditor();
-  };
-
-  const saveExerciseEditor = (index: number) => {
-    const draft = exerciseDialogDraft();
-
-    if (!draft) return;
-
-    setDraftEvent((current) => ({
-      ...current,
-      exercises: current.exercises.map((entry, exerciseIndex) =>
-        exerciseIndex === index ? draft : entry,
-      ),
-    }));
-    closeExerciseEditor();
-  };
-
-  const saveCompetitorEditor = (index: number) => {
-    const draft = competitorDialogDraft();
-
-    if (!draft) return;
-
-    setDraftEvent((current) => ({
-      ...current,
-      competitors: current.competitors.map((entry, competitorIndex) =>
-        competitorIndex === index ? draft : entry,
-      ),
-    }));
-    closeCompetitorEditor();
-  };
-
-  const handleAddJudge = () =>
-    setDraftEvent((current) => ({
-      ...current,
-      judges: [...current.judges, createDefaultJudge()],
-    }));
-
-  const handleDeleteJudge = (index: number) => {
-    if (editingJudgeIndex() === index) {
-      closeJudgeEditor();
-    }
-
-    setDraftEvent((current) => ({
-      ...current,
-      judges: current.judges.filter((_, judgeIndex) => judgeIndex !== index),
-    }));
-  };
-
-  const handleOpenJudgeEditor = (index: number, judge: PublicStageJudge) => {
-    setEditingJudgeIndex(index);
-    setJudgeDialogDraft(judge);
-  };
-
-  const handleAddExercise = () =>
-    setDraftEvent((current) => ({
-      ...current,
-      exercises: [...current.exercises, createDefaultExercise()],
-    }));
-
-  const handleDeleteExercise = (index: number) => {
-    if (editingExerciseIndex() === index) {
-      closeExerciseEditor();
-    }
-
-    setDraftEvent((current) => ({
-      ...current,
-      exercises: current.exercises.filter(
-        (_, exerciseIndex) => exerciseIndex !== index,
-      ),
-    }));
-  };
-
-  const handleOpenExerciseEditor = (
-    index: number,
-    exercise: PublicEventExercise,
-  ) => {
-    setEditingExerciseIndex(index);
-    setExerciseDialogDraft(exercise);
-  };
-
-  const handleAddCompetitor = () =>
-    setDraftEvent((current) => ({
-      ...current,
-      competitors: [...current.competitors, createDefaultCompetitor()],
-    }));
-
-  const handleDeleteCompetitor = (index: number) => {
-    if (editingCompetitorIndex() === index) {
-      closeCompetitorEditor();
-    }
-
-    setDraftEvent((current) => ({
-      ...current,
-      competitors: current.competitors.filter(
-        (_, competitorIndex) => competitorIndex !== index,
-      ),
-    }));
-  };
-
-  const handleOpenCompetitorEditor = (
-    index: number,
-    competitor: PublicEventCompetitor,
-  ) => {
-    setEditingCompetitorIndex(index);
-    setCompetitorDialogDraft(competitor);
-  };
-
-  const handleCloseEdit = () => setIsEditing(false);
-  const handleOpenEdit = () => setIsEditing(true);
 
   return (
     <div class="competition-event-detail__content">
-      <EventOverview
-        configurationFederation={configurationFederation()}
-        configurationName={configurationName()}
-        configurationVersion={configurationVersion()}
-        discipline={discipline()}
-        displayEvent={props.event()}
-        isEditing={isEditing()}
-        name={name()}
-        onConfigurationFederationChange={setConfigurationFederation}
-        onConfigurationNameChange={setConfigurationName}
-        onConfigurationVersionChange={setConfigurationVersion}
-        onDisciplineChange={setDiscipline}
-        onNameChange={setName}
-        onStatusChange={setStatus}
-        status={status()}
-      />
+      <header>
+        <Show
+          when={isEditing()}
+          fallback={
+            <>
+              <h1>{props.event().name}</h1>
+              <p>{`--Discipline: ${props.event().discipline || "--No discipline"}`}</p>
+              <p>{`--Participants: ${props.event().competitors.length}`}</p>
+              <p>{`--Status: ${props.event().status || "--No status"}`}</p>
+            </>
+          }
+        >
+          <div>
+            <AtomInput
+              label="--Event title"
+              onBlur={commitEventEdits}
+              value={name()}
+              onChange={setName}
+            />
+            <AtomInput
+              label="--Discipline"
+              onBlur={commitEventEdits}
+              value={discipline()}
+              onChange={setDiscipline}
+            />
+            <AtomInput
+              label="--Status"
+              onBlur={commitEventEdits}
+              value={status()}
+              onChange={setStatus}
+            />
+          </div>
+        </Show>
+      </header>
+
+      <section>
+        <h2>--Configuration</h2>
+        <Show
+          when={isEditing()}
+          fallback={
+            <>
+              <p>{`--Name: ${props.event().configuration.name || "--No name"}`}</p>
+              <p>{`--Version: ${props.event().configuration.version}`}</p>
+              <p>{`--Federation: ${props.event().configuration.federation || "--No federation"}`}</p>
+            </>
+          }
+        >
+          <div>
+            <AtomInput
+              label="--Configuration name"
+              onBlur={commitEventEdits}
+              value={configurationName()}
+              onChange={setConfigurationName}
+            />
+            <AtomNumberInput
+              label="--Version"
+              onBlur={commitEventEdits}
+              value={configurationVersion()}
+              onChange={setConfigurationVersion}
+            />
+            <AtomInput
+              label="--Federation"
+              onBlur={commitEventEdits}
+              value={configurationFederation()}
+              onChange={setConfigurationFederation}
+            />
+          </div>
+        </Show>
+      </section>
 
       <EventJudgesSection
         editingJudgeIndex={editingJudgeIndex()}
+        isCreatingJudge={isCreatingJudge()}
         isEditing={isEditing()}
         judgeDialogDraft={judgeDialogDraft()}
         judges={draftEvent().judges}
@@ -395,9 +499,10 @@ function CompetitionEventDetailBody(props: {
       />
 
       <EventExercisesSection
-        editingExerciseIndex={editingExerciseIndex()}
+        editingExerciseId={editingExerciseId()}
         exerciseDialogDraft={exerciseDialogDraft()}
         exercises={draftEvent().exercises}
+        isCreatingExercise={isCreatingExercise()}
         isEditing={isEditing()}
         onAddExercise={handleAddExercise}
         onCloseExerciseEditor={closeExerciseEditor}
@@ -410,7 +515,8 @@ function CompetitionEventDetailBody(props: {
       <EventCompetitorsSection
         competitorDialogDraft={competitorDialogDraft()}
         competitors={draftEvent().competitors}
-        editingCompetitorIndex={editingCompetitorIndex()}
+        editingCompetitorId={editingCompetitorId()}
+        isCreatingCompetitor={isCreatingCompetitor()}
         isEditing={isEditing()}
         onAddCompetitor={handleAddCompetitor}
         onCloseCompetitorEditor={closeCompetitorEditor}
@@ -448,6 +554,8 @@ function getEventDraftKey(event: EventResponse) {
     competitors: event.competitors,
     configuration: event.configuration,
     discipline: event.discipline,
+    exercises: event.exercises,
+    judges: event.judges,
     name: event.name,
     status: event.status,
   });
@@ -470,6 +578,7 @@ function createDefaultJudge(): PublicStageJudge {
     name: "--Default judge",
   };
 }
+
 
 function createDefaultExercise(): PublicEventExercise {
   return {
