@@ -141,6 +141,18 @@ function CompetitionEventDetailBody(props: {
 }) {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal(props.event());
+  const [name, setName] = createSignal(props.event().name);
+  const [discipline, setDiscipline] = createSignal(props.event().discipline);
+  const [status, setStatus] = createSignal(props.event().status);
+  const [configurationName, setConfigurationName] = createSignal(
+    props.event().configuration.name,
+  );
+  const [configurationVersion, setConfigurationVersion] = createSignal(
+    String(props.event().configuration.version),
+  );
+  const [configurationFederation, setConfigurationFederation] = createSignal(
+    props.event().configuration.federation,
+  );
   const [lastQueuedDraftKey, setLastQueuedDraftKey] = createSignal<
     string | null
   >(null);
@@ -163,7 +175,15 @@ function CompetitionEventDetailBody(props: {
   createEffect(() => {
     if (isEditing()) return;
 
-    setDraftEvent(props.event());
+    const event = props.event();
+
+    setDraftEvent(event);
+    setName(event.name);
+    setDiscipline(event.discipline);
+    setStatus(event.status);
+    setConfigurationName(event.configuration.name);
+    setConfigurationVersion(String(event.configuration.version));
+    setConfigurationFederation(event.configuration.federation);
     setLastQueuedDraftKey(null);
   });
 
@@ -171,7 +191,19 @@ function CompetitionEventDetailBody(props: {
     if (!isEditing()) return;
 
     const externalEvent = props.event();
-    const nextEvent = draftEvent();
+    const currentDraftEvent = draftEvent();
+    const nextEvent: EventResponse = {
+      ...currentDraftEvent,
+      configuration: {
+        ...currentDraftEvent.configuration,
+        federation: configurationFederation(),
+        name: configurationName(),
+        version: Number(configurationVersion()) || 0,
+      },
+      discipline: discipline(),
+      name: name(),
+      status: status(),
+    };
     const nextDraftKey = getEventDraftKey(nextEvent);
     const currentEventKey = getEventDraftKey(externalEvent);
 
@@ -250,51 +282,6 @@ function CompetitionEventDetailBody(props: {
     }));
     closeCompetitorEditor();
   };
-
-  const handleConfigurationFederationChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      configuration: {
-        ...current.configuration,
-        federation: value,
-      },
-    }));
-
-  const handleConfigurationNameChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      configuration: {
-        ...current.configuration,
-        name: value,
-      },
-    }));
-
-  const handleConfigurationVersionChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      configuration: {
-        ...current.configuration,
-        version: Number(value) || 0,
-      },
-    }));
-
-  const handleDisciplineChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      discipline: value,
-    }));
-
-  const handleNameChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      name: value,
-    }));
-
-  const handleStatusChange = (value: string) =>
-    setDraftEvent((current) => ({
-      ...current,
-      status: value,
-    }));
 
   const handleAddJudge = () =>
     setDraftEvent((current) => ({
@@ -378,14 +365,20 @@ function CompetitionEventDetailBody(props: {
   return (
     <div class="competition-event-detail__content">
       <EventOverview
-        draftEvent={draftEvent()}
+        configurationFederation={configurationFederation()}
+        configurationName={configurationName()}
+        configurationVersion={configurationVersion()}
+        discipline={discipline()}
+        displayEvent={props.event()}
         isEditing={isEditing()}
-        onConfigurationFederationChange={handleConfigurationFederationChange}
-        onConfigurationNameChange={handleConfigurationNameChange}
-        onConfigurationVersionChange={handleConfigurationVersionChange}
-        onDisciplineChange={handleDisciplineChange}
-        onNameChange={handleNameChange}
-        onStatusChange={handleStatusChange}
+        name={name()}
+        onConfigurationFederationChange={setConfigurationFederation}
+        onConfigurationNameChange={setConfigurationName}
+        onConfigurationVersionChange={setConfigurationVersion}
+        onDisciplineChange={setDiscipline}
+        onNameChange={setName}
+        onStatusChange={setStatus}
+        status={status()}
       />
 
       <EventJudgesSection
@@ -431,7 +424,7 @@ function CompetitionEventDetailBody(props: {
         <CircleButton onClick={handleCloseEdit}>
           <>
             <span>--Close edit</span>
-            <span aria-hidden="true">X</span>
+            <span>X</span>
           </>
         </CircleButton>
         <AtomButton type="destructive" onClick={props.onDelete}>
@@ -442,7 +435,7 @@ function CompetitionEventDetailBody(props: {
         <CircleButton onClick={handleOpenEdit}>
           <>
             <span>--Edit event</span>
-            <span aria-hidden="true">--edit</span>
+            <span>--edit</span>
           </>
         </CircleButton>
       </Show>

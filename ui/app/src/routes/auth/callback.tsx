@@ -2,14 +2,8 @@ import { Title } from "@solidjs/meta";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
 import { AppRoutePath } from "@/components/app_shell/paths";
-import {
-  clearCachedUserData,
-  fetchCachedUserData,
-} from "@/services/api/fetch_user_data/fetchUserData";
-import {
-  GOOGLE_OAUTH_STATE_KEY,
-  GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
-} from "@/utils/google_auth/googleAuth";
+import { clearCachedUserData, fetchCachedUserData } from "@/services/api/fetch_user_data/fetchUserData";
+import { GOOGLE_OAUTH_STATE_KEY, GOOGLE_SILENT_OAUTH_MESSAGE_TYPE } from "@/utils/google_auth/googleAuth";
 import { useLogin } from "@/services/api/do_login/doLogin";
 import { setUser } from "@/stores/auth";
 import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
@@ -79,7 +73,13 @@ function AuthCallbackPage() {
       clearCachedUserData();
       setUser(await fetchCachedUserData());
       globalThis.sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);
-      await warmOfflineBundle({ force: true });
+      if (!import.meta.env.DEV) {
+        try {
+          await warmOfflineBundle({ force: true });
+        } catch (error) {
+          console.error("Offline bundle warmup failed", error);
+        }
+      }
 
       setStatus("loaded");
 

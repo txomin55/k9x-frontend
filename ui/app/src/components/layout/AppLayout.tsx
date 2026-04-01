@@ -89,7 +89,7 @@ export default function AppLayout(props: ParentProps) {
           onClick={() => setIsNavOpen((open) => !open)}
           aria-expanded={isNavOpen()}
         >
-          <span class="app-layout__navigation-toggle-icon" aria-hidden="true">
+          <span class="app-layout__navigation-toggle-icon">
             <span />
             <span />
             <span />

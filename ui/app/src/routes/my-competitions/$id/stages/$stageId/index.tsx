@@ -1,12 +1,27 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, onCleanup, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  onCleanup,
+  Show,
+  Suspense,
+} from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent
+  useApiEvent,
 } from "@/services/api/event_api_crud/eventApiCrud";
-import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+import {
+  type StageEditorModel,
+  useApiStage,
+} from "@/services/api/stage_api_crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -405,7 +420,7 @@ function CompetitionStageDetailBody(props: {
           <FloatingCircle onClick={() => setIsEditing(false)}>
             <>
               <span>--Close edit</span>
-              <span aria-hidden="true">X</span>
+              <span>X</span>
             </>
           </FloatingCircle>
         </div>
@@ -418,7 +433,7 @@ function CompetitionStageDetailBody(props: {
           <FloatingCircle onClick={() => setIsEditing(true)}>
             <>
               <span>--Edit stage</span>
-              <span aria-hidden="true">--edit</span>
+              <span>--edit</span>
             </>
           </FloatingCircle>
         </div>
