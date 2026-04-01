@@ -1,5 +1,3 @@
-export type PostLoginWeb = {
+export type LoginRequest = {
   code: string;
 };
-
-export type LoginRequest = PostLoginWeb;

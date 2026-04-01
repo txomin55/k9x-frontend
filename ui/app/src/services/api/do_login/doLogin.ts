@@ -1,10 +1,10 @@
 import { loginWithToken } from "@/utils/http/client";
 import { defineMutation } from "@/utils/http/query-factory";
-import type { PostLoginWeb } from "@/services/api/do_login/doLogin.types";
+import type { LoginRequest } from "@/services/api/do_login/doLogin.types";
 
-export type { LoginRequest, PostLoginWeb } from "@/services/api/do_login/doLogin.types";
+export type { LoginRequest } from "@/services/api/do_login/doLogin.types";
 
-const doLogin = (data: PostLoginWeb) => loginWithToken(data);
+const doLogin = (data: LoginRequest) => loginWithToken(data);
 
 const loginMutation = defineMutation({
   mutate: doLogin,

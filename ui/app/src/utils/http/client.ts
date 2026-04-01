@@ -3,7 +3,7 @@ import {
   startGoogleInteractiveLogin,
 } from "@/utils/google_auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
-import type { PostLoginWeb } from "@/services/api/do_login/doLogin.types";
+import type { LoginRequest } from "@/services/api/do_login/doLogin.types";
 import type { RequestOptions } from "@/utils/http/client.types";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
@@ -125,7 +125,7 @@ const rawRequest = async <TResponse>({
   return (await response.text()) as TResponse;
 };
 
-const loginWithToken = (payload: PostLoginWeb) =>
+const loginWithToken = (payload: LoginRequest) =>
   rawRequest<string>({
     body: payload,
     method: "POST",

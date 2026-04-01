@@ -1,6 +1,6 @@
 import { saveQuerySnapshot } from "@/utils/local_first/query_snapshots/querySnapshotsStore";
 import { getCurrentLocale } from "@/stores/i18n";
-import { createMemo } from "solid-js";
+import { createMemo, getOwner } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -151,6 +151,11 @@ export const useCompetition = () => {
     useCompetitions(options);
 
   const getCompetition = (id: string) => {
+    if (!getOwner()) {
+      return () =>
+        getCachedCompetitions()?.find((competition) => competition.id === id);
+    }
+
     const competitionsQuery = createCompetitionsQuery({
       staleTime: Number.POSITIVE_INFINITY,
     });

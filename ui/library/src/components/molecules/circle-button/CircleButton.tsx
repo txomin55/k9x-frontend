@@ -3,8 +3,18 @@ import type { CircleButtonProps } from "@lib/components/molecules/circle-button/
 import "./styles.css";
 
 export default function CircleButton(props: CircleButtonProps) {
+  const sizeClass = () => {
+    if (!props.size) return "circle-button circle-button--md";
+
+    return `circle-button circle-button--${props.size}`;
+  };
+
   return (
-    <AtomButton class="circle-button" onClick={props.onClick}>
+    <AtomButton
+      class={sizeClass()}
+      disabled={props.disabled}
+      onClick={props.onClick}
+    >
       {props.children}
     </AtomButton>
   );

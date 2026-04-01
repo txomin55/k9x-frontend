@@ -1,28 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  onCleanup,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, onCleanup, Show, Suspense } from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
-import {
-  type Competition,
-  type PostCompetition,
-} from "@/services/api/competition_crud/competitionCrudTypes";
-import {
-  type StageEditorModel,
-  toApiStage,
-  useApiStage,
-} from "@/services/api/stage_api_crud/stageApiCrud";
+import { type Competition, type PostCompetition } from "@/services/api/competition_crud/competitionCrudTypes";
+import { type StageEditorModel, toApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
 import { parseOptionalNumber, toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingCircle from "@/components/floating_circle/FloatingCircle";
@@ -238,6 +220,34 @@ function CompetitionDetailBody(props: {
     closeStageEditor();
   };
 
+  const getOnDeleteStage = () => {
+    return (stageId: string) => {
+      if (editingStageId() === stageId) {
+        closeStageEditor();
+      }
+
+      const competition = props.competition();
+
+      if (!competition) return;
+
+      deleteApiStage(stageId, competition.id);
+    };
+  };
+
+  const onNavigateToStage = (stageId: string) => {
+    const competition = props.competition();
+
+    if (!competition) return;
+
+    void navigate({
+      params: {
+        id: competition.id,
+        stageId,
+      },
+      to: "/my-competitions/$id/stages/$stageId",
+    });
+  };
+
   return (
     <div class="competition-detail">
       <CompetitionInfo
@@ -266,30 +276,8 @@ function CompetitionDetailBody(props: {
         isCreatingStage={isCreatingStage()}
         isEditing={isEditing()}
         onCloseStageEditor={closeStageEditor}
-        onDeleteStage={(stageId) => {
-          if (editingStageId() === stageId) {
-            closeStageEditor();
-          }
-
-          const competition = props.competition();
-
-          if (!competition) return;
-
-          deleteApiStage(stageId, competition.id);
-        }}
-        onNavigateToStage={(stageId) => {
-          const competition = props.competition();
-
-          if (!competition) return;
-
-          void navigate({
-            params: {
-              id: competition.id,
-              stageId,
-            },
-            to: "/my-competitions/$id/stages/$stageId",
-          });
-        }}
+        onDeleteStage={getOnDeleteStage}
+        onNavigateToStage={onNavigateToStage}
         onOpenNewStageEditor={openNewStageEditor}
         onOpenStageEditor={openStageEditor}
         onSaveStageEditor={saveStageEditor}

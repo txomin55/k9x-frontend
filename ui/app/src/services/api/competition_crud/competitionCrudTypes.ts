@@ -1,99 +1,99 @@
-export interface CompetitionLocationWeb {
+export interface CompetitionLocation {
   address?: string;
   latitude?: number;
   longitude?: number;
 }
 
-export interface CompetitionNotificationsWeb {
+export interface PublicCompetitionNotification {
   date: number;
   id: string;
   text: string;
 }
 
-export interface EventScoresWeb {
+export interface PublicEventScore {
   exerciseId: string;
   id: string;
   score: number;
 }
 
-export interface EventExercisesWeb {
+export interface PublicEventExercise {
   id: string;
   order: number;
   text: string;
 }
 
-export interface EventConfigurationWeb {
+export interface PublicEventConfiguration {
   federation: string;
   id: string;
   name: string;
   version: number;
 }
 
-export interface StageJudgesWeb {
+export interface PublicStageJudge {
   collectorEmail: string;
   name: string;
 }
 
-export interface EventCompetitorsWeb {
+export interface PublicEventCompetitor {
   finalScore: number;
   id: string;
   identity: string;
   name: string;
   owner: string;
-  scores: EventScoresWeb[];
+  scores: PublicEventScore[];
 }
 
-export interface GetEventApiWeb {
-  competitors: EventCompetitorsWeb[];
-  configuration: EventConfigurationWeb;
+export interface PublicEventDetail {
+  competitors: PublicEventCompetitor[];
+  configuration: PublicEventConfiguration;
   discipline: string;
-  exercises: EventExercisesWeb[];
+  exercises: PublicEventExercise[];
   id: string;
-  judges: StageJudgesWeb[];
+  judges: PublicStageJudge[];
   name: string;
   status: string;
 }
 
-export interface CompetitionStageApiWeb {
+export interface PublicCompetitionStage {
   dateFrom: number;
   dateTo: number;
-  events: GetEventApiWeb[];
+  events: PublicEventDetail[];
   id: string;
   name: string;
 }
 
-export interface GetCompetitionApiWeb {
+export interface PublicCompetitionDetail {
   country: string;
   description?: string;
   id: string;
-  location?: CompetitionLocationWeb;
+  location?: CompetitionLocation;
   name: string;
-  notifications?: CompetitionNotificationsWeb[];
-  stages?: CompetitionStageApiWeb[];
+  notifications?: PublicCompetitionNotification[];
+  stages?: PublicCompetitionStage[];
   status: string;
 }
 
-export interface PostCompetitionApiWeb {
+export interface CreateCompetitionRequest {
   id?: string;
   name?: string;
 }
 
-export interface PostStageApiWeb {
+export interface CreateStageRequest {
   competitionId?: string;
   id?: string;
   name?: string;
 }
 
-export interface PutCompetitionApiWeb {
+export interface UpdateCompetitionRequest {
   country?: string;
   description?: string;
   id?: string;
-  location?: CompetitionLocationWeb;
+  location?: CompetitionLocation;
   name?: string;
-  stages?: PostStageApiWeb[];
+  stages?: CreateStageRequest[];
 }
 
-export interface PutStageApiWeb {
+export interface UpdateStageRequest {
   competitionId?: string;
   dateFrom?: number;
   dateTo?: number;
@@ -101,58 +101,58 @@ export interface PutStageApiWeb {
   name?: string;
 }
 
-export interface PostStageEventScoreWeb {
+export interface EventScore {
   exerciseId?: string;
   id?: string;
   score?: number;
 }
 
-export interface PostEventExercisesWeb {
+export interface EventExercise {
   id?: string;
   order?: number;
   text?: string;
 }
 
-export interface PostEventConfigurationWeb {
+export interface EventConfiguration {
   federation?: string;
   id?: string;
   name?: string;
   version?: number;
 }
 
-export interface PostStageJudgesWeb {
+export interface StageJudge {
   collectorEmail?: string;
   name?: string;
 }
 
-export interface PostEventCompetitorsWeb {
+export interface EventCompetitor {
   finalScore?: number;
   id?: string;
   identity?: string;
   name?: string;
   owner?: string;
-  scores?: PostStageEventScoreWeb[];
+  scores?: EventScore[];
 }
 
-export interface PostEventApiWeb {
+export interface CreateEventRequest {
   id: string;
   name: string;
   stageId: string;
 }
 
-export interface PutEventApiWeb {
-  competitors: PostEventCompetitorsWeb[];
-  configuration: PostEventConfigurationWeb;
+export interface UpdateEventRequest {
+  competitors: EventCompetitor[];
+  configuration: EventConfiguration;
   discipline: string;
-  exercises: PostEventExercisesWeb[];
+  exercises: EventExercise[];
   id: string;
-  judges: PostStageJudgesWeb[];
+  judges: StageJudge[];
   name: string;
   stageId: string;
   status: string;
 }
 
-export interface EventResponse extends GetEventApiWeb {
+export interface EventResponse extends PublicEventDetail {
   stageId: string;
 }
 
@@ -167,9 +167,9 @@ export interface Competition {
   country: string;
   description?: string;
   id: string;
-  location?: CompetitionLocationWeb;
+  location?: CompetitionLocation;
   name: string;
-  notifications?: CompetitionNotificationsWeb[];
+  notifications?: PublicCompetitionNotification[];
   stages?: Stage[];
   status: string;
 }
@@ -178,7 +178,7 @@ export interface PostCompetition {
   country?: string;
   description?: string;
   id?: string;
-  location?: CompetitionLocationWeb;
+  location?: CompetitionLocation;
   name?: string;
   stages?: PostCompetitionStage[];
 }
@@ -201,12 +201,12 @@ export interface StageMutationPayload {
 }
 
 export interface EventMutationPayload {
-  competitors?: PostEventCompetitorsWeb[];
-  configuration?: PostEventConfigurationWeb;
+  competitors?: EventCompetitor[];
+  configuration?: EventConfiguration;
   discipline?: string;
-  exercises?: PostEventExercisesWeb[];
+  exercises?: EventExercise[];
   id?: string;
-  judges?: PostStageJudgesWeb[];
+  judges?: StageJudge[];
   name?: string;
   stageId?: string;
   status?: string;
@@ -244,21 +244,17 @@ export interface ApiEventRollbackPayload {
   stageId: string;
 }
 
-export type CompetitionLocation = CompetitionLocationWeb;
 export type Competitions = Competition;
 export type CompetitionStage = Stage;
-export type Notification = CompetitionNotificationsWeb;
-export type StageEventScore = EventScoresWeb;
-export type PostStageEventScore = PostStageEventScoreWeb;
-export type StageExercise = EventExercisesWeb;
-export type PostStageExercise = PostEventExercisesWeb;
-export type StageEventConfiguration = EventConfigurationWeb;
-export type PostStageEventConfiguration = PostEventConfigurationWeb;
-export type StageJudge = StageJudgesWeb;
-export type PostStageJudge = PostStageJudgesWeb;
-export type StageCompetitor = EventCompetitorsWeb;
-export type PostStageCompetitor = PostEventCompetitorsWeb;
+export type Notification = PublicCompetitionNotification;
+export type StageEventScore = PublicEventScore;
+export type PostStageEventScore = EventScore;
+export type StageExercise = PublicEventExercise;
+export type PostStageExercise = EventExercise;
+export type StageEventConfiguration = PublicEventConfiguration;
+export type PostStageEventConfiguration = EventConfiguration;
+export type PostStageJudge = StageJudge;
+export type StageCompetitor = PublicEventCompetitor;
+export type PostStageCompetitor = EventCompetitor;
 export type StageEvent = EventResponse;
 export type PostStageEvent = EventMutationPayload;
-export type CreateApiEvent = PostEventApiWeb;
-export type UpdateApiEvent = PutEventApiWeb;

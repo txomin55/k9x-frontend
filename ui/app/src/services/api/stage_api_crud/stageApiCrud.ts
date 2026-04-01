@@ -5,7 +5,7 @@ import {
   commitApiStageMutationSuccess,
   createApiStageRollbackPayload
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
-import { createMemo } from "solid-js";
+import { createMemo, getOwner } from "solid-js";
 import {
   type Competitions,
   getCachedCompetitions,
@@ -14,49 +14,49 @@ import {
 import type {
   EventMutationPayload,
   EventResponse,
-  EventCompetitorsWeb,
-  EventConfigurationWeb,
-  EventExercisesWeb,
-  EventScoresWeb,
-  PostEventCompetitorsWeb,
-  PostEventConfigurationWeb,
-  PostEventExercisesWeb,
-  PostStageEventScoreWeb,
-  PostStageJudgesWeb,
+  PublicEventCompetitor,
+  PublicEventConfiguration,
+  PublicEventExercise,
+  PublicEventScore,
+  EventCompetitor,
+  EventConfiguration,
+  EventExercise,
+  EventScore,
+  StageJudge,
   Stage
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import type { StageEditorModel, StageMutationPayload, StageJudgesWeb } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { PublicStageJudge, StageEditorModel, StageMutationPayload } from "@/services/api/competition_crud/competitionCrudTypes";
 
 export type {
   StageEditorModel,
-  StageJudgesWeb,
+  PublicStageJudge,
   EventResponse,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiStageEventScore = (
-  score: PostStageEventScoreWeb,
-  previousScore?: EventScoresWeb,
-): EventScoresWeb => ({
+  score: EventScore,
+  previousScore?: PublicEventScore,
+): PublicEventScore => ({
   exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
   id: score.id ?? previousScore?.id ?? createId(),
   score: score.score ?? previousScore?.score ?? 0,
 });
 
 const toApiStageExercise = (
-  exercise: PostEventExercisesWeb,
-  previousExercise?: EventExercisesWeb,
-): EventExercisesWeb => ({
+  exercise: EventExercise,
+  previousExercise?: PublicEventExercise,
+): PublicEventExercise => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
   text: exercise.text ?? previousExercise?.text ?? "",
 });
 
 const toApiStageEventConfiguration = (
-  configuration?: PostEventConfigurationWeb,
-  previousConfiguration?: EventConfigurationWeb,
-): EventConfigurationWeb => ({
+  configuration?: EventConfiguration,
+  previousConfiguration?: PublicEventConfiguration,
+): PublicEventConfiguration => ({
   federation:
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
@@ -65,17 +65,17 @@ const toApiStageEventConfiguration = (
 });
 
 const toApiStageJudge = (
-  judge: PostStageJudgesWeb,
-  previousJudge?: StageJudgesWeb,
-): StageJudgesWeb => ({
+  judge: StageJudge,
+  previousJudge?: PublicStageJudge,
+): PublicStageJudge => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   name: judge.name ?? previousJudge?.name ?? "",
 });
 
 const toApiStageCompetitor = (
-  competitor: PostEventCompetitorsWeb,
-  previousCompetitor?: EventCompetitorsWeb,
-): EventCompetitorsWeb => {
+  competitor: EventCompetitor,
+  previousCompetitor?: PublicEventCompetitor,
+): PublicEventCompetitor => {
   const previousScoresById = new Map(
     (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
   );
@@ -249,6 +249,18 @@ const findCachedApiStage = (
 export const useApiStage = () => {
   const { getCompetition } = useCompetition();
   const getStage = (competitionId: string, id: string) => {
+    if (!getOwner()) {
+      return () => {
+        const cachedStage = findCachedApiStage(
+          getCachedCompetitions(),
+          competitionId,
+          id,
+        );
+
+        return cachedStage ?? undefined;
+      };
+    }
+
     const competition = getCompetition(competitionId);
 
     return createMemo(() => {

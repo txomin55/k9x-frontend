@@ -1,4 +1,4 @@
-import { createMemo } from "solid-js";
+import { createMemo, getOwner } from "solid-js";
 import {
   applyApiEventRemoval,
   applyApiEventUpsert,
@@ -11,53 +11,53 @@ import {
   useCompetition,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
-  CreateApiEvent,
+  CreateEventRequest,
   EventResponse,
   Competitions,
-  EventCompetitorsWeb,
-  EventConfigurationWeb,
-  EventExercisesWeb,
+  PublicEventCompetitor,
+  PublicEventConfiguration,
+  PublicEventExercise,
   EventMutationPayload,
-  EventScoresWeb,
-  PostEventCompetitorsWeb,
-  PostEventConfigurationWeb,
-  PostEventExercisesWeb,
-  PostStageEventScoreWeb,
-  PostStageJudgesWeb,
-  StageJudgesWeb,
-  UpdateApiEvent,
+  PublicEventScore,
+  EventCompetitor,
+  EventConfiguration,
+  EventExercise,
+  EventScore,
+  StageJudge,
+  PublicStageJudge,
+  UpdateEventRequest,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 export type {
-  CreateApiEvent,
+  CreateEventRequest,
   EventResponse,
-  UpdateApiEvent,
+  UpdateEventRequest,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiEventScore = (
-  score: PostStageEventScoreWeb,
-  previousScore?: EventScoresWeb,
-): EventScoresWeb => ({
+  score: EventScore,
+  previousScore?: PublicEventScore,
+): PublicEventScore => ({
   exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
   id: score.id ?? previousScore?.id ?? createId(),
   score: score.score ?? previousScore?.score ?? 0,
 });
 
 const toApiExercise = (
-  exercise: PostEventExercisesWeb,
-  previousExercise?: EventExercisesWeb,
-): EventExercisesWeb => ({
+  exercise: EventExercise,
+  previousExercise?: PublicEventExercise,
+): PublicEventExercise => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
   text: exercise.text ?? previousExercise?.text ?? "",
 });
 
 const toApiEventConfiguration = (
-  configuration?: PostEventConfigurationWeb,
-  previousConfiguration?: EventConfigurationWeb,
-): EventConfigurationWeb => ({
+  configuration?: EventConfiguration,
+  previousConfiguration?: PublicEventConfiguration,
+): PublicEventConfiguration => ({
   federation:
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
@@ -66,17 +66,17 @@ const toApiEventConfiguration = (
 });
 
 const toApiJudge = (
-  judge: PostStageJudgesWeb,
-  previousJudge?: StageJudgesWeb,
-): StageJudgesWeb => ({
+  judge: StageJudge,
+  previousJudge?: PublicStageJudge,
+): PublicStageJudge => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   name: judge.name ?? previousJudge?.name ?? "",
 });
 
 const toApiCompetitor = (
-  competitor: PostEventCompetitorsWeb,
-  previousCompetitor?: EventCompetitorsWeb,
-): EventCompetitorsWeb => {
+  competitor: EventCompetitor,
+  previousCompetitor?: PublicEventCompetitor,
+): PublicEventCompetitor => {
   const previousScoresById = new Map(
     (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
   );
@@ -100,7 +100,7 @@ const toApiCompetitor = (
 };
 
 const mergeApiEventWithPayload = (
-  payload: EventMutationPayload | CreateApiEvent | UpdateApiEvent,
+  payload: EventMutationPayload | CreateEventRequest | UpdateEventRequest,
   previousEvent?: EventResponse,
 ): EventResponse => {
   const mutationPayload: EventMutationPayload =
@@ -167,7 +167,7 @@ const mergeApiEventWithPayload = (
   };
 };
 
-const createDefaultApiEvent = (stageId: string): CreateApiEvent => ({
+const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
   id: createId(),
   name: "--Default event",
   stageId,
@@ -228,6 +228,16 @@ export const useApiEvent = () => {
   const { getCompetition } = useCompetition();
 
   const getEvent = (competitionId: string, stageId: string, id: string) => {
+    if (!getOwner()) {
+      return () =>
+        findEventContext(
+          getCachedCompetitions(),
+          stageId,
+          competitionId,
+          id,
+        )?.event ?? undefined;
+    }
+
     const competition = getCompetition(competitionId);
 
     return createMemo(() => {
@@ -243,7 +253,7 @@ export const useApiEvent = () => {
   };
 
   const createApiEvent = (
-    payload: CreateApiEvent,
+    payload: CreateEventRequest,
     options?: { competitionId?: string },
   ) => {
     if (!payload.stageId) {
@@ -295,7 +305,7 @@ export const useApiEvent = () => {
   };
 
   const updateApiEvent = (
-    payload: UpdateApiEvent,
+    payload: UpdateEventRequest,
     options?: { competitionId?: string },
   ) => {
     if (!payload.id) {
