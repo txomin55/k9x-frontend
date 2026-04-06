@@ -1,27 +1,14 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
 import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/EventJudgesSection";
-import type {
-  EventResponse,
-  UpdateEventRequest,
-} from "@/services/api/event_api_crud/eventApiCrud";
+import type { EventResponse, UpdateEventRequest } from "@/services/api/event_api_crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
 import type {
   PublicEventCompetitor,
   PublicEventExercise,
-  PublicStageJudge,
+  PublicStageJudge
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -152,8 +139,6 @@ function CompetitionEventDetailBody(props: {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal(props.event());
   const [name, setName] = createSignal(props.event().name);
-  const [discipline, setDiscipline] = createSignal(props.event().discipline);
-  const [status, setStatus] = createSignal(props.event().status);
   const [configurationName, setConfigurationName] = createSignal(
     props.event().configuration.name,
   );
@@ -189,8 +174,6 @@ function CompetitionEventDetailBody(props: {
 
     setDraftEvent(event);
     setName(event.name);
-    setDiscipline(event.discipline);
-    setStatus(event.status);
     setConfigurationName(event.configuration.name);
     setConfigurationVersion(String(event.configuration.version));
     setConfigurationFederation(event.configuration.federation);
@@ -292,7 +275,7 @@ function CompetitionEventDetailBody(props: {
       setDraftEvent((current) => ({
         ...current,
         competitors: current.competitors.map((entry) =>
-          entry.id === currentEditingCompetitorId ? draft : entry,
+          entry.dogId === currentEditingCompetitorId ? draft : entry,
         ),
       }));
     }
@@ -342,9 +325,7 @@ function CompetitionEventDetailBody(props: {
 
     setDraftEvent((current) => ({
       ...current,
-      exercises: current.exercises.filter(
-        (entry) => entry.id !== exerciseId,
-      ),
+      exercises: current.exercises.filter((entry) => entry.id !== exerciseId),
     }));
   };
 
@@ -358,29 +339,27 @@ function CompetitionEventDetailBody(props: {
     const draft = createDefaultCompetitor();
 
     setIsCreatingCompetitor(true);
-    setEditingCompetitorId(draft.id);
+    setEditingCompetitorId(draft.dogId);
     setCompetitorDialogDraft({
       ...draft,
       scores: [...draft.scores],
     });
   };
 
-  const handleDeleteCompetitor = (competitorId: string) => {
-    if (editingCompetitorId() === competitorId) {
+  const handleDeleteCompetitor = (dogId: string) => {
+    if (editingCompetitorId() === dogId) {
       closeCompetitorEditor();
     }
 
     setDraftEvent((current) => ({
       ...current,
-      competitors: current.competitors.filter(
-        (entry) => entry.id !== competitorId,
-      ),
+      competitors: current.competitors.filter((entry) => entry.dogId !== dogId),
     }));
   };
 
   const handleOpenCompetitorEditor = (competitor: PublicEventCompetitor) => {
     setIsCreatingCompetitor(false);
-    setEditingCompetitorId(competitor.id);
+    setEditingCompetitorId(competitor.dogId);
     setCompetitorDialogDraft({
       ...competitor,
       scores: [...competitor.scores],
@@ -402,9 +381,7 @@ function CompetitionEventDetailBody(props: {
         name: configurationName(),
         version: Number(configurationVersion()) || 0,
       },
-      discipline: discipline(),
       name: name(),
-      status: status(),
     };
 
     if (getEventDraftKey(nextEvent) === getEventDraftKey(externalEvent)) return;
@@ -420,9 +397,9 @@ function CompetitionEventDetailBody(props: {
           fallback={
             <>
               <h1>{props.event().name}</h1>
+              <p>{`--Status: ${props.event().status || "--No status"}`}</p>
               <p>{`--Discipline: ${props.event().discipline || "--No discipline"}`}</p>
               <p>{`--Participants: ${props.event().competitors.length}`}</p>
-              <p>{`--Status: ${props.event().status || "--No status"}`}</p>
             </>
           }
         >
@@ -433,18 +410,8 @@ function CompetitionEventDetailBody(props: {
               value={name()}
               onChange={setName}
             />
-            <AtomInput
-              label="--Discipline"
-              onBlur={commitEventEdits}
-              value={discipline()}
-              onChange={setDiscipline}
-            />
-            <AtomInput
-              label="--Status"
-              onBlur={commitEventEdits}
-              value={status()}
-              onChange={setStatus}
-            />
+            <p>{`--Discipline: ${props.event().discipline || "--No discipline"}`}</p>
+            <p>{`--Participants: ${props.event().competitors.length}`}</p>
           </div>
         </Show>
       </header>
@@ -564,10 +531,12 @@ function getEventDraftKey(event: EventResponse) {
 function createDefaultCompetitor(): PublicEventCompetitor {
   return {
     finalScore: 0,
-    id: globalThis.crypto.randomUUID(),
+    dogId: globalThis.crypto.randomUUID(),
     identity: "",
     name: "--Default competitor",
     owner: "",
+    team: "",
+    country: "",
     scores: [],
   };
 }
@@ -578,7 +547,6 @@ function createDefaultJudge(): PublicStageJudge {
     name: "--Default judge",
   };
 }
-
 
 function createDefaultExercise(): PublicEventExercise {
   return {

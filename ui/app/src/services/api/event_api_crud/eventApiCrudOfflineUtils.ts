@@ -3,10 +3,7 @@ import {
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
-import {
-  type Competitions,
-  getCompetitionsQueryKey,
-} from "@/services/api/competition_crud/competitionCrud";
+import { getCompetitionsQueryKey } from "@/services/api/competition_crud/competitionCrud";
 import type {
   ApiEventRollbackPayload,
   Competition,
@@ -48,7 +45,10 @@ const buildNextStageDetail = (stage: Stage, event: EventResponse): Stage => {
   };
 };
 
-const buildStageDetailWithoutEvent = (stage: Stage, eventId: string): Stage => ({
+const buildStageDetailWithoutEvent = (
+  stage: Stage,
+  eventId: string,
+): Stage => ({
   ...stage,
   events: (stage.events ?? []).filter(
     ({ id }) => String(id) !== String(eventId),
@@ -82,11 +82,11 @@ const buildCompetitionDetailWithoutEvent = (
 });
 
 const buildNextCompetitionsList = (
-  competitions: Competitions[],
+  competitions: Competition[],
   competitionId: string,
   stageId: string,
   event: EventResponse,
-): Competitions[] =>
+): Competition[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
       ? buildNextCompetitionDetail(competition, stageId, event)
@@ -94,11 +94,11 @@ const buildNextCompetitionsList = (
   );
 
 const buildCompetitionsListWithoutEvent = (
-  competitions: Competitions[],
+  competitions: Competition[],
   competitionId: string,
   stageId: string,
   eventId: string,
-): Competitions[] =>
+): Competition[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
       ? buildCompetitionDetailWithoutEvent(competition, stageId, eventId)
@@ -106,7 +106,7 @@ const buildCompetitionsListWithoutEvent = (
   );
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
+  queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()) ?? [];
 
 const persistApiEventCompetitionSnapshot = async (
   competitionId: string,
@@ -173,7 +173,7 @@ export const createApiEventRollbackPayload = async ({
 }: {
   competitionId: string;
   entityId: string;
-  previousCompetitionsFromCache?: Competitions[];
+  previousCompetitionsFromCache?: Competition[];
   previousEvent: EventResponse | null;
   stageId: string;
 }): Promise<ApiEventRollbackPayload> => ({
@@ -266,7 +266,7 @@ export const commitApiEventMutationSuccess = async ({
   const visibleCompetitions = getVisibleCompetitions();
 
   if (method === "DELETE") {
-    queryClient.setQueryData<Competitions[] | undefined>(
+    queryClient.setQueryData<Competition[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
         buildCompetitionsListWithoutEvent(
@@ -277,7 +277,7 @@ export const commitApiEventMutationSuccess = async ({
         ),
     );
   } else if (isApiEventPayload(payload)) {
-    queryClient.setQueryData<Competitions[] | undefined>(
+    queryClient.setQueryData<Competition[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
         buildNextCompetitionsList(

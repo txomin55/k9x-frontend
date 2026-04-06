@@ -2,7 +2,6 @@ import { Show } from "solid-js";
 import CountryFlag from "@/components/common/CountryFlag";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import "./styles.css";
@@ -24,14 +23,10 @@ type CompetitionInfoProps = {
   displayLatitude?: number;
   displayLongitude?: number;
   isEditing: boolean;
-  latitude: string;
-  longitude: string;
   onAddressChange: (value: string) => void;
   onCommit: () => void;
   onCountryChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
-  onLatitudeChange: (value: string) => void;
-  onLongitudeChange: (value: string) => void;
   onTitleChange: (value: string) => void;
   status?: string;
   title: string;
@@ -76,20 +71,6 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             value={props.address}
             onBlur={props.onCommit}
             onChange={props.onAddressChange}
-          />
-          <AtomNumberInput
-            label="--Latitude"
-            name="latitude"
-            value={props.latitude}
-            onBlur={props.onCommit}
-            onChange={props.onLatitudeChange}
-          />
-          <AtomNumberInput
-            label="--Longitude"
-            name="longitude"
-            value={props.longitude}
-            onBlur={props.onCommit}
-            onChange={props.onLongitudeChange}
           />
         </div>
       </Show>

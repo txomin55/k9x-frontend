@@ -11,20 +11,20 @@ import {
   useCompetition,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
+  Competition,
   CreateEventRequest,
-  EventResponse,
-  Competitions,
-  PublicEventCompetitor,
-  PublicEventConfiguration,
-  PublicEventExercise,
-  EventMutationPayload,
-  PublicEventScore,
   EventCompetitor,
   EventConfiguration,
   EventExercise,
+  EventMutationPayload,
+  EventResponse,
   EventScore,
-  StageJudge,
+  PublicEventCompetitor,
+  PublicEventConfiguration,
+  PublicEventExercise,
+  PublicEventScore,
   PublicStageJudge,
+  StageJudge,
   UpdateEventRequest,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
@@ -83,10 +83,12 @@ const toApiCompetitor = (
 
   return {
     finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
-    id: competitor.id ?? previousCompetitor?.id ?? createId(),
+    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
     name: competitor.name ?? previousCompetitor?.name ?? "",
     owner: competitor.owner ?? previousCompetitor?.owner ?? "",
+    team: competitor.team ?? previousCompetitor?.team ?? "",
+    country: competitor.country ?? previousCompetitor?.country ?? "",
     scores:
       competitor.scores?.map((score) =>
         toApiEventScore(
@@ -120,7 +122,7 @@ const mergeApiEventWithPayload = (
   const nextStageId = payload.stageId ?? previousEvent?.stageId ?? "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
-      competitor.id,
+      competitor.dogId,
       competitor,
     ]),
   );
@@ -133,8 +135,8 @@ const mergeApiEventWithPayload = (
       mutationPayload.competitors?.map((competitor) =>
         toApiCompetitor(
           competitor,
-          competitor.id
-            ? previousCompetitorsById.get(competitor.id)
+          competitor.dogId
+            ? previousCompetitorsById.get(competitor.dogId)
             : undefined,
         ),
       ) ??
@@ -144,7 +146,7 @@ const mergeApiEventWithPayload = (
       mutationPayload.configuration,
       previousEvent?.configuration,
     ),
-    discipline: mutationPayload.discipline ?? previousEvent?.discipline ?? "",
+    discipline: previousEvent?.discipline ?? "",
     exercises:
       mutationPayload.exercises?.map((exercise) =>
         toApiExercise(
@@ -163,7 +165,7 @@ const mergeApiEventWithPayload = (
       [],
     name: payload.name ?? previousEvent?.name ?? "",
     stageId: nextStageId,
-    status: mutationPayload.status ?? previousEvent?.status ?? "",
+    status: previousEvent?.status ?? "",
   };
 };
 
@@ -171,10 +173,11 @@ const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
   id: createId(),
   name: "--Default event",
   stageId,
+  discipline: "--Default discipline",
 });
 
 const findEventContextInCompetition = (
-  competition: Competitions | undefined,
+  competition: Competition | undefined,
   stageId: string,
   eventId?: string,
 ) => {
@@ -189,14 +192,15 @@ const findEventContextInCompetition = (
   return {
     competitionId: competition.id,
     event: eventId
-      ? stage.events.find((entry) => String(entry.id) === String(eventId)) ?? null
+      ? (stage.events.find((entry) => String(entry.id) === String(eventId)) ??
+        null)
       : null,
     stage,
   };
 };
 
 const findEventContext = (
-  competitions: Competitions[] | undefined,
+  competitions: Competition[] | undefined,
   stageId: string,
   competitionId?: string,
   eventId?: string,
@@ -214,7 +218,11 @@ const findEventContext = (
   }
 
   for (const competition of competitions ?? []) {
-    const context = findEventContextInCompetition(competition, stageId, eventId);
+    const context = findEventContextInCompetition(
+      competition,
+      stageId,
+      eventId,
+    );
 
     if (context) {
       return context;
@@ -230,25 +238,20 @@ export const useApiEvent = () => {
   const getEvent = (competitionId: string, stageId: string, id: string) => {
     if (!getOwner()) {
       return () =>
-        findEventContext(
-          getCachedCompetitions(),
-          stageId,
-          competitionId,
-          id,
-        )?.event ?? undefined;
+        findEventContext(getCachedCompetitions(), stageId, competitionId, id)
+          ?.event ?? undefined;
     }
 
     const competition = getCompetition(competitionId);
 
     return createMemo(() => {
-      const stage = competition()?.stages?.find((entry) => entry.id === stageId);
+      const stage = competition()?.stages?.find(
+        (entry) => entry.id === stageId,
+      );
 
       if (!stage) return undefined;
 
-      return (
-        stage.events.find((entry) => entry.id === id) ??
-        undefined
-      );
+      return stage.events.find((entry) => entry.id === id) ?? undefined;
     });
   };
 

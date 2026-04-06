@@ -3,29 +3,31 @@ import {
   applyApiStageUpsert,
   commitApiStageMutation,
   commitApiStageMutationSuccess,
-  createApiStageRollbackPayload
+  createApiStageRollbackPayload,
 } from "@/services/api/stage_api_crud/stageApiCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
-  type Competitions,
+  type Competition,
   getCachedCompetitions,
-  useCompetition
+  useCompetition,
 } from "@/services/api/competition_crud/competitionCrud";
 import type {
+  EventCompetitor,
+  EventConfiguration,
+  EventExercise,
   EventMutationPayload,
   EventResponse,
+  EventScore,
   PublicEventCompetitor,
   PublicEventConfiguration,
   PublicEventExercise,
   PublicEventScore,
-  EventCompetitor,
-  EventConfiguration,
-  EventExercise,
-  EventScore,
+  PublicStageJudge,
+  Stage,
+  StageEditorModel,
   StageJudge,
-  Stage
+  StageMutationPayload,
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import type { PublicStageJudge, StageEditorModel, StageMutationPayload } from "@/services/api/competition_crud/competitionCrudTypes";
 
 export type {
   StageEditorModel,
@@ -82,10 +84,12 @@ const toApiStageCompetitor = (
 
   return {
     finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
-    id: competitor.id ?? previousCompetitor?.id ?? createId(),
+    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
     name: competitor.name ?? previousCompetitor?.name ?? "",
     owner: competitor.owner ?? previousCompetitor?.owner ?? "",
+    team: competitor.team ?? previousCompetitor?.team ?? "",
+    country: competitor.country ?? previousCompetitor?.country ?? "",
     scores:
       competitor.scores?.map((score) =>
         toApiStageEventScore(
@@ -105,7 +109,7 @@ const toApiStageEvent = (
 ): EventResponse => {
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
-      competitor.id,
+      competitor.dogId,
       competitor,
     ]),
   );
@@ -118,8 +122,8 @@ const toApiStageEvent = (
       event.competitors?.map((competitor) =>
         toApiStageCompetitor(
           competitor,
-          competitor.id
-            ? previousCompetitorsById.get(competitor.id)
+          competitor.dogId
+            ? previousCompetitorsById.get(competitor.dogId)
             : undefined,
         ),
       ) ??
@@ -129,7 +133,7 @@ const toApiStageEvent = (
       event.configuration,
       previousEvent?.configuration,
     ),
-    discipline: event.discipline ?? previousEvent?.discipline ?? "",
+    discipline: previousEvent?.discipline ?? "",
     exercises:
       event.exercises?.map((exercise) =>
         toApiStageExercise(
@@ -148,7 +152,7 @@ const toApiStageEvent = (
       [],
     name: event.name ?? previousEvent?.name ?? "",
     stageId: event.stageId ?? previousEvent?.stageId ?? stageId,
-    status: event.status ?? previousEvent?.status ?? "",
+    status: previousEvent?.status ?? "",
   };
 };
 
@@ -180,13 +184,18 @@ const mergeApiStageWithPayload = (
   };
 };
 
-const createDefaultApiStage = (competitionId: string): StageMutationPayload => ({
+const createDefaultApiStage = (
+  competitionId: string,
+): StageMutationPayload => ({
   competitionId,
   id: createId(),
   name: "--Default stage",
 });
 
-export const toApiStage = (stage: Stage, competitionId: string): StageEditorModel => ({
+export const toApiStage = (
+  stage: Stage,
+  competitionId: string,
+): StageEditorModel => ({
   competitionId,
   dateFrom: stage.dateFrom ?? 0,
   dateTo: stage.dateTo ?? 0,
@@ -195,10 +204,12 @@ export const toApiStage = (stage: Stage, competitionId: string): StageEditorMode
       competitors:
         event.competitors?.map((competitor) => ({
           finalScore: competitor.finalScore ?? 0,
-          id: competitor.id ?? "",
+          dogId: competitor.dogId ?? "",
           identity: competitor.identity ?? "",
           name: competitor.name ?? "",
           owner: competitor.owner ?? "",
+          team: competitor.team ?? "",
+          country: competitor.country ?? "",
           scores:
             competitor.scores?.map((score) => ({
               exerciseId: score.exerciseId ?? "",
@@ -234,7 +245,7 @@ export const toApiStage = (stage: Stage, competitionId: string): StageEditorMode
 });
 
 const findCachedApiStage = (
-  competitions: Competitions[] | undefined,
+  competitions: Competition[] | undefined,
   competitionId: string,
   stageId: string,
 ): StageEditorModel | null => {

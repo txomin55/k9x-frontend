@@ -328,10 +328,11 @@ function CompetitionStageDetailBody(props: {
         id: draft.id,
         name: draft.name,
         stageId: draft.stageId,
+        discipline: draft.discipline,
       });
-    } else {
-      props.onUpdateEvent(draft);
     }
+
+    props.onUpdateEvent(draft);
 
     closeEventEditor();
   };
@@ -443,12 +444,12 @@ function EventDialogContent(props: {
           }
         : current,
     );
-  const handleStatusChange = (value: string) =>
+  const handleDisciplineChange = (value: string) =>
     props.onChange((current) =>
       current
         ? {
             ...current,
-            status: value,
+            discipline: value,
           }
         : current,
     );
@@ -461,9 +462,9 @@ function EventDialogContent(props: {
         onChange={handleNameChange}
       />
       <AtomInput
-        label="--Status"
-        value={props.draft.status}
-        onChange={handleStatusChange}
+        label="--Discipline"
+        value={props.draft.discipline}
+        onChange={handleDisciplineChange}
       />
       <div>
         <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>

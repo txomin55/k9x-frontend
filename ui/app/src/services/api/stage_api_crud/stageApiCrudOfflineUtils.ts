@@ -1,32 +1,31 @@
 import type {
   ApiStageRollbackPayload,
   Competition,
-  Stage as CompetitionStage
+  Stage as CompetitionStage,
+  StageEditorModel
 } from "@/services/api/competition_crud/competitionCrudTypes";
-import type { StageEditorModel } from "@/services/api/competition_crud/competitionCrudTypes";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
-import { type Competitions, getCompetitionsQueryKey } from "@/services/api/competition_crud/competitionCrud";
+import { getCompetitionsQueryKey } from "@/services/api/competition_crud/competitionCrud";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler
 } from "@/utils/local_first/pending_tasks/pendingTasksRunner";
-import {
-  type PendingTask,
-  type PendingTaskMethod
-} from "@/utils/local_first/pending_tasks/pendingTasksStore";
+import { type PendingTask, type PendingTaskMethod } from "@/utils/local_first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local_first/pending_tasks/commitOptimisticMutation";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
-  upsertCompetitionDraft,
+  upsertCompetitionDraft
 } from "@/services/api/competition_crud/competitionDraftStore";
 
-const toCompetitionDetailStage = (stage: StageEditorModel): CompetitionStage => ({
+const toCompetitionDetailStage = (
+  stage: StageEditorModel,
+): CompetitionStage => ({
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,
   events: stage.events,
@@ -68,9 +67,9 @@ const buildCompetitionDetailWithoutStage = (
 });
 
 const buildNextCompetitionsList = (
-  competitions: Competitions[],
+  competitions: Competition[],
   apiStage: StageEditorModel,
-): Competitions[] =>
+): Competition[] =>
   competitions.map((competition) => {
     if (String(competition.id) !== String(apiStage.competitionId)) {
       return competition;
@@ -79,10 +78,10 @@ const buildNextCompetitionsList = (
   });
 
 const buildCompetitionsListWithoutStage = (
-  competitions: Competitions[],
+  competitions: Competition[],
   competitionId: string,
   stageId: string,
-): Competitions[] =>
+): Competition[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
       ? buildCompetitionDetailWithoutStage(competition, stageId)
@@ -90,9 +89,11 @@ const buildCompetitionsListWithoutStage = (
   );
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
+  queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()) ?? [];
 
-const persistApiStageCompetitionSnapshot = async (apiStage: StageEditorModel) => {
+const persistApiStageCompetitionSnapshot = async (
+  apiStage: StageEditorModel,
+) => {
   const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
     (competition) => String(competition.id) === String(apiStage.competitionId),
@@ -150,7 +151,7 @@ export const createApiStageRollbackPayload = async ({
 }: {
   competitionId: string;
   entityId: string;
-  previousCompetitionsFromCache?: Competitions[];
+  previousCompetitionsFromCache?: Competition[];
   previousStage: StageEditorModel | null;
 }): Promise<ApiStageRollbackPayload> => ({
   competitionId,
@@ -238,7 +239,7 @@ export const commitApiStageMutationSuccess = async ({
   const visibleCompetitions = getVisibleCompetitions();
 
   if (method === "DELETE") {
-    queryClient.setQueryData<Competitions[] | undefined>(
+    queryClient.setQueryData<Competition[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
         buildCompetitionsListWithoutStage(
@@ -248,7 +249,7 @@ export const commitApiStageMutationSuccess = async ({
         ),
     );
   } else if (isApiStagePayload(payload)) {
-    queryClient.setQueryData<Competitions[] | undefined>(
+    queryClient.setQueryData<Competition[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
         buildNextCompetitionsList(previousCompetitions ?? [], payload),

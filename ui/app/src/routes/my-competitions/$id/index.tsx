@@ -1,11 +1,28 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
-import { type Competition, type PostCompetition } from "@/services/api/competition_crud/competitionCrudTypes";
-import { type StageEditorModel, toApiStage, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
-import { parseOptionalNumber, toUndefinedIfBlank } from "@/utils/stage";
+import {
+  type Competition,
+  type PostCompetition,
+} from "@/services/api/competition_crud/competitionCrudTypes";
+import {
+  type StageEditorModel,
+  toApiStage,
+  useApiStage,
+} from "@/services/api/stage_api_crud/stageApiCrud";
+import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingCircle from "@/components/floating_circle/FloatingCircle";
 import "./styles.css";
@@ -95,12 +112,6 @@ function CompetitionDetailBody(props: {
   const [address, setAddress] = createSignal(
     props.competition()?.location?.address ?? "",
   );
-  const [latitude, setLatitude] = createSignal(
-    props.competition()?.location?.latitude?.toString() ?? "",
-  );
-  const [longitude, setLongitude] = createSignal(
-    props.competition()?.location?.longitude?.toString() ?? "",
-  );
   const [isCreatingStage, setIsCreatingStage] = createSignal(false);
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
   const [stageDialogDraft, setStageDialogDraft] =
@@ -116,8 +127,6 @@ function CompetitionDetailBody(props: {
     setCountry(competition.country);
     setDescription(competition.description ?? "");
     setAddress(competition.location?.address ?? "");
-    setLatitude(competition.location?.latitude?.toString() ?? "");
-    setLongitude(competition.location?.longitude?.toString() ?? "");
   });
 
   createEffect(() => {
@@ -224,8 +233,6 @@ function CompetitionDetailBody(props: {
       id: competition.id,
       location: {
         address: toUndefinedIfBlank(address()),
-        latitude: parseOptionalNumber(latitude()),
-        longitude: parseOptionalNumber(longitude()),
       },
       name: title(),
     };
@@ -234,9 +241,7 @@ function CompetitionDetailBody(props: {
       nextCompetition.country !== competition.country ||
       nextCompetition.description !== (competition.description ?? "") ||
       nextCompetition.location?.address !==
-        (competition.location?.address ?? "") ||
-      nextCompetition.location?.latitude !== competition.location?.latitude ||
-      nextCompetition.location?.longitude !== competition.location?.longitude;
+        (competition.location?.address ?? "");
 
     if (!hasChanges) return;
 
@@ -254,14 +259,10 @@ function CompetitionDetailBody(props: {
         displayLatitude={props.competition()?.location?.latitude}
         displayLongitude={props.competition()?.location?.longitude}
         isEditing={isEditing()}
-        latitude={latitude()}
-        longitude={longitude()}
         onAddressChange={setAddress}
         onCommit={commitCompetitionEdits}
         onCountryChange={setCountry}
         onDescriptionChange={setDescription}
-        onLatitudeChange={setLatitude}
-        onLongitudeChange={setLongitude}
         onTitleChange={setTitle}
         status={props.competition()?.status}
         title={title()}

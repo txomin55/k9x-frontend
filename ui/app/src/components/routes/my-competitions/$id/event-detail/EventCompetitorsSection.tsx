@@ -1,11 +1,9 @@
 import { Index, Show } from "solid-js";
 import type { PublicEventCompetitor } from "@/services/api/competition_crud/competitionCrudTypes";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import CompetitorDialogContent from "./CompetitorDialogContent";
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: PublicEventCompetitor | null;
@@ -40,78 +38,14 @@ export default function EventCompetitorsSection(
             +
           </CircleButton>
           <AtomDialog
-            closeButtonText="Close dialog"
+            closeButtonText="--Close dialog"
             content={
-              <Show when={props.competitorDialogDraft}>
-                {(draft) => (
-                  <div>
-                    <AtomInput
-                      label="--Name"
-                      value={draft().name}
-                      onChange={(value) =>
-                        props.onCompetitorDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                name: value,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <AtomInput
-                      label="--Owner"
-                      value={draft().owner}
-                      onChange={(value) =>
-                        props.onCompetitorDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                owner: value,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <AtomInput
-                      label="--Identity"
-                      value={draft().identity}
-                      onChange={(value) =>
-                        props.onCompetitorDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                identity: value,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <AtomNumberInput
-                      label="--Final score"
-                      value={draft().finalScore}
-                      onChange={(value) =>
-                        props.onCompetitorDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                finalScore: Number(value) || 0,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <div>
-                      <AtomButton onClick={props.onCloseCompetitorEditor}>
-                        --Cancel
-                      </AtomButton>
-                      <AtomButton onClick={props.onSaveCompetitor}>
-                        --Save
-                      </AtomButton>
-                    </div>
-                  </div>
-                )}
-              </Show>
+              <CompetitorDialogContent
+                competitorDialogDraft={props.competitorDialogDraft}
+                onCloseCompetitorEditor={props.onCloseCompetitorEditor}
+                onCompetitorDraftChange={props.onCompetitorDraftChange}
+                onSaveCompetitor={props.onSaveCompetitor}
+              />
             }
             onOpenChange={(isOpen) => {
               if (!isOpen && props.isCreatingCompetitor) {
@@ -137,6 +71,8 @@ export default function EventCompetitorsSection(
                   <>
                     <p>{`--Owner: ${competitor().owner}`}</p>
                     <p>{`--Identity: ${competitor().identity}`}</p>
+                    <p>{`--Team: ${competitor().team}`}</p>
+                    <p>{`--Country: ${competitor().country}`}</p>
                     <p>{`--Final score: ${competitor().finalScore}`}</p>
                   </>
                 }
@@ -146,78 +82,16 @@ export default function EventCompetitorsSection(
                       <AtomDialog
                         closeButtonText="Close dialog"
                         content={
-                          <Show when={props.competitorDialogDraft}>
-                            {(draft) => (
-                              <div>
-                                <AtomInput
-                                  label="--Name"
-                                  value={draft().name}
-                                  onChange={(value) =>
-                                    props.onCompetitorDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            name: value,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <AtomInput
-                                  label="--Owner"
-                                  value={draft().owner}
-                                  onChange={(value) =>
-                                    props.onCompetitorDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            owner: value,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <AtomInput
-                                  label="--Identity"
-                                  value={draft().identity}
-                                  onChange={(value) =>
-                                    props.onCompetitorDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            identity: value,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <AtomNumberInput
-                                  label="--Final score"
-                                  value={draft().finalScore}
-                                  onChange={(value) =>
-                                    props.onCompetitorDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            finalScore: Number(value) || 0,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <div>
-                                  <AtomButton
-                                    onClick={props.onCloseCompetitorEditor}
-                                  >
-                                    --Cancel
-                                  </AtomButton>
-                                  <AtomButton onClick={props.onSaveCompetitor}>
-                                    --Save
-                                  </AtomButton>
-                                </div>
-                              </div>
-                            )}
-                          </Show>
+                          <CompetitorDialogContent
+                            competitorDialogDraft={props.competitorDialogDraft}
+                            onCloseCompetitorEditor={
+                              props.onCloseCompetitorEditor
+                            }
+                            onCompetitorDraftChange={
+                              props.onCompetitorDraftChange
+                            }
+                            onSaveCompetitor={props.onSaveCompetitor}
+                          />
                         }
                         onOpenChange={(isOpen) => {
                           if (isOpen) {
@@ -225,18 +99,20 @@ export default function EventCompetitorsSection(
                             return;
                           }
 
-                          if (props.editingCompetitorId === competitor().id) {
+                          if (
+                            props.editingCompetitorId === competitor().dogId
+                          ) {
                             props.onCloseCompetitorEditor();
                           }
                         }}
-                        open={props.editingCompetitorId === competitor().id}
+                        open={props.editingCompetitorId === competitor().dogId}
                         title={`--Edit ${competitor().name || "competitor"}`}
                         trigger={<span>--Edit</span>}
                       />
                       <CircleButton
                         aria-label={`--Delete ${competitor().name || "competitor"}`}
                         onClick={() =>
-                          props.onDeleteCompetitor(competitor().id)
+                          props.onDeleteCompetitor(competitor().dogId)
                         }
                       >
                         -

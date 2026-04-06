@@ -1,5 +1,4 @@
 import {
-  type Competitions,
   COMPETITIONS_SNAPSHOT_ID,
   getCompetitionsQueryKey,
 } from "@/services/api/competition_crud/competitionCrud";
@@ -33,8 +32,8 @@ import {
 
 export const toCompetitionListItem = (
   competition: Competition,
-  previousCompetition?: Competitions,
-): Competitions => ({
+  previousCompetition?: Competition,
+): Competition => ({
   country: competition.country,
   description:
     competition.description ?? previousCompetition?.description ?? "",
@@ -54,7 +53,7 @@ export const toCompetitionListItem = (
 });
 
 export const buildNextCompetitions = (
-  previousCompetitions: Competitions[],
+  previousCompetitions: Competition[],
   competition: Competition,
 ) => {
   const nextCompetition = toCompetitionListItem(
@@ -75,18 +74,18 @@ export const buildNextCompetitions = (
 };
 
 export const buildCompetitionsWithoutEntity = (
-  previousCompetitions: Competitions[],
+  previousCompetitions: Competition[],
   id: string,
 ) => previousCompetitions.filter((competition) => competition.id !== id);
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()) ?? [];
+  queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()) ?? [];
 
 export const getVisibleCompetitions = () =>
   mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
 
 const syncCompetitionUpsertToCache = (competition: Competition) => {
-  queryClient.setQueryData<Competitions[] | undefined>(
+  queryClient.setQueryData<Competition[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
       buildNextCompetitions(previousCompetitions ?? [], competition),
@@ -94,7 +93,7 @@ const syncCompetitionUpsertToCache = (competition: Competition) => {
 };
 
 const syncCompetitionRemovalToCache = (id: string) => {
-  queryClient.setQueryData<Competitions[] | undefined>(
+  queryClient.setQueryData<Competition[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
       buildCompetitionsWithoutEntity(previousCompetitions ?? [], id),
@@ -126,10 +125,10 @@ export const commitCompetitionMutationSuccess = async ({
 
 export const readCompetitionsSnapshot = () =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
-    getPersistedQuerySnapshot<Competitions[]>(COMPETITIONS_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<Competition[]>(COMPETITIONS_SNAPSHOT_ID),
   );
 
-export const saveCompetitionsSnapshot = (competitions: Competitions[]) =>
+export const saveCompetitionsSnapshot = (competitions: Competition[]) =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
     saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions),
   );
@@ -151,7 +150,7 @@ export const removeCompetitionSnapshot = async (id: string) => {
 export const createCompetitionRollbackPayload = async (
   entityId: string,
   previousCompetition: Competition | null,
-  previousCompetitionsFromCache?: Competitions[],
+  previousCompetitionsFromCache?: Competition[],
 ): Promise<CompetitionRollbackPayload> => ({
   entityId,
   previousCompetition,

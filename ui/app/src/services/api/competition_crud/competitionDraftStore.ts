@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import type { Competition, Competitions } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { Competition } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const [competitionDrafts, setCompetitionDrafts] = createSignal<
   Record<string, Competition>
@@ -8,14 +8,15 @@ const [removedCompetitionIds, setRemovedCompetitionIds] = createSignal<
   string[]
 >([]);
 
-const removeId = (ids: string[], id: string) => ids.filter((entry) => entry !== id);
+const removeId = (ids: string[], id: string) =>
+  ids.filter((entry) => entry !== id);
 
 export const getCompetitionDrafts = competitionDrafts;
 export const getRemovedCompetitionIds = removedCompetitionIds;
 
 export const mergeCompetitionsWithDrafts = (
-  baseCompetitions?: Competitions[],
-): Competitions[] => {
+  baseCompetitions?: Competition[],
+): Competition[] => {
   const drafts = competitionDrafts();
   const removedIds = new Set(removedCompetitionIds());
   const competitions = baseCompetitions ?? [];
@@ -66,20 +67,28 @@ export const clearCompetitionDraft = (competitionId: string) => {
 };
 
 export const replaceCompetitionDrafts = (
-  visibleCompetitions: Competitions[] | null,
-  baseCompetitions?: Competitions[],
+  visibleCompetitions: Competition[] | null,
+  baseCompetitions?: Competition[],
 ) => {
   const baseById = new Map(
-    (baseCompetitions ?? []).map((competition) => [competition.id, competition]),
+    (baseCompetitions ?? []).map((competition) => [
+      competition.id,
+      competition,
+    ]),
   );
-  const visibleIds = new Set((visibleCompetitions ?? []).map((competition) => competition.id));
+  const visibleIds = new Set(
+    (visibleCompetitions ?? []).map((competition) => competition.id),
+  );
   const nextDrafts: Record<string, Competition> = {};
   const nextRemovedIds: string[] = [];
 
   for (const competition of visibleCompetitions ?? []) {
     const baseCompetition = baseById.get(competition.id);
 
-    if (!baseCompetition || JSON.stringify(baseCompetition) !== JSON.stringify(competition)) {
+    if (
+      !baseCompetition ||
+      JSON.stringify(baseCompetition) !== JSON.stringify(competition)
+    ) {
       nextDrafts[competition.id] = competition;
     }
   }

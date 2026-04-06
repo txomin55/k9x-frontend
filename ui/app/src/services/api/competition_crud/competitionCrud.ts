@@ -9,15 +9,14 @@ import {
   applyCompetitionUpsert,
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
-  createCompetitionRollbackPayload
+  createCompetitionRollbackPayload,
 } from "@/services/api/competition_crud/competitionCrudOfflineUtils";
 import type {
   Competition,
   CompetitionLocation,
-  Competitions,
   PostCompetition,
   PostCompetitionStage,
-  Stage
+  Stage,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local_first/query_snapshots/querySnapshotFetch";
@@ -25,8 +24,8 @@ import { mergeCompetitionsWithDrafts } from "@/services/api/competition_crud/com
 
 export type {
   CompetitionLocation,
-  CompetitionStage,
-  Competitions,
+  Stage,
+  Competition,
 } from "@/services/api/competition_crud/competitionCrudTypes";
 
 const DRAFT_COMPETITION_STATUS = "draft";
@@ -37,7 +36,7 @@ export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionsSnapshot = async () => {
-  const competitions = await rawRequest<Competitions[]>({
+  const competitions = await rawRequest<Competition[]>({
     path: "/api/competitions",
   });
 
@@ -143,7 +142,7 @@ const createDefaultCompetition = (): PostCompetition => ({
 
 export const getCachedCompetitions = () =>
   mergeCompetitionsWithDrafts(
-    queryClient.getQueryData<Competitions[]>(getCompetitionsQueryKey()),
+    queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()),
   );
 
 export const useCompetition = () => {
