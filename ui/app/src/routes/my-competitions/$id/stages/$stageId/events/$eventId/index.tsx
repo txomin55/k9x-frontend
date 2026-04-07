@@ -1,27 +1,17 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/exercises/EventExercisesSection";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my-competitions/$id/event-detail/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my-competitions/$id/event-detail/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/judges/EventJudgesSection";
-import type {
-  EventResponse,
-  UpdateEventRequest,
-} from "@/services/api/event-api-crud/eventApiCrud";
+import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
+  EventCompetitor,
   PublicEventCompetitor,
   PublicEventExercise,
-  PublicStageJudge,
+  PublicStageJudge
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -398,7 +388,22 @@ function CompetitionEventDetailBody(props: {
 
     if (getEventDraftKey(nextEvent) === getEventDraftKey(externalEvent)) return;
 
-    props.onUpdate(nextEvent);
+    const updatePayload: UpdateEventRequest = {
+      ...nextEvent,
+      competitors: nextEvent.competitors.map((competitor) =>
+        mapCompetitorForUpdate(competitor),
+      ),
+    };
+
+    props.onUpdate(updatePayload);
+  };
+
+  const toggleEditingMode = () => {
+    if (isEditing()) {
+      commitEventEdits();
+    }
+
+    setIsEditing((current) => !current);
   };
 
   return (
@@ -506,7 +511,7 @@ function CompetitionEventDetailBody(props: {
       />
 
       <FloatingToggleCircle
-        onClick={() => setIsEditing((current) => !current)}
+        onClick={() => toggleEditingMode()}
         toggled={isEditing()}
         nonToggledText="--Edit"
         toggledText="X"
@@ -538,13 +543,35 @@ function getEventDraftKey(event: EventResponse) {
 function createDefaultCompetitor(): PublicEventCompetitor {
   return {
     finalScore: 0,
+    order: 0,
     dogId: globalThis.crypto.randomUUID(),
     identity: "",
-    name: "--Default competitor",
-    owner: "",
+    name: "",
+    owner: "--Default competitor",
     team: "",
     country: "",
+    breed: "",
     scores: [],
+  };
+}
+
+function mapCompetitorForUpdate(
+  competitor: PublicEventCompetitor,
+): EventCompetitor {
+  return {
+    dogId: competitor.dogId,
+    identity: competitor.identity,
+    name: competitor.name,
+    owner: competitor.owner,
+    team: competitor.team,
+    country: competitor.country,
+    order: competitor.order,
+    finalScore: competitor.finalScore,
+    scores: competitor.scores.map((score) => ({
+      exerciseId: score.exerciseId,
+      id: score.id,
+      score: score.score,
+    })),
   };
 }
 

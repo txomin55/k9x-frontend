@@ -1,4 +1,4 @@
-import { Index, Show } from "solid-js";
+import { createMemo, Index, Show } from "solid-js";
 import type { PublicEventExercise } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
@@ -29,17 +29,19 @@ type EventExercisesSectionProps = {
 export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
+  const getOrderValue = (exercise: PublicEventExercise) => exercise.order;
+
+  const sortedExercises = createMemo(() =>
+    [...props.exercises].toSorted(
+      (a, b) => getOrderValue(a) - getOrderValue(b),
+    ),
+  );
+
   return (
     <section class="event-exercises-section">
       <div class="event-exercises-section__header">
         <h2>--Exercises</h2>
         <Show when={props.isEditing}>
-          <CircleButton
-            aria-label="--Add exercise"
-            onClick={props.onAddExercise}
-          >
-            +
-          </CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
@@ -55,23 +57,25 @@ export default function EventExercisesSection(
               </Show>
             }
             onOpenChange={(isOpen) => {
-              if (!isOpen && props.isCreatingExercise) {
+              if (isOpen) {
+                props.onAddExercise();
+              } else {
                 props.onCloseExerciseEditor();
               }
             }}
             open={props.isCreatingExercise}
             title="--New exercise"
-            trigger={<span />}
+            trigger={<CircleButton>+</CircleButton>}
           />
         </Show>
       </div>
       <Show when={props.exercises.length > 0} fallback={<p>--No exercises.</p>}>
         <div class="event-exercises-section__exercises">
-          <Index each={props.exercises}>
+          <Index each={sortedExercises()}>
             {(exercise) => (
               <Card
                 topLeft={`--#${exercise().order}`}
-                description={<p>{exercise().text || "--No text"}</p>}
+                description={<p>{exercise().text}</p>}
                 actions={
                   props.isEditing ? (
                     <div class="event-exercises-section__exercises--actions">
