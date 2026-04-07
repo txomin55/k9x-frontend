@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/solid-query";
 import { RouterProvider } from "@tanstack/solid-router";
 import { onCleanup, onMount } from "solid-js";
 import { router } from "@/router";
-import { setupPendingTasksProcessing } from "@/utils/local_first/pending_tasks/pendingTasksRunner";
+import { setupPendingTasksProcessing } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import {
   queryClient,
   setupQueryRefetchOnReconnect,

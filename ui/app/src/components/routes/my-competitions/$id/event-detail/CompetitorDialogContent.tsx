@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import type { PublicEventCompetitor } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";

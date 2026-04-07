@@ -12,19 +12,19 @@ import {
 } from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
-import { useCompetition } from "@/services/api/competition_crud/competitionCrud";
+import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
 import {
   type Competition,
   type PostCompetition,
-} from "@/services/api/competition_crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrudTypes";
 import {
   type StageEditorModel,
   toApiStage,
   useApiStage,
-} from "@/services/api/stage_api_crud/stageApiCrud";
+} from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
-import FloatingCircle from "@/components/floating_circle/FloatingCircle";
+import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import "./styles.css";
 
 export const Route = createFileRoute("/my-competitions/$id/")({
@@ -281,12 +281,12 @@ function CompetitionDetailBody(props: {
         onUpdateStageDialogDraft={updateStageDialogDraft}
         stages={props.competition()?.stages}
       />
-      <FloatingCircle
-        aria-label={isEditing() ? "--Close edit" : "--Edit competition"}
+      <FloatingToggleCircle
         onClick={() => setIsEditing((current) => !current)}
-      >
-        {isEditing() ? "--Close" : "--Edit"}
-      </FloatingCircle>
+        toggled={isEditing()}
+        nonToggledText="--Edit"
+        toggledText="X"
+      />
       <Show when={isEditing()}>
         <AtomButton type="destructive" onClick={props.onDelete}>
           --Delete

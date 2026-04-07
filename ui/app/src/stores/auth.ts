@@ -1,12 +1,12 @@
-import { AppRoutePath } from "@/components/app_shell/paths";
+import { AppRoutePath } from "@/components/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-} from "@/services/api/fetch_user_data/fetchUserData";
-import type { User } from "@/services/api/fetch_user_data/UserResponse.types";
+} from "@/services/api/fetch-user-data/fetchUserData";
+import type { User } from "@/services/api/fetch-user-data/UserResponse.types";
 import type { AuthState } from "@/stores/auth.types";
-import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
-import { clearLocalFirstData } from "@/utils/local_first/storage/localFirstDatabase";
+import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
+import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
 import { createAppStore } from "@/utils/store/createAppStore";
 import { stripBasePath } from "@/utils/paths/app-paths";
 

@@ -1,17 +1,32 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, type JSX, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  type JSX,
+  Show,
+  Suspense,
+} from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent
-} from "@/services/api/event_api_crud/eventApiCrud";
-import { type StageEditorModel, useApiStage } from "@/services/api/stage_api_crud/stageApiCrud";
+  useApiEvent,
+} from "@/services/api/event-api-crud/eventApiCrud";
+import {
+  type StageEditorModel,
+  useApiStage,
+} from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import FloatingCircle from "@/components/floating_circle/FloatingCircle";
+import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 
@@ -267,8 +282,6 @@ function CompetitionStageDetailBody(props: {
 
     props.onDeleteEvent(event().id);
   };
-  const handleStopEditing = () => setIsEditing(false);
-  const handleStartEditing = () => setIsEditing(true);
   const renderEvent = (event: Accessor<EventResponse>) => (
     <Show
       when={isEditing()}
@@ -400,28 +413,16 @@ function CompetitionStageDetailBody(props: {
           <Index each={props.stage().events}>{renderEvent}</Index>
         </Show>
       </section>
+      <FloatingToggleCircle
+        onClick={() => setIsEditing((current) => !current)}
+        toggled={isEditing()}
+        nonToggledText="--Edit"
+        toggledText="X"
+      />
       <Show when={isEditing()}>
-        <div>
-          <FloatingCircle onClick={handleStopEditing}>
-            <>
-              <span>--Close edit</span>
-              <span>X</span>
-            </>
-          </FloatingCircle>
-        </div>
         <AtomButton type="destructive" onClick={props.onDelete}>
           --Delete stage
         </AtomButton>
-      </Show>
-      <Show when={!isEditing()}>
-        <div>
-          <FloatingCircle onClick={handleStartEditing}>
-            <>
-              <span>--Edit stage</span>
-              <span>--edit</span>
-            </>
-          </FloatingCircle>
-        </div>
       </Show>
     </div>
   );

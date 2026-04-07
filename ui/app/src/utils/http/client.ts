@@ -1,9 +1,9 @@
 import {
   getSilentGoogleAuthCode,
   startGoogleInteractiveLogin,
-} from "@/utils/google_auth/googleAuth";
+} from "@/utils/google-auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
-import type { LoginRequest } from "@/services/api/do_login/doLogin.types";
+import type { LoginRequest } from "@/services/api/do-login/doLogin.types";
 import type { RequestOptions } from "@/utils/http/client.types";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";

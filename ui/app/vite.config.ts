@@ -7,7 +7,7 @@ import path from "node:path";
 import commonjs from "vite-plugin-commonjs";
 import { fileURLToPath } from "node:url";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import { AppRoutePath } from "./src/components/app_shell/paths";
+import { AppRoutePath } from "./src/components/app-shell/paths";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

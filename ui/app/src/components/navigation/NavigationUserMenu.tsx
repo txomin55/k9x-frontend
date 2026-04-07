@@ -4,7 +4,7 @@ import { clearAuth, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import { displayNotification } from "@/utils/notifications/notifications";
-import mockedNotification from "@/utils/service_worker/native_features/notifications/mockedNotification";
+import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";
 import type { NavigationUserMenuProps } from "@/components/navigation/NavigationUserMenu.types";
 
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {

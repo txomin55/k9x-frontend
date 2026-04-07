@@ -1,4 +1,4 @@
-import type { User } from "@/services/api/fetch_user_data/UserResponse.types";
+import type { User } from "@/services/api/fetch-user-data/UserResponse.types";
 
 export type AuthState = {
   user: User | null;

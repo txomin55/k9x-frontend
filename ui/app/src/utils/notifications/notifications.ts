@@ -5,7 +5,7 @@ import {
   nativeGetPushSubscription,
   nativeRequestNotificationPermission,
   nativeSubscribeToPushManager,
-} from "@/utils/service_worker/native_features/notifications/push-notifications";
+} from "@/utils/service-worker/native_features/notifications/push-notifications";
 
 const requestNotificationPermission = async () => {
   if (!isPushNotificationSupported()) return "denied";

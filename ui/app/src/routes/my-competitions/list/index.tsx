@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my-competitions/competition-card/CompetitionCard";
-import { useCompetitions } from "@/services/api/competition_crud/competitionCrud";
-import FloatingCircle from "@/components/floating_circle/FloatingCircle";
+import { useCompetitions } from "@/services/api/competition-crud/competitionCrud";
+import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 
 export const Route = createFileRoute("/my-competitions/list/")({
   component: MyCompetitionsIndexPage,
@@ -33,16 +33,15 @@ function MyCompetitionsIndexPage() {
           )}
         </For>
       </Suspense>
-      <FloatingCircle
+      <FloatingToggleCircle
         onClick={() =>
           navigate({
             to: "/my-competitions/$id",
             params: { id: "new" },
           })
         }
-      >
-        +
-      </FloatingCircle>
+        nonToggledText="+"
+      />
     </div>
   );
 }

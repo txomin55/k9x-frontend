@@ -1,5 +1,5 @@
 import { Index, Show } from "solid-js";
-import type { PublicEventExercise } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { PublicEventExercise } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";

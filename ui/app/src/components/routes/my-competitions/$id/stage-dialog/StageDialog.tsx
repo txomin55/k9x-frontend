@@ -1,6 +1,6 @@
 import type { Accessor } from "solid-js";
 import { Show } from "solid-js";
-import type { StageEditorModel } from "@/services/api/stage_api_crud/stageApiCrud";
+import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";

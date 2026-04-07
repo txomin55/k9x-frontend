@@ -1,5 +1,5 @@
 import { Index, Show } from "solid-js";
-import type { PublicEventCompetitor } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";

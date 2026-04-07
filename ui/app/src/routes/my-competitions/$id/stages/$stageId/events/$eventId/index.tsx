@@ -3,17 +3,17 @@ import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid
 import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/EventJudgesSection";
-import type { EventResponse, UpdateEventRequest } from "@/services/api/event_api_crud/eventApiCrud";
-import { useApiEvent } from "@/services/api/event_api_crud/eventApiCrud";
+import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
+import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   PublicEventCompetitor,
   PublicEventExercise,
   PublicStageJudge
-} from "@/services/api/competition_crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 
 export const Route = createFileRoute(
   "/my-competitions/$id/stages/$stageId/events/$eventId/",
@@ -366,8 +366,6 @@ function CompetitionEventDetailBody(props: {
     });
   };
 
-  const handleCloseEdit = () => setIsEditing(false);
-  const handleOpenEdit = () => setIsEditing(true);
   const commitEventEdits = () => {
     if (!isEditing()) return;
 
@@ -493,24 +491,16 @@ function CompetitionEventDetailBody(props: {
         onSaveCompetitor={saveCompetitorEditor}
       />
 
+      <FloatingToggleCircle
+        onClick={() => setIsEditing((current) => !current)}
+        toggled={isEditing()}
+        nonToggledText="--Edit"
+        toggledText="X"
+      />
       <Show when={isEditing()}>
-        <CircleButton onClick={handleCloseEdit}>
-          <>
-            <span>--Close edit</span>
-            <span>X</span>
-          </>
-        </CircleButton>
         <AtomButton type="destructive" onClick={props.onDelete}>
           --Delete event
         </AtomButton>
-      </Show>
-      <Show when={!isEditing()}>
-        <CircleButton onClick={handleOpenEdit}>
-          <>
-            <span>--Edit event</span>
-            <span>--edit</span>
-          </>
-        </CircleButton>
       </Show>
     </div>
   );

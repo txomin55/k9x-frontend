@@ -4,9 +4,9 @@ import {
   useNavigate,
 } from "@tanstack/solid-router";
 import { For, onMount, Suspense } from "solid-js";
-import { AppRoutePath } from "@/components/app_shell/paths";
+import { AppRoutePath } from "@/components/app-shell/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
-import { useStages } from "@/services/fetch_stages/fetchStages";
+import { useStages } from "@/services/fetch-stages/fetchStages";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 

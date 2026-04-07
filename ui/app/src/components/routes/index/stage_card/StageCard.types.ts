@@ -1,4 +1,4 @@
-import type { StageEvent } from "@/services/fetch_stages/fetchStages.types";
+import type { StageEvent } from "@/services/fetch-stages/fetchStages.types";
 
 export interface StageCardProps {
   address?: string;

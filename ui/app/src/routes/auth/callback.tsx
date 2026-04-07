@@ -1,15 +1,21 @@
 import { Title } from "@solidjs/meta";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
-import { AppRoutePath } from "@/components/app_shell/paths";
-import { clearCachedUserData, fetchCachedUserData } from "@/services/api/fetch_user_data/fetchUserData";
-import { GOOGLE_OAUTH_STATE_KEY, GOOGLE_SILENT_OAUTH_MESSAGE_TYPE } from "@/utils/google_auth/googleAuth";
-import { useLogin } from "@/services/api/do_login/doLogin";
+import { AppRoutePath } from "@/components/app-shell/paths";
+import {
+  clearCachedUserData,
+  fetchCachedUserData,
+} from "@/services/api/fetch-user-data/fetchUserData";
+import {
+  GOOGLE_OAUTH_STATE_KEY,
+  GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
+} from "@/utils/google-auth/googleAuth";
+import { useLogin } from "@/services/api/do-login/doLogin";
 import { setUser } from "@/stores/auth";
-import { clearLocalFirstQueryCache } from "@/utils/local_first/query_snapshots/localFirstQueryCache";
-import { clearLocalFirstData } from "@/utils/local_first/storage/localFirstDatabase";
+import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
+import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
-import { warmOfflineBundle } from "@/utils/service_worker/offline_bundle/warmOfflineBundle";
+import { warmOfflineBundle } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 

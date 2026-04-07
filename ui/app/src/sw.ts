@@ -1,12 +1,12 @@
 /// <reference lib="webworker" />
 
-import { registerAnimalIconCache } from "@/utils/service_worker/events/animal-icons";
-import { registerNotificationClickHandler } from "@/utils/service_worker/events/notification-click";
+import { registerAnimalIconCache } from "@/utils/service-worker/events/animal-icons";
+import { registerNotificationClickHandler } from "@/utils/service-worker/events/notification-click";
 import {
   APP_SHELL_CACHE,
   registerAppShellCache,
-} from "@/utils/service_worker/events/runtime-cache";
-import { registerServiceWorkerSetup } from "@/utils/service_worker/events/setup";
+} from "@/utils/service-worker/events/runtime-cache";
+import { registerServiceWorkerSetup } from "@/utils/service-worker/events/setup";
 
 declare const self: ServiceWorkerGlobalScope;
 

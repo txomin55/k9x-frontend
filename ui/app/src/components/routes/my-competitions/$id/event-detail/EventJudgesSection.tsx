@@ -1,5 +1,5 @@
 import { Index, Show } from "solid-js";
-import type { PublicStageJudge } from "@/services/api/competition_crud/competitionCrudTypes";
+import type { PublicStageJudge } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -70,7 +70,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                       <AtomButton onClick={props.onCloseJudgeEditor}>
                         --Cancel
                       </AtomButton>
-                      <AtomButton onClick={props.onSaveJudge}>--Save</AtomButton>
+                      <AtomButton onClick={props.onSaveJudge}>
+                        --Save
+                      </AtomButton>
                     </div>
                   </div>
                 )}
@@ -140,9 +142,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                                   >
                                     --Cancel
                                   </AtomButton>
-                                  <AtomButton
-                                    onClick={props.onSaveJudge}
-                                  >
+                                  <AtomButton onClick={props.onSaveJudge}>
                                     --Save
                                   </AtomButton>
                                 </div>
