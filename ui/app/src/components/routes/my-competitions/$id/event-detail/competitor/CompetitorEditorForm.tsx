@@ -15,7 +15,7 @@ type CompetitorDialogContentProps = {
   onSaveCompetitor: () => void;
 };
 
-export default function CompetitorDialogContent(
+export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
   return (

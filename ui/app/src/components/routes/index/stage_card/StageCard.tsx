@@ -24,7 +24,9 @@ export default function StageCard(props: StageCardProps) {
       }
       subHeader={
         <div class="stage-card__meta">
-          <span class="stage-card__address text-caption-md">{props.address}</span>
+          <span class="stage-card__address text-caption-md">
+            {props.address}
+          </span>
           <span class="stage-card__date text-caption-sm">
             {`${new Date(props.from).toDateString()} - ${new Date(props.to).toDateString()}`}
           </span>
@@ -55,7 +57,6 @@ export default function StageCard(props: StageCardProps) {
           )}
         </Index>
       }
-      actions={<></>}
     />
   );
 }

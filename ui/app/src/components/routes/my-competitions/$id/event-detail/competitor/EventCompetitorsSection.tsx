@@ -3,7 +3,7 @@ import type { PublicEventCompetitor } from "@/services/api/competition-crud/comp
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import CompetitorDialogContent from "./CompetitorDialogContent";
+import CompetitorEditorForm from "./CompetitorEditorForm";
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: PublicEventCompetitor | null;
@@ -31,16 +31,11 @@ export default function EventCompetitorsSection(
       <div>
         <h2>--Competitors</h2>
         <Show when={props.isEditing}>
-          <CircleButton
-            aria-label="--Add competitor"
-            onClick={props.onAddCompetitor}
-          >
-            +
-          </CircleButton>
+          <CircleButton onClick={props.onAddCompetitor}>+</CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
-              <CompetitorDialogContent
+              <CompetitorEditorForm
                 competitorDialogDraft={props.competitorDialogDraft}
                 onCloseCompetitorEditor={props.onCloseCompetitorEditor}
                 onCompetitorDraftChange={props.onCompetitorDraftChange}
@@ -77,12 +72,12 @@ export default function EventCompetitorsSection(
                   </>
                 }
                 actions={
-                  <Show when={props.isEditing}>
+                  props.isEditing ? (
                     <>
                       <AtomDialog
-                        closeButtonText="Close dialog"
+                        closeButtonText="--Close dialog"
                         content={
-                          <CompetitorDialogContent
+                          <CompetitorEditorForm
                             competitorDialogDraft={props.competitorDialogDraft}
                             onCloseCompetitorEditor={
                               props.onCloseCompetitorEditor
@@ -110,7 +105,6 @@ export default function EventCompetitorsSection(
                         trigger={<span>--Edit</span>}
                       />
                       <CircleButton
-                        aria-label={`--Delete ${competitor().name || "competitor"}`}
                         onClick={() =>
                           props.onDeleteCompetitor(competitor().dogId)
                         }
@@ -118,7 +112,7 @@ export default function EventCompetitorsSection(
                         -
                       </CircleButton>
                     </>
-                  </Show>
+                  ) : undefined
                 }
               />
             )}

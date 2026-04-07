@@ -1,11 +1,9 @@
 import { Index, Show } from "solid-js";
 import type { PublicEventExercise } from "@/services/api/competition-crud/competitionCrudTypes";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import ExerciseEditorForm from "./exercises/ExerciseEditorForm";
 
 type EventExercisesSectionProps = {
   editingExerciseId: string | null;
@@ -40,48 +38,16 @@ export default function EventExercisesSection(
             +
           </CircleButton>
           <AtomDialog
-            closeButtonText="Close dialog"
+            closeButtonText="--Close dialog"
             content={
               <Show when={props.exerciseDialogDraft}>
                 {(draft) => (
-                  <div>
-                    <AtomNumberInput
-                      label="--Order"
-                      value={draft().order}
-                      onChange={(value) =>
-                        props.onExerciseDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                order: Number(value) || 0,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <AtomInput
-                      label="--Text"
-                      value={draft().text}
-                      onChange={(value) =>
-                        props.onExerciseDraftChange((current) =>
-                          current
-                            ? {
-                                ...current,
-                                text: value,
-                              }
-                            : current,
-                        )
-                      }
-                    />
-                    <div>
-                      <AtomButton onClick={props.onCloseExerciseEditor}>
-                        --Cancel
-                      </AtomButton>
-                      <AtomButton onClick={props.onSaveExercise}>
-                        --Save
-                      </AtomButton>
-                    </div>
-                  </div>
+                  <ExerciseEditorForm
+                    draft={draft}
+                    onDraftChange={props.onExerciseDraftChange}
+                    onCancel={props.onCloseExerciseEditor}
+                    onSave={props.onSaveExercise}
+                  />
                 )}
               </Show>
             }
@@ -104,53 +70,19 @@ export default function EventExercisesSection(
                 topLeft={`--#${exercise().order}`}
                 description={<p>{exercise().text || "--No text"}</p>}
                 actions={
-                  <Show when={props.isEditing}>
+                  props.isEditing ? (
                     <>
                       <AtomDialog
-                        closeButtonText="Close dialog"
+                        closeButtonText="--Close dialog"
                         content={
                           <Show when={props.exerciseDialogDraft}>
                             {(draft) => (
-                              <div>
-                                <AtomNumberInput
-                                  label="--Order"
-                                  value={draft().order}
-                                  onChange={(value) =>
-                                    props.onExerciseDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            order: Number(value) || 0,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <AtomInput
-                                  label="--Text"
-                                  value={draft().text}
-                                  onChange={(value) =>
-                                    props.onExerciseDraftChange((current) =>
-                                      current
-                                        ? {
-                                            ...current,
-                                            text: value,
-                                          }
-                                        : current,
-                                    )
-                                  }
-                                />
-                                <div>
-                                  <AtomButton
-                                    onClick={props.onCloseExerciseEditor}
-                                  >
-                                    --Cancel
-                                  </AtomButton>
-                                  <AtomButton onClick={props.onSaveExercise}>
-                                    --Save
-                                  </AtomButton>
-                                </div>
-                              </div>
+                              <ExerciseEditorForm
+                                draft={draft}
+                                onDraftChange={props.onExerciseDraftChange}
+                                onCancel={props.onCloseExerciseEditor}
+                                onSave={props.onSaveExercise}
+                              />
                             )}
                           </Show>
                         }
@@ -169,13 +101,12 @@ export default function EventExercisesSection(
                         trigger={<span>--Edit</span>}
                       />
                       <CircleButton
-                        aria-label={`--Delete exercise ${exercise().order}`}
                         onClick={() => props.onDeleteExercise(exercise().id)}
                       >
                         -
                       </CircleButton>
                     </>
-                  </Show>
+                  ) : undefined
                 }
               />
             )}

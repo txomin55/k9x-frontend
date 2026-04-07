@@ -34,12 +34,7 @@ export default function StagesSection(props: StagesSectionProps) {
       <div class="stages-section__title">
         <h2>--Stages</h2>
         <Show when={props.isEditing}>
-          <CircleButton
-            aria-label="--Add stage"
-            onClick={props.onOpenNewStageEditor}
-          >
-            +
-          </CircleButton>
+          <CircleButton onClick={props.onOpenNewStageEditor}>+</CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
@@ -96,7 +91,6 @@ export default function StagesSection(props: StagesSectionProps) {
                         trigger={<span>--Edit</span>}
                       />
                       <CircleButton
-                        aria-label={`--Delete ${stage().name}`}
                         onClick={() => props.onDeleteStage(stage().id)}
                       >
                         -

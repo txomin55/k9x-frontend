@@ -5,7 +5,7 @@ import "./styles.css";
 export default function FloatingToggleCircle(props: FloatingToggleProps) {
   return (
     <div class="floating-toggle-circle">
-      <CircleButton onClick={props.onClick}>
+      <CircleButton onClick={props.onClick} size="lg">
         {props.toggled ? (
           <span>{props.toggledText}</span>
         ) : (

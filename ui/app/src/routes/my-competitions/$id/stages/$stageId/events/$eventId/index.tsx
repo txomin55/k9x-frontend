@@ -1,14 +1,27 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/EventCompetitorsSection";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/competitor/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/EventJudgesSection";
-import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
+import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/judges/EventJudgesSection";
+import type {
+  EventResponse,
+  UpdateEventRequest,
+} from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   PublicEventCompetitor,
   PublicEventExercise,
-  PublicStageJudge
+  PublicStageJudge,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
