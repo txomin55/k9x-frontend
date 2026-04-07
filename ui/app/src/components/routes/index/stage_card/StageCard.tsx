@@ -3,7 +3,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { Index } from "solid-js";
 import "./styles.css";
-import CountryFlag from "@/components/common/CountryFlag";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
 
 export default function StageCard(props: StageCardProps) {

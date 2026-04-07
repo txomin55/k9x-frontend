@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import CountryFlag from "@/components/common/CountryFlag";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";

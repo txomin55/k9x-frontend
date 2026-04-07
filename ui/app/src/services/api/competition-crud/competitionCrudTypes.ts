@@ -42,6 +42,8 @@ export interface PublicEventCompetitor {
   owner: string;
   team: string;
   country: string;
+  breed: string;
+  order: number;
   scores: PublicEventScore[];
 }
 
@@ -82,6 +84,7 @@ export interface StageJudge {
 
 export interface EventCompetitor {
   finalScore?: number;
+  order?: number;
   dogId?: string;
   team?: string;
   identity?: string;

@@ -3,7 +3,10 @@ import type { PublicEventExercise } from "@/services/api/competition-crud/compet
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import ExerciseEditorForm from "./exercises/ExerciseEditorForm";
+import ExerciseEditorForm from "./ExerciseEditorForm";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import "./styles.css";
 
 type EventExercisesSectionProps = {
   editingExerciseId: string | null;
@@ -27,8 +30,8 @@ export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
   return (
-    <section>
-      <div>
+    <section class="event-exercises-section">
+      <div class="event-exercises-section__header">
         <h2>--Exercises</h2>
         <Show when={props.isEditing}>
           <CircleButton
@@ -63,7 +66,7 @@ export default function EventExercisesSection(
         </Show>
       </div>
       <Show when={props.exercises.length > 0} fallback={<p>--No exercises.</p>}>
-        <div>
+        <div class="event-exercises-section__exercises">
           <Index each={props.exercises}>
             {(exercise) => (
               <Card
@@ -71,7 +74,13 @@ export default function EventExercisesSection(
                 description={<p>{exercise().text || "--No text"}</p>}
                 actions={
                   props.isEditing ? (
-                    <>
+                    <div class="event-exercises-section__exercises--actions">
+                      <ConfirmActionButton
+                        text={exercise().text}
+                        onConfirm={() => props.onDeleteExercise(exercise().id)}
+                      >
+                        <AtomButton type="destructive">--Delete</AtomButton>
+                      </ConfirmActionButton>
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
@@ -100,12 +109,7 @@ export default function EventExercisesSection(
                         title={`--Edit exercise ${exercise().order}`}
                         trigger={<span>--Edit</span>}
                       />
-                      <CircleButton
-                        onClick={() => props.onDeleteExercise(exercise().id)}
-                      >
-                        -
-                      </CircleButton>
-                    </>
+                    </div>
                   ) : undefined
                 }
               />

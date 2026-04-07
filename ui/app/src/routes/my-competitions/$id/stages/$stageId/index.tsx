@@ -29,6 +29,7 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 
 export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -420,9 +421,12 @@ function CompetitionStageDetailBody(props: {
         toggledText="X"
       />
       <Show when={isEditing()}>
-        <AtomButton type="destructive" onClick={props.onDelete}>
-          --Delete stage
-        </AtomButton>
+        <ConfirmActionButton
+          text={props.stage().name || "--this stage"}
+          onConfirm={props.onDelete}
+        >
+          <AtomButton type="destructive">--Delete stage</AtomButton>
+        </ConfirmActionButton>
       </Show>
     </div>
   );

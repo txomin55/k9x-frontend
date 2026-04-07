@@ -24,7 +24,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   };
 
   return (
-    <div>
+    <div class="judge-editor-form">
       <AtomInput
         label="--Name"
         value={props.draft().name}
@@ -36,8 +36,10 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         value={props.draft().collectorEmail}
         onChange={updateField("collectorEmail")}
       />
-      <div>
-        <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>
+      <div class="judge-editor-form__actions">
+        <AtomButton onClick={props.onCancel} type="accent">
+          --Cancel
+        </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>
       </div>
     </div>

@@ -11,7 +11,7 @@ import {
   Suspense,
 } from "solid-js";
 import EventCompetitorsSection from "@/components/routes/my-competitions/$id/event-detail/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/EventExercisesSection";
+import EventExercisesSection from "@/components/routes/my-competitions/$id/event-detail/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/judges/EventJudgesSection";
 import type {
   EventResponse,
@@ -27,6 +27,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 
 export const Route = createFileRoute(
   "/my-competitions/$id/stages/$stageId/events/$eventId/",
@@ -511,9 +512,12 @@ function CompetitionEventDetailBody(props: {
         toggledText="X"
       />
       <Show when={isEditing()}>
-        <AtomButton type="destructive" onClick={props.onDelete}>
-          --Delete event
-        </AtomButton>
+        <ConfirmActionButton
+          text={name() || "--this event"}
+          onConfirm={props.onDelete}
+        >
+          <AtomButton type="destructive">--Delete event</AtomButton>
+        </ConfirmActionButton>
       </Show>
     </div>
   );

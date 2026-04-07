@@ -51,6 +51,7 @@
 }
 
 [data-theme="dark"] {
+    color-scheme: dark;
 
     /* semantic: surfaces */
     --background: var(--neutral-950);

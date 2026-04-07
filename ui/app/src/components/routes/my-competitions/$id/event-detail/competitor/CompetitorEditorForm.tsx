@@ -1,8 +1,8 @@
-import { Show } from "solid-js";
 import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import { Show } from "solid-js";
 
 type CompetitorDialogContentProps = {
   competitorDialogDraft: PublicEventCompetitor | null;
@@ -21,21 +21,7 @@ export default function CompetitorEditorForm(
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
-        <div>
-          <AtomInput
-            label="--Name"
-            value={draft().name}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      name: value,
-                    }
-                  : current,
-              )
-            }
-          />
+        <div class="competitor-editor-form">
           <AtomInput
             label="--Owner"
             value={draft().owner}
@@ -45,6 +31,21 @@ export default function CompetitorEditorForm(
                   ? {
                       ...current,
                       owner: value,
+                    }
+                  : current,
+              )
+            }
+          />
+          <AtomInput
+            label="--Name"
+            value={draft().name}
+            description={`--Breed ${draft().breed}`}
+            onChange={(value) =>
+              props.onCompetitorDraftChange((current) =>
+                current
+                  ? {
+                      ...current,
+                      name: value,
                     }
                   : current,
               )
@@ -93,6 +94,20 @@ export default function CompetitorEditorForm(
             }
           />
           <AtomNumberInput
+            label="--Order"
+            value={draft().order}
+            onChange={(value) =>
+              props.onCompetitorDraftChange((current) =>
+                current
+                  ? {
+                      ...current,
+                      order: Number(value) || 0,
+                    }
+                  : current,
+              )
+            }
+          />
+          <AtomNumberInput
             label="--Final score"
             value={draft().finalScore}
             onChange={(value) =>
@@ -106,8 +121,8 @@ export default function CompetitorEditorForm(
               )
             }
           />
-          <div>
-            <AtomButton onClick={props.onCloseCompetitorEditor}>
+          <div class="competitor-editor-form__actions">
+            <AtomButton type="accent" onClick={props.onCloseCompetitorEditor}>
               --Cancel
             </AtomButton>
             <AtomButton onClick={props.onSaveCompetitor}>--Save</AtomButton>

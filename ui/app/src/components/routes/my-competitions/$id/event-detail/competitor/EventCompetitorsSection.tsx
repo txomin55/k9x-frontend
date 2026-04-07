@@ -1,9 +1,12 @@
-import { Index, Show } from "solid-js";
+import { createMemo, Index, Show } from "solid-js";
 import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import "./styles.css";
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: PublicEventCompetitor | null;
@@ -26,12 +29,19 @@ type EventCompetitorsSectionProps = {
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
+  const getOrderValue = (competitor: PublicEventCompetitor) => competitor.order;
+
+  const sortedCompetitors = createMemo(() =>
+    [...props.competitors].toSorted(
+      (a, b) => getOrderValue(a) - getOrderValue(b),
+    ),
+  );
+
   return (
-    <section>
-      <div>
+    <section class="event-competitors-section">
+      <div class="event-competitors-section__header">
         <h2>--Competitors</h2>
         <Show when={props.isEditing}>
-          <CircleButton onClick={props.onAddCompetitor}>+</CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
@@ -43,13 +53,15 @@ export default function EventCompetitorsSection(
               />
             }
             onOpenChange={(isOpen) => {
-              if (!isOpen && props.isCreatingCompetitor) {
+              if (isOpen) {
+                props.onAddCompetitor();
+              } else {
                 props.onCloseCompetitorEditor();
               }
             }}
             open={props.isCreatingCompetitor}
             title="--New competitor"
-            trigger={<span />}
+            trigger={<CircleButton>+</CircleButton>}
           />
         </Show>
       </div>
@@ -57,23 +69,23 @@ export default function EventCompetitorsSection(
         when={props.competitors.length > 0}
         fallback={<p>--No competitors.</p>}
       >
-        <div>
-          <Index each={props.competitors}>
+        <div class="event-competitors-section__competitors">
+          <Index each={sortedCompetitors()}>
             {(competitor) => (
               <Card
-                topLeft={competitor().name || "--No name"}
+                topLeft={competitor().owner}
                 content={
-                  <>
-                    <p>{`--Owner: ${competitor().owner}`}</p>
+                  <div class="event-competitors-section__competitors--competitor">
+                    <p>{`--Dog: ${competitor().name}`}</p>
                     <p>{`--Identity: ${competitor().identity}`}</p>
                     <p>{`--Team: ${competitor().team}`}</p>
                     <p>{`--Country: ${competitor().country}`}</p>
                     <p>{`--Final score: ${competitor().finalScore}`}</p>
-                  </>
+                  </div>
                 }
                 actions={
                   props.isEditing ? (
-                    <>
+                    <div class="event-competitors-section__competitors--actions">
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
@@ -101,17 +113,18 @@ export default function EventCompetitorsSection(
                           }
                         }}
                         open={props.editingCompetitorId === competitor().dogId}
-                        title={`--Edit ${competitor().name || "competitor"}`}
+                        title={`--Edit ${competitor().name}`}
                         trigger={<span>--Edit</span>}
                       />
-                      <CircleButton
-                        onClick={() =>
+                      <ConfirmActionButton
+                        text={competitor().owner}
+                        onConfirm={() =>
                           props.onDeleteCompetitor(competitor().dogId)
                         }
                       >
-                        -
-                      </CircleButton>
-                    </>
+                        <AtomButton type="destructive">--Delete</AtomButton>
+                      </ConfirmActionButton>
+                    </div>
                   ) : undefined
                 }
               />

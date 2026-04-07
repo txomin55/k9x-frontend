@@ -7,7 +7,7 @@ import {
   queryClient,
   setupQueryRefetchOnReconnect,
 } from "@/utils/http/query-client";
-import "@/app.css";
+import "@lib/assets/styles/index.css";
 
 export default function App() {
   onMount(() => {

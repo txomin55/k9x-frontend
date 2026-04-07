@@ -7,6 +7,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 
 type StageItem = NonNullable<Competition["stages"]>[number];
@@ -90,11 +91,12 @@ export default function StagesSection(props: StagesSectionProps) {
                         title={`--Edit ${stage().name}`}
                         trigger={<span>--Edit</span>}
                       />
-                      <CircleButton
-                        onClick={() => props.onDeleteStage(stage().id)}
+                      <ConfirmActionButton
+                        text={stage().name}
+                        onConfirm={() => props.onDeleteStage(stage().id)}
                       >
-                        -
-                      </CircleButton>
+                        <AtomButton type="destructive">--Delete</AtomButton>
+                      </ConfirmActionButton>
                     </>
                   </Show>
                   <Show when={!props.isEditing}>

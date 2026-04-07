@@ -1,9 +1,12 @@
 import { Index, Show } from "solid-js";
 import type { PublicStageJudge } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import JudgeEditorForm from "./JudgeEditorForm";
+import "./styles.css";
 
 type EventJudgesSectionProps = {
   editingJudgeIndex: number | null;
@@ -23,11 +26,10 @@ type EventJudgesSectionProps = {
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
   return (
-    <section>
-      <div>
+    <section class="event-judges-section">
+      <div class="event-judges-section__header">
         <h2>--Judges</h2>
         <Show when={props.isEditing}>
-          <CircleButton onClick={props.onAddJudge}>+</CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
@@ -43,18 +45,20 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
               </Show>
             }
             onOpenChange={(isOpen) => {
-              if (!isOpen && props.isCreatingJudge) {
+              if (isOpen) {
+                props.onAddJudge();
+              } else {
                 props.onCloseJudgeEditor();
               }
             }}
             open={props.isCreatingJudge}
             title="--New judge"
-            trigger={<span />}
+            trigger={<CircleButton>+</CircleButton>}
           />
         </Show>
       </div>
       <Show when={props.judges.length > 0} fallback={<p>--No judges.</p>}>
-        <div>
+        <div class="event-judges-section__judges">
           <Index each={props.judges}>
             {(judge, index) => (
               <Card
@@ -64,7 +68,13 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                 }
                 actions={
                   props.isEditing ? (
-                    <>
+                    <div class="event-judges-section__judges--actions">
+                      <ConfirmActionButton
+                        text={judge().name}
+                        onConfirm={() => props.onDeleteJudge(index)}
+                      >
+                        <AtomButton type="destructive">--Delete</AtomButton>
+                      </ConfirmActionButton>
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
@@ -90,13 +100,10 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           }
                         }}
                         open={props.editingJudgeIndex === index}
-                        title={`--Edit ${judge().name || "judge"}`}
+                        title={`--Edit ${judge().name}`}
                         trigger={<span>--Edit</span>}
                       />
-                      <CircleButton onClick={() => props.onDeleteJudge(index)}>
-                        -
-                      </CircleButton>
-                    </>
+                    </div>
                   ) : undefined
                 }
               />

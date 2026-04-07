@@ -25,6 +25,7 @@ import {
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 
 export const Route = createFileRoute("/my-competitions/$id/")({
@@ -288,9 +289,12 @@ function CompetitionDetailBody(props: {
         toggledText="X"
       />
       <Show when={isEditing()}>
-        <AtomButton type="destructive" onClick={props.onDelete}>
-          --Delete
-        </AtomButton>
+        <ConfirmActionButton
+          text={title() || "--this competition"}
+          onConfirm={props.onDelete}
+        >
+          <AtomButton type="destructive">--Delete</AtomButton>
+        </ConfirmActionButton>
       </Show>
     </div>
   );

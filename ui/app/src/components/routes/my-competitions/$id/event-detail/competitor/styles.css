@@ -1,0 +1,23 @@
+.event-competitors-section__competitors--actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.event-competitors-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.competitor-editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.competitor-editor-form__actions {
+    padding-top: var(--unit-2);
+    display: flex;
+    justify-content: flex-end;
+}
