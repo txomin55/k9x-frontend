@@ -88,7 +88,6 @@ export interface EventCompetitor {
   dogId?: string;
   team?: string;
   identity?: string;
-  name?: string;
   owner?: string;
   country?: string;
   scores?: EventScore[];

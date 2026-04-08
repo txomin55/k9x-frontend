@@ -250,12 +250,31 @@ function CompetitionEventDetailBody(props: {
 
       if (!currentEditingExerciseId) return;
 
-      setDraftEvent((current) => ({
-        ...current,
-        exercises: current.exercises.map((entry) =>
-          entry.id === currentEditingExerciseId ? draft : entry,
-        ),
-      }));
+      setDraftEvent((current) => {
+        const previousExercise = current.exercises.find(
+          (entry) => entry.id === currentEditingExerciseId,
+        );
+        const orderChanged =
+          previousExercise && previousExercise.order !== draft.order;
+
+        const hasConflict = current.exercises.some(
+          (entry) =>
+            entry.id !== currentEditingExerciseId &&
+            entry.order === draft.order,
+        );
+        const shouldReorder = orderChanged || hasConflict;
+
+        const nextExercises = shouldReorder
+          ? reorderExercises(current.exercises, draft.order, draft)
+          : current.exercises.map((entry) =>
+              entry.id === currentEditingExerciseId ? draft : entry,
+            );
+
+        return {
+          ...current,
+          exercises: nextExercises,
+        };
+      });
     }
 
     closeExerciseEditor();
@@ -276,12 +295,31 @@ function CompetitionEventDetailBody(props: {
 
       if (!currentEditingCompetitorId) return;
 
-      setDraftEvent((current) => ({
-        ...current,
-        competitors: current.competitors.map((entry) =>
-          entry.dogId === currentEditingCompetitorId ? draft : entry,
-        ),
-      }));
+      setDraftEvent((current) => {
+        const previousCompetitor = current.competitors.find(
+          (entry) => entry.dogId === currentEditingCompetitorId,
+        );
+        const orderChanged =
+          previousCompetitor &&
+          previousCompetitor.order !== draft.order;
+        const hasConflict = current.competitors.some(
+          (entry) =>
+            entry.dogId !== currentEditingCompetitorId &&
+            entry.order === draft.order,
+        );
+        const shouldReorder = orderChanged || hasConflict;
+
+        const nextCompetitors = shouldReorder
+          ? reorderCompetitors(current.competitors, draft.order, draft)
+          : current.competitors.map((entry) =>
+              entry.dogId === currentEditingCompetitorId ? draft : entry,
+            );
+
+        return {
+          ...current,
+          competitors: nextCompetitors,
+        };
+      });
     }
 
     closeCompetitorEditor();
@@ -555,13 +593,54 @@ function createDefaultCompetitor(): PublicEventCompetitor {
   };
 }
 
+function reorderCompetitors(
+  competitors: PublicEventCompetitor[],
+  order: number,
+  updatedCompetitor: PublicEventCompetitor,
+): PublicEventCompetitor[] {
+  return competitors.map((entry) => {
+    if (entry.dogId === updatedCompetitor.dogId) {
+      return updatedCompetitor;
+    }
+
+    if (entry.order >= order) {
+      return {
+        ...entry,
+        order: entry.order + 1,
+      };
+    }
+
+    return entry;
+  });
+}
+
+function reorderExercises(
+  exercises: PublicEventExercise[],
+  order: number,
+  updatedExercise: PublicEventExercise,
+): PublicEventExercise[] {
+  return exercises.map((entry) => {
+    if (entry.id === updatedExercise.id) {
+      return updatedExercise;
+    }
+
+    if (entry.order >= order) {
+      return {
+        ...entry,
+        order: entry.order + 1,
+      };
+    }
+
+    return entry;
+  });
+}
+
 function mapCompetitorForUpdate(
   competitor: PublicEventCompetitor,
 ): EventCompetitor {
   return {
     dogId: competitor.dogId,
     identity: competitor.identity,
-    name: competitor.name,
     owner: competitor.owner,
     team: competitor.team,
     country: competitor.country,

@@ -18,6 +18,68 @@ type CompetitorDialogContentProps = {
 export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
+  const setFinalScore = (value) =>
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            finalScore: Number(value) || 0,
+          }
+        : current,
+    );
+
+  const setIdentity = (value) =>
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            identity: value,
+          }
+        : current,
+    );
+
+  const setTeam = (value) =>
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            team: value,
+          }
+        : current,
+    );
+
+  const setOwner = (value) =>
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            owner: value,
+          }
+        : current,
+    );
+
+  const setCountry = (value) =>
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            country: value,
+          }
+        : current,
+    );
+  const setOrder = (value: string) => {
+    const parsedOrder = Number(value);
+    const normalizedOrder = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            order: normalizedOrder,
+          }
+        : current,
+    );
+  };
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
@@ -25,101 +87,31 @@ export default function CompetitorEditorForm(
           <AtomInput
             label="--Owner"
             value={draft().owner}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      owner: value,
-                    }
-                  : current,
-              )
-            }
+            onChange={setOwner}
           />
-          <AtomInput
-            label="--Name"
-            value={draft().name}
-            description={`--Breed ${draft().breed}`}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      name: value,
-                    }
-                  : current,
-              )
-            }
-          />
+          <p>
+            --Name {draft().name} ({draft().breed})
+          </p>
           <AtomInput
             label="--Identity"
             value={draft().identity}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      identity: value,
-                    }
-                  : current,
-              )
-            }
+            onChange={setIdentity}
           />
-          <AtomInput
-            label="--Team"
-            value={draft().team}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      team: value,
-                    }
-                  : current,
-              )
-            }
-          />
+          <AtomInput label="--Team" value={draft().team} onChange={setTeam} />
           <AtomInput
             label="--Country"
             value={draft().country}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      country: value,
-                    }
-                  : current,
-              )
-            }
+            onChange={setCountry}
           />
           <AtomNumberInput
             label="--Order"
             value={draft().order}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      order: Number(value) || 0,
-                    }
-                  : current,
-              )
-            }
+            onChange={setOrder}
           />
           <AtomNumberInput
             label="--Final score"
             value={draft().finalScore}
-            onChange={(value) =>
-              props.onCompetitorDraftChange((current) =>
-                current
-                  ? {
-                      ...current,
-                      finalScore: Number(value) || 0,
-                    }
-                  : current,
-              )
-            }
+            onChange={setFinalScore}
           />
           <div class="competitor-editor-form__actions">
             <AtomButton type="accent" onClick={props.onCloseCompetitorEditor}>

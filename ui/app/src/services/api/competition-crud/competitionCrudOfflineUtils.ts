@@ -1,33 +1,27 @@
-import {
-  COMPETITIONS_SNAPSHOT_ID,
-  getCompetitionsQueryKey,
-} from "@/services/api/competition-crud/competitionCrud";
+import { COMPETITIONS_SNAPSHOT_ID, getCompetitionsQueryKey } from "@/services/api/competition-crud/competitionCrud";
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler,
+  registerPendingTaskHandler
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import {
-  type PendingTask,
-  type PendingTaskMethod,
-} from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
-  saveQuerySnapshot,
+  saveQuerySnapshot
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
   Competition,
   CompetitionLocation,
-  CompetitionRollbackPayload,
+  CompetitionRollbackPayload
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   mergeCompetitionsWithDrafts,
   removeCompetitionDraft,
   replaceCompetitionDrafts,
-  upsertCompetitionDraft,
+  upsertCompetitionDraft
 } from "@/services/api/competition-crud/competitionDraftStore";
 
 export const toCompetitionListItem = (
@@ -132,20 +126,6 @@ export const saveCompetitionsSnapshot = (competitions: Competition[]) =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
     saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions),
   );
-
-export const persistCompetitionSnapshot = async (competition: Competition) => {
-  const previousCompetitions = (await readCompetitionsSnapshot()) ?? [];
-  await saveCompetitionsSnapshot(
-    buildNextCompetitions(previousCompetitions, competition),
-  );
-};
-
-export const removeCompetitionSnapshot = async (id: string) => {
-  const previousCompetitions = (await readCompetitionsSnapshot()) ?? [];
-  await saveCompetitionsSnapshot(
-    buildCompetitionsWithoutEntity(previousCompetitions, id),
-  );
-};
 
 export const createCompetitionRollbackPayload = async (
   entityId: string,

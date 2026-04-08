@@ -3,13 +3,13 @@ import {
   applyApiStageUpsert,
   commitApiStageMutation,
   commitApiStageMutationSuccess,
-  createApiStageRollbackPayload,
+  createApiStageRollbackPayload
 } from "@/services/api/stage-api-crud/stageApiCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
   type Competition,
   getCachedCompetitions,
-  useCompetition,
+  useCompetition
 } from "@/services/api/competition-crud/competitionCrud";
 import type {
   EventCompetitor,
@@ -26,7 +26,7 @@ import type {
   Stage,
   StageEditorModel,
   StageJudge,
-  StageMutationPayload,
+  StageMutationPayload
 } from "@/services/api/competition-crud/competitionCrudTypes";
 
 export type {
@@ -86,10 +86,12 @@ const toApiStageCompetitor = (
     finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
     dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
-    name: competitor.name ?? previousCompetitor?.name ?? "",
+    name: previousCompetitor?.name ?? "",
     owner: competitor.owner ?? previousCompetitor?.owner ?? "",
     team: competitor.team ?? previousCompetitor?.team ?? "",
     country: competitor.country ?? previousCompetitor?.country ?? "",
+    breed: previousCompetitor?.breed ?? "",
+    order: competitor.order ?? previousCompetitor?.order ?? 0,
     scores:
       competitor.scores?.map((score) =>
         toApiStageEventScore(
@@ -210,6 +212,8 @@ export const toApiStage = (
           owner: competitor.owner ?? "",
           team: competitor.team ?? "",
           country: competitor.country ?? "",
+          breed: competitor.breed ?? "",
+          order: competitor.order ?? 0,
           scores:
             competitor.scores?.map((score) => ({
               exerciseId: score.exerciseId ?? "",

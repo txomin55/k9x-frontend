@@ -65,6 +65,18 @@ const createCompetitionsQuery = (options?: TanstackCreateQuery) =>
     refetchOnMount: options?.refetchOnMount,
   });
 
+export const prefetchCompetitions = (options?: TanstackCreateQuery) => {
+  const { queryFn, queryKey } = competitionsQuery.options();
+
+  return queryClient.fetchQuery({
+    queryKey,
+    queryFn,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+  });
+};
+
 export const useCompetitions = (options?: TanstackCreateQuery) => {
   const competitions = createCompetitionsQuery(options);
   const mergedData = createMemo(() =>

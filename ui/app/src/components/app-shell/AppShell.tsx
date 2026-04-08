@@ -1,6 +1,6 @@
 import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
-import { onCleanup, onMount, Show } from "solid-js";
+import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/layout/AppLayout";
 import NewsVisualizer from "@/components/news-visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
@@ -9,6 +9,7 @@ import { useI18n } from "@/stores/i18n";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
+import { prefetchCompetitions } from "@/services/api/competition-crud/competitionCrud";
 
 export default function AppShell() {
   const i18n = useI18n();
@@ -33,8 +34,16 @@ export default function AppShell() {
     if (user()) {
       warmOfflineBundleInBackground();
     }
-
     cancelAnimalIconWarmup = warmAnimalIconsInBackground();
+  });
+
+  createEffect(() => {
+    if (user()) {
+      void prefetchCompetitions({
+        refetchOnMount: false,
+        gcTime: 2 * 60 * 1000,
+      });
+    }
   });
 
   onCleanup(() => {

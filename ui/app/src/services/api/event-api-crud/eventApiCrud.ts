@@ -85,10 +85,12 @@ const toApiCompetitor = (
     finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
     dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
-    name: competitor.name ?? previousCompetitor?.name ?? "",
+    name: previousCompetitor?.name ?? "",
     owner: competitor.owner ?? previousCompetitor?.owner ?? "",
     team: competitor.team ?? previousCompetitor?.team ?? "",
     country: competitor.country ?? previousCompetitor?.country ?? "",
+    breed: previousCompetitor?.breed ?? "",
+    order: competitor.order ?? previousCompetitor?.order ?? 0,
     scores:
       competitor.scores?.map((score) =>
         toApiEventScore(

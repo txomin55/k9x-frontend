@@ -42,16 +42,16 @@ export default function EventCompetitorsSection(
       <div class="event-competitors-section__header">
         <h2>--Competitors</h2>
         <Show when={props.isEditing}>
-          <AtomDialog
-            closeButtonText="--Close dialog"
-            content={
-              <CompetitorEditorForm
-                competitorDialogDraft={props.competitorDialogDraft}
-                onCloseCompetitorEditor={props.onCloseCompetitorEditor}
-                onCompetitorDraftChange={props.onCompetitorDraftChange}
-                onSaveCompetitor={props.onSaveCompetitor}
-              />
-            }
+            <AtomDialog
+              closeButtonText="--Close dialog"
+              content={
+                <CompetitorEditorForm
+                  competitorDialogDraft={props.competitorDialogDraft}
+                  onCloseCompetitorEditor={props.onCloseCompetitorEditor}
+                  onCompetitorDraftChange={props.onCompetitorDraftChange}
+                  onSaveCompetitor={props.onSaveCompetitor}
+                />
+              }
             onOpenChange={(isOpen) => {
               if (isOpen) {
                 props.onAddCompetitor();

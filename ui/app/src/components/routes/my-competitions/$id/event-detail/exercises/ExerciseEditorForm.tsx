@@ -16,11 +16,14 @@ type ExerciseEditorFormProps = {
 
 export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
   const setOrder = (value: string) => {
+    const parsedOrder = Number(value);
+    const normalizedOrder = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+
     props.onDraftChange((current) =>
       current
         ? {
             ...current,
-            order: Number(value) || 0,
+            order: normalizedOrder,
           }
         : current,
     );

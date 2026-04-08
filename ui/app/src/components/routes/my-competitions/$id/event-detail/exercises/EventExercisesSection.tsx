@@ -45,14 +45,14 @@ export default function EventExercisesSection(
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
-              <Show when={props.exerciseDialogDraft}>
-                {(draft) => (
-                  <ExerciseEditorForm
-                    draft={draft}
-                    onDraftChange={props.onExerciseDraftChange}
-                    onCancel={props.onCloseExerciseEditor}
-                    onSave={props.onSaveExercise}
-                  />
+                <Show when={props.exerciseDialogDraft}>
+                  {(draft) => (
+                    <ExerciseEditorForm
+                      draft={draft}
+                      onDraftChange={props.onExerciseDraftChange}
+                      onCancel={props.onCloseExerciseEditor}
+                      onSave={props.onSaveExercise}
+                    />
                 )}
               </Show>
             }
@@ -88,14 +88,14 @@ export default function EventExercisesSection(
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
-                          <Show when={props.exerciseDialogDraft}>
-                            {(draft) => (
-                              <ExerciseEditorForm
-                                draft={draft}
-                                onDraftChange={props.onExerciseDraftChange}
-                                onCancel={props.onCloseExerciseEditor}
-                                onSave={props.onSaveExercise}
-                              />
+                        <Show when={props.exerciseDialogDraft}>
+                          {(draft) => (
+                            <ExerciseEditorForm
+                              draft={draft}
+                              onDraftChange={props.onExerciseDraftChange}
+                              onCancel={props.onCloseExerciseEditor}
+                              onSave={props.onSaveExercise}
+                            />
                             )}
                           </Show>
                         }
