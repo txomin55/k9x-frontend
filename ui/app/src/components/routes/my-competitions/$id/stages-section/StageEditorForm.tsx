@@ -14,11 +14,11 @@ type StageDialogProps = {
   onSave: () => void;
 };
 
-export default function StageDialog(props: StageDialogProps) {
+export default function StageEditorForm(props: StageDialogProps) {
   return (
     <Show when={props.draft()}>
       {(draft) => (
-        <div>
+        <div class="stage-editor-form">
           <AtomInput
             label="--Stage title"
             value={draft().name}
@@ -69,8 +69,10 @@ export default function StageDialog(props: StageDialogProps) {
               )
             }
           />
-          <div>
-            <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>
+          <div class="stage-editor-form__actions">
+            <AtomButton type="accent" onClick={props.onCancel}>
+              --Cancel
+            </AtomButton>
             <AtomButton onClick={props.onSave}>--Save</AtomButton>
           </div>
         </div>

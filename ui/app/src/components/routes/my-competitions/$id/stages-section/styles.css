@@ -3,3 +3,21 @@
     justify-content: space-between;
     gap: var(--unit-2);
 }
+
+.stages-section__stages--actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.stage-editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.stage-editor-form__actions {
+    padding-top: var(--unit-2);
+    display: flex;
+    justify-content: flex-end;
+}

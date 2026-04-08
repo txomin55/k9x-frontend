@@ -1,7 +1,7 @@
 import { type Accessor, Index, Show } from "solid-js";
 import type { Competition } from "@/services/api/competition-crud/competitionCrudTypes";
 import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCrud";
-import StageDialog from "@/components/routes/my-competitions/$id/stage-dialog/StageDialog";
+import StageEditorForm from "@/components/routes/my-competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -35,11 +35,10 @@ export default function StagesSection(props: StagesSectionProps) {
       <div class="stages-section__title">
         <h2>--Stages</h2>
         <Show when={props.isEditing}>
-          <CircleButton onClick={props.onOpenNewStageEditor}>+</CircleButton>
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
-              <StageDialog
+              <StageEditorForm
                 draft={props.draft}
                 onCancel={props.onCloseStageEditor}
                 onDraftChange={props.onUpdateStageDialogDraft}
@@ -47,67 +46,66 @@ export default function StagesSection(props: StagesSectionProps) {
               />
             }
             onOpenChange={(isOpen) => {
-              if (!isOpen && props.isCreatingStage) {
+              if (isOpen) {
+                props.onOpenNewStageEditor();
+              } else {
                 props.onCloseStageEditor();
               }
             }}
             open={props.isCreatingStage}
             title="--New stage"
-            trigger={<span />}
+            trigger={<CircleButton>+</CircleButton>}
           />
         </Show>
       </div>
-      <div class="stages-section--stages">
+      <div class="stages-section__stages">
         <Index each={props.stages ?? []}>
           {(stage) => (
             <Card
               topLeft={stage().name}
               subHeader={<p>{formatStageDateRange(stage())}</p>}
               actions={
-                <>
-                  <Show when={props.isEditing}>
-                    <>
-                      <AtomDialog
-                        closeButtonText="--Close dialog"
-                        content={
-                          <StageDialog
-                            draft={props.draft}
-                            onCancel={props.onCloseStageEditor}
-                            onDraftChange={props.onUpdateStageDialogDraft}
-                            onSave={props.onSaveStageEditor}
-                          />
-                        }
-                        onOpenChange={(isOpen) => {
-                          if (isOpen) {
-                            props.onOpenStageEditor(stage());
-                            return;
-                          }
-
-                          if (props.editingStageId === stage().id) {
-                            props.onCloseStageEditor();
-                          }
-                        }}
-                        open={props.editingStageId === stage().id}
-                        title={`--Edit ${stage().name}`}
-                        trigger={<span>--Edit</span>}
-                      />
-                      <ConfirmActionButton
-                        text={stage().name}
-                        onConfirm={() => props.onDeleteStage(stage().id)}
-                      >
-                        <AtomButton type="destructive">--Delete</AtomButton>
-                      </ConfirmActionButton>
-                    </>
-                  </Show>
-                  <Show when={!props.isEditing}>
-                    <AtomButton
-                      type="accent"
-                      onClick={() => props.onNavigateToStage(stage().id)}
+                props.isEditing ? (
+                  <div class="stages-section__stages--actions">
+                    <ConfirmActionButton
+                      text={stage().name}
+                      onConfirm={() => props.onDeleteStage(stage().id)}
                     >
-                      --+Info
-                    </AtomButton>
-                  </Show>
-                </>
+                      <AtomButton type="destructive">--Delete</AtomButton>
+                    </ConfirmActionButton>
+                    <AtomDialog
+                      closeButtonText="--Close dialog"
+                      content={
+                        <StageEditorForm
+                          draft={props.draft}
+                          onCancel={props.onCloseStageEditor}
+                          onDraftChange={props.onUpdateStageDialogDraft}
+                          onSave={props.onSaveStageEditor}
+                        />
+                      }
+                      onOpenChange={(isOpen) => {
+                        if (isOpen) {
+                          props.onOpenStageEditor(stage());
+                          return;
+                        }
+
+                        if (props.editingStageId === stage().id) {
+                          props.onCloseStageEditor();
+                        }
+                      }}
+                      open={props.editingStageId === stage().id}
+                      title={`--Edit ${stage().name}`}
+                      trigger={<span>--Edit</span>}
+                    />
+                  </div>
+                ) : (
+                  <AtomButton
+                    type="accent"
+                    onClick={() => props.onNavigateToStage(stage().id)}
+                  >
+                    --+Info
+                  </AtomButton>
+                )
               }
             />
           )}
