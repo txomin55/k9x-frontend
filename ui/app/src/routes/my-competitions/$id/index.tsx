@@ -1,27 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
-import {
-  type Competition,
-  type PostCompetition,
-} from "@/services/api/competition-crud/competitionCrudTypes";
-import {
-  type StageEditorModel,
-  toApiStage,
-  useApiStage,
-} from "@/services/api/stage-api-crud/stageApiCrud";
+import { type Competition, type PostCompetition } from "@/services/api/competition-crud/competitionCrudTypes";
+import { type StageEditorModel, toApiStage, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
@@ -117,6 +100,19 @@ function CompetitionDetailBody(props: {
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
   const [stageDialogDraft, setStageDialogDraft] =
     createSignal<StageEditorModel | null>(null);
+  const sortedStages = createMemo(() => {
+    const stages = props.competition()?.stages;
+    if (!stages) {
+      return stages;
+    }
+
+    return [...stages].toSorted((left, right) => {
+      if (left.dateFrom === right.dateFrom) {
+        return left.dateTo - right.dateTo;
+      }
+      return left.dateFrom - right.dateFrom;
+    });
+  });
 
   createEffect(() => {
     if (isEditing()) return;
@@ -280,7 +276,7 @@ function CompetitionDetailBody(props: {
         onOpenStageEditor={openStageEditor}
         onSaveStageEditor={saveStageEditor}
         onUpdateStageDialogDraft={updateStageDialogDraft}
-        stages={props.competition()?.stages}
+        stages={sortedStages()}
       />
       <FloatingToggleCircle
         onClick={() => setIsEditing((current) => !current)}
