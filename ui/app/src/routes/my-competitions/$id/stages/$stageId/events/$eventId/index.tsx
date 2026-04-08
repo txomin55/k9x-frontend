@@ -1,10 +1,11 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
 import EventCompetitorsSection
-  from "@/components/routes/my-competitions/$id/event-detail/competitor/EventCompetitorsSection";
+  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
 import EventExercisesSection
-  from "@/components/routes/my-competitions/$id/event-detail/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my-competitions/$id/event-detail/judges/EventJudgesSection";
+  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
 import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
@@ -300,8 +301,7 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.dogId === currentEditingCompetitorId,
         );
         const orderChanged =
-          previousCompetitor &&
-          previousCompetitor.order !== draft.order;
+          previousCompetitor && previousCompetitor.order !== draft.order;
         const hasConflict = current.competitors.some(
           (entry) =>
             entry.dogId !== currentEditingCompetitorId &&

@@ -1,10 +1,28 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
 import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
-import { type Competition, type PostCompetition } from "@/services/api/competition-crud/competitionCrudTypes";
-import { type StageEditorModel, toApiStage, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
+import {
+  type Competition,
+  type PostCompetition,
+} from "@/services/api/competition-crud/competitionCrudTypes";
+import {
+  type StageEditorModel,
+  toApiStage,
+  useApiStage,
+} from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
@@ -285,10 +303,7 @@ function CompetitionDetailBody(props: {
         toggledText="X"
       />
       <Show when={isEditing()}>
-        <ConfirmActionButton
-          text={title() || "--this competition"}
-          onConfirm={props.onDelete}
-        >
+        <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
           <AtomButton type="destructive">--Delete</AtomButton>
         </ConfirmActionButton>
       </Show>

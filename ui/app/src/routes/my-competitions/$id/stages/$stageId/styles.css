@@ -1,10 +1,10 @@
-.event-exercises-section__exercises--actions {
+.stage-detail__content--events {
     display: flex;
     width: 100%;
     justify-content: space-between;
 }
 
-.event-exercises-section__header {
+.stage-detail__content--event-actions {
     display: flex;
     width: 100%;
     justify-content: space-between;

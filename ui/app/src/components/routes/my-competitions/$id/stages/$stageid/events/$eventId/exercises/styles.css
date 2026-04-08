@@ -1,23 +1,21 @@
-.event-judges-section__header {
+.event-exercises-section__exercises--actions {
     display: flex;
-    align-items: center;
     justify-content: space-between;
 }
 
-.event-judges-section__judges--actions {
+.event-exercises-section__header {
     display: flex;
-    width: 100%;
     justify-content: space-between;
 }
 
-.judge-editor-form {
+.exercise-editor-form {
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
 }
 
-.judge-editor-form__actions {
-    padding-top: var(--unit-2);
+.exercise-editor-form__actions {
     display: flex;
+    padding-top: var(--unit-2);
     justify-content: flex-end;
 }

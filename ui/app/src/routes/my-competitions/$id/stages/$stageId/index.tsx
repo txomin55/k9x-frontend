@@ -1,35 +1,22 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  type JSX,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent,
+  useApiEvent
 } from "@/services/api/event-api-crud/eventApiCrud";
-import {
-  type StageEditorModel,
-  useApiStage,
-} from "@/services/api/stage-api-crud/stageApiCrud";
+import { type StageEditorModel, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import Card from "@lib/components/molecules/card/Card";
+import "./styles.css";
+import EventEditorForm from "@/components/routes/my-competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 
 export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -121,7 +108,7 @@ function CompetitionStageDetailContentContainer(props: {
   const stageAccessor = () => props.stage()!;
 
   return (
-    <div class="competition-stage-detail">
+    <div class="stage-detail">
       <Suspense fallback={<span>--Loading stage detail</span>}>
         <Show when={props.stage()} fallback={<p>--Stage not found.</p>}>
           <CompetitionStageDetailBody
@@ -232,27 +219,10 @@ function CompetitionStageDetailBody(props: {
 
     props.onUpdateStage(nextStage);
   };
-  const handleDateFromInput: JSX.EventHandlerUnion<
-    HTMLInputElement,
-    InputEvent
-  > = (event) => setDateFrom(event.currentTarget.value);
-  const handleDateToInput: JSX.EventHandlerUnion<
-    HTMLInputElement,
-    InputEvent
-  > = (event) => setDateTo(event.currentTarget.value);
-  const renderEventDialogDraft = (draft: Accessor<EventResponse>) => (
-    <EventDialogContent
-      draft={draft()}
-      onCancel={closeEventEditor}
-      onChange={setEventDialogDraft}
-      onSave={saveEventEditor}
-    />
-  );
-  const renderEventDialogContent = () => (
-    <Show when={eventDialogDraft()}>{renderEventDialogDraft}</Show>
-  );
   const handleCreateDialogOpenChange = (isOpen: boolean) => {
-    if (!isOpen && isCreatingEvent()) {
+    if (isOpen) {
+      openNewEventEditor();
+    } else {
       closeEventEditor();
     }
   };
@@ -283,54 +253,6 @@ function CompetitionStageDetailBody(props: {
 
     props.onDeleteEvent(event().id);
   };
-  const renderEvent = (event: Accessor<EventResponse>) => (
-    <Show
-      when={isEditing()}
-      fallback={
-        <Card
-          topLeft={event().name || "--No name"}
-          subHeader={
-            <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
-          }
-          content={<p>{`--Participants: ${event().competitors.length}`}</p>}
-          actions={
-            <AtomButton type="accent" onClick={createNavigateToEvent(event)}>
-              --+Info
-            </AtomButton>
-          }
-        />
-      }
-    >
-      <Card
-        topLeft={event().name || "--No name"}
-        subHeader={<p>{`--Status: ${event().status || "--No status"}`}</p>}
-        content={
-          <>
-            <p>{`--Discipline: ${event().discipline || "--No discipline"}`}</p>
-            <p>{`--Participants: ${event().competitors.length}`}</p>
-          </>
-        }
-        actions={
-          <>
-            <AtomDialog
-              closeButtonText="Close dialog"
-              content={renderEventDialogContent()}
-              onOpenChange={createEditDialogOpenChange(event)}
-              open={editingEventId() === event().id}
-              title={`--Edit ${event().name || "event"}`}
-              trigger={<span>--Edit</span>}
-            />
-            <CircleButton
-              aria-label={`--Delete ${event().name || "event"}`}
-              onClick={createDeleteEventClick(event)}
-            >
-              -
-            </CircleButton>
-          </>
-        }
-      />
-    </Show>
-  );
 
   const saveEventEditor = () => {
     const draft = eventDialogDraft();
@@ -351,9 +273,15 @@ function CompetitionStageDetailBody(props: {
     closeEventEditor();
   };
 
+  const formatDateLabel = (value: string) => {
+    if (!value) return "--No date";
+
+    return value;
+  };
+
   return (
-    <div class="competition-stage-detail__content">
-      <header>
+    <div class="stage-detail">
+      <header class="stage-detail__header">
         <Show
           when={isEditing()}
           fallback={
@@ -364,46 +292,52 @@ function CompetitionStageDetailBody(props: {
             </>
           }
         >
-          <div>
-            <p>--Editing mode active.</p>
-            <AtomInput
-              label="--Title"
-              value={title()}
-              onBlur={commitStageEdits}
-              onChange={setTitle}
-            />
-            <label for="stage-date-from">--Date from</label>
-            <input
-              id="stage-date-from"
-              type="date"
-              value={dateFrom()}
-              onBlur={commitStageEdits}
-              onInput={handleDateFromInput}
-            />
-            <label for="stage-date-to">--Date to</label>
-            <input
-              id="stage-date-to"
-              type="date"
-              value={dateTo()}
-              onBlur={commitStageEdits}
-              onInput={handleDateToInput}
-            />
-          </div>
+          <p>--Editing mode active.</p>
+          <AtomInput
+            label="--Title"
+            value={title()}
+            onBlur={commitStageEdits}
+            onChange={setTitle}
+          />
+          <AtomInput
+            label="--Date from"
+            type="date"
+            value={dateFrom()}
+            onBlur={commitStageEdits}
+            onChange={setDateFrom}
+          />
+          <AtomInput
+            label="--Date to"
+            type="date"
+            value={dateTo()}
+            onBlur={commitStageEdits}
+            onChange={setDateTo}
+          />
         </Show>
       </header>
 
-      <section>
-        <div>
+      <section class="stage-detail__content">
+        <div class="stage-detail__content--events">
           <h2>--Events</h2>
           <Show when={isEditing()}>
-            <CircleButton onClick={openNewEventEditor}>+</CircleButton>
             <AtomDialog
               closeButtonText="--Close dialog"
-              content={renderEventDialogContent()}
+              content={
+                <Show when={eventDialogDraft()}>
+                  {(draft) => (
+                    <EventEditorForm
+                      draft={draft()}
+                      onCancel={closeEventEditor}
+                      onChange={setEventDialogDraft}
+                      onSave={saveEventEditor}
+                    />
+                  )}
+                </Show>
+              }
               onOpenChange={handleCreateDialogOpenChange}
               open={isCreatingEvent()}
               title="--New event"
-              trigger={<span />}
+              trigger={<CircleButton>+</CircleButton>}
             />
           </Show>
         </div>
@@ -411,7 +345,60 @@ function CompetitionStageDetailBody(props: {
           when={props.stage().events.length > 0}
           fallback={<p>--No events.</p>}
         >
-          <Index each={props.stage().events}>{renderEvent}</Index>
+          <div class="stage-detail__content--event">
+            <Index each={props.stage().events}>
+              {(event) => (
+                <Card
+                  topLeft={event().name}
+                  subHeader={<p>{`--Status: ${event().status}`}</p>}
+                  content={
+                    <div class="aaaaa">
+                      <p>{`--Discipline: ${event().discipline}`}</p>
+                      <p>{`--Participants: ${event().competitors.length}`}</p>
+                    </div>
+                  }
+                  actions={
+                    isEditing() ? (
+                      <div class="stage-detail__content--event-actions">
+                        <AtomButton
+                          type="destructive"
+                          onClick={createDeleteEventClick(event)}
+                        >
+                          --Delete
+                        </AtomButton>
+                        <AtomDialog
+                          closeButtonText="--Close dialog"
+                          content={
+                            <Show when={eventDialogDraft()}>
+                              {(draft) => (
+                                <EventEditorForm
+                                  draft={draft()}
+                                  onCancel={closeEventEditor}
+                                  onChange={setEventDialogDraft}
+                                  onSave={saveEventEditor}
+                                />
+                              )}
+                            </Show>
+                          }
+                          onOpenChange={createEditDialogOpenChange(event)}
+                          open={editingEventId() === event().id}
+                          title={`--Edit ${event().name}`}
+                          trigger={<span>--Edit</span>}
+                        />
+                      </div>
+                    ) : (
+                      <AtomButton
+                        type="accent"
+                        onClick={createNavigateToEvent(event)}
+                      >
+                        --+Info
+                      </AtomButton>
+                    )
+                  }
+                />
+              )}
+            </Index>
+          </div>
         </Show>
       </section>
       <FloatingToggleCircle
@@ -430,57 +417,4 @@ function CompetitionStageDetailBody(props: {
       </Show>
     </div>
   );
-}
-
-function EventDialogContent(props: {
-  draft: EventResponse;
-  onCancel: () => void;
-  onChange: (
-    updater: (current: EventResponse | null) => EventResponse | null,
-  ) => void;
-  onSave: () => void;
-}) {
-  const handleNameChange = (value: string) =>
-    props.onChange((current) =>
-      current
-        ? {
-            ...current,
-            name: value,
-          }
-        : current,
-    );
-  const handleDisciplineChange = (value: string) =>
-    props.onChange((current) =>
-      current
-        ? {
-            ...current,
-            discipline: value,
-          }
-        : current,
-    );
-
-  return (
-    <div>
-      <AtomInput
-        label="--Event title"
-        value={props.draft.name}
-        onChange={handleNameChange}
-      />
-      <AtomInput
-        label="--Discipline"
-        value={props.draft.discipline}
-        onChange={handleDisciplineChange}
-      />
-      <div>
-        <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
-      </div>
-    </div>
-  );
-}
-
-function formatDateLabel(value: string) {
-  if (!value) return "--No date";
-
-  return value;
 }

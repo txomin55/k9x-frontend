@@ -41,19 +41,17 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
   };
 
   return (
-    <div>
+    <div class="exercise-editor-form">
       <AtomNumberInput
         label="--Order"
         value={props.draft().order}
         onChange={setOrder}
       />
-      <AtomInput
-        label="--Text"
-        value={props.draft().text}
-        onChange={setText}
-      />
-      <div>
-        <AtomButton onClick={props.onCancel}>--Cancel</AtomButton>
+      <AtomInput label="--Text" value={props.draft().text} onChange={setText} />
+      <div class="exercise-editor-form__actions">
+        <AtomButton type="accent" onClick={props.onCancel}>
+          --Cancel
+        </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>
       </div>
     </div>

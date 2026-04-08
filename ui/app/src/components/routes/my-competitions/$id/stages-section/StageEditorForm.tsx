@@ -33,37 +33,31 @@ export default function StageEditorForm(props: StageDialogProps) {
               )
             }
           />
-          <label>--Date from</label>
-          <input
+          <AtomInput
+            label="--Date from"
             type="date"
             value={toDateInputValue(draft().dateFrom)}
-            onInput={(event) =>
+            onChange={(value) =>
               props.onDraftChange((current) =>
                 current
                   ? {
                       ...current,
-                      dateFrom: parseDateInputValue(
-                        event.currentTarget.value,
-                        current.dateFrom,
-                      ),
+                      dateFrom: parseDateInputValue(value, current.dateFrom),
                     }
                   : current,
               )
             }
           />
-          <label>--Date to</label>
-          <input
+          <AtomInput
+            label="--Date to"
             type="date"
             value={toDateInputValue(draft().dateTo)}
-            onInput={(event) =>
+            onChange={(value) =>
               props.onDraftChange((current) =>
                 current
                   ? {
                       ...current,
-                      dateTo: parseDateInputValue(
-                        event.currentTarget.value,
-                        current.dateTo,
-                      ),
+                      dateTo: parseDateInputValue(value, current.dateTo),
                     }
                   : current,
               )

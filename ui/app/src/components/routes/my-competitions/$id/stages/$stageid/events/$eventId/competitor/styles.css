@@ -1,21 +1,21 @@
-.stages-section__title {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--unit-2);
-}
-
-.stages-section__stages--actions {
+.event-competitors-section__competitors--actions {
     display: flex;
     justify-content: space-between;
 }
 
-.stage-editor-form {
+.event-competitors-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.competitor-editor-form {
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
 }
 
-.stage-editor-form__actions {
+.competitor-editor-form__actions {
     padding-top: var(--unit-2);
     display: flex;
     justify-content: flex-end;

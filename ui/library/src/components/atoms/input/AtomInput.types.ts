@@ -9,7 +9,7 @@ export type AtomInputProps = {
   description?: JSX.Element;
   errorMessage?: JSX.Element;
   placeholder?: string;
-  type?: "text" | "email" | "password" | "search" | "tel" | "url";
+  type?: "text" | "email" | "password" | "search" | "tel" | "url" | "date";
   disabled?: boolean;
   required?: boolean;
   readOnly?: boolean;
