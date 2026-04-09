@@ -1,18 +1,28 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import type {
+  EventResponse,
+  UpdateEventRequest,
+} from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   EventCompetitor,
   PublicEventCompetitor,
   PublicEventExercise,
-  PublicStageJudge
+  PublicStageJudge,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -208,6 +218,109 @@ function CompetitionEventDetailBody(props: {
     setIsCreatingExercise(false);
     setEditingExerciseId(null);
     setExerciseDialogDraft(null);
+  };
+
+  const getEventDraftKey = (event: EventResponse) => {
+    return JSON.stringify({
+      competitors: event.competitors,
+      configuration: event.configuration,
+      discipline: event.discipline,
+      exercises: event.exercises,
+      judges: event.judges,
+      name: event.name,
+      status: event.status,
+    });
+  };
+
+  const createDefaultCompetitor = (): PublicEventCompetitor => {
+    return {
+      finalScore: 0,
+      order: 0,
+      dogId: globalThis.crypto.randomUUID(),
+      identity: "",
+      name: "",
+      owner: "--Default competitor",
+      team: "",
+      country: "",
+      breed: "",
+      scores: [],
+    };
+  };
+
+  const reorderCompetitors = (
+    competitors: PublicEventCompetitor[],
+    order: number,
+    updatedCompetitor: PublicEventCompetitor,
+  ): PublicEventCompetitor[] => {
+    return competitors.map((entry) => {
+      if (entry.dogId === updatedCompetitor.dogId) {
+        return updatedCompetitor;
+      }
+
+      if (entry.order >= order) {
+        return {
+          ...entry,
+          order: entry.order + 1,
+        };
+      }
+
+      return entry;
+    });
+  };
+
+  const reorderExercises = (
+    exercises: PublicEventExercise[],
+    order: number,
+    updatedExercise: PublicEventExercise,
+  ): PublicEventExercise[] => {
+    return exercises.map((entry) => {
+      if (entry.id === updatedExercise.id) {
+        return updatedExercise;
+      }
+
+      if (entry.order >= order) {
+        return {
+          ...entry,
+          order: entry.order + 1,
+        };
+      }
+
+      return entry;
+    });
+  };
+
+  const mapCompetitorForUpdate = (
+    competitor: PublicEventCompetitor,
+  ): EventCompetitor => {
+    return {
+      dogId: competitor.dogId,
+      identity: competitor.identity,
+      owner: competitor.owner,
+      team: competitor.team,
+      country: competitor.country,
+      order: competitor.order,
+      finalScore: competitor.finalScore,
+      scores: competitor.scores.map((score) => ({
+        exerciseId: score.exerciseId,
+        id: score.id,
+        score: score.score,
+      })),
+    };
+  };
+
+  const createDefaultJudge = (): PublicStageJudge => {
+    return {
+      collectorEmail: "",
+      name: "--Default judge",
+    };
+  };
+
+  const createDefaultExercise = (): PublicEventExercise => {
+    return {
+      id: globalThis.crypto.randomUUID(),
+      order: 0,
+      text: "--Default exercise",
+    };
   };
 
   const saveJudgeEditor = () => {
@@ -452,8 +565,8 @@ function CompetitionEventDetailBody(props: {
           fallback={
             <>
               <h1>{props.event().name}</h1>
-              <p>{`--Status: ${props.event().status || "--No status"}`}</p>
-              <p>{`--Discipline: ${props.event().discipline || "--No discipline"}`}</p>
+              <p>{`--Status: ${props.event().status}`}</p>
+              <p>{`--Discipline: ${props.event().discipline}`}</p>
               <p>{`--Participants: ${props.event().competitors.length}`}</p>
             </>
           }
@@ -465,7 +578,7 @@ function CompetitionEventDetailBody(props: {
               value={name()}
               onChange={setName}
             />
-            <p>{`--Discipline: ${props.event().discipline || "--No discipline"}`}</p>
+            <p>{`--Discipline: ${props.event().discipline}`}</p>
             <p>{`--Participants: ${props.event().competitors.length}`}</p>
           </div>
         </Show>
@@ -477,9 +590,9 @@ function CompetitionEventDetailBody(props: {
           when={isEditing()}
           fallback={
             <>
-              <p>{`--Name: ${props.event().configuration.name || "--No name"}`}</p>
+              <p>{`--Name: ${props.event().configuration.name}`}</p>
               <p>{`--Version: ${props.event().configuration.version}`}</p>
-              <p>{`--Federation: ${props.event().configuration.federation || "--No federation"}`}</p>
+              <p>{`--Federation: ${props.event().configuration.federation}`}</p>
             </>
           }
         >
@@ -555,116 +668,10 @@ function CompetitionEventDetailBody(props: {
         toggledText="X"
       />
       <Show when={isEditing()}>
-        <ConfirmActionButton
-          text={name() || "--this event"}
-          onConfirm={props.onDelete}
-        >
+        <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
           <AtomButton type="destructive">--Delete event</AtomButton>
         </ConfirmActionButton>
       </Show>
     </div>
   );
-}
-
-function getEventDraftKey(event: EventResponse) {
-  return JSON.stringify({
-    competitors: event.competitors,
-    configuration: event.configuration,
-    discipline: event.discipline,
-    exercises: event.exercises,
-    judges: event.judges,
-    name: event.name,
-    status: event.status,
-  });
-}
-
-function createDefaultCompetitor(): PublicEventCompetitor {
-  return {
-    finalScore: 0,
-    order: 0,
-    dogId: globalThis.crypto.randomUUID(),
-    identity: "",
-    name: "",
-    owner: "--Default competitor",
-    team: "",
-    country: "",
-    breed: "",
-    scores: [],
-  };
-}
-
-function reorderCompetitors(
-  competitors: PublicEventCompetitor[],
-  order: number,
-  updatedCompetitor: PublicEventCompetitor,
-): PublicEventCompetitor[] {
-  return competitors.map((entry) => {
-    if (entry.dogId === updatedCompetitor.dogId) {
-      return updatedCompetitor;
-    }
-
-    if (entry.order >= order) {
-      return {
-        ...entry,
-        order: entry.order + 1,
-      };
-    }
-
-    return entry;
-  });
-}
-
-function reorderExercises(
-  exercises: PublicEventExercise[],
-  order: number,
-  updatedExercise: PublicEventExercise,
-): PublicEventExercise[] {
-  return exercises.map((entry) => {
-    if (entry.id === updatedExercise.id) {
-      return updatedExercise;
-    }
-
-    if (entry.order >= order) {
-      return {
-        ...entry,
-        order: entry.order + 1,
-      };
-    }
-
-    return entry;
-  });
-}
-
-function mapCompetitorForUpdate(
-  competitor: PublicEventCompetitor,
-): EventCompetitor {
-  return {
-    dogId: competitor.dogId,
-    identity: competitor.identity,
-    owner: competitor.owner,
-    team: competitor.team,
-    country: competitor.country,
-    order: competitor.order,
-    finalScore: competitor.finalScore,
-    scores: competitor.scores.map((score) => ({
-      exerciseId: score.exerciseId,
-      id: score.id,
-      score: score.score,
-    })),
-  };
-}
-
-function createDefaultJudge(): PublicStageJudge {
-  return {
-    collectorEmail: "",
-    name: "--Default judge",
-  };
-}
-
-function createDefaultExercise(): PublicEventExercise {
-  return {
-    id: globalThis.crypto.randomUUID(),
-    order: 0,
-    text: "--Default exercise",
-  };
 }

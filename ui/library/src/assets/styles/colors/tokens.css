@@ -66,9 +66,9 @@
     --text-inverted: var(--neutral-950);
 
     /* semantic: borders */
-    --border: var(--neutral-800);
-    --border-strong: var(--neutral-700);
-    --border-muted: var(--neutral-900);
+    --border: var(--neutral-700);
+    --border-strong: var(--neutral-600);
+    --border-muted: var(--neutral-800);
 
     /* semantic: brand */
     --primary: var(--primary-300);

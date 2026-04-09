@@ -1,11 +1,11 @@
-.data-card {
+.card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--unit-1);
     padding: var(--unit-2);
     max-width: 100%;
     margin-bottom: var(--unit-2);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     transition: transform 160ms ease,
     border-color 160ms ease,
     box-shadow 160ms ease,
@@ -14,36 +14,36 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-.data-card__top {
+.card__top {
     display: flex;
     justify-content: space-between;
     gap: var(--unit-1);
     margin-bottom: var(--unit-05);
 }
 
-.data-card__top-left,
-.data-card__top-right {
+.card__top-left,
+.card__top-right {
     display: flex;
     align-items: center;
     gap: var(--unit-1);
 }
 
-.data-card__title {
+.card__title {
     color: var(--text-primary);
 }
 
-.data-card__sub-header {
+.card__sub-header {
     display: block;
     color: var(--text-muted);
     margin-bottom: var(--unit-1);
 }
 
-.data-card__description {
+.card__description {
     color: var(--text-secondary);
     margin: 0 0 var(--unit-1) 0;
 }
 
-.data-card__content {
+.card__content {
     margin-bottom: var(--unit-2);
     padding: var(--unit-1);
     border-radius: var(--unit-1);
@@ -51,7 +51,7 @@
     color: var(--text-secondary);
 }
 
-.data-card__actions {
+.card__actions {
     display: flex;
     justify-content: flex-end;
     gap: var(--unit-1);

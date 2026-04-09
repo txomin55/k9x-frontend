@@ -15,8 +15,8 @@ import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingTo
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import "./styles.css";
 import EventEditorForm from "@/components/routes/my-competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
+import "./styles.css";
 
 export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -287,7 +287,6 @@ function CompetitionStageDetailBody(props: {
           fallback={
             <>
               <h1>{props.stage().name}</h1>
-              <p>--Competition ID: {props.stage().competitionId}</p>
               <p>{`${formatDateLabel(toDateInputValue(props.stage().dateFrom))} - ${formatDateLabel(toDateInputValue(props.stage().dateTo))}`}</p>
             </>
           }
@@ -409,7 +408,7 @@ function CompetitionStageDetailBody(props: {
       />
       <Show when={isEditing()}>
         <ConfirmActionButton
-          text={props.stage().name || "--this stage"}
+          text={props.stage().name}
           onConfirm={props.onDelete}
         >
           <AtomButton type="destructive">--Delete stage</AtomButton>

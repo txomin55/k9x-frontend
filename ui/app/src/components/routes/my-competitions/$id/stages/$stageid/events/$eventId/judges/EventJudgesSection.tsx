@@ -62,10 +62,8 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           <Index each={props.judges}>
             {(judge, index) => (
               <Card
-                topLeft={judge().name || "--No name"}
-                description={
-                  <p>{`--Email: ${judge().collectorEmail || "--No email"}`}</p>
-                }
+                topLeft={judge().name}
+                description={<p>{`--Email: ${judge().collectorEmail}`}</p>}
                 actions={
                   props.isEditing ? (
                     <div class="event-judges-section__judges--actions">

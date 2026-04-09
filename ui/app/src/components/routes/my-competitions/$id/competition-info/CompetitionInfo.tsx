@@ -33,7 +33,7 @@ type CompetitionInfoProps = {
 };
 
 export default function CompetitionInfo(props: CompetitionInfoProps) {
-  const selectedCountryOption =
+  const selectedCountryOption = () =>
     COUNTRY_SELECT_OPTIONS.find(
       (countryOption) => countryOption.value === props.country,
     ) ?? null;
@@ -56,7 +56,7 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
               props.onCommit();
             }}
             options={COUNTRY_SELECT_OPTIONS}
-            value={selectedCountryOption}
+            value={selectedCountryOption()}
           />
           <AtomTextArea
             label="--Description"
