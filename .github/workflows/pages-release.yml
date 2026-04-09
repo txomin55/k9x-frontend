@@ -7,6 +7,15 @@ on:
   #      - ui/app/src/**
   #      - ui/library/src/**
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub release after deploying pages?'
+        required: false
+        default: false
+        type: boolean
+      release_tag:
+        description: 'Custom tag name for the release (only used when creating a release)'
+        required: false
 
 permissions:
   contents: write
@@ -53,17 +62,27 @@ jobs:
           name: github-pages
           retention-days: 7
 
-      - name: Set release date tag
+      - name: Set release tag
         id: release_vars
-        run: echo "release_tag=pages-$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"
+        if: ${{ github.event.inputs.create_release == 'true' }}
+        env:
+          CUSTOM_RELEASE_TAG: ${{ github.event.inputs.release_tag }}
+        run: |
+          if [ -n "$CUSTOM_RELEASE_TAG" ]; then
+            echo "release_tag=$CUSTOM_RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_tag=pages-$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"
+          fi
 
       - id: deployment
         uses: actions/deploy-pages@v4
 
       - name: Create release archive
+        if: ${{ github.event.inputs.create_release == 'true' }}
         run: zip -r public.zip public
 
       - uses: softprops/action-gh-release@v2
+        if: ${{ github.event.inputs.create_release == 'true' }}
         with:
           tag_name: ${{ steps.release_vars.outputs.release_tag }}
           name: Release ${{ steps.release_vars.outputs.release_tag }}
