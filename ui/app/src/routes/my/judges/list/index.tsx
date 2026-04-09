@@ -4,22 +4,13 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
 import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
-import {
-  createJudge,
-  deleteJudge,
-  useJudges,
-} from "@/services/api/judge-crud/judgeCrud";
+import { createJudge, deleteJudge, useJudges } from "@/services/api/judge-crud/judgeCrud";
 import type { CreateJudgeRequest, Judge } from "@/services/api/judge-crud/judgeCrudTypes";
 import "./styles.css";
 
 const buildJudgeDraft = (): CreateJudgeRequest => ({
-  id:
-    typeof globalThis !== "undefined" &&
-    "crypto" in globalThis &&
-    typeof globalThis.crypto.randomUUID === "function"
-      ? globalThis.crypto.randomUUID()
-      : `${Date.now()}-${Math.random()}`,
-  name: "",
+  id: globalThis.crypto.randomUUID(),
+  name: "--Default judge",
 });
 
 export const Route = createFileRoute("/my/judges/list/")({
@@ -33,14 +24,11 @@ function MyJudgesListPage() {
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
-  const [draftJudge, setDraftJudge] = createSignal<CreateJudgeRequest>(
-    buildJudgeDraft(),
-  );
-  const [editingJudge, setEditingJudge] = createSignal<Judge | null>(null);
+  const [draftJudge, setDraftJudge] =
+    createSignal<CreateJudgeRequest>(buildJudgeDraft());
 
   const openCreateDialog = () => {
     setDraftJudge(buildJudgeDraft());
-    setEditingJudge(null);
     setDialogOpen(true);
   };
   const handleCloseDialog = () => {
@@ -52,7 +40,6 @@ function MyJudgesListPage() {
       id: judge.id,
       name: judge.name,
     }));
-    setEditingJudge(judge);
     setDialogOpen(true);
   };
 
