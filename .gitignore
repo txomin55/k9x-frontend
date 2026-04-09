@@ -42,3 +42,4 @@ dev-dist
 /public/
 /ui/app/static/manifest.webmanifest
 /ui/app/test-results/
+*.codex

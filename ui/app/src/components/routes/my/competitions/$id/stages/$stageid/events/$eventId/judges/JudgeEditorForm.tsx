@@ -1,5 +1,6 @@
-import type {EventJudgeDetail} from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 
 type JudgeEditorFormProps = {
@@ -12,9 +13,7 @@ type JudgeEditorFormProps = {
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
-  const updateField = (
-    field: "id" | "collectorEmail",
-  ) => (value: string) => {
+  const updateField = (field: "id" | "collectorEmail") => (value: string) => {
     props.onDraftChange((current) =>
       current
         ? {
@@ -39,7 +38,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         onChange={updateField("collectorEmail")}
       />
       <div class="judge-editor-form__actions">
-        <AtomButton onClick={props.onCancel} type="accent">
+        <AtomButton onClick={props.onCancel} type={BUTTON_TYPES.ACCENT}>
           --Cancel
         </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>

@@ -3,6 +3,7 @@ import { Show } from "solid-js";
 import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 
 type StageDialogProps = {
@@ -64,7 +65,7 @@ export default function StageEditorForm(props: StageDialogProps) {
             }
           />
           <div class="stage-editor-form__actions">
-            <AtomButton type="accent" onClick={props.onCancel}>
+            <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
               --Cancel
             </AtomButton>
             <AtomButton onClick={props.onSave}>--Save</AtomButton>

@@ -32,6 +32,7 @@ export default defineConfig(({ mode }) => {
           routes: [
             AppRoutePath.HOME,
             AppRoutePath.MY_COMPETITIONS,
+            AppRoutePath.MY_JUDGES,
             AppRoutePath.AUTH_CALLBACK,
             AppRoutePath.NOT_FOUND,
           ],

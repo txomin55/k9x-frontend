@@ -1,4 +1,5 @@
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { type EventResponse } from "@/services/api/event-api-crud/eventApiCrud";
 import "./styles.css";
@@ -45,7 +46,7 @@ export default function EventEditorForm(props: EventEditorFormProps) {
         onChange={handleDisciplineChange}
       />
       <div class="event-editor-form__actions">
-        <AtomButton type="accent" onClick={props.onCancel}>
+        <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           --Cancel
         </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>

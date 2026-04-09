@@ -25,6 +25,7 @@ import {
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
@@ -304,7 +305,7 @@ function CompetitionDetailBody(props: {
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
-          <AtomButton type="destructive">--Delete</AtomButton>
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>--Delete</AtomButton>
         </ConfirmActionButton>
       </Show>
     </div>

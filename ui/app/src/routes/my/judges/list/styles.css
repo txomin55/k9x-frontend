@@ -1,0 +1,12 @@
+.my-judges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-2);
+  padding-bottom: 4rem;
+}
+
+.judges-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-2);
+}

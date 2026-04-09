@@ -5,6 +5,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import JudgeEditorForm from "./JudgeEditorForm";
 import "./styles.css";
 
@@ -71,7 +72,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                         text={judge().id}
                         onConfirm={() => props.onDeleteJudge(index)}
                       >
-                        <AtomButton type="destructive">--Delete</AtomButton>
+                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                          --Delete
+                        </AtomButton>
                       </ConfirmActionButton>
                       <AtomDialog
                         closeButtonText="--Close dialog"

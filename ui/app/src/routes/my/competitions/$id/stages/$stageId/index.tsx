@@ -23,6 +23,7 @@ import {
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
@@ -374,7 +375,7 @@ function CompetitionStageDetailBody(props: {
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
                         <AtomButton
-                          type="destructive"
+                          type={BUTTON_TYPES.DESTRUCTIVE}
                           onClick={createDeleteEventClick(event)}
                         >
                           --Delete
@@ -401,7 +402,7 @@ function CompetitionStageDetailBody(props: {
                       </div>
                     ) : (
                       <AtomButton
-                        type="accent"
+                        type={BUTTON_TYPES.ACCENT}
                         onClick={createNavigateToEvent(event)}
                       >
                         --+Info
@@ -425,7 +426,9 @@ function CompetitionStageDetailBody(props: {
           text={props.stage().name}
           onConfirm={props.onDelete}
         >
-          <AtomButton type="destructive">--Delete stage</AtomButton>
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+            --Delete stage
+          </AtomButton>
         </ConfirmActionButton>
       </Show>
     </div>

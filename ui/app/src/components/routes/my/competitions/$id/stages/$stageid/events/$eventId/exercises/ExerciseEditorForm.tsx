@@ -1,5 +1,6 @@
 import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 
@@ -49,7 +50,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
       />
       <AtomInput label="--Text" value={props.draft().text} onChange={setText} />
       <div class="exercise-editor-form__actions">
-        <AtomButton type="accent" onClick={props.onCancel}>
+        <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           --Cancel
         </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>

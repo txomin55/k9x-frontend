@@ -1,5 +1,6 @@
 import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import { Show } from "solid-js";
@@ -114,7 +115,10 @@ export default function CompetitorEditorForm(
             onChange={setFinalScore}
           />
           <div class="competitor-editor-form__actions">
-            <AtomButton type="accent" onClick={props.onCloseCompetitorEditor}>
+            <AtomButton
+              type={BUTTON_TYPES.ACCENT}
+              onClick={props.onCloseCompetitorEditor}
+            >
               --Cancel
             </AtomButton>
             <AtomButton onClick={props.onSaveCompetitor}>--Save</AtomButton>

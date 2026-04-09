@@ -1,4 +1,5 @@
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { For, Show } from "solid-js";
 import { clearAuth, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
@@ -21,7 +22,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
     <div class="navigation-tools">
       <div class="navigation-tools__group">
         <p>--Mode</p>
-        <AtomButton type="accent" onClick={props.onToggleMode}>
+        <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onToggleMode}>
           {props.isDark ? "--Light" : "--Dark"}
         </AtomButton>
       </div>
@@ -33,7 +34,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
           <For each={i18n.locales}>
             {(nextLocale) => (
               <AtomButton
-                type="primary"
+                type={BUTTON_TYPES.PRIMARY}
                 onClick={() => i18n.setLocale(nextLocale)}
               >
                 {nextLocale}
@@ -51,7 +52,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
 
         <Show when={user()}>
           <p>{i18n.t("hello", { name: "txomin" })}</p>
-          <AtomButton type="primary" onClick={handleLogout}>
+          <AtomButton type={BUTTON_TYPES.PRIMARY} onClick={handleLogout}>
             --Logout
           </AtomButton>
         </Show>

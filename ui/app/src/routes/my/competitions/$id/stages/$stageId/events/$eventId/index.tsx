@@ -25,6 +25,7 @@ import type {
   EventJudgeDetail,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
@@ -667,7 +668,9 @@ function CompetitionEventDetailBody(props: {
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
-          <AtomButton type="destructive">--Delete event</AtomButton>
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+            --Delete event
+          </AtomButton>
         </ConfirmActionButton>
       </Show>
     </div>

@@ -4,6 +4,7 @@ import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCru
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
@@ -71,7 +72,9 @@ export default function StagesSection(props: StagesSectionProps) {
                       text={stage().name}
                       onConfirm={() => props.onDeleteStage(stage().id)}
                     >
-                      <AtomButton type="destructive">--Delete</AtomButton>
+                      <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                        --Delete
+                      </AtomButton>
                     </ConfirmActionButton>
                     <AtomDialog
                       closeButtonText="--Close dialog"
@@ -100,7 +103,7 @@ export default function StagesSection(props: StagesSectionProps) {
                   </div>
                 ) : (
                   <AtomButton
-                    type="accent"
+                    type={BUTTON_TYPES.ACCENT}
                     onClick={() => props.onNavigateToStage(stage().id)}
                   >
                     --+Info

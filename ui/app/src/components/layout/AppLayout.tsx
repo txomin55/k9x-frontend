@@ -9,6 +9,7 @@ import "@/components/layout/styles.css";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import NavigationUserMenu from "@/components/navigation/NavigationUserMenu";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 
 const DESKTOP_BREAKPOINT = 1024;
 
@@ -45,7 +46,10 @@ export default function AppLayout(props: ParentProps) {
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
 
   const loginButton = () => (
-    <AtomButton type="accent" onClick={startGoogleInteractiveLogin}>
+    <AtomButton
+      type={BUTTON_TYPES.ACCENT}
+      onClick={startGoogleInteractiveLogin}
+    >
       --Login
     </AtomButton>
   );

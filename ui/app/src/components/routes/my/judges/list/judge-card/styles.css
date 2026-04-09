@@ -1,0 +1,27 @@
+.judge-card__actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.judge-card__status {
+    display: block;
+    color: var(--text-muted);
+}
+
+.judge-card__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
+.judge-card__delete {
+    margin: 0;
+    width: var(--unit-4);
+    height: var(--unit-4);
+    padding: 0;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

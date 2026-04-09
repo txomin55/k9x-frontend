@@ -6,6 +6,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -42,16 +43,16 @@ export default function EventCompetitorsSection(
       <div class="event-competitors-section__header">
         <h2>--Competitors</h2>
         <Show when={props.isEditing}>
-            <AtomDialog
-              closeButtonText="--Close dialog"
-              content={
-                <CompetitorEditorForm
-                  competitorDialogDraft={props.competitorDialogDraft}
-                  onCloseCompetitorEditor={props.onCloseCompetitorEditor}
-                  onCompetitorDraftChange={props.onCompetitorDraftChange}
-                  onSaveCompetitor={props.onSaveCompetitor}
-                />
-              }
+          <AtomDialog
+            closeButtonText="--Close dialog"
+            content={
+              <CompetitorEditorForm
+                competitorDialogDraft={props.competitorDialogDraft}
+                onCloseCompetitorEditor={props.onCloseCompetitorEditor}
+                onCompetitorDraftChange={props.onCompetitorDraftChange}
+                onSaveCompetitor={props.onSaveCompetitor}
+              />
+            }
             onOpenChange={(isOpen) => {
               if (isOpen) {
                 props.onAddCompetitor();
@@ -122,7 +123,9 @@ export default function EventCompetitorsSection(
                           props.onDeleteCompetitor(competitor().dogId)
                         }
                       >
-                        <AtomButton type="destructive">--Delete</AtomButton>
+                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                          --Delete
+                        </AtomButton>
                       </ConfirmActionButton>
                     </div>
                   ) : undefined

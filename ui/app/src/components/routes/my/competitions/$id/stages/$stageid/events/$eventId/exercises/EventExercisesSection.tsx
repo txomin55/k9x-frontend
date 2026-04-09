@@ -6,6 +6,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ExerciseEditorForm from "./ExerciseEditorForm";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import "./styles.css";
 
 type EventExercisesSectionProps = {
@@ -45,14 +46,14 @@ export default function EventExercisesSection(
           <AtomDialog
             closeButtonText="--Close dialog"
             content={
-                <Show when={props.exerciseDialogDraft}>
-                  {(draft) => (
-                    <ExerciseEditorForm
-                      draft={draft}
-                      onDraftChange={props.onExerciseDraftChange}
-                      onCancel={props.onCloseExerciseEditor}
-                      onSave={props.onSaveExercise}
-                    />
+              <Show when={props.exerciseDialogDraft}>
+                {(draft) => (
+                  <ExerciseEditorForm
+                    draft={draft}
+                    onDraftChange={props.onExerciseDraftChange}
+                    onCancel={props.onCloseExerciseEditor}
+                    onSave={props.onSaveExercise}
+                  />
                 )}
               </Show>
             }
@@ -83,19 +84,21 @@ export default function EventExercisesSection(
                         text={exercise().text}
                         onConfirm={() => props.onDeleteExercise(exercise().id)}
                       >
-                        <AtomButton type="destructive">--Delete</AtomButton>
+                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                          --Delete
+                        </AtomButton>
                       </ConfirmActionButton>
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
-                        <Show when={props.exerciseDialogDraft}>
-                          {(draft) => (
-                            <ExerciseEditorForm
-                              draft={draft}
-                              onDraftChange={props.onExerciseDraftChange}
-                              onCancel={props.onCloseExerciseEditor}
-                              onSave={props.onSaveExercise}
-                            />
+                          <Show when={props.exerciseDialogDraft}>
+                            {(draft) => (
+                              <ExerciseEditorForm
+                                draft={draft}
+                                onDraftChange={props.onExerciseDraftChange}
+                                onCancel={props.onCloseExerciseEditor}
+                                onSave={props.onSaveExercise}
+                              />
                             )}
                           </Show>
                         }
