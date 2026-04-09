@@ -5,6 +5,11 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import { Show } from "solid-js";
 
+type OrderBounds = {
+  minValue: number;
+  maxValue: number;
+};
+
 type CompetitorDialogContentProps = {
   competitorDialogDraft: EventCompetitorDetail | null;
   onCloseCompetitorEditor: () => void;
@@ -14,6 +19,7 @@ type CompetitorDialogContentProps = {
     ) => EventCompetitorDetail | null,
   ) => void;
   onSaveCompetitor: () => void;
+  orderBounds: OrderBounds;
 };
 
 export default function CompetitorEditorForm(
@@ -81,6 +87,8 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
+  const minOrder = Math.max(props.orderBounds.minValue, 1);
+  const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
@@ -108,6 +116,8 @@ export default function CompetitorEditorForm(
             label="--Order"
             value={draft().order}
             onChange={setOrder}
+            minValue={minOrder}
+            maxValue={maxOrder}
           />
           <AtomNumberInput
             label="--Final score"

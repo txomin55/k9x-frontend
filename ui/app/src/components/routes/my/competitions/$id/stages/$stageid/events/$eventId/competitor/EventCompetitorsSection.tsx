@@ -37,6 +37,10 @@ export default function EventCompetitorsSection(
       (a, b) => getOrderValue(a) - getOrderValue(b),
     ),
   );
+  const competitorOrderBounds = {
+    minValue: 1,
+    maxValue: Math.max(1, props.competitors.length),
+  };
 
   return (
     <section class="event-competitors-section">
@@ -51,6 +55,7 @@ export default function EventCompetitorsSection(
                 onCloseCompetitorEditor={props.onCloseCompetitorEditor}
                 onCompetitorDraftChange={props.onCompetitorDraftChange}
                 onSaveCompetitor={props.onSaveCompetitor}
+                orderBounds={competitorOrderBounds}
               />
             }
             onOpenChange={(isOpen) => {
@@ -99,6 +104,7 @@ export default function EventCompetitorsSection(
                               props.onCompetitorDraftChange
                             }
                             onSaveCompetitor={props.onSaveCompetitor}
+                            orderBounds={competitorOrderBounds}
                           />
                         }
                         onOpenChange={(isOpen) => {

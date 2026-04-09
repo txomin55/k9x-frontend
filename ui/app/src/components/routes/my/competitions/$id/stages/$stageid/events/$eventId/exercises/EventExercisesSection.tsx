@@ -37,6 +37,10 @@ export default function EventExercisesSection(
       (a, b) => getOrderValue(a) - getOrderValue(b),
     ),
   );
+  const exerciseOrderBounds = {
+    minValue: 1,
+    maxValue: Math.max(1, props.exercises.length),
+  };
 
   return (
     <section class="event-exercises-section">
@@ -53,6 +57,7 @@ export default function EventExercisesSection(
                     onDraftChange={props.onExerciseDraftChange}
                     onCancel={props.onCloseExerciseEditor}
                     onSave={props.onSaveExercise}
+                    orderBounds={exerciseOrderBounds}
                   />
                 )}
               </Show>
@@ -98,6 +103,7 @@ export default function EventExercisesSection(
                                 onDraftChange={props.onExerciseDraftChange}
                                 onCancel={props.onCloseExerciseEditor}
                                 onSave={props.onSaveExercise}
+                                orderBounds={exerciseOrderBounds}
                               />
                             )}
                           </Show>
