@@ -26,6 +26,7 @@ export default function Navigation(props) {
             --Competitions
           </Link>
           <Link to={AppRoutePath.MY_JUDGES as never}>--Judges</Link>
+          <Link to={AppRoutePath.MY_DOGS as never}>--Dogs</Link>
         </Show>
         </nav>
       </div>

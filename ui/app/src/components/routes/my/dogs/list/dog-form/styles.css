@@ -1,0 +1,11 @@
+.dog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+}
+
+.dog-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--unit-1);
+}

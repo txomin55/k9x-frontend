@@ -1,0 +1,28 @@
+.dog-card__actions {
+    display: flex;
+    gap: var(--unit-1);
+}
+
+.dog-card__heading {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
+.dog-card__breed {
+    color: var(--text-muted);
+    font-size: var(--text-label-sm);
+}
+
+.dog-card__image {
+    width: 100%;
+    border-radius: var(--unit-1);
+    object-fit: cover;
+    max-height: 160px;
+}
+
+.dog-card__actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
