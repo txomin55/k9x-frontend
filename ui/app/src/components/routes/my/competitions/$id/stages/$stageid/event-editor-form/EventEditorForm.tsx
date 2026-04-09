@@ -23,16 +23,6 @@ export default function EventEditorForm(props: EventEditorFormProps) {
           }
         : current,
     );
-  const handleDisciplineChange = (value: string) =>
-    props.onChange((current) =>
-      current
-        ? {
-            ...current,
-            discipline: value,
-          }
-        : current,
-    );
-
   return (
     <div class="event-editor-form">
       <AtomInput
@@ -43,7 +33,7 @@ export default function EventEditorForm(props: EventEditorFormProps) {
       <AtomInput
         label="--Discipline"
         value={props.draft.discipline}
-        onChange={handleDisciplineChange}
+        readOnly
       />
       <div class="event-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
