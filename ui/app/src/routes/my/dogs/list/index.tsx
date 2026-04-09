@@ -4,11 +4,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import {
-  createDog,
-  deleteDog,
-  useDogs,
-} from "@/services/api/dog-crud/dogCrud";
+import { createDog, deleteDog, useDogs } from "@/services/api/dog-crud/dogCrud";
 import type { CreateDogRequest, Dog } from "@/services/api/dog-crud/dogCrudTypes";
 import "./styles.css";
 
@@ -35,14 +31,11 @@ function MyDogsListPage() {
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
-  const [draftDog, setDraftDog] = createSignal<CreateDogRequest>(
-    buildDogDraft(),
-  );
-  const [editingDog, setEditingDog] = createSignal<Dog | null>(null);
+  const [draftDog, setDraftDog] =
+    createSignal<CreateDogRequest>(buildDogDraft());
 
   const openCreateDialog = () => {
     setDraftDog(buildDogDraft());
-    setEditingDog(null);
     setDialogOpen(true);
   };
 
@@ -61,7 +54,6 @@ function MyDogsListPage() {
       team: dog.team,
       country: dog.country,
     }));
-    setEditingDog(dog);
     setDialogOpen(true);
   };
 
