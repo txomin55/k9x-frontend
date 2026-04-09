@@ -14,17 +14,17 @@ import type {
   Competition,
   CreateEventRequest,
   EventCompetitor,
+  EventCompetitorDetail,
   EventConfiguration,
+  EventConfigurationDetail,
   EventExercise,
+  EventExerciseDetail,
+  EventJudge,
+  EventJudgeDetail,
   EventMutationPayload,
   EventResponse,
   EventScore,
-  PublicEventCompetitor,
-  PublicEventConfiguration,
-  PublicEventExercise,
-  PublicEventScore,
-  PublicStageJudge,
-  StageJudge,
+  EventScoreDetail,
   UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 
@@ -38,8 +38,8 @@ const createId = () => globalThis.crypto.randomUUID();
 
 const toApiEventScore = (
   score: EventScore,
-  previousScore?: PublicEventScore,
-): PublicEventScore => ({
+  previousScore?: EventScoreDetail,
+): EventScoreDetail => ({
   exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
   id: score.id ?? previousScore?.id ?? createId(),
   score: score.score ?? previousScore?.score ?? 0,
@@ -47,8 +47,8 @@ const toApiEventScore = (
 
 const toApiExercise = (
   exercise: EventExercise,
-  previousExercise?: PublicEventExercise,
-): PublicEventExercise => ({
+  previousExercise?: EventExerciseDetail,
+): EventExerciseDetail => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
   text: exercise.text ?? previousExercise?.text ?? "",
@@ -56,8 +56,8 @@ const toApiExercise = (
 
 const toApiEventConfiguration = (
   configuration?: EventConfiguration,
-  previousConfiguration?: PublicEventConfiguration,
-): PublicEventConfiguration => ({
+  previousConfiguration?: EventConfigurationDetail,
+): EventConfigurationDetail => ({
   federation:
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
@@ -66,17 +66,17 @@ const toApiEventConfiguration = (
 });
 
 const toApiJudge = (
-  judge: StageJudge,
-  previousJudge?: PublicStageJudge,
-): PublicStageJudge => ({
+  judge: EventJudge,
+  previousJudge?: EventJudgeDetail,
+): EventJudgeDetail => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
-  name: judge.name ?? previousJudge?.name ?? "",
+  id: judge.id ?? previousJudge?.id ?? "",
 });
 
 const toApiCompetitor = (
   competitor: EventCompetitor,
-  previousCompetitor?: PublicEventCompetitor,
-): PublicEventCompetitor => {
+  previousCompetitor?: EventCompetitorDetail,
+): EventCompetitorDetail => {
   const previousScoresById = new Map(
     (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
   );

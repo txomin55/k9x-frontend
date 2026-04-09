@@ -4,37 +4,37 @@ export interface CompetitionLocation {
   longitude?: number;
 }
 
-export interface PublicCompetitionNotification {
+export interface CompetitionNotificationDetail {
   date: number;
   id: string;
   text: string;
 }
 
-export interface PublicEventScore {
+export interface EventScoreDetail {
   exerciseId: string;
   id: string;
   score: number;
 }
 
-export interface PublicEventExercise {
+export interface EventExerciseDetail {
   id: string;
   order: number;
   text: string;
 }
 
-export interface PublicEventConfiguration {
+export interface EventConfigurationDetail {
   federation: string;
   id: string;
   name: string;
   version: number;
 }
 
-export interface PublicStageJudge {
+export interface EventJudgeDetail {
   collectorEmail: string;
-  name: string;
+  id: string;
 }
 
-export interface PublicEventCompetitor {
+export interface EventCompetitorDetail {
   finalScore: number;
   dogId: string;
   identity: string;
@@ -44,16 +44,16 @@ export interface PublicEventCompetitor {
   country: string;
   breed: string;
   order: number;
-  scores: PublicEventScore[];
+  scores: EventScoreDetail[];
 }
 
-interface PublicEventDetail {
-  competitors: PublicEventCompetitor[];
-  configuration: PublicEventConfiguration;
+interface EventDetail {
+  competitors: EventCompetitorDetail[];
+  configuration: EventConfigurationDetail;
   discipline: string;
-  exercises: PublicEventExercise[];
+  exercises: EventExerciseDetail[];
   id: string;
-  judges: PublicStageJudge[];
+  judges: EventJudgeDetail[];
   name: string;
   status: string;
 }
@@ -77,9 +77,9 @@ export interface EventConfiguration {
   version?: number;
 }
 
-export interface StageJudge {
+export interface EventJudge {
+  id: string;
   collectorEmail?: string;
-  name?: string;
 }
 
 export interface EventCompetitor {
@@ -105,12 +105,12 @@ export interface UpdateEventRequest {
   configuration: EventConfiguration;
   exercises: EventExercise[];
   id: string;
-  judges: StageJudge[];
+  judges: EventJudge[];
   name: string;
   stageId: string;
 }
 
-export interface EventResponse extends PublicEventDetail {
+export interface EventResponse extends EventDetail {
   stageId: string;
 }
 
@@ -127,7 +127,7 @@ export interface Competition {
   id: string;
   location?: CompetitionLocation;
   name: string;
-  notifications?: PublicCompetitionNotification[];
+  notifications?: CompetitionNotificationDetail[];
   stages?: Stage[];
   status: string;
 }
@@ -163,7 +163,7 @@ export interface EventMutationPayload {
   configuration?: EventConfiguration;
   exercises?: EventExercise[];
   id?: string;
-  judges?: StageJudge[];
+  judges?: EventJudge[];
   name?: string;
   stageId?: string;
 }

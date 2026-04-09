@@ -1,14 +1,14 @@
-import type { PublicEventExercise } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 
 type ExerciseEditorFormProps = {
-  draft: () => PublicEventExercise;
+  draft: () => EventExerciseDetail;
   onDraftChange: (
     updater: (
-      current: PublicEventExercise | null,
-    ) => PublicEventExercise | null,
+      current: EventExerciseDetail | null,
+    ) => EventExerciseDetail | null,
   ) => void;
   onCancel: () => void;
   onSave: () => void;

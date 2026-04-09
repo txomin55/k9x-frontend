@@ -1,5 +1,5 @@
 import { Index, Show } from "solid-js";
-import type { PublicStageJudge } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
@@ -12,15 +12,15 @@ type EventJudgesSectionProps = {
   editingJudgeIndex: number | null;
   isCreatingJudge: boolean;
   isEditing: boolean;
-  judgeDialogDraft: PublicStageJudge | null;
-  judges: PublicStageJudge[];
+  judgeDialogDraft: EventJudgeDetail | null;
+  judges: EventJudgeDetail[];
   onAddJudge: () => void;
   onCloseJudgeEditor: () => void;
   onDeleteJudge: (index: number) => void;
   onJudgeDraftChange: (
-    updater: (current: PublicStageJudge | null) => PublicStageJudge | null,
+    updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
-  onOpenJudgeEditor: (index: number, judge: PublicStageJudge) => void;
+  onOpenJudgeEditor: (index: number, judge: EventJudgeDetail) => void;
   onSaveJudge: () => void;
 };
 
@@ -62,13 +62,13 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           <Index each={props.judges}>
             {(judge, index) => (
               <Card
-                topLeft={judge().name}
+                topLeft={judge().id}
                 description={<p>{`--Email: ${judge().collectorEmail}`}</p>}
                 actions={
                   props.isEditing ? (
                     <div class="event-judges-section__judges--actions">
                       <ConfirmActionButton
-                        text={judge().name}
+                        text={judge().id}
                         onConfirm={() => props.onDeleteJudge(index)}
                       >
                         <AtomButton type="destructive">--Delete</AtomButton>
@@ -98,7 +98,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           }
                         }}
                         open={props.editingJudgeIndex === index}
-                        title={`--Edit ${judge().name}`}
+                        title={`--Edit ${judge().id}`}
                         trigger={<span>--Edit</span>}
                       />
                     </div>

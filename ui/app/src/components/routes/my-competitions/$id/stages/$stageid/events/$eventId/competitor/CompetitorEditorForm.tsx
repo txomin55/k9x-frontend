@@ -1,16 +1,16 @@
-import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import { Show } from "solid-js";
 
 type CompetitorDialogContentProps = {
-  competitorDialogDraft: PublicEventCompetitor | null;
+  competitorDialogDraft: EventCompetitorDetail | null;
   onCloseCompetitorEditor: () => void;
   onCompetitorDraftChange: (
     updater: (
-      current: PublicEventCompetitor | null,
-    ) => PublicEventCompetitor | null,
+      current: EventCompetitorDetail | null,
+    ) => EventCompetitorDetail | null,
   ) => void;
   onSaveCompetitor: () => void;
 };

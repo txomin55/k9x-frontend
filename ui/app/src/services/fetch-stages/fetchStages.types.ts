@@ -1,22 +1,22 @@
 import type { CompetitionLocation } from "@/services/api/competition-crud/competitionCrudTypes";
 
-export interface PublicStageEventSummary {
+export interface StageEventSummary {
   competitors: number;
   discipline: string;
   id: string;
   name: string;
 }
 
-export interface PublicStageSummary {
+export interface StageSummary {
   country: string;
   dateFrom: number;
   dateTo: number;
   description?: string;
-  events: PublicStageEventSummary[];
+  events: StageEventSummary[];
   id: string;
   location?: CompetitionLocation;
   name: string;
 }
 
-export type Stage = PublicStageSummary;
-export type StageEvent = PublicStageEventSummary;
+export type Stage = StageSummary;
+export type StageEvent = StageEventSummary;

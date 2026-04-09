@@ -1,5 +1,5 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { PublicEventCompetitor } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -9,8 +9,8 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
-  competitorDialogDraft: PublicEventCompetitor | null;
-  competitors: PublicEventCompetitor[];
+  competitorDialogDraft: EventCompetitorDetail | null;
+  competitors: EventCompetitorDetail[];
   editingCompetitorId: string | null;
   isCreatingCompetitor: boolean;
   isEditing: boolean;
@@ -18,18 +18,18 @@ type EventCompetitorsSectionProps = {
   onCloseCompetitorEditor: () => void;
   onCompetitorDraftChange: (
     updater: (
-      current: PublicEventCompetitor | null,
-    ) => PublicEventCompetitor | null,
+      current: EventCompetitorDetail | null,
+    ) => EventCompetitorDetail | null,
   ) => void;
   onDeleteCompetitor: (competitorId: string) => void;
-  onOpenCompetitorEditor: (competitor: PublicEventCompetitor) => void;
+  onOpenCompetitorEditor: (competitor: EventCompetitorDetail) => void;
   onSaveCompetitor: () => void;
 };
 
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
-  const getOrderValue = (competitor: PublicEventCompetitor) => competitor.order;
+  const getOrderValue = (competitor: EventCompetitorDetail) => competitor.order;
 
   const sortedCompetitors = createMemo(() =>
     [...props.competitors].toSorted(

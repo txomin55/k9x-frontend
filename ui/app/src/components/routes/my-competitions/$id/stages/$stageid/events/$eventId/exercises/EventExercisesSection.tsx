@@ -1,5 +1,5 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { PublicEventExercise } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -10,8 +10,8 @@ import "./styles.css";
 
 type EventExercisesSectionProps = {
   editingExerciseId: string | null;
-  exerciseDialogDraft: PublicEventExercise | null;
-  exercises: PublicEventExercise[];
+  exerciseDialogDraft: EventExerciseDetail | null;
+  exercises: EventExerciseDetail[];
   isCreatingExercise: boolean;
   isEditing: boolean;
   onAddExercise: () => void;
@@ -19,17 +19,17 @@ type EventExercisesSectionProps = {
   onDeleteExercise: (exerciseId: string) => void;
   onExerciseDraftChange: (
     updater: (
-      current: PublicEventExercise | null,
-    ) => PublicEventExercise | null,
+      current: EventExerciseDetail | null,
+    ) => EventExerciseDetail | null,
   ) => void;
-  onOpenExerciseEditor: (exercise: PublicEventExercise) => void;
+  onOpenExerciseEditor: (exercise: EventExerciseDetail) => void;
   onSaveExercise: () => void;
 };
 
 export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
-  const getOrderValue = (exercise: PublicEventExercise) => exercise.order;
+  const getOrderValue = (exercise: EventExerciseDetail) => exercise.order;
 
   const sortedExercises = createMemo(() =>
     [...props.exercises].toSorted(

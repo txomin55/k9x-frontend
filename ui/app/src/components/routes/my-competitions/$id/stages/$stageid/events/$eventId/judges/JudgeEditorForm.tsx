@@ -1,18 +1,20 @@
-import type { PublicStageJudge } from "@/services/api/competition-crud/competitionCrudTypes";
+import type {EventJudgeDetail} from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 
 type JudgeEditorFormProps = {
-  draft: () => PublicStageJudge;
+  draft: () => EventJudgeDetail;
   onDraftChange: (
-    updater: (current: PublicStageJudge | null) => PublicStageJudge | null,
+    updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
   onCancel: () => void;
   onSave: () => void;
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
-  const updateField = (field: "name" | "collectorEmail") => (value: string) => {
+  const updateField = (
+    field: "id" | "collectorEmail",
+  ) => (value: string) => {
     props.onDraftChange((current) =>
       current
         ? {
@@ -26,9 +28,9 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   return (
     <div class="judge-editor-form">
       <AtomInput
-        label="--Name"
-        value={props.draft().name}
-        onChange={updateField("name")}
+        label="--Judge ID"
+        value={props.draft().id}
+        onChange={updateField("id")}
       />
       <AtomInput
         label="--Email"

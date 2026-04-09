@@ -1,7 +1,7 @@
-export interface PublicUserProfile {
+export interface UserProfile {
   email: string;
   image: string;
   name: string;
 }
 
-export type UserModel = PublicUserProfile;
+export type UserModel = UserProfile;

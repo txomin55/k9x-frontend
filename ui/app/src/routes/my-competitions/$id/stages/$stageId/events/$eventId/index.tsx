@@ -20,9 +20,9 @@ import type {
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   EventCompetitor,
-  PublicEventCompetitor,
-  PublicEventExercise,
-  PublicStageJudge,
+  EventCompetitorDetail,
+  EventExerciseDetail,
+  EventJudgeDetail,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -168,19 +168,19 @@ function CompetitionEventDetailBody(props: {
     string | null
   >(null);
   const [competitorDialogDraft, setCompetitorDialogDraft] =
-    createSignal<PublicEventCompetitor | null>(null);
+    createSignal<EventCompetitorDetail | null>(null);
   const [isCreatingJudge, setIsCreatingJudge] = createSignal(false);
   const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(
     null,
   );
   const [judgeDialogDraft, setJudgeDialogDraft] =
-    createSignal<PublicStageJudge | null>(null);
+    createSignal<EventJudgeDetail | null>(null);
   const [isCreatingExercise, setIsCreatingExercise] = createSignal(false);
   const [editingExerciseId, setEditingExerciseId] = createSignal<string | null>(
     null,
   );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
-    createSignal<PublicEventExercise | null>(null);
+    createSignal<EventExerciseDetail | null>(null);
 
   createEffect(() => {
     if (isEditing()) return;
@@ -232,7 +232,7 @@ function CompetitionEventDetailBody(props: {
     });
   };
 
-  const createDefaultCompetitor = (): PublicEventCompetitor => {
+  const createDefaultCompetitor = (): EventCompetitorDetail => {
     return {
       finalScore: 0,
       order: 0,
@@ -248,10 +248,10 @@ function CompetitionEventDetailBody(props: {
   };
 
   const reorderCompetitors = (
-    competitors: PublicEventCompetitor[],
+    competitors: EventCompetitorDetail[],
     order: number,
-    updatedCompetitor: PublicEventCompetitor,
-  ): PublicEventCompetitor[] => {
+    updatedCompetitor: EventCompetitorDetail,
+  ): EventCompetitorDetail[] => {
     return competitors.map((entry) => {
       if (entry.dogId === updatedCompetitor.dogId) {
         return updatedCompetitor;
@@ -269,10 +269,10 @@ function CompetitionEventDetailBody(props: {
   };
 
   const reorderExercises = (
-    exercises: PublicEventExercise[],
+    exercises: EventExerciseDetail[],
     order: number,
-    updatedExercise: PublicEventExercise,
-  ): PublicEventExercise[] => {
+    updatedExercise: EventExerciseDetail,
+  ): EventExerciseDetail[] => {
     return exercises.map((entry) => {
       if (entry.id === updatedExercise.id) {
         return updatedExercise;
@@ -290,7 +290,7 @@ function CompetitionEventDetailBody(props: {
   };
 
   const mapCompetitorForUpdate = (
-    competitor: PublicEventCompetitor,
+    competitor: EventCompetitorDetail,
   ): EventCompetitor => {
     return {
       dogId: competitor.dogId,
@@ -308,14 +308,12 @@ function CompetitionEventDetailBody(props: {
     };
   };
 
-  const createDefaultJudge = (): PublicStageJudge => {
-    return {
-      collectorEmail: "",
-      name: "--Default judge",
-    };
-  };
+  const createDefaultJudge = (): EventJudgeDetail => ({
+    collectorEmail: "",
+    id: globalThis.crypto.randomUUID(),
+  });
 
-  const createDefaultExercise = (): PublicEventExercise => {
+  const createDefaultExercise = (): EventExerciseDetail => {
     return {
       id: globalThis.crypto.randomUUID(),
       order: 0,
@@ -459,7 +457,7 @@ function CompetitionEventDetailBody(props: {
     }));
   };
 
-  const handleOpenJudgeEditor = (index: number, judge: PublicStageJudge) => {
+  const handleOpenJudgeEditor = (index: number, judge: EventJudgeDetail) => {
     setIsCreatingJudge(false);
     setEditingJudgeIndex(index);
     setJudgeDialogDraft({ ...judge });
@@ -484,7 +482,7 @@ function CompetitionEventDetailBody(props: {
     }));
   };
 
-  const handleOpenExerciseEditor = (exercise: PublicEventExercise) => {
+  const handleOpenExerciseEditor = (exercise: EventExerciseDetail) => {
     setIsCreatingExercise(false);
     setEditingExerciseId(exercise.id);
     setExerciseDialogDraft({ ...exercise });
@@ -512,7 +510,7 @@ function CompetitionEventDetailBody(props: {
     }));
   };
 
-  const handleOpenCompetitorEditor = (competitor: PublicEventCompetitor) => {
+  const handleOpenCompetitorEditor = (competitor: EventCompetitorDetail) => {
     setIsCreatingCompetitor(false);
     setEditingCompetitorId(competitor.dogId);
     setCompetitorDialogDraft({
