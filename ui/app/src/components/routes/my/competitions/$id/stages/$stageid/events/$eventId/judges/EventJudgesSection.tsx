@@ -27,7 +27,10 @@ type EventJudgesSectionProps = {
 };
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
-  const judgesQuery = useJudges();
+  const judgesQuery = useJudges({
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
+  });
   const judgeNameById = createMemo(() => {
     const map = new Map<string, string>();
     for (const judge of judgesQuery.data ?? []) {

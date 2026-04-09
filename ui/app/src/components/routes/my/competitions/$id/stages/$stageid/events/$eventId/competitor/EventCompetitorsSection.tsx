@@ -7,6 +7,9 @@ import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import { useDogs } from "@/services/api/dog-crud/dogCrud";
+import type { Dog } from "@/services/api/dog-crud/dogCrudTypes";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -30,6 +33,25 @@ type EventCompetitorsSectionProps = {
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
+  const dogsQuery = useDogs({
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
+  });
+  const dogOptions = createMemo<AtomSelectOption[]>(() =>
+    (dogsQuery.data ?? []).map((dog) => ({
+      label: dog.owner ? `${dog.name} (${dog.owner})` : dog.name,
+      value: dog.id,
+    })),
+  );
+  const dogsById = createMemo(() => {
+    const map = new Map<string, Dog>();
+    for (const dog of dogsQuery.data ?? []) {
+      map.set(dog.id, dog);
+    }
+    return map;
+  });
+  const getDogName = (dogId: string) => dogsById().get(dogId)?.name;
+
   const getOrderValue = (competitor: EventCompetitorDetail) => competitor.order;
 
   const sortedCompetitors = createMemo(() =>
@@ -56,6 +78,8 @@ export default function EventCompetitorsSection(
                 onCompetitorDraftChange={props.onCompetitorDraftChange}
                 onSaveCompetitor={props.onSaveCompetitor}
                 orderBounds={competitorOrderBounds}
+                dogOptions={dogOptions()}
+                dogsById={dogsById()}
               />
             }
             onOpenChange={(isOpen) => {
@@ -82,7 +106,7 @@ export default function EventCompetitorsSection(
                 topLeft={competitor().owner}
                 content={
                   <div class="event-competitors-section__competitors--competitor">
-                    <p>{`--Dog: ${competitor().name}`}</p>
+                    <p>{`--Dog: ${getDogName(competitor().dogId)}`}</p>
                     <p>{`--Identity: ${competitor().identity}`}</p>
                     <p>{`--Team: ${competitor().team}`}</p>
                     <p>{`--Country: ${competitor().country}`}</p>
@@ -115,6 +139,8 @@ export default function EventCompetitorsSection(
                             }
                             onSaveCompetitor={props.onSaveCompetitor}
                             orderBounds={competitorOrderBounds}
+                            dogOptions={dogOptions()}
+                            dogsById={dogsById()}
                           />
                         }
                         onOpenChange={(isOpen) => {

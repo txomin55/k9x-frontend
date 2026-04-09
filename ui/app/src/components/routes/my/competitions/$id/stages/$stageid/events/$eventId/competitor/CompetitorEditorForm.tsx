@@ -3,6 +3,9 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type { Dog } from "@/services/api/dog-crud/dogCrudTypes";
 import { Show } from "solid-js";
 
 type OrderBounds = {
@@ -20,6 +23,8 @@ type CompetitorDialogContentProps = {
   ) => void;
   onSaveCompetitor: () => void;
   orderBounds: OrderBounds;
+  dogOptions: AtomSelectOption[];
+  dogsById: Map<string, Dog>;
 };
 
 export default function CompetitorEditorForm(
@@ -87,12 +92,40 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
+  const handleDogChange = (option: AtomSelectOption | null) => {
+    const dog = option ? props.dogsById.get(option.value) : undefined;
+
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            dogId: option?.value ?? "",
+            name: dog?.name ?? "",
+            breed: dog?.breed ?? "",
+            identity: dog?.identifier ?? "",
+            country: dog?.country ?? "",
+            team: dog?.team ?? "",
+          }
+        : current,
+    );
+  };
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
         <div class="competitor-editor-form">
+          <AtomSelect
+            label="--Dog"
+            onChange={handleDogChange}
+            options={props.dogOptions}
+            placeholder="--Select a dog"
+            value={
+              props.dogOptions.find(
+                (option) => option.value === draft().dogId,
+              ) ?? null
+            }
+          />
           <AtomInput
             label="--Owner"
             value={draft().owner}
