@@ -92,6 +92,16 @@ export default function EventCompetitorsSection(
                 actions={
                   props.isEditing ? (
                     <div class="event-competitors-section__competitors--actions">
+                      <ConfirmActionButton
+                        text={competitor().owner}
+                        onConfirm={() =>
+                          props.onDeleteCompetitor(competitor().dogId)
+                        }
+                      >
+                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                          --Delete
+                        </AtomButton>
+                      </ConfirmActionButton>
                       <AtomDialog
                         closeButtonText="--Close dialog"
                         content={
@@ -123,16 +133,6 @@ export default function EventCompetitorsSection(
                         title={`--Edit ${competitor().name}`}
                         trigger={<span>--Edit</span>}
                       />
-                      <ConfirmActionButton
-                        text={competitor().owner}
-                        onConfirm={() =>
-                          props.onDeleteCompetitor(competitor().dogId)
-                        }
-                      >
-                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                          --Delete
-                        </AtomButton>
-                      </ConfirmActionButton>
                     </div>
                   ) : undefined
                 }

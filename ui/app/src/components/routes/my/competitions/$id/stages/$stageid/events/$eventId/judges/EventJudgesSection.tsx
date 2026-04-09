@@ -1,4 +1,4 @@
-import { Index, Show } from "solid-js";
+import { createMemo, Index, Show } from "solid-js";
 import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrudTypes";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
@@ -7,6 +7,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import JudgeEditorForm from "./JudgeEditorForm";
+import { useJudges } from "@/services/api/judge-crud/judgeCrud";
 import "./styles.css";
 
 type EventJudgesSectionProps = {
@@ -26,6 +27,25 @@ type EventJudgesSectionProps = {
 };
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
+  const judgesQuery = useJudges();
+  const judgeNameById = createMemo(() => {
+    const map = new Map<string, string>();
+    for (const judge of judgesQuery.data ?? []) {
+      map.set(judge.id, judge.name);
+    }
+    return map;
+  });
+
+  const judgeOptions = createMemo(() =>
+    (judgesQuery.data ?? []).map((judge) => ({
+      label: judge.name,
+      value: judge.id,
+    })),
+  );
+
+  const getJudgeName = (judgeId: string) =>
+    judgeNameById().get(judgeId) ?? judgeId;
+
   return (
     <section class="event-judges-section">
       <div class="event-judges-section__header">
@@ -41,6 +61,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                     onDraftChange={props.onJudgeDraftChange}
                     onCancel={props.onCloseJudgeEditor}
                     onSave={props.onSaveJudge}
+                    judgeOptions={judgeOptions()}
                   />
                 )}
               </Show>
@@ -63,13 +84,13 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           <Index each={props.judges}>
             {(judge, index) => (
               <Card
-                topLeft={judge().id}
+                topLeft={getJudgeName(judge().id)}
                 description={<p>{`--Email: ${judge().collectorEmail}`}</p>}
                 actions={
                   props.isEditing ? (
                     <div class="event-judges-section__judges--actions">
                       <ConfirmActionButton
-                        text={judge().id}
+                        text={getJudgeName(judge().id)}
                         onConfirm={() => props.onDeleteJudge(index)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
@@ -86,6 +107,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                                 onDraftChange={props.onJudgeDraftChange}
                                 onCancel={props.onCloseJudgeEditor}
                                 onSave={props.onSaveJudge}
+                                judgeOptions={judgeOptions()}
                               />
                             )}
                           </Show>
@@ -101,7 +123,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           }
                         }}
                         open={props.editingJudgeIndex === index}
-                        title={`--Edit ${judge().id}`}
+                        title={`--Edit judge`}
                         trigger={<span>--Edit</span>}
                       />
                     </div>

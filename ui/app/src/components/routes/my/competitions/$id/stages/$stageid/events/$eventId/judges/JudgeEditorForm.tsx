@@ -2,6 +2,8 @@ import type { EventJudgeDetail } from "@/services/api/competition-crud/competiti
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 
 type JudgeEditorFormProps = {
   draft: () => EventJudgeDetail;
@@ -10,6 +12,7 @@ type JudgeEditorFormProps = {
   ) => void;
   onCancel: () => void;
   onSave: () => void;
+  judgeOptions: AtomSelectOption[];
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
@@ -24,12 +27,21 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
     );
   };
 
+  const selectedJudgeOption = () =>
+    props.judgeOptions.find((option) => option.value === props.draft().id) ?? null;
+
+  const handleJudgeChange = (option: AtomSelectOption | null) => {
+    updateField("id")(option?.value ?? "");
+  };
+
   return (
     <div class="judge-editor-form">
-      <AtomInput
-        label="--Judge ID"
-        value={props.draft().id}
-        onChange={updateField("id")}
+      <AtomSelect
+        label="--Judge"
+        onChange={handleJudgeChange}
+        options={props.judgeOptions}
+        placeholder="--Select a judge"
+        value={selectedJudgeOption()}
       />
       <AtomInput
         label="--Email"
