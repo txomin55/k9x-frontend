@@ -10,9 +10,9 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my-competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
 import type {
   EventResponse,
   UpdateEventRequest,
@@ -31,7 +31,7 @@ import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingTo
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 
 export const Route = createFileRoute(
-  "/my-competitions/$id/stages/$stageId/events/$eventId/",
+  "/my/competitions/$id/stages/$stageId/events/$eventId/",
 )({
   component: CompetitionEventDetailPage,
 });
@@ -39,7 +39,7 @@ export const Route = createFileRoute(
 function CompetitionEventDetailPage() {
   const navigate = useNavigate();
   const params = useParams({
-    from: "/my-competitions/$id/stages/$stageId/events/$eventId/",
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
   });
   const {
     createApiEvent,
@@ -61,7 +61,7 @@ function CompetitionEventDetailPage() {
         stageId: params().stageId,
       },
       replace: true,
-      to: "/my-competitions/$id/stages/$stageId/events/$eventId",
+      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
     });
   };
 
@@ -127,7 +127,7 @@ function CompetitionEventDetailContentContainer(props: {
     props.onDeleteEvent(props.eventId);
     void navigate({
       params: { id: props.competitionId, stageId: props.stageId },
-      to: "/my-competitions/$id/stages/$stageId",
+      to: "/my/competitions/$id/stages/$stageId",
     });
   };
 

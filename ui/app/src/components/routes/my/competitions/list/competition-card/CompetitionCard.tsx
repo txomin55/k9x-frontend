@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
 import "./styles.css";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type { CompetitionCardProps } from "@/components/routes/my-competitions/list/competition-card/CompetitionCard.types";
+import type { CompetitionCardProps } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
 
 export default function CompetitionCard(props: CompetitionCardProps) {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
           type={BUTTON_TYPES.ACCENT}
           onClick={() =>
             navigate({
-              href: `/my-competitions/${props.id}`,
+              href: `/my/competitions/${props.id}`,
             })
           }
         >

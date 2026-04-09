@@ -9,10 +9,10 @@ describe("offlinePreloadManifest", () => {
     const manifest = createOfflinePreloadManifest([
       "/_build/assets/main-123.js",
       "/_build/assets/main-123.css",
-      "/_build/assets/my-competitions-456.js",
+      "/_build/assets/competitions-456.js",
       "/img/icons/favicon.svg",
       "/index.html",
-      "/my-competitions/index.html",
+      "/competitions/index.html",
       "/locales/es/translation.json",
       "/manifest.webmanifest",
       "/sw.js",
@@ -24,11 +24,11 @@ describe("offlinePreloadManifest", () => {
       "/",
       "/_build/assets/main-123.css",
       "/_build/assets/main-123.js",
-      "/_build/assets/my-competitions-456.js",
+      "/_build/assets/competitions-456.js",
       "/img/icons/favicon.svg",
       "/locales/es/translation.json",
       "/manifest.webmanifest",
-      "/my-competitions",
+      "/competitions",
     ]);
     expect(manifest.version).toHaveLength(12);
   });
@@ -40,8 +40,6 @@ describe("offlinePreloadManifest", () => {
     );
     expect(shouldIncludeInOfflinePreload("assets/main.js.map")).toBe(false);
     expect(shouldIncludeInOfflinePreload("assets/data.txt")).toBe(true);
-    expect(shouldIncludeInOfflinePreload("my-competitions/index.html")).toBe(
-      true,
-    );
+    expect(shouldIncludeInOfflinePreload("competitions/index.html")).toBe(true);
   });
 });

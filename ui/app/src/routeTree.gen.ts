@@ -9,35 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as MyCompetitionsRouteRouteImport } from './routes/my-competitions/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MyCompetitionsIndexRouteImport } from './routes/my-competitions/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
-import { Route as MyCompetitionsIdRouteRouteImport } from './routes/my-competitions/$id/route'
-import { Route as MyCompetitionsListIndexRouteImport } from './routes/my-competitions/list/index'
-import { Route as MyCompetitionsIdIndexRouteImport } from './routes/my-competitions/$id/index'
-import { Route as MyCompetitionsIdStagesStageIdIndexRouteImport } from './routes/my-competitions/$id/stages/$stageId/index'
-import { Route as MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport } from './routes/my-competitions/$id/stages/$stageId/events/$eventId/index'
+import { Route as MyCompetitionsRouteRouteImport } from './routes/my/competitions/route'
+import { Route as MyCompetitionsIndexRouteImport } from './routes/my/competitions/index'
+import { Route as MyCompetitionsIdRouteRouteImport } from './routes/my/competitions/$id/route'
+import { Route as MyCompetitionsListIndexRouteImport } from './routes/my/competitions/list/index'
+import { Route as MyCompetitionsIdIndexRouteImport } from './routes/my/competitions/$id/index'
+import { Route as MyCompetitionsIdStagesStageIdIndexRouteImport } from './routes/my/competitions/$id/stages/$stageId/index'
+import { Route as MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport } from './routes/my/competitions/$id/stages/$stageId/events/$eventId/index'
 
-const MyCompetitionsRouteRoute = MyCompetitionsRouteRouteImport.update({
-  id: '/my-competitions',
-  path: '/my-competitions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyCompetitionsRouteRoute = MyCompetitionsRouteRouteImport.update({
+  id: '/my/competitions',
+  path: '/my/competitions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyCompetitionsIndexRoute = MyCompetitionsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MyCompetitionsRouteRoute,
-} as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
-  id: '/auth/callback',
-  path: '/auth/callback',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const MyCompetitionsIdRouteRoute = MyCompetitionsIdRouteRouteImport.update({
   id: '/$id',
@@ -69,68 +69,68 @@ const MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/my-competitions': typeof MyCompetitionsRouteRouteWithChildren
-  '/my-competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
-  '/my-competitions/': typeof MyCompetitionsIndexRoute
-  '/my-competitions/$id/': typeof MyCompetitionsIdIndexRoute
-  '/my-competitions/list/': typeof MyCompetitionsListIndexRoute
-  '/my-competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
-  '/my-competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
+  '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/my/competitions/': typeof MyCompetitionsIndexRoute
+  '/my/competitions/$id/': typeof MyCompetitionsIdIndexRoute
+  '/my/competitions/list/': typeof MyCompetitionsListIndexRoute
+  '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
+  '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth/callback': typeof AuthCallbackRoute
-  '/my-competitions': typeof MyCompetitionsIndexRoute
-  '/my-competitions/$id': typeof MyCompetitionsIdIndexRoute
-  '/my-competitions/list': typeof MyCompetitionsListIndexRoute
-  '/my-competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdIndexRoute
-  '/my-competitions/$id/stages/$stageId/events/$eventId': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
+  '/my/competitions': typeof MyCompetitionsIndexRoute
+  '/my/competitions/$id': typeof MyCompetitionsIdIndexRoute
+  '/my/competitions/list': typeof MyCompetitionsListIndexRoute
+  '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdIndexRoute
+  '/my/competitions/$id/stages/$stageId/events/$eventId': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/my-competitions': typeof MyCompetitionsRouteRouteWithChildren
-  '/my-competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
-  '/my-competitions/': typeof MyCompetitionsIndexRoute
-  '/my-competitions/$id/': typeof MyCompetitionsIdIndexRoute
-  '/my-competitions/list/': typeof MyCompetitionsListIndexRoute
-  '/my-competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
-  '/my-competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
+  '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/my/competitions/': typeof MyCompetitionsIndexRoute
+  '/my/competitions/$id/': typeof MyCompetitionsIdIndexRoute
+  '/my/competitions/list/': typeof MyCompetitionsListIndexRoute
+  '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
+  '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/my-competitions'
-    | '/my-competitions/$id'
+    | '/my/competitions'
     | '/auth/callback'
-    | '/my-competitions/'
-    | '/my-competitions/$id/'
-    | '/my-competitions/list/'
-    | '/my-competitions/$id/stages/$stageId/'
-    | '/my-competitions/$id/stages/$stageId/events/$eventId/'
+    | '/my/competitions/$id'
+    | '/my/competitions/'
+    | '/my/competitions/$id/'
+    | '/my/competitions/list/'
+    | '/my/competitions/$id/stages/$stageId/'
+    | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth/callback'
-    | '/my-competitions'
-    | '/my-competitions/$id'
-    | '/my-competitions/list'
-    | '/my-competitions/$id/stages/$stageId'
-    | '/my-competitions/$id/stages/$stageId/events/$eventId'
+    | '/my/competitions'
+    | '/my/competitions/$id'
+    | '/my/competitions/list'
+    | '/my/competitions/$id/stages/$stageId'
+    | '/my/competitions/$id/stages/$stageId/events/$eventId'
   id:
     | '__root__'
     | '/'
-    | '/my-competitions'
-    | '/my-competitions/$id'
+    | '/my/competitions'
     | '/auth/callback'
-    | '/my-competitions/'
-    | '/my-competitions/$id/'
-    | '/my-competitions/list/'
-    | '/my-competitions/$id/stages/$stageId/'
-    | '/my-competitions/$id/stages/$stageId/events/$eventId/'
+    | '/my/competitions/$id'
+    | '/my/competitions/'
+    | '/my/competitions/$id/'
+    | '/my/competitions/list/'
+    | '/my/competitions/$id/stages/$stageId/'
+    | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -141,26 +141,12 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
-    '/my-competitions': {
-      id: '/my-competitions'
-      path: '/my-competitions'
-      fullPath: '/my-competitions'
-      preLoaderRoute: typeof MyCompetitionsRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/my-competitions/': {
-      id: '/my-competitions/'
-      path: '/'
-      fullPath: '/my-competitions/'
-      preLoaderRoute: typeof MyCompetitionsIndexRouteImport
-      parentRoute: typeof MyCompetitionsRouteRoute
     }
     '/auth/callback': {
       id: '/auth/callback'
@@ -169,38 +155,52 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/my-competitions/$id': {
-      id: '/my-competitions/$id'
+    '/my/competitions': {
+      id: '/my/competitions'
+      path: '/my/competitions'
+      fullPath: '/my/competitions'
+      preLoaderRoute: typeof MyCompetitionsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my/competitions/': {
+      id: '/my/competitions/'
+      path: '/'
+      fullPath: '/my/competitions/'
+      preLoaderRoute: typeof MyCompetitionsIndexRouteImport
+      parentRoute: typeof MyCompetitionsRouteRoute
+    }
+    '/my/competitions/$id': {
+      id: '/my/competitions/$id'
       path: '/$id'
-      fullPath: '/my-competitions/$id'
+      fullPath: '/my/competitions/$id'
       preLoaderRoute: typeof MyCompetitionsIdRouteRouteImport
       parentRoute: typeof MyCompetitionsRouteRoute
     }
-    '/my-competitions/list/': {
-      id: '/my-competitions/list/'
+    '/my/competitions/list/': {
+      id: '/my/competitions/list/'
       path: '/list'
-      fullPath: '/my-competitions/list/'
+      fullPath: '/my/competitions/list/'
       preLoaderRoute: typeof MyCompetitionsListIndexRouteImport
       parentRoute: typeof MyCompetitionsRouteRoute
     }
-    '/my-competitions/$id/': {
-      id: '/my-competitions/$id/'
+    '/my/competitions/$id/': {
+      id: '/my/competitions/$id/'
       path: '/'
-      fullPath: '/my-competitions/$id/'
+      fullPath: '/my/competitions/$id/'
       preLoaderRoute: typeof MyCompetitionsIdIndexRouteImport
       parentRoute: typeof MyCompetitionsIdRouteRoute
     }
-    '/my-competitions/$id/stages/$stageId/': {
-      id: '/my-competitions/$id/stages/$stageId/'
+    '/my/competitions/$id/stages/$stageId/': {
+      id: '/my/competitions/$id/stages/$stageId/'
       path: '/stages/$stageId'
-      fullPath: '/my-competitions/$id/stages/$stageId/'
+      fullPath: '/my/competitions/$id/stages/$stageId/'
       preLoaderRoute: typeof MyCompetitionsIdStagesStageIdIndexRouteImport
       parentRoute: typeof MyCompetitionsIdRouteRoute
     }
-    '/my-competitions/$id/stages/$stageId/events/$eventId/': {
-      id: '/my-competitions/$id/stages/$stageId/events/$eventId/'
+    '/my/competitions/$id/stages/$stageId/events/$eventId/': {
+      id: '/my/competitions/$id/stages/$stageId/events/$eventId/'
       path: '/stages/$stageId/events/$eventId'
-      fullPath: '/my-competitions/$id/stages/$stageId/events/$eventId/'
+      fullPath: '/my/competitions/$id/stages/$stageId/events/$eventId/'
       preLoaderRoute: typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport
       parentRoute: typeof MyCompetitionsIdRouteRoute
     }

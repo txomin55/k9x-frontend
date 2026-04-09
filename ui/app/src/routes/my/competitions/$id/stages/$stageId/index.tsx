@@ -1,12 +1,26 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent
+  useApiEvent,
 } from "@/services/api/event-api-crud/eventApiCrud";
-import { type StageEditorModel, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
+import {
+  type StageEditorModel,
+  useApiStage,
+} from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -15,16 +29,16 @@ import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingTo
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import EventEditorForm from "@/components/routes/my-competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
+import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
 
-export const Route = createFileRoute("/my-competitions/$id/stages/$stageId/")({
+export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
 });
 
 function CompetitionStageDetailPage() {
   const navigate = useNavigate();
-  const params = useParams({ from: "/my-competitions/$id/stages/$stageId/" });
+  const params = useParams({ from: "/my/competitions/$id/stages/$stageId/" });
   const {
     createApiStage,
     createDefaultApiStage,
@@ -63,7 +77,7 @@ function CompetitionStageDetailPage() {
         stageId: draftStage.id ?? "",
       },
       replace: true,
-      to: "/my-competitions/$id/stages/$stageId",
+      to: "/my/competitions/$id/stages/$stageId",
     });
   });
 
@@ -100,7 +114,7 @@ function CompetitionStageDetailContentContainer(props: {
     props.onDeleteStage(props.stageId);
     void navigate({
       params: { id: props.competitionId },
-      to: "/my-competitions/$id",
+      to: "/my/competitions/$id",
     });
   };
   const handleDeleteEvent = (eventId: string) =>
@@ -233,7 +247,7 @@ function CompetitionStageDetailBody(props: {
         id: props.stage().competitionId,
         stageId: props.stage().id,
       },
-      to: "/my-competitions/$id/stages/$stageId/events/$eventId",
+      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
     });
   const createEditDialogOpenChange =
     (event: Accessor<EventResponse>) => (isOpen: boolean) => {

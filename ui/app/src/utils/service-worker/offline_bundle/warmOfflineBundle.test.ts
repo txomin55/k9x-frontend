@@ -62,7 +62,7 @@ describe("warmOfflineBundle", () => {
       ok: true,
       json: async () => ({
         version: "abc123",
-        assets: ["/assets/app.js", "/assets/app.css", "/", "/my-competitions"],
+        assets: ["/assets/app.js", "/assets/app.css", "/", "/competitions"],
       }),
     });
 
@@ -78,7 +78,7 @@ describe("warmOfflineBundle", () => {
         "https://example.com/assets/app.js",
         "https://example.com/assets/app.css",
         "https://example.com/",
-        "https://example.com/my-competitions",
+        "https://example.com/competitions",
       ],
     });
 

@@ -11,8 +11,8 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import CompetitionInfo from "@/components/routes/my-competitions/$id/competition-info/CompetitionInfo";
-import StagesSection from "@/components/routes/my-competitions/$id/stages-section/StagesSection";
+import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
+import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
 import {
   type Competition,
@@ -29,13 +29,13 @@ import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingTo
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 
-export const Route = createFileRoute("/my-competitions/$id/")({
+export const Route = createFileRoute("/my/competitions/$id/")({
   component: CompetitionDetailPage,
 });
 
 function CompetitionDetailPage() {
   const navigate = useNavigate();
-  const params = useParams({ from: "/my-competitions/$id/" });
+  const params = useParams({ from: "/my/competitions/$id/" });
   const { createCompetition, createDefaultCompetition } = useCompetition();
   let hasCreatedDraftCompetition = false;
 
@@ -49,7 +49,7 @@ function CompetitionDetailPage() {
     void navigate({
       params: { id: draftCompetition.id ?? "" },
       replace: true,
-      to: "/my-competitions/$id",
+      to: "/my/competitions/$id",
     });
   });
 
@@ -80,7 +80,7 @@ function CompetitionDetailContent(props: { id: string }) {
 
               deleteCompetition(currentCompetition.id);
               void navigate({
-                to: "/my-competitions/list",
+                to: "/my/competitions/list",
               });
             }}
             onUpdate={updateCompetition}
@@ -231,7 +231,7 @@ function CompetitionDetailBody(props: {
         id: competition.id,
         stageId,
       },
-      to: "/my-competitions/$id/stages/$stageId",
+      to: "/my/competitions/$id/stages/$stageId",
     });
   };
 
