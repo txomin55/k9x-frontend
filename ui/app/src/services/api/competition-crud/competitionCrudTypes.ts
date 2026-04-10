@@ -50,12 +50,6 @@ interface EventDetail {
   status: string;
 }
 
-export interface EventScore {
-  exerciseId?: string;
-  id?: string;
-  score?: number;
-}
-
 export interface EventExercise {
   id?: string;
   order?: number;
