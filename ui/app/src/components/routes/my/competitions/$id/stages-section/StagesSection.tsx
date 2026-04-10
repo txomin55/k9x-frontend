@@ -3,8 +3,9 @@ import type { Competition } from "@/services/api/competition-crud/competitionCru
 import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCrud";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/stage";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";

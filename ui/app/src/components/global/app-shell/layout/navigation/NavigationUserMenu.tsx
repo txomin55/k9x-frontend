@@ -1,5 +1,6 @@
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { For, Show } from "solid-js";
 import { clearAuth, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";

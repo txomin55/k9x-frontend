@@ -1,11 +1,12 @@
 import { createMemo, Index, Show } from "solid-js";
 import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/api/judge-crud/judgeCrud";
 import "./styles.css";

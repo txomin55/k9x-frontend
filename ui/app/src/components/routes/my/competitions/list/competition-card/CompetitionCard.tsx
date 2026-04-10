@@ -1,11 +1,12 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
-import "./styles.css";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { CompetitionCardProps } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
+import "./styles.css";
 
 export default function CompetitionCard(props: CompetitionCardProps) {
   const navigate = useNavigate();

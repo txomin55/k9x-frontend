@@ -3,13 +3,13 @@ import type { AtomImageProps } from "@lib/components/atoms/image/AtomImage.types
 
 export default (props: AtomImageProps) => {
   return (
-    <Image fallbackDelay={600} class="core-image">
+    <Image fallbackDelay={600} class="atom-image">
       <Image.Img
-        class="core-image__img"
+        class="atom-image__img"
         src={props.src ?? undefined}
         alt={props.alt ?? undefined}
       />
-      <Image.Fallback class="core-image__fallback">
+      <Image.Fallback class="atom-image__fallback">
         {props.fallback}
       </Image.Fallback>
     </Image>

@@ -22,8 +22,9 @@ import {
   useApiStage,
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";

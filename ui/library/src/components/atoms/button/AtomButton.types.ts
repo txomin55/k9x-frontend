@@ -1,5 +1,5 @@
 import type { JSX } from "solid-js";
-import type { ButtonType } from "@lib/components/atoms/button/atomButton.constants";
+import { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 
 export type CoreButtonProps = {
   children: JSX.Element;
@@ -9,3 +9,5 @@ export type CoreButtonProps = {
   class?: string;
   style?: JSX.CSSProperties;
 };
+
+export type ButtonType = (typeof BUTTON_TYPES)[keyof typeof BUTTON_TYPES];

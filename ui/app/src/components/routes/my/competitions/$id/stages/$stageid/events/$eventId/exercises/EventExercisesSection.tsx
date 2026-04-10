@@ -4,11 +4,12 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ExerciseEditorForm from "./ExerciseEditorForm";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
-import "./styles.css";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
+import "./styles.css";
 
 type EventExercisesSectionProps = {
   editingExerciseId: string | null;
@@ -88,7 +89,9 @@ export default function EventExercisesSection(
                   <div>
                     <p>{exercise().name}</p>
                     <Index each={exercise().tags}>
-                      {(tag) => <AtomBadge textValue={tag}>{tag}</AtomBadge>}
+                      {(tag) => (
+                        <AtomBadge textValue={tag()}>{tag()}</AtomBadge>
+                      )}
                     </Index>
                   </div>
                 }

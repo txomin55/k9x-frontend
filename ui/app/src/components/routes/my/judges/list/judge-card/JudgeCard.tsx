@@ -1,9 +1,10 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import type { JudgeCardProps } from "@/components/routes/my/judges/list/judge-card/JudgeCard.types";
-import "./styles.css";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import "./styles.css";
 
 export default function JudgeCard(props: JudgeCardProps) {
   return (

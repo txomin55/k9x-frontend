@@ -1,7 +1,8 @@
 import { Show } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import type { DogCardProps } from "@/components/routes/my/dogs/list/dog-card/DogCard.types";
 import "./styles.css";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";

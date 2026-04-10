@@ -4,13 +4,14 @@ import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
-import "@/components/global/app-shell/layout/styles.css";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import "./styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
 

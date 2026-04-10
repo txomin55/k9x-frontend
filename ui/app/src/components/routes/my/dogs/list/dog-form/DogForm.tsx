@@ -1,10 +1,11 @@
 import type { CreateDogRequest } from "@/services/api/dog-crud/dogCrud.types";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
-import "./styles.css";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import "./styles.css";
 
 type DogFormProps = {
   draft: () => CreateDogRequest;

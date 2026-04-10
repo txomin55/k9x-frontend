@@ -1,10 +1,11 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { Index } from "solid-js";
-import "./styles.css";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
+import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   return (

@@ -9,7 +9,7 @@ import {
   applyJudgeUpsert,
   commitJudgeMutation,
   createJudgeRollbackPayload,
-  saveJudgesSnapshot
+  saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
 import type { CreateJudgeRequest, Judge } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
