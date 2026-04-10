@@ -1,10 +1,6 @@
-import { createSignal, Index } from "solid-js";
-import { Tabs } from "@kobalte/core/tabs";
-import {
-  TabsContentProps,
-  TabsOptionProps,
-  TabsProps,
-} from "@lib/components/atoms/tab/AtomTabs.types";
+import {createSignal, Index} from "solid-js";
+import {Tabs} from "@kobalte/core/tabs";
+import {TabsContentProps, TabsOptionProps, TabsProps,} from "@lib/components/atoms/tab/AtomTabs.types";
 import "./styles.css";
 
 const TabOption = (props: TabsOptionProps) => (
@@ -26,13 +22,14 @@ export default (props: TabsProps) => {
               <TabOption value={option().value} content={option().content} />
             )}
           </Index>
-          <Tabs.Indicator />
         </Tabs.List>
-        <Index each={props.contents}>
-          {(option) => (
-            <TabContent value={option().value} content={option().content} />
-          )}
-        </Index>
+        <div class="atom-tabs__content">
+          <Index each={props.contents}>
+            {(option) => (
+              <TabContent value={option().value} content={option().content} />
+            )}
+          </Index>
+        </div>
       </Tabs>
     </div>
   );

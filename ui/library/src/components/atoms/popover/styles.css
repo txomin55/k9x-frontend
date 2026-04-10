@@ -31,7 +31,7 @@
 }
 
 .atom-popover__content {
-    z-index: 10;
+    z-index: 30;
 
     min-width: 200px;
     padding: var(--unit-1) var(--unit-2);

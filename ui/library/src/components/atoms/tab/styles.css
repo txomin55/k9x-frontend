@@ -15,8 +15,6 @@
     gap: var(--unit-2);
     border-bottom: 1px solid var(--border);
     margin-bottom: var(--unit-2);
-    overflow-x: auto;
-    scrollbar-width: none;
 }
 
 .atom-tabs [role="tablist"]::-webkit-scrollbar {
@@ -35,9 +33,12 @@
 
     margin: 0;
     padding: 0 0 var(--unit-1) 0;
+    border-bottom: 4px solid transparent;
 
     background: transparent;
-    border: none;
+    border-top: none;
+    border-right: none;
+    border-left: none;
     outline: none;
 
     color: var(--text-secondary);
@@ -47,7 +48,7 @@
     text-align: center;
 
     cursor: pointer;
-    transition: color 160ms ease;
+    transition: color 220ms ease-out, border-bottom-color 220ms ease-out;
 }
 
 .atom-tabs [role="tab"]:hover {
@@ -57,25 +58,11 @@
 .atom-tabs [role="tab"][data-selected],
 .atom-tabs [role="tab"][aria-selected="true"] {
     color: var(--text-primary);
+    border-bottom-color: var(--accent);
 }
 
 .atom-tabs [role="tab"]:focus-visible {
     color: var(--text-primary);
-}
-
-/* Indicator */
-.atom-tabs [role="presentation"][data-orientation="horizontal"] {
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    height: 2px;
-
-    background: var(--accent);
-    border-radius: 999px;
-
-    transition: transform 180ms ease,
-    width 180ms ease,
-    background-color 160ms ease;
 }
 
 /* Panel */
@@ -93,4 +80,9 @@
 
 .atom-tabs [role="tabpanel"]:focus-visible > div {
     box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.atom-tabs__content {
+    width: 100%;
+    overflow: auto;
 }

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/my/competitions/$id/stages/$stageId")({
         (entry) => entry.id === match.params.stageId,
       );
 
-      return stage?.name ?? "Stage";
+      return stage?.name;
     },
   },
 });
