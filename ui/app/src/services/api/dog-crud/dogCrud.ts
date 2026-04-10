@@ -9,15 +9,15 @@ import {
   applyDogUpsert,
   commitDogMutation,
   createDogRollbackPayload,
-  saveDogsSnapshot,
+  saveDogsSnapshot
 } from "./dogCrudOfflineUtils";
 import type { CreateDogRequest, Dog } from "./dogCrudTypes";
-import { getDogsQueryKey, DOGS_SNAPSHOT_ID } from "./dogCrudConstants";
+import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 
 const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
-    path: "/dogs",
+    path: "/api/dogs",
   });
 
   await saveDogsSnapshot(dogs);
@@ -111,8 +111,7 @@ export const createDog = (payload: CreateDogRequest) => {
 
 export const deleteDog = (id: string) => {
   const previousDogs = getCachedDogs();
-  const previousDog =
-    previousDogs.find((dog) => dog.id === id) ?? null;
+  const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
 
   applyDogRemoval(id);
 

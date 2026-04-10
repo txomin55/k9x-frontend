@@ -22,8 +22,6 @@ import type {
   EventJudgeDetail,
   EventMutationPayload,
   EventResponse,
-  EventScore,
-  EventScoreDetail,
   Stage,
   StageEditorModel,
   StageMutationPayload
@@ -36,15 +34,6 @@ export type {
 } from "@/services/api/competition-crud/competitionCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
-
-const toApiStageEventScore = (
-  score: EventScore,
-  previousScore?: EventScoreDetail,
-): EventScoreDetail => ({
-  exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
-  id: score.id ?? previousScore?.id ?? createId(),
-  score: score.score ?? previousScore?.score ?? 0,
-});
 
 const toApiStageExercise = (
   exercise: EventExercise,
@@ -78,12 +67,7 @@ const toApiStageCompetitor = (
   competitor: EventCompetitor,
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
-  const previousScoresById = new Map(
-    (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
-  );
-
   return {
-    finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
     dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
     name: previousCompetitor?.name ?? "",
@@ -92,15 +76,6 @@ const toApiStageCompetitor = (
     country: competitor.country ?? previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",
     order: competitor.order ?? previousCompetitor?.order ?? 0,
-    scores:
-      competitor.scores?.map((score) =>
-        toApiStageEventScore(
-          score,
-          score.id ? previousScoresById.get(score.id) : undefined,
-        ),
-      ) ??
-      previousCompetitor?.scores ??
-      [],
   };
 };
 
@@ -205,7 +180,6 @@ export const toApiStage = (
     stage.events?.map((event) => ({
       competitors:
         event.competitors?.map((competitor) => ({
-          finalScore: competitor.finalScore ?? 0,
           dogId: competitor.dogId ?? "",
           identity: competitor.identity ?? "",
           name: competitor.name ?? "",
@@ -214,12 +188,6 @@ export const toApiStage = (
           country: competitor.country ?? "",
           breed: competitor.breed ?? "",
           order: competitor.order ?? 0,
-          scores:
-            competitor.scores?.map((score) => ({
-              exerciseId: score.exerciseId ?? "",
-              id: score.id ?? "",
-              score: score.score ?? 0,
-            })) ?? [],
         })) ?? [],
       configuration: {
         federation: event.configuration?.federation ?? "",

@@ -10,12 +10,6 @@ export interface CompetitionNotificationDetail {
   text: string;
 }
 
-export interface EventScoreDetail {
-  exerciseId: string;
-  id: string;
-  score: number;
-}
-
 export interface EventExerciseDetail {
   id: string;
   order: number;
@@ -35,7 +29,6 @@ export interface EventJudgeDetail {
 }
 
 export interface EventCompetitorDetail {
-  finalScore: number;
   dogId: string;
   identity: string;
   name: string;
@@ -44,7 +37,6 @@ export interface EventCompetitorDetail {
   country: string;
   breed: string;
   order: number;
-  scores: EventScoreDetail[];
 }
 
 interface EventDetail {
@@ -83,14 +75,12 @@ export interface EventJudge {
 }
 
 export interface EventCompetitor {
-  finalScore?: number;
   order?: number;
   dogId?: string;
   team?: string;
   identity?: string;
   owner?: string;
   country?: string;
-  scores?: EventScore[];
 }
 
 export interface CreateEventRequest {

@@ -239,7 +239,6 @@ function CompetitionEventDetailBody(props: {
 
   const createDefaultCompetitor = (): EventCompetitorDetail => {
     return {
-      finalScore: 0,
       order: 0,
       dogId: globalThis.crypto.randomUUID(),
       identity: "",
@@ -248,7 +247,6 @@ function CompetitionEventDetailBody(props: {
       team: "",
       country: "",
       breed: "",
-      scores: [],
     };
   };
 
@@ -327,12 +325,6 @@ function CompetitionEventDetailBody(props: {
       team: competitor.team,
       country: competitor.country,
       order: competitor.order,
-      finalScore: competitor.finalScore,
-      scores: competitor.scores.map((score) => ({
-        exerciseId: score.exerciseId,
-        id: score.id,
-        score: score.score,
-      })),
     };
   };
 
@@ -528,7 +520,6 @@ function CompetitionEventDetailBody(props: {
     setEditingCompetitorId(draft.dogId);
     setCompetitorDialogDraft({
       ...draft,
-      scores: [...draft.scores],
     });
   };
 
@@ -548,7 +539,6 @@ function CompetitionEventDetailBody(props: {
     setEditingCompetitorId(competitor.dogId);
     setCompetitorDialogDraft({
       ...competitor,
-      scores: [...competitor.scores],
     });
   };
 

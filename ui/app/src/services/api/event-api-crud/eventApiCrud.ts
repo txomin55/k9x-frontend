@@ -23,8 +23,6 @@ import type {
   EventJudgeDetail,
   EventMutationPayload,
   EventResponse,
-  EventScore,
-  EventScoreDetail,
   UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrudTypes";
 
@@ -35,15 +33,6 @@ export type {
 } from "@/services/api/competition-crud/competitionCrudTypes";
 
 const createId = () => globalThis.crypto.randomUUID();
-
-const toApiEventScore = (
-  score: EventScore,
-  previousScore?: EventScoreDetail,
-): EventScoreDetail => ({
-  exerciseId: score.exerciseId ?? previousScore?.exerciseId ?? "",
-  id: score.id ?? previousScore?.id ?? createId(),
-  score: score.score ?? previousScore?.score ?? 0,
-});
 
 const toApiExercise = (
   exercise: EventExercise,
@@ -77,12 +66,7 @@ const toApiCompetitor = (
   competitor: EventCompetitor,
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
-  const previousScoresById = new Map(
-    (previousCompetitor?.scores ?? []).map((score) => [score.id, score]),
-  );
-
   return {
-    finalScore: competitor.finalScore ?? previousCompetitor?.finalScore ?? 0,
     dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
     name: previousCompetitor?.name ?? "",
@@ -91,15 +75,6 @@ const toApiCompetitor = (
     country: competitor.country ?? previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",
     order: competitor.order ?? previousCompetitor?.order ?? 0,
-    scores:
-      competitor.scores?.map((score) =>
-        toApiEventScore(
-          score,
-          score.id ? previousScoresById.get(score.id) : undefined,
-        ),
-      ) ??
-      previousCompetitor?.scores ??
-      [],
   };
 };
 

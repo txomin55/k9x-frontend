@@ -112,7 +112,6 @@ export default function EventCompetitorsSection(
                     <p>{`--Identity: ${competitor().identity}`}</p>
                     <p>{`--Team: ${competitor().team}`}</p>
                     <p>{`--Country: ${competitor().country}`}</p>
-                    <p>{`--Final score: ${competitor().finalScore}`}</p>
                   </div>
                 }
                 actions={

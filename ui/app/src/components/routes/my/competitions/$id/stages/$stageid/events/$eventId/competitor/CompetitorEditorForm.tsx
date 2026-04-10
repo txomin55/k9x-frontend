@@ -30,16 +30,6 @@ type CompetitorDialogContentProps = {
 export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
-  const setFinalScore = (value) =>
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            finalScore: Number(value) || 0,
-          }
-        : current,
-    );
-
   const setIdentity = (value) =>
     props.onCompetitorDraftChange((current) =>
       current
@@ -151,11 +141,6 @@ export default function CompetitorEditorForm(
             onChange={setOrder}
             minValue={minOrder}
             maxValue={maxOrder}
-          />
-          <AtomNumberInput
-            label="--Final score"
-            value={draft().finalScore}
-            onChange={setFinalScore}
           />
           <div class="competitor-editor-form__actions">
             <AtomButton
