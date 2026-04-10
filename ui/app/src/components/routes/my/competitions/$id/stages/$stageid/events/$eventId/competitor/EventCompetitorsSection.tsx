@@ -59,13 +59,13 @@ export default function EventCompetitorsSection(
       (a, b) => getOrderValue(a) - getOrderValue(b),
     ),
   );
-  const competitorOrderBounds = {
+  const competitorOrderBounds = () => ({
     minValue: 1,
     maxValue: Math.max(
       1,
       props.competitors.length + (props.isCreatingCompetitor ? 1 : 0),
     ),
-  };
+  });
 
   return (
     <section class="event-competitors-section">
@@ -79,7 +79,7 @@ export default function EventCompetitorsSection(
                 onCloseCompetitorEditor={props.onCloseCompetitorEditor}
                 onCompetitorDraftChange={props.onCompetitorDraftChange}
                 onSaveCompetitor={props.onSaveCompetitor}
-                orderBounds={competitorOrderBounds}
+                orderBounds={competitorOrderBounds()}
                 dogOptions={dogOptions()}
                 dogsById={dogsById()}
               />
@@ -140,7 +140,7 @@ export default function EventCompetitorsSection(
                               props.onCompetitorDraftChange
                             }
                             onSaveCompetitor={props.onSaveCompetitor}
-                            orderBounds={competitorOrderBounds}
+                            orderBounds={competitorOrderBounds()}
                             dogOptions={dogOptions()}
                             dogsById={dogsById()}
                           />
