@@ -28,7 +28,7 @@ import { getCachedCompetitions } from "@/services/api/competition-crud/competiti
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
 import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";

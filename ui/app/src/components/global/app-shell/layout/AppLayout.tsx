@@ -1,15 +1,15 @@
 import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
 import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
-import Navigation from "@/components/navigation/Navigation";
-import AppBreadcrumbs from "@/components/layout/AppBreadcrumbs";
+import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
+import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
-import "@/components/layout/styles.css";
+import "@/components/global/app-shell/layout/styles.css";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
-import NavigationUserMenu from "@/components/navigation/NavigationUserMenu";
+import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 
 const DESKTOP_BREAKPOINT = 1024;

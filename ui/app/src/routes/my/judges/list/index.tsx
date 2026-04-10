@@ -1,11 +1,18 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, For, Show, Suspense } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
 import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
-import { createJudge, deleteJudge, useJudges } from "@/services/api/judge-crud/judgeCrud";
-import type { CreateJudgeRequest, Judge } from "@/services/api/judge-crud/judgeCrudTypes";
+import {
+  createJudge,
+  deleteJudge,
+  useJudges,
+} from "@/services/api/judge-crud/judgeCrud";
+import type {
+  CreateJudgeRequest,
+  Judge,
+} from "@/services/api/judge-crud/judgeCrudTypes";
 import "./styles.css";
 
 const buildJudgeDraft = (): CreateJudgeRequest => ({

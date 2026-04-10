@@ -1,4 +1,4 @@
-import "@/components/news-visualizer/index.css";
+import "@/components/global/news-visualizer/index.css";
 import { For, Show } from "solid-js";
 import { useAuthUser } from "@/stores/auth";
 

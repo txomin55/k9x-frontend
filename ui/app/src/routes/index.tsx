@@ -4,7 +4,7 @@ import {
   useNavigate,
 } from "@tanstack/solid-router";
 import { For, onMount, Suspense } from "solid-js";
-import { AppRoutePath } from "@/components/app-shell/paths";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 

@@ -26,7 +26,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";

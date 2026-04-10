@@ -1,4 +1,4 @@
-import { AppRoutePath } from "@/components/app-shell/paths";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 
 export const GOOGLE_OAUTH_STATE_KEY = "k9x_google_oauth_state";

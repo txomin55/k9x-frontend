@@ -1,5 +1,5 @@
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import { FloatingToggleProps } from "@/components/floating-toggle-circle/FloatingToggleCircle.types";
+import { FloatingToggleProps } from "@/components/common/floating-toggle-circle/FloatingToggleCircle.types";
 import "./styles.css";
 
 export default function FloatingToggleCircle(props: FloatingToggleProps) {

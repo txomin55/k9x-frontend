@@ -1,11 +1,14 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, For, Show, Suspense } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
+import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
 import { createDog, deleteDog, useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { CreateDogRequest, Dog } from "@/services/api/dog-crud/dogCrudTypes";
+import type {
+  CreateDogRequest,
+  Dog,
+} from "@/services/api/dog-crud/dogCrudTypes";
 import "./styles.css";
 
 const buildDogDraft = (): CreateDogRequest => ({

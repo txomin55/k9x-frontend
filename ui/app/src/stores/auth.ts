@@ -1,4 +1,4 @@
-import { AppRoutePath } from "@/components/app-shell/paths";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,

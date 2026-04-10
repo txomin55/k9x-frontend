@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createSignal, Match, onMount, Switch } from "solid-js";
-import { AppRoutePath } from "@/components/app-shell/paths";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
