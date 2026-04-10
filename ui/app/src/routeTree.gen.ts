@@ -22,6 +22,7 @@ import { Route as MyJudgesListIndexRouteImport } from './routes/my/judges/list/i
 import { Route as MyDogsListIndexRouteImport } from './routes/my/dogs/list/index'
 import { Route as MyCompetitionsListIndexRouteImport } from './routes/my/competitions/list/index'
 import { Route as MyCompetitionsIdIndexRouteImport } from './routes/my/competitions/$id/index'
+import { Route as MyCompetitionsIdStagesStageIdRouteRouteImport } from './routes/my/competitions/$id/stages/$stageId/route'
 import { Route as MyCompetitionsIdStagesStageIdIndexRouteImport } from './routes/my/competitions/$id/stages/$stageId/index'
 import { Route as MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport } from './routes/my/competitions/$id/stages/$stageId/events/$eventId/index'
 
@@ -90,17 +91,23 @@ const MyCompetitionsIdIndexRoute = MyCompetitionsIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => MyCompetitionsIdRouteRoute,
 } as any)
+const MyCompetitionsIdStagesStageIdRouteRoute =
+  MyCompetitionsIdStagesStageIdRouteRouteImport.update({
+    id: '/stages/$stageId',
+    path: '/stages/$stageId',
+    getParentRoute: () => MyCompetitionsIdRouteRoute,
+  } as any)
 const MyCompetitionsIdStagesStageIdIndexRoute =
   MyCompetitionsIdStagesStageIdIndexRouteImport.update({
-    id: '/stages/$stageId/',
-    path: '/stages/$stageId/',
-    getParentRoute: () => MyCompetitionsIdRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => MyCompetitionsIdStagesStageIdRouteRoute,
   } as any)
 const MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute =
   MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport.update({
-    id: '/stages/$stageId/events/$eventId/',
-    path: '/stages/$stageId/events/$eventId/',
-    getParentRoute: () => MyCompetitionsIdRouteRoute,
+    id: '/events/$eventId/',
+    path: '/events/$eventId/',
+    getParentRoute: () => MyCompetitionsIdStagesStageIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -117,6 +124,7 @@ export interface FileRoutesByFullPath {
   '/my/competitions/list/': typeof MyCompetitionsListIndexRoute
   '/my/dogs/list/': typeof MyDogsListIndexRoute
   '/my/judges/list/': typeof MyJudgesListIndexRoute
+  '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdRouteRouteWithChildren
   '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
   '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/my/competitions/list/': typeof MyCompetitionsListIndexRoute
   '/my/dogs/list/': typeof MyDogsListIndexRoute
   '/my/judges/list/': typeof MyJudgesListIndexRoute
+  '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdRouteRouteWithChildren
   '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
   '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/my/competitions/list/'
     | '/my/dogs/list/'
     | '/my/judges/list/'
+    | '/my/competitions/$id/stages/$stageId'
     | '/my/competitions/$id/stages/$stageId/'
     | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/my/competitions/list/'
     | '/my/dogs/list/'
     | '/my/judges/list/'
+    | '/my/competitions/$id/stages/$stageId'
     | '/my/competitions/$id/stages/$stageId/'
     | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesById: FileRoutesById
@@ -302,35 +313,57 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof MyCompetitionsIdIndexRouteImport
       parentRoute: typeof MyCompetitionsIdRouteRoute
     }
+    '/my/competitions/$id/stages/$stageId': {
+      id: '/my/competitions/$id/stages/$stageId'
+      path: '/stages/$stageId'
+      fullPath: '/my/competitions/$id/stages/$stageId'
+      preLoaderRoute: typeof MyCompetitionsIdStagesStageIdRouteRouteImport
+      parentRoute: typeof MyCompetitionsIdRouteRoute
+    }
     '/my/competitions/$id/stages/$stageId/': {
       id: '/my/competitions/$id/stages/$stageId/'
-      path: '/stages/$stageId'
+      path: '/'
       fullPath: '/my/competitions/$id/stages/$stageId/'
       preLoaderRoute: typeof MyCompetitionsIdStagesStageIdIndexRouteImport
-      parentRoute: typeof MyCompetitionsIdRouteRoute
+      parentRoute: typeof MyCompetitionsIdStagesStageIdRouteRoute
     }
     '/my/competitions/$id/stages/$stageId/events/$eventId/': {
       id: '/my/competitions/$id/stages/$stageId/events/$eventId/'
-      path: '/stages/$stageId/events/$eventId'
+      path: '/events/$eventId'
       fullPath: '/my/competitions/$id/stages/$stageId/events/$eventId/'
       preLoaderRoute: typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRouteImport
-      parentRoute: typeof MyCompetitionsIdRouteRoute
+      parentRoute: typeof MyCompetitionsIdStagesStageIdRouteRoute
     }
   }
 }
 
-interface MyCompetitionsIdRouteRouteChildren {
-  MyCompetitionsIdIndexRoute: typeof MyCompetitionsIdIndexRoute
+interface MyCompetitionsIdStagesStageIdRouteRouteChildren {
   MyCompetitionsIdStagesStageIdIndexRoute: typeof MyCompetitionsIdStagesStageIdIndexRoute
   MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute: typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
 
+const MyCompetitionsIdStagesStageIdRouteRouteChildren: MyCompetitionsIdStagesStageIdRouteRouteChildren =
+  {
+    MyCompetitionsIdStagesStageIdIndexRoute:
+      MyCompetitionsIdStagesStageIdIndexRoute,
+    MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute:
+      MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute,
+  }
+
+const MyCompetitionsIdStagesStageIdRouteRouteWithChildren =
+  MyCompetitionsIdStagesStageIdRouteRoute._addFileChildren(
+    MyCompetitionsIdStagesStageIdRouteRouteChildren,
+  )
+
+interface MyCompetitionsIdRouteRouteChildren {
+  MyCompetitionsIdIndexRoute: typeof MyCompetitionsIdIndexRoute
+  MyCompetitionsIdStagesStageIdRouteRoute: typeof MyCompetitionsIdStagesStageIdRouteRouteWithChildren
+}
+
 const MyCompetitionsIdRouteRouteChildren: MyCompetitionsIdRouteRouteChildren = {
   MyCompetitionsIdIndexRoute: MyCompetitionsIdIndexRoute,
-  MyCompetitionsIdStagesStageIdIndexRoute:
-    MyCompetitionsIdStagesStageIdIndexRoute,
-  MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute:
-    MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute,
+  MyCompetitionsIdStagesStageIdRouteRoute:
+    MyCompetitionsIdStagesStageIdRouteRouteWithChildren,
 }
 
 const MyCompetitionsIdRouteRouteWithChildren =

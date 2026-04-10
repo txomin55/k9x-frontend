@@ -1,32 +1,57 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import type {
+  EventResponse,
+  UpdateEventRequest,
+} from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   EventCompetitor,
   EventCompetitorDetail,
   EventExerciseDetail,
-  EventJudgeDetail
+  EventJudgeDetail,
 } from "@/services/api/competition-crud/competitionCrudTypes";
+import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import EventConfigurationSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
 )({
   component: CompetitionEventDetailPage,
+  staticData: {
+    breadcrumb: (match) => {
+      const competition = getCachedCompetitions()?.find(
+        (entry) => entry.id === match.params.id,
+      );
+      const stage = competition?.stages?.find(
+        (entry) => entry.id === match.params.stageId,
+      );
+      const event = stage?.events?.find(
+        (entry) => entry.id === match.params.eventId,
+      );
+
+      return event?.name;
+    },
+  },
 });
 
 function CompetitionEventDetailPage() {

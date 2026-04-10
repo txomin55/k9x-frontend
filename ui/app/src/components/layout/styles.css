@@ -75,10 +75,54 @@
     height: 100%;
     overflow: auto;
     background: var(--surface);
+    display: flex;
+    flex-direction: column;
+}
+
+.app-layout__breadcrumbs {
+    padding: var(--unit-2) var(--unit-2) 0;
+}
+
+.app-layout__breadcrumbs-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--unit-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+}
+
+.app-layout__breadcrumbs-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
+.app-layout__breadcrumbs-item:not(:last-child)::after {
+    content: ">";
+    color: var(--text-muted, var(--text-secondary));
+}
+
+.app-layout__breadcrumbs-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.app-layout__breadcrumbs-link:hover {
+    color: var(--text-primary);
+    text-decoration: underline;
+}
+
+.app-layout__breadcrumbs-current {
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 .app-shell {
-    padding: var(--unit-3) var(--unit-2);
+    padding: var(--unit-2);
 }
 
 .app-layout__user-img {
