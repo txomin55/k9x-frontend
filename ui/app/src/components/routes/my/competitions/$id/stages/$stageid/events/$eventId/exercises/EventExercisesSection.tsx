@@ -39,7 +39,10 @@ export default function EventExercisesSection(
   );
   const exerciseOrderBounds = {
     minValue: 1,
-    maxValue: Math.max(1, props.exercises.length),
+    maxValue: Math.max(
+      1,
+      props.exercises.length + (props.isCreatingExercise ? 1 : 0),
+    ),
   };
 
   return (

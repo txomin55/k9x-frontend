@@ -61,7 +61,10 @@ export default function EventCompetitorsSection(
   );
   const competitorOrderBounds = {
     minValue: 1,
-    maxValue: Math.max(1, props.competitors.length),
+    maxValue: Math.max(
+      1,
+      props.competitors.length + (props.isCreatingCompetitor ? 1 : 0),
+    ),
   };
 
   return (

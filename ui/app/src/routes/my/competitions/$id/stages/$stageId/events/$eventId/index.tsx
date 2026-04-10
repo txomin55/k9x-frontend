@@ -256,20 +256,43 @@ function CompetitionEventDetailBody(props: {
     competitors: EventCompetitorDetail[],
     order: number,
     updatedCompetitor: EventCompetitorDetail,
+    previousOrder?: number,
   ): EventCompetitorDetail[] => {
     return competitors.map((entry) => {
       if (entry.dogId === updatedCompetitor.dogId) {
         return updatedCompetitor;
       }
 
-      if (entry.order >= order) {
+      if (previousOrder === undefined) {
+        if (entry.order < order) {
+          return entry;
+        }
+
         return {
           ...entry,
           order: entry.order + 1,
         };
       }
 
-      return entry;
+      if (previousOrder < order) {
+        if (entry.order <= previousOrder || entry.order > order) {
+          return entry;
+        }
+
+        return {
+          ...entry,
+          order: entry.order - 1,
+        };
+      }
+
+      if (entry.order < order || entry.order >= previousOrder) {
+        return entry;
+      }
+
+      return {
+        ...entry,
+        order: entry.order + 1,
+      };
     });
   };
 
@@ -426,7 +449,12 @@ function CompetitionEventDetailBody(props: {
         const shouldReorder = orderChanged || hasConflict;
 
         const nextCompetitors = shouldReorder
-          ? reorderCompetitors(current.competitors, draft.order, draft)
+          ? reorderCompetitors(
+              current.competitors,
+              draft.order,
+              draft,
+              previousCompetitor?.order,
+            )
           : current.competitors.map((entry) =>
               entry.dogId === currentEditingCompetitorId ? draft : entry,
             );
