@@ -1,5 +1,5 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -8,6 +8,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import "./styles.css";
+import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
 
 type EventExercisesSectionProps = {
   editingExerciseId: string | null;
@@ -83,12 +84,19 @@ export default function EventExercisesSection(
             {(exercise) => (
               <Card
                 topLeft={`--#${exercise().order}`}
-                description={<p>{exercise().text}</p>}
+                description={
+                  <div>
+                    <p>{exercise().name}</p>
+                    <Index each={exercise().tags}>
+                      {(tag) => <AtomBadge textValue={tag}>{tag}</AtomBadge>}
+                    </Index>
+                  </div>
+                }
                 actions={
                   props.isEditing ? (
                     <div class="event-exercises-section__exercises--actions">
                       <ConfirmActionButton
-                        text={exercise().text}
+                        text={exercise().name}
                         onConfirm={() => props.onDeleteExercise(exercise().id)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>

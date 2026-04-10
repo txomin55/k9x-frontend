@@ -1,5 +1,5 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -8,7 +8,7 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import { useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { Dog } from "@/services/api/dog-crud/dogCrudTypes";
+import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 

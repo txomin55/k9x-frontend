@@ -24,13 +24,13 @@ import type {
   EventMutationPayload,
   EventResponse,
   UpdateEventRequest,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 
 export type {
   CreateEventRequest,
   EventResponse,
   UpdateEventRequest,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -40,7 +40,8 @@ const toApiExercise = (
 ): EventExerciseDetail => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
-  text: exercise.text ?? previousExercise?.text ?? "",
+  name: exercise.name ?? previousExercise?.name ?? "",
+  tags: exercise.tags ?? previousExercise?.tags ?? [],
 });
 
 const toApiEventConfiguration = (

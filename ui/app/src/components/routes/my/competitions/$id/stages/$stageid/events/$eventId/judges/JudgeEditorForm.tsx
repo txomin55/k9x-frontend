@@ -1,4 +1,4 @@
-import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -28,7 +28,8 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   };
 
   const selectedJudgeOption = () =>
-    props.judgeOptions.find((option) => option.value === props.draft().id) ?? null;
+    props.judgeOptions.find((option) => option.value === props.draft().id) ??
+    null;
 
   const handleJudgeChange = (option: AtomSelectOption | null) => {
     updateField("id")(option?.value ?? "");

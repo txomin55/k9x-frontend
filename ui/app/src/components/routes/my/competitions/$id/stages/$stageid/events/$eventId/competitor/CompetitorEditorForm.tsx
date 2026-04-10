@@ -1,11 +1,11 @@
-import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import type { Dog } from "@/services/api/dog-crud/dogCrudTypes";
+import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 
 type OrderBounds = {

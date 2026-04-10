@@ -3,7 +3,7 @@ import type {
   Competition,
   Stage as CompetitionStage,
   StageEditorModel,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,

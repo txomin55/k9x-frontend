@@ -1,10 +1,11 @@
 import { createSignal } from "solid-js";
-import type { Dog } from "./dogCrudTypes";
+import type { Dog } from "./dogCrud.types";
 
 const [dogDrafts, setDogDrafts] = createSignal<Record<string, Dog>>({});
 const [removedDogIds, setRemovedDogIds] = createSignal<string[]>([]);
 
-const removeId = (ids: string[], id: string) => ids.filter((entry) => entry !== id);
+const removeId = (ids: string[], id: string) =>
+  ids.filter((entry) => entry !== id);
 
 export const getDogDrafts = dogDrafts;
 export const getRemovedDogIds = removedDogIds;

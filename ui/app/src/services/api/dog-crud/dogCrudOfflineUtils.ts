@@ -1,4 +1,7 @@
-import { registerPendingTaskHandler, type PendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
+import {
+  type PendingTaskHandler,
+  registerPendingTaskHandler,
+} from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import type {
   PendingTask,
   PendingTaskMethod,
@@ -11,14 +14,14 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import type { Dog, DogRollbackPayload } from "./dogCrudTypes";
+import type { Dog, DogRollbackPayload } from "./dogCrud.types";
 import {
   mergeDogsWithDrafts,
   removeDogDraft,
   replaceDogDrafts,
   upsertDogDraft,
 } from "./dogDraftStore";
-import { getDogsQueryKey, DOGS_SNAPSHOT_ID } from "./dogCrudConstants";
+import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 
 const DOG_SNAPSHOT_PREFIX = "dog:";
 
@@ -53,8 +56,7 @@ export const buildDogsWithoutEntity = (previousDogs: Dog[], id: string) =>
 const getBaseDogsFromCache = () =>
   queryClient.getQueryData<Dog[]>(getDogsQueryKey()) ?? [];
 
-export const getVisibleDogs = () =>
-  mergeDogsWithDrafts(getBaseDogsFromCache());
+export const getVisibleDogs = () => mergeDogsWithDrafts(getBaseDogsFromCache());
 
 const syncDogUpsertToCache = (dog: Dog) => {
   queryClient.setQueryData<Dog[] | undefined>(
@@ -110,8 +112,7 @@ export const createDogRollbackPayload = async (
 ): Promise<DogRollbackPayload> => ({
   entityId,
   previousDog,
-  previousDogs:
-    previousDogsFromCache ?? (await readDogsSnapshot()) ?? null,
+  previousDogs: previousDogsFromCache ?? (await readDogsSnapshot()) ?? null,
 });
 
 export const commitDogMutation = async ({
@@ -158,10 +159,7 @@ const rollbackDogTask = async (task: PendingTask) => {
 const rollbackDogPayload = async (rollbackPayload: DogRollbackPayload) => {
   if (rollbackPayload.previousDogs) {
     await saveDogsSnapshot(rollbackPayload.previousDogs);
-    replaceDogDrafts(
-      rollbackPayload.previousDogs,
-      getBaseDogsFromCache(),
-    );
+    replaceDogDrafts(rollbackPayload.previousDogs, getBaseDogsFromCache());
   } else {
     await removeQuerySnapshot(DOGS_SNAPSHOT_ID);
     replaceDogDrafts([], getBaseDogsFromCache());
@@ -193,7 +191,5 @@ export const applyDogUpsert = (dog: Dog) => {
 
 export const applyDogRemoval = (id: string) => {
   removeDogDraft(id);
-  void saveDogsSnapshot(
-    buildDogsWithoutEntity(getVisibleDogs(), id),
-  );
+  void saveDogsSnapshot(buildDogsWithoutEntity(getVisibleDogs(), id));
 };

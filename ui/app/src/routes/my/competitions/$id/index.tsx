@@ -17,7 +17,7 @@ import { useCompetition } from "@/services/api/competition-crud/competitionCrud"
 import {
   type Competition,
   type PostCompetition,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 import {
   type StageEditorModel,
   toApiStage,

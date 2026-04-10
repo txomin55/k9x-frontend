@@ -1,5 +1,5 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";

@@ -1,4 +1,7 @@
-import { registerPendingTaskHandler, type PendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
+import {
+  type PendingTaskHandler,
+  registerPendingTaskHandler,
+} from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import type {
   PendingTask,
   PendingTaskMethod,
@@ -11,8 +14,13 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import type { Judge, JudgeRollbackPayload } from "./judgeCrudTypes";
-import { mergeJudgesWithDrafts, removeJudgeDraft, replaceJudgeDrafts, upsertJudgeDraft } from "./judgeDraftStore";
+import type { Judge, JudgeRollbackPayload } from "./judgeCrud.types";
+import {
+  mergeJudgesWithDrafts,
+  removeJudgeDraft,
+  replaceJudgeDrafts,
+  upsertJudgeDraft,
+} from "./judgeDraftStore";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 
 const JUDGE_SNAPSHOT_PREFIX = "judge:";
@@ -25,17 +33,12 @@ export const toJudgeListItem = (
   name: judge.name ?? previousJudge?.name ?? "",
 });
 
-export const buildNextJudges = (
-  previousJudges: Judge[],
-  judge: Judge,
-) => {
+export const buildNextJudges = (previousJudges: Judge[], judge: Judge) => {
   const nextJudge = toJudgeListItem(
     judge,
     previousJudges.find(({ id }) => id === judge.id),
   );
-  const existingIndex = previousJudges.findIndex(
-    ({ id }) => id === judge.id,
-  );
+  const existingIndex = previousJudges.findIndex(({ id }) => id === judge.id);
 
   return existingIndex === -1
     ? [nextJudge, ...previousJudges]
@@ -44,10 +47,8 @@ export const buildNextJudges = (
       );
 };
 
-export const buildJudgesWithoutEntity = (
-  previousJudges: Judge[],
-  id: string,
-) => previousJudges.filter((judge) => judge.id !== id);
+export const buildJudgesWithoutEntity = (previousJudges: Judge[], id: string) =>
+  previousJudges.filter((judge) => judge.id !== id);
 
 const getBaseJudgesFromCache = () =>
   queryClient.getQueryData<Judge[]>(getJudgesQueryKey()) ?? [];
@@ -58,16 +59,14 @@ export const getVisibleJudges = () =>
 const syncJudgeUpsertToCache = (judge: Judge) => {
   queryClient.setQueryData<Judge[] | undefined>(
     getJudgesQueryKey(),
-    (previousJudges) =>
-      buildNextJudges(previousJudges ?? [], judge),
+    (previousJudges) => buildNextJudges(previousJudges ?? [], judge),
   );
 };
 
 const syncJudgeRemovalToCache = (id: string) => {
   queryClient.setQueryData<Judge[] | undefined>(
     getJudgesQueryKey(),
-    (previousJudges) =>
-      buildJudgesWithoutEntity(previousJudges ?? [], id),
+    (previousJudges) => buildJudgesWithoutEntity(previousJudges ?? [], id),
   );
 };
 
@@ -156,9 +155,7 @@ const rollbackJudgeTask = async (task: PendingTask) => {
   await rollbackJudgePayload(task.rollbackPayload);
 };
 
-const rollbackJudgePayload = async (
-  rollbackPayload: JudgeRollbackPayload,
-) => {
+const rollbackJudgePayload = async (rollbackPayload: JudgeRollbackPayload) => {
   if (rollbackPayload.previousJudges) {
     await saveJudgesSnapshot(rollbackPayload.previousJudges);
     replaceJudgeDrafts(
@@ -196,7 +193,5 @@ export const applyJudgeUpsert = (judge: Judge) => {
 
 export const applyJudgeRemoval = (id: string) => {
   removeJudgeDraft(id);
-  void saveJudgesSnapshot(
-    buildJudgesWithoutEntity(getVisibleJudges(), id),
-  );
+  void saveJudgesSnapshot(buildJudgesWithoutEntity(getVisibleJudges(), id));
 };

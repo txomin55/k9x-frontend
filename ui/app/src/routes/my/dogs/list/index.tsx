@@ -8,7 +8,7 @@ import { createDog, deleteDog, useDogs } from "@/services/api/dog-crud/dogCrud";
 import type {
   CreateDogRequest,
   Dog,
-} from "@/services/api/dog-crud/dogCrudTypes";
+} from "@/services/api/dog-crud/dogCrud.types";
 import "./styles.css";
 
 const buildDogDraft = (): CreateDogRequest => ({

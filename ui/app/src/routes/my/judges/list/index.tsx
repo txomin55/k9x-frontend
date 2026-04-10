@@ -12,7 +12,7 @@ import {
 import type {
   CreateJudgeRequest,
   Judge,
-} from "@/services/api/judge-crud/judgeCrudTypes";
+} from "@/services/api/judge-crud/judgeCrud.types";
 import "./styles.css";
 
 const buildJudgeDraft = (): CreateJudgeRequest => ({

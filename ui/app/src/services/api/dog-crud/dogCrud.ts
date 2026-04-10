@@ -9,9 +9,9 @@ import {
   applyDogUpsert,
   commitDogMutation,
   createDogRollbackPayload,
-  saveDogsSnapshot
+  saveDogsSnapshot,
 } from "./dogCrudOfflineUtils";
-import type { CreateDogRequest, Dog } from "./dogCrudTypes";
+import type { CreateDogRequest, Dog } from "./dogCrud.types";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 

@@ -1,27 +1,33 @@
-import { COMPETITIONS_SNAPSHOT_ID, getCompetitionsQueryKey } from "@/services/api/competition-crud/competitionCrud";
+import {
+  COMPETITIONS_SNAPSHOT_ID,
+  getCompetitionsQueryKey,
+} from "@/services/api/competition-crud/competitionCrud";
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler
+  registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import {
+  type PendingTask,
+  type PendingTaskMethod,
+} from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
-  saveQuerySnapshot
+  saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
   Competition,
   CompetitionLocation,
-  CompetitionRollbackPayload
-} from "@/services/api/competition-crud/competitionCrudTypes";
+  CompetitionRollbackPayload,
+} from "@/services/api/competition-crud/competitionCrud.types";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   mergeCompetitionsWithDrafts,
   removeCompetitionDraft,
   replaceCompetitionDrafts,
-  upsertCompetitionDraft
+  upsertCompetitionDraft,
 } from "@/services/api/competition-crud/competitionDraftStore";
 
 export const toCompetitionListItem = (

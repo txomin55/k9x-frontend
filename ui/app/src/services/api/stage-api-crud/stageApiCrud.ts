@@ -3,13 +3,13 @@ import {
   applyApiStageUpsert,
   commitApiStageMutation,
   commitApiStageMutationSuccess,
-  createApiStageRollbackPayload
+  createApiStageRollbackPayload,
 } from "@/services/api/stage-api-crud/stageApiCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
   type Competition,
   getCachedCompetitions,
-  useCompetition
+  useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
 import type {
   EventCompetitor,
@@ -24,14 +24,14 @@ import type {
   EventResponse,
   Stage,
   StageEditorModel,
-  StageMutationPayload
-} from "@/services/api/competition-crud/competitionCrudTypes";
+  StageMutationPayload,
+} from "@/services/api/competition-crud/competitionCrud.types";
 
 export type {
   StageEditorModel,
   EventJudgeDetail,
   EventResponse,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -41,7 +41,8 @@ const toApiStageExercise = (
 ): EventExerciseDetail => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
   order: exercise.order ?? previousExercise?.order ?? 0,
-  text: exercise.text ?? previousExercise?.text ?? "",
+  name: exercise.name ?? previousExercise?.name ?? "",
+  tags: exercise.tags ?? previousExercise?.tags ?? [],
 });
 
 const toApiStageEventConfiguration = (
@@ -200,7 +201,8 @@ export const toApiStage = (
         event.exercises?.map((exercise) => ({
           id: exercise.id ?? "",
           order: exercise.order ?? 0,
-          text: exercise.text ?? "",
+          name: exercise.name ?? "",
+          tags: exercise.tags ?? [],
         })) ?? [],
       id: event.id ?? "",
       judges:

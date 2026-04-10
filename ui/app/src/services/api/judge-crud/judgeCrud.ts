@@ -9,9 +9,9 @@ import {
   applyJudgeUpsert,
   commitJudgeMutation,
   createJudgeRollbackPayload,
-  saveJudgesSnapshot,
+  saveJudgesSnapshot
 } from "./judgeCrudOfflineUtils";
-import type { CreateJudgeRequest, Judge } from "./judgeCrudTypes";
+import type { CreateJudgeRequest, Judge } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 
@@ -105,8 +105,7 @@ export const createJudge = (payload: CreateJudgeRequest) => {
 
 export const deleteJudge = (id: string) => {
   const previousJudges = getCachedJudges();
-  const previousJudge =
-    previousJudges.find((judge) => judge.id === id) ?? null;
+  const previousJudge = previousJudges.find((judge) => judge.id === id) ?? null;
 
   applyJudgeRemoval(id);
 

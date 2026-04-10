@@ -1,4 +1,4 @@
-import type { Judge } from "@/services/api/judge-crud/judgeCrudTypes";
+import type { Judge } from "@/services/api/judge-crud/judgeCrud.types";
 
 type JudgeCardProps = {
   judge: Judge;

@@ -17,7 +17,7 @@ import type {
   PostCompetition,
   PostCompetitionStage,
   Stage,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/api/competition-crud/competitionDraftStore";
@@ -26,7 +26,7 @@ export type {
   CompetitionLocation,
   Stage,
   Competition,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
 

@@ -1,4 +1,4 @@
-import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -41,7 +41,18 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
       current
         ? {
             ...current,
-            text: value,
+            name: value,
+          }
+        : current,
+    );
+  };
+
+  const setTags = (value: string) => {
+    props.onDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            tags: value.split(", "),
           }
         : current,
     );
@@ -59,7 +70,13 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         minValue={minOrder}
         maxValue={maxOrder}
       />
-      <AtomInput label="--Text" value={props.draft().text} onChange={setText} />
+      <AtomInput label="--Text" value={props.draft().name} onChange={setText} />
+      <AtomInput
+        label="--Tags"
+        value={props.draft().tags.join(", ")}
+        onChange={setTags}
+        description="--Comma separated text"
+      />
       <div class="exercise-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           --Cancel

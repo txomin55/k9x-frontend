@@ -23,7 +23,7 @@ import type {
   EventCompetitorDetail,
   EventExerciseDetail,
   EventJudgeDetail,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
@@ -337,7 +337,8 @@ function CompetitionEventDetailBody(props: {
     return {
       id: globalThis.crypto.randomUUID(),
       order: 0,
-      text: "--Default exercise",
+      name: "--Default exercise",
+      tags: [],
     };
   };
 

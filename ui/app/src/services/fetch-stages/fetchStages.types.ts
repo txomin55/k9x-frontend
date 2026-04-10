@@ -1,4 +1,4 @@
-import type { CompetitionLocation } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { CompetitionLocation } from "@/services/api/competition-crud/competitionCrud.types";
 
 export interface StageEventSummary {
   competitors: number;

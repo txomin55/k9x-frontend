@@ -9,7 +9,7 @@ import type {
   Competition,
   EventResponse,
   Stage,
-} from "@/services/api/competition-crud/competitionCrudTypes";
+} from "@/services/api/competition-crud/competitionCrud.types";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,

@@ -1,4 +1,4 @@
-import type { EventResponse } from "@/services/api/competition-crud/competitionCrudTypes";
+import type { EventResponse } from "@/services/api/competition-crud/competitionCrud.types";
 import { Setter, Show } from "solid-js";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";

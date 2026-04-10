@@ -13,7 +13,8 @@ export interface CompetitionNotificationDetail {
 export interface EventExerciseDetail {
   id: string;
   order: number;
-  text: string;
+  name: string;
+  tags: string[];
 }
 
 export interface EventConfigurationDetail {
@@ -53,7 +54,8 @@ interface EventDetail {
 export interface EventExercise {
   id?: string;
   order?: number;
-  text?: string;
+  name?: string;
+  tags?: string[];
 }
 
 export interface EventConfiguration {

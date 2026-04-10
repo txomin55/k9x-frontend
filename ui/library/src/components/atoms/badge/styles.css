@@ -1,0 +1,47 @@
+.atom-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 20px;
+    padding: 0 var(--unit-05);
+
+    border-radius: 999px;
+
+    font-size: var(--text-caption-sm);
+    line-height: 1;
+    font-weight: var(--font-weight-medium);
+
+    white-space: nowrap;
+
+    background: var(--surface-muted);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+
+    margin-inline-start: var(--unit-025);
+    margin-inline-end: var(--unit-025);
+}
+
+.atom-badge[data-variant="success"] {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border: 1px solid var(--success-border);
+}
+
+.atom-badge[data-variant="warning"] {
+    background: var(--warning-bg);
+    color: var(--warning-text);
+    border: 1px solid var(--warning-border);
+}
+
+.atom-badge[data-variant="error"] {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border: 1px solid var(--error-border);
+}
+
+.atom-badge[data-variant="accent"] {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+}
