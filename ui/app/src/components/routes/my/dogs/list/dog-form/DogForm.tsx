@@ -32,6 +32,7 @@ export default function DogForm(props: DogFormProps) {
         label="--Image"
         value={props.draft().image ?? ""}
         onChange={updateField("image")}
+        disabled
       />
       <AtomInput
         label="--Breed"

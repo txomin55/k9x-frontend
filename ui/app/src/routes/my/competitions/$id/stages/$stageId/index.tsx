@@ -419,7 +419,7 @@ function CompetitionStageDetailBody(props: {
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
         nonToggledText="--Edit"
-        toggledText="X"
+        toggledText="--Save"
       />
       <Show when={isEditing()}>
         <ConfirmActionButton

@@ -301,7 +301,7 @@ function CompetitionDetailBody(props: {
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
         nonToggledText="--Edit"
-        toggledText="X"
+        toggledText="--Save"
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
