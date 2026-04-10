@@ -6,14 +6,6 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import "./styles.css";
 
-const COUNTRY_SELECT_OPTIONS: AtomSelectOption[] = [
-  { label: "Portugal", value: "pt" },
-  { label: "Spain", value: "es" },
-  { label: "France", value: "fr" },
-  { label: "Italy", value: "it" },
-  { label: "United Kingdom", value: "gb" },
-];
-
 type CompetitionInfoProps = {
   address: string;
   country: string;
@@ -33,6 +25,14 @@ type CompetitionInfoProps = {
 };
 
 export default function CompetitionInfo(props: CompetitionInfoProps) {
+  const COUNTRY_SELECT_OPTIONS: AtomSelectOption[] = [
+    { label: "Portugal", value: "pt" },
+    { label: "Spain", value: "es" },
+    { label: "France", value: "fr" },
+    { label: "Italy", value: "it" },
+    { label: "United Kingdom", value: "gb" },
+  ];
+
   const selectedCountryOption = () =>
     COUNTRY_SELECT_OPTIONS.find(
       (countryOption) => countryOption.value === props.country,

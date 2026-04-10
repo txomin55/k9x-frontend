@@ -3,6 +3,8 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import "./styles.css";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 
 type DogFormProps = {
   draft: () => CreateDogRequest;
@@ -14,50 +16,87 @@ type DogFormProps = {
 };
 
 export default function DogForm(props: DogFormProps) {
-  const updateField = (field: keyof CreateDogRequest) => (value: string) => {
+  const BREED_SELECT_OPTIONS: AtomSelectOption[] = [
+    { label: "--Border Collie", value: "border-collie" },
+    { label: "--Spanish Waterdog", value: "swd" },
+    { label: "--Belgian Shepperd malinois", value: "belgian-malinois" },
+    { label: "--Labrador retriever", value: "labrador-retriever" },
+    { label: "--Golder retriever", value: "golden-retriever" },
+  ];
+
+  const selectedBreedOption = () =>
+    BREED_SELECT_OPTIONS.find(
+      (breedOption) => breedOption.value === props.draft().breed,
+    ) ?? null;
+
+  const updateName = (name) =>
     props.onDraftChange((current) => ({
       ...current,
-      [field]: value,
+      name,
     }));
-  };
 
+  const updateBreed = (breed) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      breed,
+    }));
+
+  const updateIdentifier = (identifier) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      identifier,
+    }));
+
+  const updateOwner = (owner) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      owner,
+    }));
+
+  const updateTeam = (team) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      team,
+    }));
+
+  const updateCountry = (country) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      country,
+    }));
   return (
     <div class="dog-form">
       <AtomInput
         label="--Name"
-        value={props.draft().name ?? ""}
-        onChange={updateField("name")}
+        value={props.draft().name}
+        onChange={updateName}
       />
-      <AtomInput
-        label="--Image"
-        value={props.draft().image ?? ""}
-        onChange={updateField("image")}
-        disabled
-      />
-      <AtomInput
+      <AtomInput label="--Image" value={props.draft().image} disabled />
+      <AtomSelect
         label="--Breed"
-        value={props.draft().breed ?? ""}
-        onChange={updateField("breed")}
+        onChange={(option) => updateBreed(option.value)}
+        options={BREED_SELECT_OPTIONS}
+        value={selectedBreedOption()}
       />
       <AtomInput
         label="--Identifier"
-        value={props.draft().identifier ?? ""}
-        onChange={updateField("identifier")}
+        value={props.draft().identifier}
+        onChange={updateIdentifier}
       />
       <AtomInput
         label="--Owner"
-        value={props.draft().owner ?? ""}
-        onChange={updateField("owner")}
+        value={props.draft().owner}
+        onChange={updateOwner}
       />
       <AtomInput
         label="--Team"
-        value={props.draft().team ?? ""}
-        onChange={updateField("team")}
+        value={props.draft().team}
+        onChange={updateTeam}
       />
       <AtomInput
         label="--Country"
-        value={props.draft().country ?? ""}
-        onChange={updateField("country")}
+        value={props.draft().country}
+        onChange={updateCountry}
       />
       <div class="dog-form__actions">
         <AtomButton type={BUTTON_TYPES.GHOST} onClick={props.onCancel}>

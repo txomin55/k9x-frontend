@@ -45,7 +45,6 @@ export default function EventExercisesSection(
   return (
     <section class="event-exercises-section">
       <div class="event-exercises-section__header">
-        <h2>--Exercises</h2>
         <Show when={props.isEditing}>
           <AtomDialog
             closeButtonText="--Close dialog"

@@ -10,7 +10,7 @@ export type AtomSelectProps = {
   options: AtomSelectOption[];
   value?: AtomSelectOption | null;
   defaultValue?: AtomSelectOption;
-  onChange?: (value: AtomSelectOption | null) => void;
+  onChange?: (value: AtomSelectOption) => void;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   placeholder?: JSX.Element;

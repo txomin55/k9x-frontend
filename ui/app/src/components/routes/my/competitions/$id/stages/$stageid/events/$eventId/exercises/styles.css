@@ -6,7 +6,7 @@
 
 .event-exercises-section__header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .exercise-editor-form {

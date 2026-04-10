@@ -17,9 +17,11 @@ import type {
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { BUTTON_TYPES } from "@lib/components/atoms/button/atomButton.constants";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import FloatingToggleCircle from "@/components/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -173,25 +175,12 @@ function CompetitionEventDetailBody(props: {
   const [exerciseDialogDraft, setExerciseDialogDraft] =
     createSignal<EventExerciseDetail | null>(null);
 
-  createEffect(() => {
-    if (isEditing()) return;
-
-    const event = props.event();
-
-    setDraftEvent(event);
-    setName(event.name);
-    setConfigurationName(event.configuration.name);
-    setConfigurationVersion(String(event.configuration.version));
-    setConfigurationFederation(event.configuration.federation);
-  });
-
-  createEffect(() => {
-    if (isEditing()) return;
-
-    closeCompetitorEditor();
-    closeJudgeEditor();
-    closeExerciseEditor();
-  });
+  const TABS = {
+    CONFIGURATION: "CONFIGURATION",
+    JUDGES: "JUDGES",
+    EXERCISES: "EXERCISES",
+    COMPETITORS: "COMPETITORS",
+  };
 
   const closeCompetitorEditor = () => {
     setIsCreatingCompetitor(false);
@@ -546,6 +535,106 @@ function CompetitionEventDetailBody(props: {
     setIsEditing((current) => !current);
   };
 
+  const eventTabsTitles = [
+    { value: TABS.CONFIGURATION, content: <span>--Configuration</span> },
+    { value: TABS.JUDGES, content: <span>--Judges</span> },
+    { value: TABS.EXERCISES, content: <span>--Exercises</span> },
+    { value: TABS.COMPETITORS, content: <span>--Competitors</span> },
+  ];
+
+  const eventTabsContents = () => [
+    {
+      value: TABS.CONFIGURATION,
+      content: (
+        <EventConfigurationSection
+          isEditing={isEditing()}
+          event={props.event()}
+          onBlur={commitEventEdits}
+          name={configurationName()}
+          onNameChange={setConfigurationName}
+          version={configurationVersion()}
+          onVersionChange={setConfigurationVersion}
+          federation={configurationFederation()}
+          onFederationChange={setConfigurationFederation}
+        />
+      ),
+    },
+    {
+      value: TABS.JUDGES,
+      content: (
+        <EventJudgesSection
+          editingJudgeIndex={editingJudgeIndex()}
+          isCreatingJudge={isCreatingJudge()}
+          isEditing={isEditing()}
+          judgeDialogDraft={judgeDialogDraft()}
+          judges={draftEvent().judges}
+          onAddJudge={handleAddJudge}
+          onCloseJudgeEditor={closeJudgeEditor}
+          onDeleteJudge={handleDeleteJudge}
+          onJudgeDraftChange={setJudgeDialogDraft}
+          onOpenJudgeEditor={handleOpenJudgeEditor}
+          onSaveJudge={saveJudgeEditor}
+        />
+      ),
+    },
+    {
+      value: TABS.EXERCISES,
+      content: (
+        <EventExercisesSection
+          editingExerciseId={editingExerciseId()}
+          exerciseDialogDraft={exerciseDialogDraft()}
+          exercises={draftEvent().exercises}
+          isCreatingExercise={isCreatingExercise()}
+          isEditing={isEditing()}
+          onAddExercise={handleAddExercise}
+          onCloseExerciseEditor={closeExerciseEditor}
+          onDeleteExercise={handleDeleteExercise}
+          onExerciseDraftChange={setExerciseDialogDraft}
+          onOpenExerciseEditor={handleOpenExerciseEditor}
+          onSaveExercise={saveExerciseEditor}
+        />
+      ),
+    },
+    {
+      value: TABS.COMPETITORS,
+      content: (
+        <EventCompetitorsSection
+          competitorDialogDraft={competitorDialogDraft()}
+          competitors={draftEvent().competitors}
+          editingCompetitorId={editingCompetitorId()}
+          isCreatingCompetitor={isCreatingCompetitor()}
+          isEditing={isEditing()}
+          onAddCompetitor={handleAddCompetitor}
+          onCloseCompetitorEditor={closeCompetitorEditor}
+          onCompetitorDraftChange={setCompetitorDialogDraft}
+          onDeleteCompetitor={handleDeleteCompetitor}
+          onOpenCompetitorEditor={handleOpenCompetitorEditor}
+          onSaveCompetitor={saveCompetitorEditor}
+        />
+      ),
+    },
+  ];
+
+  createEffect(() => {
+    if (isEditing()) return;
+
+    const event = props.event();
+
+    setDraftEvent(event);
+    setName(event.name);
+    setConfigurationName(event.configuration.name);
+    setConfigurationVersion(String(event.configuration.version));
+    setConfigurationFederation(event.configuration.federation);
+  });
+
+  createEffect(() => {
+    if (isEditing()) return;
+
+    closeCompetitorEditor();
+    closeJudgeEditor();
+    closeExerciseEditor();
+  });
+
   return (
     <div class="competition-event-detail__content">
       <header>
@@ -573,81 +662,10 @@ function CompetitionEventDetailBody(props: {
         </Show>
       </header>
 
-      <section>
-        <h2>--Configuration</h2>
-        <Show
-          when={isEditing()}
-          fallback={
-            <>
-              <p>{`--Name: ${props.event().configuration.name}`}</p>
-              <p>{`--Version: ${props.event().configuration.version}`}</p>
-              <p>{`--Federation: ${props.event().configuration.federation}`}</p>
-            </>
-          }
-        >
-          <div>
-            <AtomInput
-              label="--Configuration name"
-              onBlur={commitEventEdits}
-              value={configurationName()}
-              onChange={setConfigurationName}
-            />
-            <AtomNumberInput
-              label="--Version"
-              onBlur={commitEventEdits}
-              value={configurationVersion()}
-              onChange={setConfigurationVersion}
-            />
-            <AtomInput
-              label="--Federation"
-              onBlur={commitEventEdits}
-              value={configurationFederation()}
-              onChange={setConfigurationFederation}
-            />
-          </div>
-        </Show>
-      </section>
-
-      <EventJudgesSection
-        editingJudgeIndex={editingJudgeIndex()}
-        isCreatingJudge={isCreatingJudge()}
-        isEditing={isEditing()}
-        judgeDialogDraft={judgeDialogDraft()}
-        judges={draftEvent().judges}
-        onAddJudge={handleAddJudge}
-        onCloseJudgeEditor={closeJudgeEditor}
-        onDeleteJudge={handleDeleteJudge}
-        onJudgeDraftChange={setJudgeDialogDraft}
-        onOpenJudgeEditor={handleOpenJudgeEditor}
-        onSaveJudge={saveJudgeEditor}
-      />
-
-      <EventExercisesSection
-        editingExerciseId={editingExerciseId()}
-        exerciseDialogDraft={exerciseDialogDraft()}
-        exercises={draftEvent().exercises}
-        isCreatingExercise={isCreatingExercise()}
-        isEditing={isEditing()}
-        onAddExercise={handleAddExercise}
-        onCloseExerciseEditor={closeExerciseEditor}
-        onDeleteExercise={handleDeleteExercise}
-        onExerciseDraftChange={setExerciseDialogDraft}
-        onOpenExerciseEditor={handleOpenExerciseEditor}
-        onSaveExercise={saveExerciseEditor}
-      />
-
-      <EventCompetitorsSection
-        competitorDialogDraft={competitorDialogDraft()}
-        competitors={draftEvent().competitors}
-        editingCompetitorId={editingCompetitorId()}
-        isCreatingCompetitor={isCreatingCompetitor()}
-        isEditing={isEditing()}
-        onAddCompetitor={handleAddCompetitor}
-        onCloseCompetitorEditor={closeCompetitorEditor}
-        onCompetitorDraftChange={setCompetitorDialogDraft}
-        onDeleteCompetitor={handleDeleteCompetitor}
-        onOpenCompetitorEditor={handleOpenCompetitorEditor}
-        onSaveCompetitor={saveCompetitorEditor}
+      <AtomTabs
+        defaultValue={TABS.CONFIGURATION}
+        options={eventTabsTitles}
+        contents={eventTabsContents()}
       />
 
       <FloatingToggleCircle

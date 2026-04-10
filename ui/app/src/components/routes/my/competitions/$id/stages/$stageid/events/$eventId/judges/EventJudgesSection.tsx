@@ -52,7 +52,6 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
   return (
     <section class="event-judges-section">
       <div class="event-judges-section__header">
-        <h2>--Judges</h2>
         <Show when={props.isEditing}>
           <AtomDialog
             closeButtonText="--Close dialog"

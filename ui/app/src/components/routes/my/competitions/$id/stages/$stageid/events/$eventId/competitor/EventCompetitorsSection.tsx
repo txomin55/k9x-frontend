@@ -67,7 +67,6 @@ export default function EventCompetitorsSection(
   return (
     <section class="event-competitors-section">
       <div class="event-competitors-section__header">
-        <h2>--Competitors</h2>
         <Show when={props.isEditing}>
           <AtomDialog
             closeButtonText="--Close dialog"

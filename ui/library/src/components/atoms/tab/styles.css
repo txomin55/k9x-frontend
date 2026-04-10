@@ -1,0 +1,96 @@
+.atom-tabs {
+    width: 100%;
+}
+
+/* Root wrapper */
+.atom-tabs > [data-orientation="horizontal"] {
+    width: 100%;
+}
+
+/* Tab list */
+.atom-tabs [role="tablist"] {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--unit-2);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--unit-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.atom-tabs [role="tablist"]::-webkit-scrollbar {
+    display: none;
+}
+
+/* Trigger */
+.atom-tabs [role="tab"] {
+    appearance: none;
+    position: relative;
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0;
+    padding: 0 0 var(--unit-1) 0;
+
+    background: transparent;
+    border: none;
+    outline: none;
+
+    color: var(--text-secondary);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-line-height);
+    font-weight: var(--font-weight-regular);
+    text-align: center;
+
+    cursor: pointer;
+    transition: color 160ms ease;
+}
+
+.atom-tabs [role="tab"]:hover {
+    color: var(--text-primary);
+}
+
+.atom-tabs [role="tab"][data-selected],
+.atom-tabs [role="tab"][aria-selected="true"] {
+    color: var(--text-primary);
+}
+
+.atom-tabs [role="tab"]:focus-visible {
+    color: var(--text-primary);
+}
+
+/* Indicator */
+.atom-tabs [role="presentation"][data-orientation="horizontal"] {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+
+    background: var(--accent);
+    border-radius: 999px;
+
+    transition: transform 180ms ease,
+    width 180ms ease,
+    background-color 160ms ease;
+}
+
+/* Panel */
+.atom-tabs [role="tabpanel"] {
+    outline: none;
+}
+
+.atom-tabs [role="tabpanel"] > div {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--unit-1);
+    padding: var(--unit-2);
+    color: var(--text-primary);
+}
+
+.atom-tabs [role="tabpanel"]:focus-visible > div {
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
