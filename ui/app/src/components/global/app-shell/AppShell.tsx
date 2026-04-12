@@ -10,6 +10,7 @@ import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { prefetchCompetitions } from "@/services/api/competition-crud/competitionCrud";
+import { prefetchConfigurations } from "@/services/api/configurations/configurations";
 import { prefetchDogs } from "@/services/api/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/api/judge-crud/judgeCrud";
 
@@ -42,6 +43,10 @@ export default function AppShell() {
   createEffect(() => {
     if (user()) {
       void prefetchCompetitions({
+        refetchOnMount: false,
+        gcTime: 2 * 60 * 1000,
+      });
+      void prefetchConfigurations({
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
       });

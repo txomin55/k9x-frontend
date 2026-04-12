@@ -1,7 +1,6 @@
 import type { EventResponse } from "@/services/api/competition-crud/competitionCrud.types";
 import { Setter, Show } from "solid-js";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 
 export default function (props: {
   isEditing: boolean;
@@ -9,8 +8,6 @@ export default function (props: {
   onBlur: () => void;
   name: string;
   onNameChange: Setter<string>;
-  version: string;
-  onVersionChange: Setter<string>;
   federation: string;
   onFederationChange: Setter<string>;
 }) {
@@ -21,7 +18,6 @@ export default function (props: {
         fallback={
           <div>
             <p>{`--Name: ${props.event.configuration.name}`}</p>
-            <p>{`--Version: ${props.event.configuration.version}`}</p>
             <p>{`--Federation: ${props.event.configuration.federation}`}</p>
           </div>
         }
@@ -32,12 +28,6 @@ export default function (props: {
             onBlur={props.onBlur}
             value={props.name}
             onChange={props.onNameChange}
-          />
-          <AtomNumberInput
-            label="--Version"
-            onBlur={props.onBlur}
-            value={props.version}
-            onChange={props.onVersionChange}
           />
           <AtomInput
             label="--Federation"

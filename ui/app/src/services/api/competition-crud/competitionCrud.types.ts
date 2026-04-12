@@ -21,7 +21,6 @@ export interface EventConfigurationDetail {
   federation: string;
   id: string;
   name: string;
-  version: number;
 }
 
 export interface EventJudgeDetail {
@@ -62,7 +61,6 @@ export interface EventConfiguration {
   federation?: string;
   id?: string;
   name?: string;
-  version?: number;
 }
 
 export interface EventJudge {

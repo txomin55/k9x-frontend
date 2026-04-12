@@ -53,7 +53,6 @@ const toApiStageEventConfiguration = (
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
   name: configuration?.name ?? previousConfiguration?.name ?? "",
-  version: configuration?.version ?? previousConfiguration?.version ?? 0,
 });
 
 const toApiStageJudge = (
@@ -194,7 +193,6 @@ export const toApiStage = (
         federation: event.configuration?.federation ?? "",
         id: event.configuration?.id ?? "",
         name: event.configuration?.name ?? "",
-        version: event.configuration?.version ?? 0,
       },
       discipline: event.discipline ?? "",
       exercises:

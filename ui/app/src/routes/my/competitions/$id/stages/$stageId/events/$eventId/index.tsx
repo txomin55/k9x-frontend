@@ -177,9 +177,6 @@ function CompetitionEventDetailBody(props: {
   const [configurationName, setConfigurationName] = createSignal(
     props.event().configuration.name,
   );
-  const [configurationVersion, setConfigurationVersion] = createSignal(
-    String(props.event().configuration.version),
-  );
   const [configurationFederation, setConfigurationFederation] = createSignal(
     props.event().configuration.federation,
   );
@@ -556,7 +553,6 @@ function CompetitionEventDetailBody(props: {
         ...currentDraftEvent.configuration,
         federation: configurationFederation(),
         name: configurationName(),
-        version: Number(configurationVersion()) || 0,
       },
       name: name(),
     };
@@ -598,8 +594,6 @@ function CompetitionEventDetailBody(props: {
           onBlur={commitEventEdits}
           name={configurationName()}
           onNameChange={setConfigurationName}
-          version={configurationVersion()}
-          onVersionChange={setConfigurationVersion}
           federation={configurationFederation()}
           onFederationChange={setConfigurationFederation}
         />
@@ -669,7 +663,6 @@ function CompetitionEventDetailBody(props: {
     setDraftEvent(event);
     setName(event.name);
     setConfigurationName(event.configuration.name);
-    setConfigurationVersion(String(event.configuration.version));
     setConfigurationFederation(event.configuration.federation);
   });
 

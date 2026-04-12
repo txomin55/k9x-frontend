@@ -52,7 +52,6 @@ const toApiEventConfiguration = (
     configuration?.federation ?? previousConfiguration?.federation ?? "",
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
   name: configuration?.name ?? previousConfiguration?.name ?? "",
-  version: configuration?.version ?? previousConfiguration?.version ?? 0,
 });
 
 const toApiJudge = (
