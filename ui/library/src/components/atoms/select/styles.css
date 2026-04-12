@@ -177,6 +177,11 @@
     color: inherit;
 }
 
+.atom-select__item-option {
+    display: flex;
+    gap: var(--unit-05);
+}
+
 .atom-select__item[data-highlighted] {
     background: var(--accent);
     color: var(--text-inverted);

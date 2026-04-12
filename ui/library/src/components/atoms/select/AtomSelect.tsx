@@ -4,8 +4,10 @@ import type {
   AtomSelectProps,
 } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
+import { Show } from "solid-js";
 
 export default function AtomSelect(props: AtomSelectProps) {
+  const getItemPreLabel = (idx: number) => props.options[idx].preLabel;
   return (
     <Select.Root<AtomSelectOption>
       class="atom-select"
@@ -26,9 +28,15 @@ export default function AtomSelect(props: AtomSelectProps) {
       value={props.value}
       itemComponent={(itemProps) => (
         <Select.Item class="atom-select__item" item={itemProps.item}>
-          <Select.ItemLabel class="atom-select__item-label">
-            {itemProps.item.rawValue.label}
-          </Select.ItemLabel>
+          <div class="atom-select__item-option">
+            <Show when={getItemPreLabel(itemProps.item.index)}>
+              {getItemPreLabel(itemProps.item.index)}
+            </Show>
+            <Select.ItemLabel class="atom-select__item-label">
+              {itemProps.item.rawValue.label}
+            </Select.ItemLabel>
+          </div>
+
           <Select.ItemIndicator class="atom-select__item-indicator">
             ✓
           </Select.ItemIndicator>

@@ -3,10 +3,8 @@ import type { EventResponse } from "@/services/api/competition-crud/competitionC
 import { useConfigurations } from "@/services/api/configurations/configurations";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import {
-  Federation,
-  FederationConfigurations,
-} from "@/services/api/configurations/configurations.types";
+import { Federation, FederationConfigurations } from "@/services/api/configurations/configurations.types";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 type ConfigurationEditorFormProps = {
   draft: EventResponse;
@@ -20,6 +18,12 @@ const getFederationOption = (
 ): AtomSelectOption => ({
   label: `--${federation.info.name}`,
   value: federation.info.id,
+  preLabel: (
+    <CountryFlag
+      country={federation.info.country}
+      alt={`${federation.info.country} flag`}
+    />
+  ),
 });
 
 const getConfigurationOption = (configuration: {

@@ -1,0 +1,4 @@
+.event-configuration-section__federation {
+    display: flex;
+    gap: var(--unit-05);
+}

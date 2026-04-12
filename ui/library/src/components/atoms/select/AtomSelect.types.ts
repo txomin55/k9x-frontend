@@ -4,6 +4,7 @@ export type AtomSelectOption = {
   label: string;
   value: string;
   disabled?: boolean;
+  preLabel?: JSX.Element;
 };
 
 export type AtomSelectProps = {
