@@ -3,13 +3,13 @@ import {
   applyApiStageUpsert,
   commitApiStageMutation,
   commitApiStageMutationSuccess,
-  createApiStageRollbackPayload,
+  createApiStageRollbackPayload
 } from "@/services/api/stage-api-crud/stageApiCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
   type Competition,
   getCachedCompetitions,
-  useCompetition,
+  useCompetition
 } from "@/services/api/competition-crud/competitionCrud";
 import type {
   EventCompetitor,
@@ -24,7 +24,7 @@ import type {
   EventResponse,
   Stage,
   StageEditorModel,
-  StageMutationPayload,
+  StageMutationPayload
 } from "@/services/api/competition-crud/competitionCrud.types";
 
 export type {
@@ -111,7 +111,7 @@ const toApiStageEvent = (
       event.configuration,
       previousEvent?.configuration,
     ),
-    discipline: previousEvent?.discipline ?? "",
+    discipline: event.discipline ?? previousEvent?.discipline ?? "",
     exercises:
       event.exercises?.map((exercise) =>
         toApiStageExercise(

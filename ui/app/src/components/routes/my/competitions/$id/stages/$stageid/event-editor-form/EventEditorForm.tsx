@@ -3,6 +3,8 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { type EventResponse } from "@/services/api/event-api-crud/eventApiCrud";
+import EventDisciplineField from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 
 type EventEditorFormProps = {
@@ -12,6 +14,7 @@ type EventEditorFormProps = {
     updater: (current: EventResponse | null) => EventResponse | null,
   ) => void;
   onSave: () => void;
+  isCreate?: boolean;
 };
 
 export default function EventEditorForm(props: EventEditorFormProps) {
@@ -24,6 +27,17 @@ export default function EventEditorForm(props: EventEditorFormProps) {
           }
         : current,
     );
+
+  const updateDiscipline = (option: AtomSelectOption) => {
+    props.onChange((current) =>
+      current
+        ? {
+            ...current,
+            discipline: option.value,
+          }
+        : current,
+    );
+  };
   return (
     <div class="event-editor-form">
       <AtomInput
@@ -31,7 +45,11 @@ export default function EventEditorForm(props: EventEditorFormProps) {
         value={props.draft.name}
         onChange={handleNameChange}
       />
-      <AtomInput label="--Discipline" value={props.draft.discipline} readOnly />
+      <EventDisciplineField
+        onChange={updateDiscipline}
+        value={props.draft.discipline}
+        disabled={!props.isCreate}
+      />
       <div class="event-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           --Cancel

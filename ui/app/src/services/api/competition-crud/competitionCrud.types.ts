@@ -89,11 +89,13 @@ export interface CreateEventRequest {
 export interface UpdateEventRequest {
   competitors: EventCompetitor[];
   configuration: EventConfiguration;
+  discipline?: string;
   exercises: EventExercise[];
   id: string;
   judges: EventJudge[];
   name: string;
   stageId: string;
+  status?: string;
 }
 
 export interface EventResponse extends EventDetail {
@@ -147,11 +149,13 @@ export interface StageMutationPayload {
 export interface EventMutationPayload {
   competitors?: EventCompetitor[];
   configuration?: EventConfiguration;
+  discipline?: string;
   exercises?: EventExercise[];
   id?: string;
   judges?: EventJudge[];
   name?: string;
   stageId?: string;
+  status?: string;
 }
 
 export interface StageEditorModel {

@@ -124,7 +124,7 @@ const mergeApiEventWithPayload = (
       mutationPayload.configuration,
       previousEvent?.configuration,
     ),
-    discipline: previousEvent?.discipline ?? "",
+    discipline: mutationPayload.discipline ?? previousEvent?.discipline ?? "",
     exercises:
       mutationPayload.exercises?.map((exercise) =>
         toApiExercise(
@@ -143,7 +143,7 @@ const mergeApiEventWithPayload = (
       [],
     name: payload.name ?? previousEvent?.name ?? "",
     stageId: nextStageId,
-    status: previousEvent?.status ?? "",
+    status: mutationPayload.status ?? previousEvent?.status ?? "",
   };
 };
 
@@ -151,7 +151,7 @@ const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
   id: createId(),
   name: "--Default event",
   stageId,
-  discipline: "--Default discipline",
+  discipline: "",
 });
 
 const findEventContextInCompetition = (
@@ -261,6 +261,7 @@ export const useApiEvent = () => {
         entityId: draftApiEvent.id,
         method: "POST",
         payload: {
+          discipline: draftApiEvent.discipline,
           id: draftApiEvent.id,
           name: draftApiEvent.name,
           stageId: draftApiEvent.stageId,

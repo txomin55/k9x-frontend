@@ -1,8 +1,7 @@
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import CountryField from "@/components/routes/my/competitions/$id/competition-info/CountryField";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import "./styles.css";
 
@@ -25,19 +24,6 @@ type CompetitionInfoProps = {
 };
 
 export default function CompetitionInfo(props: CompetitionInfoProps) {
-  const COUNTRY_SELECT_OPTIONS: AtomSelectOption[] = [
-    { label: "Portugal", value: "pt" },
-    { label: "Spain", value: "es" },
-    { label: "France", value: "fr" },
-    { label: "Italy", value: "it" },
-    { label: "United Kingdom", value: "gb" },
-  ];
-
-  const selectedCountryOption = () =>
-    COUNTRY_SELECT_OPTIONS.find(
-      (countryOption) => countryOption.value === props.country,
-    ) ?? null;
-
   return (
     <div class="competition-info">
       <Show when={props.isEditing}>
@@ -49,14 +35,12 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             onBlur={props.onCommit}
             onChange={props.onTitleChange}
           />
-          <AtomSelect
-            label="--Country"
+          <CountryField
             onChange={(value) => {
               props.onCountryChange(value?.value ?? "");
               props.onCommit();
             }}
-            options={COUNTRY_SELECT_OPTIONS}
-            value={selectedCountryOption()}
+            value={props.country}
           />
           <AtomTextArea
             label="--Description"

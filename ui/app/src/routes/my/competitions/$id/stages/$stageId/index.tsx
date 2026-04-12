@@ -1,36 +1,23 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import {
   type CreateEventRequest,
   type EventResponse,
   type UpdateEventRequest,
-  useApiEvent,
+  useApiEvent
 } from "@/services/api/event-api-crud/eventApiCrud";
-import {
-  type StageEditorModel,
-  useApiStage,
-} from "@/services/api/stage-api-crud/stageApiCrud";
+import { type StageEditorModel, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
+import {
+  getEventDisciplineLabel
+} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
 
@@ -345,6 +332,7 @@ function CompetitionStageDetailBody(props: {
                       onCancel={closeEventEditor}
                       onChange={setEventDialogDraft}
                       onSave={saveEventEditor}
+                      isCreate
                     />
                   )}
                 </Show>
@@ -368,7 +356,7 @@ function CompetitionStageDetailBody(props: {
                   subHeader={<p>{`--Status: ${event().status}`}</p>}
                   content={
                     <div class="aaaaa">
-                      <p>{`--Discipline: ${event().discipline}`}</p>
+                      <p>{`--Discipline: ${getEventDisciplineLabel(event().discipline)}`}</p>
                       <p>{`--Participants: ${event().competitors.length}`}</p>
                     </div>
                   }

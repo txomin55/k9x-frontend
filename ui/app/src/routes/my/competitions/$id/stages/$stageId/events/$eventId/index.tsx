@@ -25,6 +25,7 @@ import type {
   EventJudgeDetail,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
+import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -689,7 +690,7 @@ function CompetitionEventDetailBody(props: {
             <>
               <h1>{props.event().name}</h1>
               <p>{`--Status: ${props.event().status}`}</p>
-              <p>{`--Discipline: ${props.event().discipline}`}</p>
+              <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline)}`}</p>
               <p>{`--Participants: ${props.event().competitors.length}`}</p>
             </>
           }
@@ -701,7 +702,7 @@ function CompetitionEventDetailBody(props: {
               value={name()}
               onChange={setName}
             />
-            <p>{`--Discipline: ${props.event().discipline}`}</p>
+            <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline)}`}</p>
             <p>{`--Participants: ${props.event().competitors.length}`}</p>
           </div>
         </Show>
