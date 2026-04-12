@@ -8,7 +8,18 @@ import "./styles.css";
 
 const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
   <li class="atom-breadcrumbs__item">
-    <Breadcrumbs.Link href={props.route} class="breadcrumbs__link">
+    <Breadcrumbs.Link
+      href={props.route}
+      class="breadcrumbs__link"
+      onClick={(event) => {
+        if (!props.onNavigate) {
+          return;
+        }
+
+        event.preventDefault();
+        props.onNavigate(props.route);
+      }}
+    >
       {props.children}
     </Breadcrumbs.Link>
     <Show when={props.showSeparator}>
@@ -25,6 +36,7 @@ export default function (props: AtomBreadcrumbsProps) {
         <For each={props.crumbs}>
           {(crumb, idx) => (
             <AtomBreadCrumbLink
+              onNavigate={props.onNavigate}
               route={crumb.route}
               showSeparator={isNotLastElement(idx)}
             >

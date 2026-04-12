@@ -6,9 +6,11 @@ interface Crumbs {
 }
 export interface AtomBreadcrumbsProps {
   crumbs: Crumbs[];
+  onNavigate?: (route: string) => void;
 }
 
 export interface AtomBreadCrumbLinkProps {
+  onNavigate?: (route: string) => void;
   route: string;
   showSeparator: boolean;
   children: JSX.Element;

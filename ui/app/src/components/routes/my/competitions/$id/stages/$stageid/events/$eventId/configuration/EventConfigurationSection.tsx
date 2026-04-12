@@ -1,15 +1,13 @@
 import type { EventResponse } from "@/services/api/competition-crud/competitionCrud.types";
-import { Setter, Show } from "solid-js";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
+import { Show } from "solid-js";
+import ConfigurationEditorForm
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
 
 export default function (props: {
-  isEditing: boolean;
+  draft: EventResponse;
   event: EventResponse;
-  onBlur: () => void;
-  name: string;
-  onNameChange: Setter<string>;
-  federation: string;
-  onFederationChange: Setter<string>;
+  isEditing: boolean;
+  onDraftChange: (updater: (current: EventResponse) => EventResponse) => void;
 }) {
   return (
     <section>
@@ -17,25 +15,18 @@ export default function (props: {
         when={props.isEditing}
         fallback={
           <div>
+            <p>{`--Id: ${props.event.configuration.id}`}</p>
             <p>{`--Name: ${props.event.configuration.name}`}</p>
-            <p>{`--Federation: ${props.event.configuration.federation}`}</p>
+            <p>{`--Federation: ${props.event.configuration.federation?.name ?? ""}`}</p>
           </div>
         }
       >
-        <div>
-          <AtomInput
-            label="--Configuration name"
-            onBlur={props.onBlur}
-            value={props.name}
-            onChange={props.onNameChange}
-          />
-          <AtomInput
-            label="--Federation"
-            onBlur={props.onBlur}
-            value={props.federation}
-            onChange={props.onFederationChange}
-          />
-        </div>
+        <ConfigurationEditorForm
+          draft={props.draft}
+          onChange={(updater) =>
+            props.onDraftChange((current) => updater(current) ?? current)
+          }
+        />
       </Show>
     </section>
   );

@@ -50,7 +50,7 @@ const toApiStageEventConfiguration = (
   previousConfiguration?: EventConfigurationDetail,
 ): EventConfigurationDetail => ({
   federation:
-    configuration?.federation ?? previousConfiguration?.federation ?? "",
+    configuration?.federation ?? previousConfiguration?.federation,
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
   name: configuration?.name ?? previousConfiguration?.name ?? "",
 });
@@ -190,7 +190,7 @@ export const toApiStage = (
           order: competitor.order ?? 0,
         })) ?? [],
       configuration: {
-        federation: event.configuration?.federation ?? "",
+        federation: event.configuration?.federation,
         id: event.configuration?.id ?? "",
         name: event.configuration?.name ?? "",
       },

@@ -9,8 +9,12 @@ export interface Federation {
   country: string;
 }
 
-export interface FederationDiscipline {
-  configurations?: Configuration[];
-  federation: Federation[];
+export interface FederationConfigurations {
+  info: Federation;
+  configurations: Configuration[];
+}
+
+export interface DisciplineFederationConfigurations {
+  federations: FederationConfigurations[];
   disciplineId: string;
 }

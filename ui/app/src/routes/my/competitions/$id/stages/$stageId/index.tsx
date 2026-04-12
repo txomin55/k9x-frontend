@@ -181,10 +181,9 @@ function CompetitionStageDetailBody(props: {
     setEventDialogDraft({
       competitors: [],
       configuration: {
-        federation: "",
+        federation: undefined,
         id: globalThis.crypto.randomUUID(),
         name: "",
-        version: 0,
       },
       discipline: "",
       exercises: [],
@@ -269,9 +268,27 @@ function CompetitionStageDetailBody(props: {
         stageId: draft.stageId,
         discipline: draft.discipline,
       });
+      closeEventEditor();
+      return;
     }
 
-    props.onUpdateEvent(draft);
+    props.onUpdateEvent({
+      competitors: draft.competitors.map((competitor) => ({
+        country: competitor.country,
+        dogId: competitor.dogId,
+        identity: competitor.identity,
+        order: competitor.order,
+        owner: competitor.owner,
+        team: competitor.team,
+      })),
+      configurationId: draft.configuration.id,
+      discipline: draft.discipline,
+      exercises: draft.exercises,
+      id: draft.id,
+      judges: draft.judges,
+      name: draft.name,
+      stageId: draft.stageId,
+    });
 
     closeEventEditor();
   };

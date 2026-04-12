@@ -174,12 +174,6 @@ function CompetitionEventDetailBody(props: {
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal(props.event());
   const [name, setName] = createSignal(props.event().name);
-  const [configurationName, setConfigurationName] = createSignal(
-    props.event().configuration.name,
-  );
-  const [configurationFederation, setConfigurationFederation] = createSignal(
-    props.event().configuration.federation,
-  );
   const [isCreatingCompetitor, setIsCreatingCompetitor] = createSignal(false);
   const [editingCompetitorId, setEditingCompetitorId] = createSignal<
     string | null
@@ -549,21 +543,22 @@ function CompetitionEventDetailBody(props: {
     const currentDraftEvent = draftEvent();
     const nextEvent: EventResponse = {
       ...currentDraftEvent,
-      configuration: {
-        ...currentDraftEvent.configuration,
-        federation: configurationFederation(),
-        name: configurationName(),
-      },
       name: name(),
     };
 
     if (getEventDraftKey(nextEvent) === getEventDraftKey(externalEvent)) return;
 
     const updatePayload: UpdateEventRequest = {
-      ...nextEvent,
       competitors: nextEvent.competitors.map((competitor) =>
         mapCompetitorForUpdate(competitor),
       ),
+      configurationId: nextEvent.configuration.id,
+      discipline: nextEvent.discipline,
+      exercises: nextEvent.exercises,
+      id: nextEvent.id,
+      judges: nextEvent.judges,
+      name: nextEvent.name,
+      stageId: nextEvent.stageId,
     };
 
     props.onUpdate(updatePayload);
@@ -589,13 +584,10 @@ function CompetitionEventDetailBody(props: {
       value: TABS.CONFIGURATION,
       content: (
         <EventConfigurationSection
-          isEditing={isEditing()}
+          draft={draftEvent()}
           event={props.event()}
-          onBlur={commitEventEdits}
-          name={configurationName()}
-          onNameChange={setConfigurationName}
-          federation={configurationFederation()}
-          onFederationChange={setConfigurationFederation}
+          isEditing={isEditing()}
+          onDraftChange={setDraftEvent}
         />
       ),
     },
@@ -662,8 +654,6 @@ function CompetitionEventDetailBody(props: {
 
     setDraftEvent(event);
     setName(event.name);
-    setConfigurationName(event.configuration.name);
-    setConfigurationFederation(event.configuration.federation);
   });
 
   createEffect(() => {

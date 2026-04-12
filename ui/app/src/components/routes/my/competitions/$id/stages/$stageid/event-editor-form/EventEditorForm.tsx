@@ -31,10 +31,17 @@ export default function EventEditorForm(props: EventEditorFormProps) {
   const updateDiscipline = (option: AtomSelectOption) => {
     props.onChange((current) =>
       current
-        ? {
-            ...current,
-            discipline: option.value,
-          }
+        ? current.discipline === option.value
+          ? current
+          : {
+              ...current,
+              discipline: option.value,
+              configuration: {
+                federation: undefined,
+                id: "",
+                name: "",
+              },
+            }
         : current,
     );
   };

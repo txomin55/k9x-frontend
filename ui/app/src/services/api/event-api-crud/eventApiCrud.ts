@@ -10,6 +10,10 @@ import {
   getCachedCompetitions,
   useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
+import {
+  getConfigurationsQueryKey,
+  type DisciplineFederationConfigurations,
+} from "@/services/api/configurations/configurations";
 import type {
   Competition,
   CreateEventRequest,
@@ -25,6 +29,7 @@ import type {
   EventResponse,
   UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
+import { queryClient } from "@/utils/http/query-client";
 
 export type {
   CreateEventRequest,
@@ -49,10 +54,42 @@ const toApiEventConfiguration = (
   previousConfiguration?: EventConfigurationDetail,
 ): EventConfigurationDetail => ({
   federation:
-    configuration?.federation ?? previousConfiguration?.federation ?? "",
+    configuration?.federation ?? previousConfiguration?.federation,
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
   name: configuration?.name ?? previousConfiguration?.name ?? "",
 });
+
+const findConfigurationDetail = (
+  discipline: string | undefined,
+  configurationId: string | undefined,
+): EventConfiguration | undefined => {
+  if (!discipline || !configurationId) {
+    return undefined;
+  }
+
+  const configurations = queryClient.getQueryData<
+    DisciplineFederationConfigurations[]
+  >(getConfigurationsQueryKey());
+  const disciplineConfigurations = configurations?.find(
+    (entry) => entry.disciplineId === discipline,
+  );
+
+  for (const federation of disciplineConfigurations?.federations ?? []) {
+    const configuration = federation.configurations.find(
+      (entry) => entry.id === configurationId,
+    );
+
+    if (configuration) {
+      return {
+        federation: federation.info,
+        id: configuration.id,
+        name: configuration.name,
+      };
+    }
+  }
+
+  return undefined;
+};
 
 const toApiJudge = (
   judge: EventJudge,
@@ -82,6 +119,8 @@ const mergeApiEventWithPayload = (
   payload: EventMutationPayload | CreateEventRequest | UpdateEventRequest,
   previousEvent?: EventResponse,
 ): EventResponse => {
+  const configurationId =
+    "configurationId" in payload ? payload.configurationId : undefined;
   const mutationPayload: EventMutationPayload =
     "competitors" in payload ||
     "configuration" in payload ||
@@ -106,6 +145,12 @@ const mergeApiEventWithPayload = (
   const previousExercisesById = new Map(
     (previousEvent?.exercises ?? []).map((exercise) => [exercise.id, exercise]),
   );
+  const resolvedConfiguration = configurationId
+    ? findConfigurationDetail(
+        mutationPayload.discipline ?? previousEvent?.discipline,
+        configurationId,
+      ) ?? { id: configurationId }
+    : mutationPayload.configuration;
 
   return {
     competitors:
@@ -120,7 +165,7 @@ const mergeApiEventWithPayload = (
       previousEvent?.competitors ??
       [],
     configuration: toApiEventConfiguration(
-      mutationPayload.configuration,
+      resolvedConfiguration,
       previousEvent?.configuration,
     ),
     discipline: mutationPayload.discipline ?? previousEvent?.discipline ?? "",
@@ -319,7 +364,7 @@ export const useApiEvent = () => {
       await commitApiEventMutation({
         entityId: nextApiEvent.id,
         method: "PUT",
-        payload: nextApiEvent,
+        payload,
         onCommitted: () =>
           commitApiEventMutationSuccess({
             competitionId: context.competitionId,

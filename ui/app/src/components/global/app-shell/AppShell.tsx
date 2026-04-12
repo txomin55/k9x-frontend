@@ -48,7 +48,7 @@ export default function AppShell() {
       });
       void prefetchConfigurations({
         refetchOnMount: false,
-        gcTime: 2 * 60 * 1000,
+        staleTime: Number.POSITIVE_INFINITY,
       });
       void prefetchDogs({
         refetchOnMount: false,
