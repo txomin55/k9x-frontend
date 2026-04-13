@@ -1,4 +1,7 @@
-import type { EventResponse } from "@/services/api/competition-crud/competitionCrud.types";
+import type {
+  EventEditorDraft,
+  EventResponse,
+} from "@/services/api/competition-crud/competitionCrud.types";
 import { Show } from "solid-js";
 import ConfigurationEditorForm
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
@@ -6,10 +9,12 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import "./styles.css";
 
 export default function (props: {
-  draft: EventResponse;
+  draft: EventEditorDraft;
   event: EventResponse;
   isEditing: boolean;
-  onDraftChange: (updater: (current: EventResponse) => EventResponse) => void;
+  onDraftChange: (
+    updater: (current: EventEditorDraft) => EventEditorDraft,
+  ) => void;
 }) {
   return (
     <section class="event-configuration-section">

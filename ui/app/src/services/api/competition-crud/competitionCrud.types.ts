@@ -91,21 +91,24 @@ export interface UpdateEventRequest {
   configurationId: string;
   discipline: string;
   exercises: EventExercise[];
-  id: string;
   judges: EventJudge[];
   name: string;
-  stageId: string;
 }
 
 export interface EventResponse extends EventDetail {
   stageId: string;
 }
 
-export interface PostCompetitionStage {
-  dateFrom?: number;
-  dateTo?: number;
-  id?: string;
-  name?: string;
+export interface EventEditorDraft {
+  competitors: EventCompetitorDetail[];
+  configuration: EventConfigurationDetail;
+  discipline: string;
+  exercises: EventExerciseDetail[];
+  id: string;
+  judges: EventJudgeDetail[];
+  name: string;
+  stageId: string;
+  status: string;
 }
 
 export interface Competition {
@@ -119,13 +122,19 @@ export interface Competition {
   status: string;
 }
 
-export interface PostCompetition {
+export interface CreateCompetitionRequest {
   country?: string;
   description?: string;
-  id?: string;
+  id: string;
+  location?: CompetitionLocation;
+  name: string;
+}
+
+export interface UpdateCompetitionRequest {
+  country?: string;
+  description?: string;
   location?: CompetitionLocation;
   name?: string;
-  stages?: PostCompetitionStage[];
 }
 
 export interface Stage {
@@ -136,25 +145,20 @@ export interface Stage {
   name: string;
 }
 
-export interface StageMutationPayload {
-  competitionId?: string;
+export interface CreateStageRequest {
+  competitionId: string;
   dateFrom?: number;
   dateTo?: number;
-  events?: EventMutationPayload[];
-  id?: string;
-  name?: string;
+  events?: EventResponse[];
+  id: string;
+  name: string;
 }
 
-export interface EventMutationPayload {
-  competitors?: EventCompetitor[];
-  configuration?: EventConfiguration;
-  discipline?: string;
-  exercises?: EventExercise[];
-  id?: string;
-  judges?: EventJudge[];
+export interface UpdateStageRequest {
+  dateFrom?: number;
+  dateTo?: number;
+  events?: EventResponse[];
   name?: string;
-  stageId?: string;
-  status?: string;
 }
 
 export interface StageEditorModel {

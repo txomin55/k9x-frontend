@@ -10,6 +10,7 @@ import {
   getCachedCompetitions,
   useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
+import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import {
   getConfigurationsQueryKey,
   type DisciplineFederationConfigurations,
@@ -25,7 +26,6 @@ import type {
   EventExerciseDetail,
   EventJudge,
   EventJudgeDetail,
-  EventMutationPayload,
   EventResponse,
   UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
@@ -116,26 +116,23 @@ const toApiCompetitor = (
 };
 
 const mergeApiEventWithPayload = (
-  payload: EventMutationPayload | CreateEventRequest | UpdateEventRequest,
+  payload: CreateEventRequest | UpdateEventRequest,
   previousEvent?: EventResponse,
+  context?: {
+    eventId?: string;
+    stageId?: string;
+  },
 ): EventResponse => {
-  const configurationId =
-    "configurationId" in payload ? payload.configurationId : undefined;
-  const mutationPayload: EventMutationPayload =
-    "competitors" in payload ||
-    "configuration" in payload ||
-    "discipline" in payload ||
-    "exercises" in payload ||
-    "judges" in payload ||
-    "status" in payload
-      ? payload
-      : {
-          id: payload.id,
-          name: payload.name,
-          stageId: payload.stageId,
-        };
-  const nextEventId = payload.id ?? previousEvent?.id ?? createId();
-  const nextStageId = payload.stageId ?? previousEvent?.stageId ?? "";
+  const isCreatePayload = "id" in payload && "stageId" in payload;
+  const updatePayload = "configurationId" in payload ? payload : null;
+  const nextEventId =
+    (isCreatePayload ? payload.id : context?.eventId) ??
+    previousEvent?.id ??
+    createId();
+  const nextStageId =
+    (isCreatePayload ? payload.stageId : context?.stageId) ??
+    previousEvent?.stageId ??
+    "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
       competitor.dogId,
@@ -145,16 +142,16 @@ const mergeApiEventWithPayload = (
   const previousExercisesById = new Map(
     (previousEvent?.exercises ?? []).map((exercise) => [exercise.id, exercise]),
   );
-  const resolvedConfiguration = configurationId
+  const resolvedConfiguration = updatePayload?.configurationId
     ? findConfigurationDetail(
-        mutationPayload.discipline ?? previousEvent?.discipline,
-        configurationId,
-      ) ?? { id: configurationId }
-    : mutationPayload.configuration;
+        updatePayload.discipline ?? previousEvent?.discipline,
+        updatePayload.configurationId,
+      ) ?? { id: updatePayload.configurationId }
+    : undefined;
 
   return {
     competitors:
-      mutationPayload.competitors?.map((competitor) =>
+      updatePayload?.competitors?.map((competitor) =>
         toApiCompetitor(
           competitor,
           competitor.dogId
@@ -168,9 +165,9 @@ const mergeApiEventWithPayload = (
       resolvedConfiguration,
       previousEvent?.configuration,
     ),
-    discipline: mutationPayload.discipline ?? previousEvent?.discipline ?? "",
+    discipline: payload.discipline ?? previousEvent?.discipline ?? "",
     exercises:
-      mutationPayload.exercises?.map((exercise) =>
+      updatePayload?.exercises?.map((exercise) =>
         toApiExercise(
           exercise,
           exercise.id ? previousExercisesById.get(exercise.id) : undefined,
@@ -180,14 +177,14 @@ const mergeApiEventWithPayload = (
       [],
     id: nextEventId,
     judges:
-      mutationPayload.judges?.map((judge, index) =>
+      updatePayload?.judges?.map((judge, index) =>
         toApiJudge(judge, previousEvent?.judges?.[index]),
       ) ??
       previousEvent?.judges ??
       [],
     name: payload.name ?? previousEvent?.name ?? "",
     stageId: nextStageId,
-    status: mutationPayload.status ?? previousEvent?.status ?? "",
+    status: previousEvent?.status ?? "",
   };
 };
 
@@ -285,7 +282,7 @@ export const useApiEvent = () => {
       throw new Error("createApiEvent requires a stageId");
     }
 
-    const previousCompetitionsFromCache = getCachedCompetitions();
+    const previousCompetitionsFromCache = getVisibleCompetitions();
     const context = findEventContext(
       previousCompetitionsFromCache,
       payload.stageId,
@@ -315,7 +312,6 @@ export const useApiEvent = () => {
             competitionId: context.competitionId,
             eventId: draftApiEvent.id,
             method: "POST",
-            payload: draftApiEvent,
             stageId: draftApiEvent.stageId,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
@@ -331,34 +327,30 @@ export const useApiEvent = () => {
   };
 
   const updateApiEvent = (
+    stageId: string,
+    id: string,
     payload: UpdateEventRequest,
     options?: { competitionId?: string },
   ) => {
-    if (!payload.id) {
-      throw new Error("updateApiEvent requires an id");
-    }
-    if (!payload.stageId) {
-      throw new Error("updateApiEvent requires a stageId");
-    }
-
-    const previousCompetitionsFromCache = getCachedCompetitions();
+    const previousCompetitionsFromCache = getVisibleCompetitions();
     const context = findEventContext(
       previousCompetitionsFromCache,
-      payload.stageId,
+      stageId,
       options?.competitionId,
-      payload.id,
+      id,
     );
 
     if (!context) {
-      throw new Error(`Stage ${payload.stageId} not found`);
+      throw new Error(`Stage ${stageId} not found`);
     }
 
     const nextApiEvent = mergeApiEventWithPayload(
       payload,
       context.event ?? undefined,
+      { eventId: id, stageId },
     );
 
-    applyApiEventUpsert(context.competitionId, payload.stageId, nextApiEvent);
+    applyApiEventUpsert(context.competitionId, stageId, nextApiEvent);
 
     void (async () => {
       await commitApiEventMutation({
@@ -370,7 +362,6 @@ export const useApiEvent = () => {
             competitionId: context.competitionId,
             eventId: nextApiEvent.id,
             method: "PUT",
-            payload: nextApiEvent,
             stageId: nextApiEvent.stageId,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
@@ -378,7 +369,7 @@ export const useApiEvent = () => {
           entityId: nextApiEvent.id,
           previousCompetitionsFromCache,
           previousEvent: context.event ?? null,
-          stageId: nextApiEvent.stageId,
+          stageId,
         }),
         url: `/api/events/${nextApiEvent.id}`,
       });

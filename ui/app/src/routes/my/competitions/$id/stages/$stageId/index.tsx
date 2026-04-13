@@ -6,7 +6,12 @@ import {
   type UpdateEventRequest,
   useApiEvent
 } from "@/services/api/event-api-crud/eventApiCrud";
-import { type StageEditorModel, useApiStage } from "@/services/api/stage-api-crud/stageApiCrud";
+import {
+  type StageEditorModel,
+  type UpdateStageRequest,
+  useApiStage
+} from "@/services/api/stage-api-crud/stageApiCrud";
+import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -50,8 +55,11 @@ function CompetitionStageDetailPage() {
     deleteApiEvent(eventId, stageId, {
       competitionId: params().id,
     });
-  const handleUpdateEvent = (event: UpdateEventRequest) =>
-    updateApiEvent(event, { competitionId: params().id });
+  const handleUpdateEvent = (
+    stageId: string,
+    eventId: string,
+    event: UpdateEventRequest,
+  ) => updateApiEvent(stageId, eventId, event, { competitionId: params().id });
 
   createEffect(() => {
     if (params().stageId !== "new" || hasCreatedDraftStage) return;
@@ -93,8 +101,16 @@ function CompetitionStageDetailContentContainer(props: {
   onCreateEvent: (event: CreateEventRequest) => void;
   onDeleteEvent: (eventId: string, stageId: string) => void;
   onDeleteStage: (stageId: string) => void;
-  onUpdateEvent: (event: UpdateEventRequest) => void;
-  onUpdateStage: (stage: StageEditorModel) => void;
+  onUpdateEvent: (
+    stageId: string,
+    eventId: string,
+    event: UpdateEventRequest,
+  ) => void;
+  onUpdateStage: (
+    competitionId: string,
+    stageId: string,
+    stage: UpdateStageRequest,
+  ) => void;
   stage: Accessor<StageEditorModel | undefined>;
   stageId: string;
 }) {
@@ -134,8 +150,16 @@ function CompetitionStageDetailBody(props: {
   onCreateEvent: (event: CreateEventRequest) => void;
   onDelete: () => void;
   onDeleteEvent: (eventId: string) => void;
-  onUpdateEvent: (event: UpdateEventRequest) => void;
-  onUpdateStage: (stage: StageEditorModel) => void;
+  onUpdateEvent: (
+    stageId: string,
+    eventId: string,
+    event: UpdateEventRequest,
+  ) => void;
+  onUpdateStage: (
+    competitionId: string,
+    stageId: string,
+    stage: UpdateStageRequest,
+  ) => void;
   stage: Accessor<StageEditorModel>;
 }) {
   const navigate = useNavigate();
@@ -150,7 +174,23 @@ function CompetitionStageDetailBody(props: {
   const [isCreatingEvent, setIsCreatingEvent] = createSignal(false);
   const [editingEventId, setEditingEventId] = createSignal<string | null>(null);
   const [eventDialogDraft, setEventDialogDraft] =
-    createSignal<EventResponse | null>(null);
+    createSignal<EventEditorDraft | null>(null);
+
+  const toEventEditorDraft = (event: EventResponse): EventEditorDraft => ({
+    competitors: event.competitors.map((competitor) => ({ ...competitor })),
+    configuration: {
+      federation: event.configuration.federation,
+      id: event.configuration.id,
+      name: event.configuration.name,
+    },
+    discipline: event.discipline,
+    exercises: event.exercises.map((exercise) => ({ ...exercise })),
+    id: event.id,
+    judges: event.judges.map((judge) => ({ ...judge })),
+    name: event.name,
+    stageId: event.stageId,
+    status: event.status,
+  });
 
   createEffect(() => {
     if (isEditing()) return;
@@ -170,7 +210,7 @@ function CompetitionStageDetailBody(props: {
   const openEventEditor = (event: EventResponse) => {
     setIsCreatingEvent(false);
     setEditingEventId(event.id);
-    setEventDialogDraft(event);
+    setEventDialogDraft(toEventEditorDraft(event));
   };
 
   const openNewEventEditor = () => {
@@ -204,12 +244,10 @@ function CompetitionStageDetailBody(props: {
     if (!isEditing()) return;
 
     const stage = props.stage();
-    const nextStage: StageEditorModel = {
-      competitionId: stage.competitionId,
+    const nextStage: UpdateStageRequest = {
       dateFrom: parseDateInputValue(dateFrom(), stage.dateFrom),
       dateTo: parseDateInputValue(dateTo(), stage.dateTo),
       events: stage.events,
-      id: stage.id,
       name: title(),
     };
     const hasChanges =
@@ -219,7 +257,7 @@ function CompetitionStageDetailBody(props: {
 
     if (!hasChanges) return;
 
-    props.onUpdateStage(nextStage);
+    props.onUpdateStage(stage.competitionId, stage.id, nextStage);
   };
   const handleCreateDialogOpenChange = (isOpen: boolean) => {
     if (isOpen) {
@@ -272,7 +310,7 @@ function CompetitionStageDetailBody(props: {
       return;
     }
 
-    props.onUpdateEvent({
+    props.onUpdateEvent(draft.stageId, draft.id, {
       competitors: draft.competitors.map((competitor) => ({
         country: competitor.country,
         dogId: competitor.dogId,
@@ -284,10 +322,8 @@ function CompetitionStageDetailBody(props: {
       configurationId: draft.configuration.id,
       discipline: draft.discipline,
       exercises: draft.exercises,
-      id: draft.id,
       judges: draft.judges,
       name: draft.name,
-      stageId: draft.stageId,
     });
 
     closeEventEditor();

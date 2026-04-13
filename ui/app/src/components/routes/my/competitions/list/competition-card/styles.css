@@ -11,8 +11,8 @@
 }
 
 .competition-card__country-flag {
-    width: var(--unit-3);
-    height: var(--unit-3);
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -22,16 +22,12 @@
     border: 1px solid var(--border);
 }
 
-.competition-card__country-flag span {
+.competition-card__country-flag > div {
     width: 100%;
     height: 100%;
-    object-fit: cover;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-size: cover;
-    background-position: center;
-    line-height: 1;
 }
 
 .competition-card__stages {

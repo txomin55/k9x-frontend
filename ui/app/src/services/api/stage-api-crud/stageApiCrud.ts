@@ -11,149 +11,41 @@ import {
   getCachedCompetitions,
   useCompetition
 } from "@/services/api/competition-crud/competitionCrud";
+import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
-  EventCompetitor,
-  EventCompetitorDetail,
-  EventConfiguration,
-  EventConfigurationDetail,
-  EventExercise,
-  EventExerciseDetail,
-  EventJudge,
-  EventJudgeDetail,
-  EventMutationPayload,
-  EventResponse,
+  CreateStageRequest,
   Stage,
   StageEditorModel,
-  StageMutationPayload
+  UpdateStageRequest
 } from "@/services/api/competition-crud/competitionCrud.types";
 
 export type {
+  CreateStageRequest,
   StageEditorModel,
-  EventJudgeDetail,
   EventResponse,
+  UpdateStageRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
-const toApiStageExercise = (
-  exercise: EventExercise,
-  previousExercise?: EventExerciseDetail,
-): EventExerciseDetail => ({
-  id: exercise.id ?? previousExercise?.id ?? createId(),
-  order: exercise.order ?? previousExercise?.order ?? 0,
-  name: exercise.name ?? previousExercise?.name ?? "",
-  tags: exercise.tags ?? previousExercise?.tags ?? [],
-});
-
-const toApiStageEventConfiguration = (
-  configuration?: EventConfiguration,
-  previousConfiguration?: EventConfigurationDetail,
-): EventConfigurationDetail => ({
-  federation:
-    configuration?.federation ?? previousConfiguration?.federation,
-  id: configuration?.id ?? previousConfiguration?.id ?? createId(),
-  name: configuration?.name ?? previousConfiguration?.name ?? "",
-});
-
-const toApiStageJudge = (
-  judge: EventJudge,
-  previousJudge?: EventJudgeDetail,
-): EventJudgeDetail => ({
-  collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
-  id: judge.id ?? previousJudge?.id ?? "",
-});
-
-const toApiStageCompetitor = (
-  competitor: EventCompetitor,
-  previousCompetitor?: EventCompetitorDetail,
-): EventCompetitorDetail => {
-  return {
-    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
-    identity: competitor.identity ?? previousCompetitor?.identity ?? "",
-    name: previousCompetitor?.name ?? "",
-    owner: competitor.owner ?? previousCompetitor?.owner ?? "",
-    team: competitor.team ?? previousCompetitor?.team ?? "",
-    country: competitor.country ?? previousCompetitor?.country ?? "",
-    breed: previousCompetitor?.breed ?? "",
-    order: competitor.order ?? previousCompetitor?.order ?? 0,
-  };
-};
-
-const toApiStageEvent = (
-  event: EventMutationPayload,
-  stageId: string,
-  previousEvent?: EventResponse,
-): EventResponse => {
-  const previousCompetitorsById = new Map(
-    (previousEvent?.competitors ?? []).map((competitor) => [
-      competitor.dogId,
-      competitor,
-    ]),
-  );
-  const previousExercisesById = new Map(
-    (previousEvent?.exercises ?? []).map((exercise) => [exercise.id, exercise]),
-  );
-
-  return {
-    competitors:
-      event.competitors?.map((competitor) =>
-        toApiStageCompetitor(
-          competitor,
-          competitor.dogId
-            ? previousCompetitorsById.get(competitor.dogId)
-            : undefined,
-        ),
-      ) ??
-      previousEvent?.competitors ??
-      [],
-    configuration: toApiStageEventConfiguration(
-      event.configuration,
-      previousEvent?.configuration,
-    ),
-    discipline: event.discipline ?? previousEvent?.discipline ?? "",
-    exercises:
-      event.exercises?.map((exercise) =>
-        toApiStageExercise(
-          exercise,
-          exercise.id ? previousExercisesById.get(exercise.id) : undefined,
-        ),
-      ) ??
-      previousEvent?.exercises ??
-      [],
-    id: event.id ?? previousEvent?.id ?? createId(),
-    judges:
-      event.judges?.map((judge, index) =>
-        toApiStageJudge(judge, previousEvent?.judges?.[index]),
-      ) ??
-      previousEvent?.judges ??
-      [],
-    name: event.name ?? previousEvent?.name ?? "",
-    stageId: event.stageId ?? previousEvent?.stageId ?? stageId,
-    status: previousEvent?.status ?? "",
-  };
-};
-
 const mergeApiStageWithPayload = (
-  payload: StageMutationPayload,
+  payload: CreateStageRequest | UpdateStageRequest,
   previousStage?: StageEditorModel,
 ): StageEditorModel => {
-  const nextStageId = payload.id ?? previousStage?.id ?? createId();
-  const previousEventsById = new Map(
-    (previousStage?.events ?? []).map((event) => [event.id, event]),
-  );
+  const payloadId = "id" in payload ? payload.id : undefined;
+  const payloadCompetitionId =
+    "competitionId" in payload ? payload.competitionId : undefined;
+  const nextStageId = payloadId ?? previousStage?.id ?? createId();
 
   return {
-    competitionId: payload.competitionId ?? previousStage?.competitionId ?? "",
+    competitionId: payloadCompetitionId ?? previousStage?.competitionId ?? "",
     dateFrom: payload.dateFrom ?? previousStage?.dateFrom ?? 0,
     dateTo: payload.dateTo ?? previousStage?.dateTo ?? 0,
     events:
-      payload.events?.map((event) =>
-        toApiStageEvent(
-          event,
-          nextStageId,
-          event.id ? previousEventsById.get(event.id) : undefined,
-        ),
-      ) ??
+      payload.events?.map((event) => ({
+        ...event,
+        stageId: event.stageId ?? nextStageId,
+      })) ??
       previousStage?.events ??
       [],
     id: nextStageId,
@@ -161,9 +53,7 @@ const mergeApiStageWithPayload = (
   };
 };
 
-const createDefaultApiStage = (
-  competitionId: string,
-): StageMutationPayload => ({
+const createDefaultApiStage = (competitionId: string): CreateStageRequest => ({
   competitionId,
   id: createId(),
   name: "--Default stage",
@@ -254,9 +144,9 @@ export const useApiStage = () => {
       return toApiStage(stage, competitionId);
     });
   };
-  const createApiStage = (payload: StageMutationPayload) => {
+  const createApiStage = (payload: CreateStageRequest) => {
     const draftApiStage = mergeApiStageWithPayload(payload);
-    const previousCompetitionsFromCache = getCachedCompetitions();
+    const previousCompetitionsFromCache = getVisibleCompetitions();
 
     applyApiStageUpsert(draftApiStage);
 
@@ -269,7 +159,6 @@ export const useApiStage = () => {
           commitApiStageMutationSuccess({
             competitionId: draftApiStage.competitionId,
             method: "POST",
-            payload: draftApiStage,
             stageId: draftApiStage.id,
           }),
         rollbackPayload: await createApiStageRollbackPayload({
@@ -283,19 +172,24 @@ export const useApiStage = () => {
     })();
   };
 
-  const updateApiStage = (payload: StageMutationPayload) => {
-    if (!payload.id) {
-      throw new Error("updateApiStage requires an id");
-    }
-
-    const previousCompetitionsFromCache = getCachedCompetitions();
+  const updateApiStage = (
+    competitionId: string,
+    id: string,
+    payload: UpdateStageRequest,
+  ) => {
+    const previousCompetitionsFromCache = getVisibleCompetitions();
     const previousStage = findCachedApiStage(
       previousCompetitionsFromCache,
-      payload.competitionId ?? "",
-      payload.id,
+      competitionId,
+      id,
     );
+
+    if (!previousStage) {
+      throw new Error(`updateApiStage requires an existing stage ${id}`);
+    }
+
     const nextApiStage = mergeApiStageWithPayload(
-      payload,
+      { ...payload, competitionId, id },
       previousStage ?? undefined,
     );
 
@@ -310,7 +204,6 @@ export const useApiStage = () => {
           commitApiStageMutationSuccess({
             competitionId: nextApiStage.competitionId,
             method: "PUT",
-            payload: nextApiStage,
             stageId: nextApiStage.id,
           }),
         rollbackPayload: await createApiStageRollbackPayload({
@@ -325,7 +218,7 @@ export const useApiStage = () => {
   };
 
   const deleteApiStage = (id: string, competitionId: string) => {
-    const previousCompetitionsFromCache = getCachedCompetitions();
+    const previousCompetitionsFromCache = getVisibleCompetitions();
     const previousStage = findCachedApiStage(
       previousCompetitionsFromCache,
       competitionId,

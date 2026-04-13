@@ -19,6 +19,7 @@ import type {
 } from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
+  EventEditorDraft,
   EventCompetitor,
   EventCompetitorDetail,
   EventExerciseDetail,
@@ -90,14 +91,10 @@ function CompetitionEventDetailPage() {
       competitionId: params().id,
     });
 
-  const handleUpdateEvent = (event: UpdateEventRequest) =>
-    updateApiEvent(
-      {
-        ...event,
-        stageId: params().stageId,
-      },
-      { competitionId: params().id },
-    );
+  const handleUpdateEvent = (eventId: string, event: UpdateEventRequest) =>
+    updateApiEvent(params().stageId, eventId, event, {
+      competitionId: params().id,
+    });
 
   createEffect(() => {
     if (params().eventId !== "new" || hasCreatedDraftEvent) return;
@@ -125,7 +122,7 @@ function CompetitionEventDetailContentContainer(props: {
   event: Accessor<EventResponse | undefined>;
   eventId: string;
   onDeleteEvent: (eventId: string) => void;
-  onUpdate: (event: UpdateEventRequest) => void;
+  onUpdate: (eventId: string, event: UpdateEventRequest) => void;
   stageId: string;
 }) {
   const navigate = useNavigate();
@@ -169,10 +166,27 @@ function CompetitionEventDetailContentContainer(props: {
 function CompetitionEventDetailBody(props: {
   event: Accessor<EventResponse>;
   onDelete: () => void;
-  onUpdate: (event: UpdateEventRequest) => void;
+  onUpdate: (eventId: string, event: UpdateEventRequest) => void;
 }) {
+  const toEventEditorDraft = (event: EventResponse): EventEditorDraft => ({
+    competitors: event.competitors.map((competitor) => ({ ...competitor })),
+    configuration: {
+      federation: event.configuration.federation,
+      id: event.configuration.id,
+      name: event.configuration.name,
+    },
+    discipline: event.discipline,
+    exercises: event.exercises.map((exercise) => ({ ...exercise })),
+    id: event.id,
+    judges: event.judges.map((judge) => ({ ...judge })),
+    name: event.name,
+    stageId: event.stageId,
+    status: event.status,
+  });
   const [isEditing, setIsEditing] = createSignal(false);
-  const [draftEvent, setDraftEvent] = createSignal(props.event());
+  const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
+    toEventEditorDraft(props.event()),
+  );
   const [name, setName] = createSignal(props.event().name);
   const [isCreatingCompetitor, setIsCreatingCompetitor] = createSignal(false);
   const [editingCompetitorId, setEditingCompetitorId] = createSignal<
@@ -218,7 +232,7 @@ function CompetitionEventDetailBody(props: {
     setExerciseDialogDraft(null);
   };
 
-  const getEventDraftKey = (event: EventResponse) => {
+  const getEventDraftKey = (event: EventEditorDraft | EventResponse) => {
     return JSON.stringify({
       competitors: event.competitors,
       configuration: event.configuration,
@@ -539,7 +553,7 @@ function CompetitionEventDetailBody(props: {
 
     const externalEvent = props.event();
     const currentDraftEvent = draftEvent();
-    const nextEvent: EventResponse = {
+    const nextEvent: EventEditorDraft = {
       ...currentDraftEvent,
       name: name(),
     };
@@ -553,13 +567,11 @@ function CompetitionEventDetailBody(props: {
       configurationId: nextEvent.configuration.id,
       discipline: nextEvent.discipline,
       exercises: nextEvent.exercises,
-      id: nextEvent.id,
       judges: nextEvent.judges,
       name: nextEvent.name,
-      stageId: nextEvent.stageId,
     };
 
-    props.onUpdate(updatePayload);
+    props.onUpdate(nextEvent.id, updatePayload);
   };
 
   const toggleEditingMode = () => {
@@ -650,7 +662,7 @@ function CompetitionEventDetailBody(props: {
 
     const event = props.event();
 
-    setDraftEvent(event);
+    setDraftEvent(toEventEditorDraft(event));
     setName(event.name);
   });
 

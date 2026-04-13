@@ -84,14 +84,6 @@ const getBaseCompetitionsFromCache = () =>
 export const getVisibleCompetitions = () =>
   mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
 
-const syncCompetitionUpsertToCache = (competition: Competition) => {
-  queryClient.setQueryData<Competition[] | undefined>(
-    getCompetitionsQueryKey(),
-    (previousCompetitions) =>
-      buildNextCompetitions(previousCompetitions ?? [], competition),
-  );
-};
-
 const syncCompetitionRemovalToCache = (id: string) => {
   queryClient.setQueryData<Competition[] | undefined>(
     getCompetitionsQueryKey(),
@@ -100,10 +92,13 @@ const syncCompetitionRemovalToCache = (id: string) => {
   );
 };
 
+const syncCompetitionsToCache = (competitions: Competition[]) => {
+  queryClient.setQueryData<Competition[]>(getCompetitionsQueryKey(), competitions);
+};
+
 export const commitCompetitionMutationSuccess = async ({
   entityId,
   method,
-  payload,
 }: {
   entityId: string;
   method: PendingTaskMethod;
@@ -113,14 +108,16 @@ export const commitCompetitionMutationSuccess = async ({
 
   if (method === "DELETE") {
     syncCompetitionRemovalToCache(entityId);
-  } else if (isCompetitionPayload(payload)) {
-    syncCompetitionUpsertToCache(payload);
+  } else if (method === "POST" || method === "PUT") {
+    syncCompetitionsToCache(visibleCompetitions);
   } else {
     return;
   }
 
-  replaceCompetitionDrafts(visibleCompetitions, getBaseCompetitionsFromCache());
-  await saveCompetitionsSnapshot(getVisibleCompetitions());
+  const nextBaseCompetitions = getBaseCompetitionsFromCache();
+
+  replaceCompetitionDrafts(visibleCompetitions, nextBaseCompetitions);
+  await saveCompetitionsSnapshot(nextBaseCompetitions);
 };
 
 export const readCompetitionsSnapshot = () =>
@@ -190,24 +187,22 @@ const rollbackCompetitionPayload = async (
 ) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
+    syncCompetitionsToCache(rollbackPayload.previousCompetitions);
     replaceCompetitionDrafts(
       rollbackPayload.previousCompetitions,
-      getBaseCompetitionsFromCache(),
+      rollbackPayload.previousCompetitions,
     );
   } else {
     await removeQuerySnapshot(COMPETITIONS_SNAPSHOT_ID);
+    syncCompetitionsToCache([]);
     replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
   }
 };
-
-const isCompetitionPayload = (payload: unknown): payload is Competition =>
-  typeof payload === "object" && payload !== null && "id" in payload;
 
 const commitCompetitionTask = async (task: PendingTask) => {
   await commitCompetitionMutationSuccess({
     entityId: task.entityId,
     method: task.method,
-    payload: task.payload,
   });
 };
 
@@ -220,14 +215,16 @@ registerPendingTaskHandler("competition", competitionPendingTaskHandler);
 
 export const applyCompetitionUpsert = (competition: Competition) => {
   upsertCompetitionDraft(competition);
-  void saveCompetitionsSnapshot(
-    buildNextCompetitions(getVisibleCompetitions(), competition),
-  );
+  const visibleCompetitions = getVisibleCompetitions();
+
+  syncCompetitionsToCache(visibleCompetitions);
+  void saveCompetitionsSnapshot(visibleCompetitions);
 };
 
 export const applyCompetitionRemoval = (id: string) => {
   removeCompetitionDraft(id);
-  void saveCompetitionsSnapshot(
-    buildCompetitionsWithoutEntity(getVisibleCompetitions(), id),
-  );
+  const visibleCompetitions = getVisibleCompetitions();
+
+  syncCompetitionsToCache(visibleCompetitions);
+  void saveCompetitionsSnapshot(visibleCompetitions);
 };

@@ -1,4 +1,5 @@
-import { render } from "@solidjs/testing-library";
+import { render, screen } from "@solidjs/testing-library";
+import userEvent from "@testing-library/user-event";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 
 const OPTIONS = [
@@ -45,5 +46,33 @@ describe("AtomSelect", () => {
     ));
 
     expect(getByText("Select one option")).toBeInTheDocument();
+  });
+
+  test("renders preLabel content for an option", async () => {
+    const user = userEvent.setup();
+    const optionsWithPreLabel = [
+      {
+        label: "Portugal",
+        value: "pt",
+        preLabel: <span>PT</span>,
+      },
+      {
+        label: "Spain",
+        value: "es",
+      },
+    ];
+
+    render(() => (
+      <AtomSelect
+        label="Country"
+        options={optionsWithPreLabel}
+        placeholder="Select a country"
+      />
+    ));
+
+    await user.click(screen.getByRole("button", { name: "Select a country" }));
+
+    expect(await screen.findByText("PT")).toBeInTheDocument();
+    expect(await screen.findByText("Portugal")).toBeInTheDocument();
   });
 });

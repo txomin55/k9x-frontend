@@ -244,17 +244,10 @@ const rollbackApiEventPayload = async (
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
 
-const isApiEventPayload = (payload: unknown): payload is EventResponse =>
-  typeof payload === "object" &&
-  payload !== null &&
-  "id" in payload &&
-  "stageId" in payload;
-
 export const commitApiEventMutationSuccess = async ({
   competitionId,
   eventId,
   method,
-  payload,
   stageId,
 }: {
   competitionId: string;
@@ -276,23 +269,19 @@ export const commitApiEventMutationSuccess = async ({
           eventId,
         ),
     );
-  } else if (isApiEventPayload(payload)) {
-    queryClient.setQueryData<Competition[] | undefined>(
+  } else if (method === "POST" || method === "PUT") {
+    queryClient.setQueryData<Competition[]>(
       getCompetitionsQueryKey(),
-      (previousCompetitions) =>
-        buildNextCompetitionsList(
-          previousCompetitions ?? [],
-          competitionId,
-          stageId,
-          payload,
-        ),
+      visibleCompetitions,
     );
   } else {
     return;
   }
 
-  replaceCompetitionDrafts(visibleCompetitions, getBaseCompetitionsFromCache());
-  await saveCompetitionsSnapshot(getVisibleCompetitions());
+  const nextBaseCompetitions = getBaseCompetitionsFromCache();
+
+  replaceCompetitionDrafts(visibleCompetitions, nextBaseCompetitions);
+  await saveCompetitionsSnapshot(nextBaseCompetitions);
 };
 
 const commitApiEventTask = async (task: PendingTask) => {
@@ -304,7 +293,6 @@ const commitApiEventTask = async (task: PendingTask) => {
     competitionId: task.rollbackPayload.competitionId,
     eventId: task.entityId,
     method: task.method,
-    payload: task.payload,
     stageId: task.rollbackPayload.stageId,
   });
 };

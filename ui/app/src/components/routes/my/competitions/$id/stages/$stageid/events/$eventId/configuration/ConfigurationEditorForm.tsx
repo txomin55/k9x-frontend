@@ -1,5 +1,5 @@
 import { createMemo } from "solid-js";
-import type { EventResponse } from "@/services/api/competition-crud/competitionCrud.types";
+import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
 import { useConfigurations } from "@/services/api/configurations/configurations";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -7,9 +7,9 @@ import { Federation, FederationConfigurations } from "@/services/api/configurati
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 type ConfigurationEditorFormProps = {
-  draft: EventResponse;
+  draft: EventEditorDraft;
   onChange: (
-    updater: (current: EventResponse | null) => EventResponse | null,
+    updater: (current: EventEditorDraft | null) => EventEditorDraft | null,
   ) => void;
 };
 

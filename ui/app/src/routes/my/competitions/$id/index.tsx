@@ -1,32 +1,18 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
+import { type Competition, type UpdateCompetitionRequest } from "@/services/api/competition-crud/competitionCrud.types";
 import {
-  type Competition,
-  type PostCompetition,
-} from "@/services/api/competition-crud/competitionCrud.types";
-import {
+  type CreateStageRequest,
   type StageEditorModel,
   toApiStage,
-  useApiStage,
+  type UpdateStageRequest,
+  useApiStage
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
@@ -96,7 +82,10 @@ function CompetitionDetailContent(props: { id: string }) {
 function CompetitionDetailBody(props: {
   competition: Accessor<Competition | undefined>;
   onDelete: () => void;
-  onUpdate: (competition: PostCompetition) => void;
+  onUpdate: (
+    competitionId: string,
+    competition: UpdateCompetitionRequest,
+  ) => void;
 }) {
   const navigate = useNavigate();
   const {
@@ -201,9 +190,14 @@ function CompetitionDetailBody(props: {
     if (!draft) return;
 
     if (isCreatingStage()) {
-      createApiStage(draft);
+      createApiStage(draft as CreateStageRequest);
     } else {
-      updateApiStage(draft);
+      updateApiStage(draft.competitionId, draft.id, {
+        dateFrom: draft.dateFrom,
+        dateTo: draft.dateTo,
+        events: draft.events,
+        name: draft.name,
+      } satisfies UpdateStageRequest);
     }
 
     closeStageEditor();
@@ -244,10 +238,9 @@ function CompetitionDetailBody(props: {
 
     if (!competition) return;
 
-    const nextCompetition: PostCompetition = {
+    const nextCompetition: UpdateCompetitionRequest = {
       country: country(),
       description: description(),
-      id: competition.id,
       location: {
         address: toUndefinedIfBlank(address()),
       },
@@ -262,7 +255,7 @@ function CompetitionDetailBody(props: {
 
     if (!hasChanges) return;
 
-    props.onUpdate(nextCompetition);
+    props.onUpdate(competition.id, nextCompetition);
   };
 
   return (

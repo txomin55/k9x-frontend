@@ -1,21 +1,39 @@
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 export const COUNTRY_SELECT_OPTIONS: AtomSelectOption[] = [
-  { label: "--Portugal", value: "pt" },
-  { label: "--Spain", value: "es" },
-  { label: "--France", value: "fr" },
-  { label: "--Italy", value: "it" },
-  { label: "--United Kingdom", value: "gb" },
+  {
+    label: "--Portugal",
+    value: "pt",
+    preLabel: <CountryFlag country="pt" alt="pt flag" />,
+  },
+  {
+    label: "--Spain",
+    value: "es",
+    preLabel: <CountryFlag country="es" alt="es flag" />,
+  },
+  {
+    label: "--France",
+    value: "fr",
+    preLabel: <CountryFlag country="fr" alt="fr flag" />,
+  },
+  {
+    label: "--Italy",
+    value: "it",
+    preLabel: <CountryFlag country="it" alt="it flag" />,
+  },
+  {
+    label: "--United Kingdom",
+    value: "gb",
+    preLabel: <CountryFlag country="gb" alt="gb flag" />,
+  },
 ];
 
 export const getCountryOption = (country: string) =>
   COUNTRY_SELECT_OPTIONS.find(
     (option) => option.value === country || option.label === country,
   ) ?? null;
-
-export const getCountryLabel = (country: string) =>
-  getCountryOption(country)?.label ?? country;
 
 type CountryFieldProps = {
   disabled?: boolean;

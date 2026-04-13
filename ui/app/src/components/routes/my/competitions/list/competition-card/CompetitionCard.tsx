@@ -1,11 +1,11 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type { CompetitionCardProps } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
+import type {
+  CompetitionCardProps
+} from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
 import "./styles.css";
 
 export default function CompetitionCard(props: CompetitionCardProps) {
@@ -15,10 +15,15 @@ export default function CompetitionCard(props: CompetitionCardProps) {
     <Card
       topLeft={
         <div class="competition-card__main-info">
-          <div class="competition-card__country-flag">
-            <CountryFlag country={props.country} alt={`${props.name} flag`} />
-          </div>
           <span class="text-heading-sm">{props.name}</span>
+          <div class="competition-card__country-flag">
+            <CountryFlag
+              country={props.country}
+              alt={`${props.country} flag`}
+              height={32}
+              width={32}
+            />
+          </div>
         </div>
       }
       topRight={

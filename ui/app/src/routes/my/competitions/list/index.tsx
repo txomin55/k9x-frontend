@@ -16,7 +16,7 @@ function MyCompetitionsIndexPage() {
   });
 
   return (
-    <div class="my/competitions">
+    <div class="my-competitions">
       <h1>--My competitions</h1>
       <Suspense fallback={<span>--Loading Competitions</span>}>
         <For each={fetchedCompetitions.data}>

@@ -10,13 +10,13 @@ import {
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
+  getVisibleCompetitions,
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
   Competition,
   CompetitionLocation,
-  PostCompetition,
-  PostCompetitionStage,
-  Stage,
+  CreateCompetitionRequest,
+  UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
@@ -94,17 +94,6 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
   });
 };
 
-const toCompetitionStage = (
-  stage: PostCompetitionStage,
-  previousStage?: Stage,
-): Stage => ({
-  dateFrom: stage.dateFrom ?? previousStage?.dateFrom ?? 0,
-  dateTo: stage.dateTo ?? previousStage?.dateTo ?? 0,
-  events: previousStage?.events ?? [],
-  id: stage.id ?? previousStage?.id ?? globalThis.crypto.randomUUID(),
-  name: stage.name ?? previousStage?.name ?? "",
-});
-
 const toCompetitionLocation = (
   location?: CompetitionLocation,
   previousLocation?: CompetitionLocation,
@@ -119,35 +108,27 @@ const toCompetitionLocation = (
 };
 
 const mergeCompetitionWithPayload = (
-  payload: PostCompetition,
+  payload: CreateCompetitionRequest | UpdateCompetitionRequest,
   previousCompetition?: Competition,
 ): Competition => {
-  const previousStagesById = new Map(
-    (previousCompetition?.stages ?? []).map((stage) => [stage.id, stage]),
-  );
+  const payloadId = "id" in payload ? payload.id : undefined;
 
   return {
     country: payload.country ?? previousCompetition?.country ?? "",
     description: payload.description ?? previousCompetition?.description,
-    id: payload.id ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
+    id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
     location: toCompetitionLocation(
       payload.location,
       previousCompetition?.location,
     ),
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications,
-    stages:
-      payload.stages?.map((stage) =>
-        toCompetitionStage(
-          stage,
-          stage.id ? previousStagesById.get(stage.id) : undefined,
-        ),
-      ) ?? previousCompetition?.stages,
+    stages: previousCompetition?.stages,
     status: previousCompetition?.status ?? DRAFT_COMPETITION_STATUS,
   };
 };
 
-const createDefaultCompetition = (): PostCompetition => ({
+const createDefaultCompetition = (): CreateCompetitionRequest => ({
   id: globalThis.crypto.randomUUID(),
   name: "--Default competition",
 });
@@ -178,7 +159,7 @@ export const useCompetition = () => {
     );
   };
 
-  const createCompetition = (payload: PostCompetition) => {
+  const createCompetition = (payload: CreateCompetitionRequest) => {
     const previousCompetitionsFromCache = getCachedCompetitions();
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
@@ -205,19 +186,21 @@ export const useCompetition = () => {
     })();
   };
 
-  const updateCompetition = (payload: PostCompetition) => {
-    if (!payload.id) {
-      throw new Error("updateCompetition requires an id");
+  const updateCompetition = (id: string, payload: UpdateCompetitionRequest) => {
+    const previousCompetitionsFromCache = getVisibleCompetitions();
+    const previousCompetition =
+      previousCompetitionsFromCache.find(
+        (competition) => competition.id === id,
+      ) ?? undefined;
+
+    if (!previousCompetition) {
+      throw new Error(
+        `updateCompetition requires an existing competition ${id}`,
+      );
     }
 
-    const entityId = payload.id;
-    const previousCompetitionsFromCache = getCachedCompetitions();
-    const previousCompetition =
-      previousCompetitionsFromCache?.find(
-        (competition) => competition.id === entityId,
-      ) ?? undefined;
     const nextCompetition = mergeCompetitionWithPayload(
-      payload,
+      { ...payload, id },
       previousCompetition,
     );
 
@@ -225,21 +208,20 @@ export const useCompetition = () => {
 
     void (async () => {
       await commitCompetitionMutation({
-        entityId,
+        entityId: id,
         method: "PUT",
         payload,
         onCommitted: () =>
           commitCompetitionMutationSuccess({
-            entityId,
+            entityId: id,
             method: "PUT",
-            payload: nextCompetition,
           }),
         rollbackPayload: await createCompetitionRollbackPayload(
-          entityId,
+          id,
           previousCompetition ?? null,
           previousCompetitionsFromCache,
         ),
-        url: `/api/competitions/${entityId}`,
+        url: `/api/competitions/${id}`,
       });
     })();
   };

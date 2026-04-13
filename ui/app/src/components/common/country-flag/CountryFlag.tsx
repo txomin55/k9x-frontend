@@ -4,6 +4,7 @@ import frFlag from "@/assets/flags/fr.svg";
 import gbFlag from "@/assets/flags/gb.svg";
 import itFlag from "@/assets/flags/it.svg";
 import ptFlag from "@/assets/flags/pt.svg";
+import "./styles.css";
 
 const FLAG_BY_COUNTRY: Record<string, string> = {
   es: esFlag,
@@ -31,8 +32,9 @@ export default function CountryFlag(props: {
 
   return (
     <div
+      class="country-flag"
       style={{
-        height: `${props.height ?? 18}px`,
+        height: `${props.height ?? 24}px`,
         width: `${props.width ?? 24}px`,
       }}
     >
