@@ -4,7 +4,12 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import { createDog, deleteDog, useDogs } from "@/services/api/dog-crud/dogCrud";
+import {
+  createDog,
+  deleteDog,
+  updateDog,
+  useDogs,
+} from "@/services/api/dog-crud/dogCrud";
 import type {
   CreateDogRequest,
   Dog,
@@ -34,19 +39,23 @@ function MyDogsListPage() {
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
+  const [editingDogId, setEditingDogId] = createSignal<string | null>(null);
   const [draftDog, setDraftDog] =
     createSignal<CreateDogRequest>(buildDogDraft());
 
   const openCreateDialog = () => {
+    setEditingDogId(null);
     setDraftDog(buildDogDraft());
     setDialogOpen(true);
   };
 
   const handleCloseDialog = () => {
     setDialogOpen(false);
+    setEditingDogId(null);
   };
 
   const openEditDialog = (dog: Dog) => {
+    setEditingDogId(dog.id);
     setDraftDog(() => ({
       id: dog.id,
       name: dog.name,
@@ -61,7 +70,23 @@ function MyDogsListPage() {
   };
 
   const handleSave = () => {
-    createDog(draftDog());
+    const payload = draftDog();
+    const currentEditingDogId = editingDogId();
+
+    if (currentEditingDogId) {
+      updateDog(currentEditingDogId, {
+        name: payload.name,
+        image: payload.image,
+        breed: payload.breed,
+        identifier: payload.identifier,
+        owner: payload.owner,
+        team: payload.team,
+        country: payload.country,
+      });
+    } else {
+      createDog(payload);
+    }
+
     handleCloseDialog();
   };
 
@@ -69,7 +94,7 @@ function MyDogsListPage() {
     <div class="my-dogs">
       <h1>--Dogs</h1>
       <AtomDialog
-        title="--New dog"
+        title={editingDogId() ? "--Edit dog" : "--New dog"}
         content={
           <DogForm
             draft={draftDog}

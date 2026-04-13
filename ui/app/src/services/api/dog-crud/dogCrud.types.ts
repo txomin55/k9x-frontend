@@ -21,7 +21,6 @@ export interface CreateDogRequest {
 }
 
 export interface UpdateDogRequest {
-  id: string;
   name: string;
   image: string;
   breed: string;

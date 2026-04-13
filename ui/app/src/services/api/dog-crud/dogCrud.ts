@@ -9,9 +9,10 @@ import {
   applyDogUpsert,
   commitDogMutation,
   createDogRollbackPayload,
-  saveDogsSnapshot,
+  getVisibleDogs,
+  saveDogsSnapshot
 } from "./dogCrudOfflineUtils";
-import type { CreateDogRequest, Dog } from "./dogCrud.types";
+import type { CreateDogRequest, Dog, UpdateDogRequest } from "./dogCrud.types";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 
@@ -83,11 +84,8 @@ const mergeDogWithPayload = (
   country: payload.country ?? existingDog?.country,
 });
 
-export const getCachedDogs = () =>
-  queryClient.getQueryData<Dog[]>(getDogsQueryKey()) ?? [];
-
 export const createDog = (payload: CreateDogRequest) => {
-  const previousDogs = getCachedDogs();
+  const previousDogs = getVisibleDogs();
   const draftDog = mergeDogWithPayload(payload);
 
   applyDogUpsert(draftDog);
@@ -109,8 +107,45 @@ export const createDog = (payload: CreateDogRequest) => {
   return draftDog;
 };
 
+const updateDogProjection = (
+  existingDog: Dog,
+  payload: UpdateDogRequest,
+): Dog => ({
+  ...existingDog,
+  ...payload,
+});
+
+export const updateDog = (id: string, payload: UpdateDogRequest) => {
+  const previousDogs = getVisibleDogs();
+  const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
+
+  if (!previousDog) {
+    throw new Error(`Dog ${id} not found`);
+  }
+
+  const draftDog = updateDogProjection(previousDog, payload);
+
+  applyDogUpsert(draftDog);
+
+  void (async () => {
+    await commitDogMutation({
+      entityId: id,
+      method: "PUT",
+      payload,
+      rollbackPayload: await createDogRollbackPayload(
+        id,
+        previousDog,
+        previousDogs,
+      ),
+      url: `/api/dogs/${id}`,
+    });
+  })();
+
+  return draftDog;
+};
+
 export const deleteDog = (id: string) => {
-  const previousDogs = getCachedDogs();
+  const previousDogs = getVisibleDogs();
   const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
 
   applyDogRemoval(id);

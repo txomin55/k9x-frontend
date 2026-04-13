@@ -58,13 +58,6 @@ const getBaseDogsFromCache = () =>
 
 export const getVisibleDogs = () => mergeDogsWithDrafts(getBaseDogsFromCache());
 
-const syncDogUpsertToCache = (dog: Dog) => {
-  queryClient.setQueryData<Dog[] | undefined>(
-    getDogsQueryKey(),
-    (previousDogs) => buildNextDogs(previousDogs ?? [], dog),
-  );
-};
-
 const syncDogRemovalToCache = (id: string) => {
   queryClient.setQueryData<Dog[] | undefined>(
     getDogsQueryKey(),
@@ -72,10 +65,13 @@ const syncDogRemovalToCache = (id: string) => {
   );
 };
 
+const syncDogsToCache = (dogs: Dog[]) => {
+  queryClient.setQueryData<Dog[]>(getDogsQueryKey(), dogs);
+};
+
 export const commitDogMutationSuccess = async ({
   entityId,
   method,
-  payload,
 }: {
   entityId: string;
   method: PendingTaskMethod;
@@ -85,14 +81,16 @@ export const commitDogMutationSuccess = async ({
 
   if (method === "DELETE") {
     syncDogRemovalToCache(entityId);
-  } else if (isDogPayload(payload)) {
-    syncDogUpsertToCache(payload);
+  } else if (method === "POST" || method === "PUT") {
+    syncDogsToCache(visibleDogs);
   } else {
     return;
   }
 
-  replaceDogDrafts(visibleDogs, getBaseDogsFromCache());
-  await saveDogsSnapshot(getVisibleDogs());
+  const nextBaseDogs = getBaseDogsFromCache();
+
+  replaceDogDrafts(visibleDogs, nextBaseDogs);
+  await saveDogsSnapshot(nextBaseDogs);
 };
 
 export const readDogsSnapshot = () =>
@@ -166,14 +164,10 @@ const rollbackDogPayload = async (rollbackPayload: DogRollbackPayload) => {
   }
 };
 
-const isDogPayload = (payload: unknown): payload is Dog =>
-  typeof payload === "object" && payload !== null && "id" in payload;
-
 const commitDogTask = async (task: PendingTask) => {
   await commitDogMutationSuccess({
     entityId: task.entityId,
     method: task.method,
-    payload: task.payload,
   });
 };
 
