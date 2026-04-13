@@ -1,7 +1,10 @@
 import { render } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import type { TabsOptionProps, TabsContentProps } from "@lib/components/atoms/tab/AtomTabs.types";
+import type {
+  TabsContentProps,
+  TabsOptionProps,
+} from "@lib/components/atoms/tab/AtomTabs.types";
 
 const TAB_OPTIONS: TabsOptionProps[] = [
   { value: "dogs", content: <span>Dogs</span> },
@@ -22,7 +25,11 @@ const TAB_CONTENTS: TabsContentProps[] = [
 describe("AtomTabs", () => {
   test("renders given options and shows the default content", () => {
     const { getByText, queryByText } = render(() => (
-      <AtomTabs value="dogs" options={TAB_OPTIONS} contents={TAB_CONTENTS} />
+      <AtomTabs
+        defaultValue="dogs"
+        options={TAB_OPTIONS}
+        contents={TAB_CONTENTS}
+      />
     ));
 
     expect(getByText("Dogs")).toBeInTheDocument();
@@ -33,7 +40,11 @@ describe("AtomTabs", () => {
   test("switches content when a different tab is activated", async () => {
     const user = userEvent.setup();
     const { getByText, findByText, queryByText } = render(() => (
-      <AtomTabs value="dogs" options={TAB_OPTIONS} contents={TAB_CONTENTS} />
+      <AtomTabs
+        defaultValue="dogs"
+        options={TAB_OPTIONS}
+        contents={TAB_CONTENTS}
+      />
     ));
 
     const catsTab = getByText("Cats");

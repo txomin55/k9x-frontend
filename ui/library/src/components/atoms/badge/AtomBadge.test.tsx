@@ -10,7 +10,7 @@ describe("AtomBadge", () => {
 
   test("forwards the configured variant and text value", () => {
     const { getByText } = render(() => (
-      <AtomBadge kind="success" textValue="Account active">
+      <AtomBadge type="success" textValue="Account active">
         Active
       </AtomBadge>
     ));
