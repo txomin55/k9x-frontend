@@ -13,10 +13,6 @@ export type {
 const fetchConfigurations = () =>
   rawRequest<DisciplineFederationConfigurations[]>({
     path: "/api/disciplines/configurations",
-  }).then((d) => {
-    d[0].disciplineId = "fci_ob";
-
-    return d;
   });
 
 const configurationsQuery = defineQuery({
