@@ -1,12 +1,6 @@
-import {
-  LOCAL_FIRST_STORE_NAMES,
-  localFirstDatabase,
-} from "@/utils/local-first/storage/localFirstDatabase";
+import { LOCAL_FIRST_STORE_NAMES, localFirstDatabase } from "@/utils/local-first/storage/localFirstDatabase";
 import { shouldPersistLocalFirstData } from "@/utils/local-first/localFirstPolicy";
-import type {
-  PendingTask,
-  PendingTaskMethod,
-} from "@/utils/local-first/pending_tasks/pendingTasks.types";
+import type { PendingTask, PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
 export type {
   PendingTask,
@@ -41,7 +35,11 @@ export const enqueuePendingTask = (task: PendingTask) => {
   return pendingTasksTable.put(toSerializable(task));
 };
 
-export const getPendingTask = (id: string) => pendingTasksTable.get(id);
+export const getPendingTasksCount = async () => {
+  if (!shouldPersistLocalFirstData()) return 0;
+
+  return pendingTasksTable.count();
+};
 
 export const getRetryablePendingTasks = async (processingStaleMs: number) => {
   if (!shouldPersistLocalFirstData()) return [];
