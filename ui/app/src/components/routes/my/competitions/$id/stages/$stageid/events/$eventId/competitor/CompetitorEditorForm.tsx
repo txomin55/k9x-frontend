@@ -31,6 +31,9 @@ type CompetitorDialogContentProps = {
 export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
+  const minOrder = Math.max(props.orderBounds.minValue, 1);
+  const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
+
   const setIdentity = (value) =>
     props.onCompetitorDraftChange((current) =>
       current
@@ -72,7 +75,9 @@ export default function CompetitorEditorForm(
     );
   const setOrder = (value: string) => {
     const parsedOrder = Number(value);
-    const normalizedOrder = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+    const normalizedOrder = Number.isFinite(parsedOrder)
+      ? Math.min(Math.max(parsedOrder, minOrder), maxOrder)
+      : minOrder;
 
     props.onCompetitorDraftChange((current) =>
       current
@@ -100,8 +105,7 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
-  const minOrder = Math.max(props.orderBounds.minValue, 1);
-  const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
+
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (

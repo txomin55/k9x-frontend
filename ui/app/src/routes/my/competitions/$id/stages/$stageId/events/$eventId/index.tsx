@@ -1,40 +1,31 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import type {
-  EventResponse,
-  UpdateEventRequest,
-} from "@/services/api/event-api-crud/eventApiCrud";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
-  EventEditorDraft,
   EventCompetitor,
   EventCompetitorDetail,
+  EventEditorDraft,
   EventExerciseDetail,
-  EventJudgeDetail,
+  EventJudgeDetail
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
-import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import {
+  getEventDisciplineLabel
+} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -195,9 +186,7 @@ function CompetitionEventDetailBody(props: {
   const [competitorDialogDraft, setCompetitorDialogDraft] =
     createSignal<EventCompetitorDetail | null>(null);
   const [isCreatingJudge, setIsCreatingJudge] = createSignal(false);
-  const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(
-    null,
-  );
+  const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(null);
   const [judgeDialogDraft, setJudgeDialogDraft] =
     createSignal<EventJudgeDetail | null>(null);
   const [isCreatingExercise, setIsCreatingExercise] = createSignal(false);
@@ -244,9 +233,9 @@ function CompetitionEventDetailBody(props: {
     });
   };
 
-  const createDefaultCompetitor = (): EventCompetitorDetail => {
+  const createDefaultCompetitor = (order: number): EventCompetitorDetail => {
     return {
-      order: 0,
+      order,
       dogId: globalThis.crypto.randomUUID(),
       identity: "",
       name: "",
@@ -257,48 +246,54 @@ function CompetitionEventDetailBody(props: {
     };
   };
 
+  const clampOrder = (order: number, total: number) => {
+    return Math.min(Math.max(order, 1), Math.max(total, 1));
+  };
+
+  const reorderItems = <T, TId extends string>(
+    items: T[],
+    updatedItem: T,
+    getId: (item: T) => TId,
+    setOrder: (item: T, order: number) => T,
+    requestedOrder: number,
+  ): T[] => {
+    const itemId = getId(updatedItem);
+    const existingIndex = items.findIndex((entry) => getId(entry) === itemId);
+    const itemsWithoutUpdated =
+      existingIndex >= 0
+        ? items.filter((entry) => getId(entry) !== itemId)
+        : items;
+    const normalizedOrder = clampOrder(
+      requestedOrder,
+      itemsWithoutUpdated.length + 1,
+    );
+    const insertionIndex = normalizedOrder - 1;
+    const nextItems = [...itemsWithoutUpdated];
+
+    nextItems.splice(
+      insertionIndex,
+      0,
+      setOrder(updatedItem, normalizedOrder),
+    );
+
+    return nextItems.map((entry, index) => setOrder(entry, index + 1));
+  };
+
   const reorderCompetitors = (
     competitors: EventCompetitorDetail[],
     order: number,
     updatedCompetitor: EventCompetitorDetail,
-    previousOrder?: number,
   ): EventCompetitorDetail[] => {
-    return competitors.map((entry) => {
-      if (entry.dogId === updatedCompetitor.dogId) {
-        return updatedCompetitor;
-      }
-
-      if (previousOrder === undefined) {
-        if (entry.order < order) {
-          return entry;
-        }
-
-        return {
-          ...entry,
-          order: entry.order + 1,
-        };
-      }
-
-      if (previousOrder < order) {
-        if (entry.order <= previousOrder || entry.order > order) {
-          return entry;
-        }
-
-        return {
-          ...entry,
-          order: entry.order - 1,
-        };
-      }
-
-      if (entry.order < order || entry.order >= previousOrder) {
-        return entry;
-      }
-
-      return {
+    return reorderItems(
+      competitors,
+      updatedCompetitor,
+      (entry) => entry.dogId,
+      (entry, nextOrder) => ({
         ...entry,
-        order: entry.order + 1,
-      };
-    });
+        order: nextOrder,
+      }),
+      order,
+    );
   };
 
   const reorderExercises = (
@@ -306,20 +301,16 @@ function CompetitionEventDetailBody(props: {
     order: number,
     updatedExercise: EventExerciseDetail,
   ): EventExerciseDetail[] => {
-    return exercises.map((entry) => {
-      if (entry.id === updatedExercise.id) {
-        return updatedExercise;
-      }
-
-      if (entry.order >= order) {
-        return {
-          ...entry,
-          order: entry.order + 1,
-        };
-      }
-
-      return entry;
-    });
+    return reorderItems(
+      exercises,
+      updatedExercise,
+      (entry) => entry.id,
+      (entry, nextOrder) => ({
+        ...entry,
+        order: nextOrder,
+      }),
+      order,
+    );
   };
 
   const mapCompetitorForUpdate = (
@@ -340,10 +331,10 @@ function CompetitionEventDetailBody(props: {
     id: globalThis.crypto.randomUUID(),
   });
 
-  const createDefaultExercise = (): EventExerciseDetail => {
+  const createDefaultExercise = (order: number): EventExerciseDetail => {
     return {
       id: globalThis.crypto.randomUUID(),
-      order: 0,
+      order,
       name: "--Default exercise",
       tags: [],
     };
@@ -380,10 +371,22 @@ function CompetitionEventDetailBody(props: {
 
     if (!draft) return;
 
+    const normalizedDraft = {
+      ...draft,
+      order: clampOrder(
+        draft.order,
+        draftEvent().exercises.length + (isCreatingExercise() ? 1 : 0),
+      ),
+    };
+
     if (isCreatingExercise()) {
       setDraftEvent((current) => ({
         ...current,
-        exercises: [...current.exercises, draft],
+        exercises: reorderExercises(
+          current.exercises,
+          normalizedDraft.order,
+          normalizedDraft,
+        ),
       }));
     } else {
       const currentEditingExerciseId = editingExerciseId();
@@ -395,19 +398,19 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.id === currentEditingExerciseId,
         );
         const orderChanged =
-          previousExercise && previousExercise.order !== draft.order;
+          previousExercise && previousExercise.order !== normalizedDraft.order;
 
         const hasConflict = current.exercises.some(
           (entry) =>
             entry.id !== currentEditingExerciseId &&
-            entry.order === draft.order,
+            entry.order === normalizedDraft.order,
         );
         const shouldReorder = orderChanged || hasConflict;
 
         const nextExercises = shouldReorder
-          ? reorderExercises(current.exercises, draft.order, draft)
+          ? reorderExercises(current.exercises, normalizedDraft.order, normalizedDraft)
           : current.exercises.map((entry) =>
-              entry.id === currentEditingExerciseId ? draft : entry,
+              entry.id === currentEditingExerciseId ? normalizedDraft : entry,
             );
 
         return {
@@ -425,10 +428,22 @@ function CompetitionEventDetailBody(props: {
 
     if (!draft) return;
 
+    const normalizedDraft = {
+      ...draft,
+      order: clampOrder(
+        draft.order,
+        draftEvent().competitors.length + (isCreatingCompetitor() ? 1 : 0),
+      ),
+    };
+
     if (isCreatingCompetitor()) {
       setDraftEvent((current) => ({
         ...current,
-        competitors: [...current.competitors, draft],
+        competitors: reorderCompetitors(
+          current.competitors,
+          normalizedDraft.order,
+          normalizedDraft,
+        ),
       }));
     } else {
       const currentEditingCompetitorId = editingCompetitorId();
@@ -440,23 +455,23 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.dogId === currentEditingCompetitorId,
         );
         const orderChanged =
-          previousCompetitor && previousCompetitor.order !== draft.order;
+          previousCompetitor &&
+          previousCompetitor.order !== normalizedDraft.order;
         const hasConflict = current.competitors.some(
           (entry) =>
             entry.dogId !== currentEditingCompetitorId &&
-            entry.order === draft.order,
+            entry.order === normalizedDraft.order,
         );
         const shouldReorder = orderChanged || hasConflict;
 
         const nextCompetitors = shouldReorder
           ? reorderCompetitors(
               current.competitors,
-              draft.order,
-              draft,
-              previousCompetitor?.order,
+              normalizedDraft.order,
+              normalizedDraft,
             )
           : current.competitors.map((entry) =>
-              entry.dogId === currentEditingCompetitorId ? draft : entry,
+              entry.dogId === currentEditingCompetitorId ? normalizedDraft : entry,
             );
 
         return {
@@ -495,7 +510,7 @@ function CompetitionEventDetailBody(props: {
   };
 
   const handleAddExercise = () => {
-    const draft = createDefaultExercise();
+    const draft = createDefaultExercise(draftEvent().exercises.length + 1);
 
     setIsCreatingExercise(true);
     setEditingExerciseId(draft.id);
@@ -520,7 +535,7 @@ function CompetitionEventDetailBody(props: {
   };
 
   const handleAddCompetitor = () => {
-    const draft = createDefaultCompetitor();
+    const draft = createDefaultCompetitor(draftEvent().competitors.length + 1);
 
     setIsCreatingCompetitor(true);
     setEditingCompetitorId(draft.dogId);

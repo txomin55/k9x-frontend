@@ -23,9 +23,14 @@ type ExerciseEditorFormProps = {
 };
 
 export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
+  const minOrder = Math.max(props.orderBounds.minValue, 1);
+  const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
+
   const setOrder = (value: string) => {
     const parsedOrder = Number(value);
-    const normalizedOrder = Number.isFinite(parsedOrder) ? parsedOrder : 0;
+    const normalizedOrder = Number.isFinite(parsedOrder)
+      ? Math.min(Math.max(parsedOrder, minOrder), maxOrder)
+      : minOrder;
 
     props.onDraftChange((current) =>
       current
@@ -58,9 +63,6 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         : current,
     );
   };
-
-  const minOrder = Math.max(props.orderBounds.minValue, 1);
-  const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
   return (
     <div class="exercise-editor-form">
