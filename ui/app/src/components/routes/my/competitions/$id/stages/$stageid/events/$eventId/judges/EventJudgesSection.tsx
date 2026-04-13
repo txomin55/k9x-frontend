@@ -1,29 +1,27 @@
-import { createMemo, Index, Show } from "solid-js";
-import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import {createMemo, Index, Show} from "solid-js";
+import type {EventJudgeDetail} from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import JudgeEditorForm from "./JudgeEditorForm";
-import { useJudges } from "@/services/api/judge-crud/judgeCrud";
+import {useJudges} from "@/services/api/judge-crud/judgeCrud";
 import "./styles.css";
 
 type EventJudgesSectionProps = {
-  editingJudgeIndex: number | null;
+  editingJudgeId: string | null;
   isCreatingJudge: boolean;
   isEditing: boolean;
   judgeDialogDraft: EventJudgeDetail | null;
   judges: EventJudgeDetail[];
   onAddJudge: () => void;
   onCloseJudgeEditor: () => void;
-  onDeleteJudge: (index: number) => void;
+  onDeleteJudge: (judgeId: string) => void;
   onJudgeDraftChange: (
     updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
-  onOpenJudgeEditor: (index: number, judge: EventJudgeDetail) => void;
+  onOpenJudgeEditor: (judge: EventJudgeDetail) => void;
   onSaveJudge: () => void;
 };
 
@@ -85,7 +83,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
       <Show when={props.judges.length > 0} fallback={<p>--No judges.</p>}>
         <div class="event-judges-section__judges">
           <Index each={props.judges}>
-            {(judge, index) => (
+            {(judge) => (
               <Card
                 topLeft={getJudgeName(judge().id)}
                 description={<p>{`--Email: ${judge().collectorEmail}`}</p>}
@@ -94,7 +92,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                     <div class="event-judges-section__judges--actions">
                       <ConfirmActionButton
                         text={getJudgeName(judge().id)}
-                        onConfirm={() => props.onDeleteJudge(index)}
+                        onConfirm={() => props.onDeleteJudge(judge().id)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                           --Delete
@@ -117,15 +115,13 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                         }
                         onOpenChange={(isOpen) => {
                           if (isOpen) {
-                            props.onOpenJudgeEditor(index, judge());
+                            props.onOpenJudgeEditor(judge());
                             return;
                           }
 
-                          if (props.editingJudgeIndex === index) {
-                            props.onCloseJudgeEditor();
-                          }
+                          props.onCloseJudgeEditor();
                         }}
-                        open={props.editingJudgeIndex === index}
+                        open={props.editingJudgeId === judge().id}
                         title={`--Edit judge`}
                         trigger={<span>--Edit</span>}
                       />

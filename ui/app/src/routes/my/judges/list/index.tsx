@@ -7,6 +7,7 @@ import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
 import {
   createJudge,
   deleteJudge,
+  updateJudge,
   useJudges,
 } from "@/services/api/judge-crud/judgeCrud";
 import type {
@@ -31,18 +32,22 @@ function MyJudgesListPage() {
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
+  const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(null);
   const [draftJudge, setDraftJudge] =
     createSignal<CreateJudgeRequest>(buildJudgeDraft());
 
   const openCreateDialog = () => {
+    setEditingJudgeId(null);
     setDraftJudge(buildJudgeDraft());
     setDialogOpen(true);
   };
   const handleCloseDialog = () => {
     setDialogOpen(false);
+    setEditingJudgeId(null);
   };
 
   const openEditDialog = (judge: Judge) => {
+    setEditingJudgeId(judge.id);
     setDraftJudge(() => ({
       id: judge.id,
       name: judge.name,
@@ -52,8 +57,16 @@ function MyJudgesListPage() {
 
   const handleSave = () => {
     const payload = draftJudge();
+    const currentEditingJudgeId = editingJudgeId();
 
-    createJudge(payload);
+    if (currentEditingJudgeId) {
+      updateJudge(currentEditingJudgeId, {
+        name: payload.name,
+      });
+    } else {
+      createJudge(payload);
+    }
+
     handleCloseDialog();
   };
 
@@ -61,7 +74,7 @@ function MyJudgesListPage() {
     <div class="my-judges">
       <h1>--Judges</h1>
       <AtomDialog
-        title="--New judge"
+        title={editingJudgeId() ? "--Edit judge" : "--New judge"}
         content={
           <JudgeForm
             draft={draftJudge}

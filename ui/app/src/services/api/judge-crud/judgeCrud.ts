@@ -9,9 +9,14 @@ import {
   applyJudgeUpsert,
   commitJudgeMutation,
   createJudgeRollbackPayload,
+  getVisibleJudges,
   saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
-import type { CreateJudgeRequest, Judge } from "./judgeCrud.types";
+import type {
+  CreateJudgeRequest,
+  Judge,
+  UpdateJudgeRequest,
+} from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 
@@ -77,11 +82,16 @@ const mergeJudgeWithPayload = (
   name: payload.name ?? existingJudge?.name ?? "",
 });
 
-export const getCachedJudges = () =>
-  queryClient.getQueryData<Judge[]>(getJudgesQueryKey()) ?? [];
+const updateJudgeProjection = (
+  existingJudge: Judge,
+  payload: UpdateJudgeRequest,
+): Judge => ({
+  ...existingJudge,
+  name: payload.name,
+});
 
 export const createJudge = (payload: CreateJudgeRequest) => {
-  const previousJudges = getCachedJudges();
+  const previousJudges = getVisibleJudges();
   const draftJudge = mergeJudgeWithPayload(payload);
 
   applyJudgeUpsert(draftJudge);
@@ -103,8 +113,37 @@ export const createJudge = (payload: CreateJudgeRequest) => {
   return draftJudge;
 };
 
+export const updateJudge = (id: string, payload: UpdateJudgeRequest) => {
+  const previousJudges = getVisibleJudges();
+  const previousJudge = previousJudges.find((judge) => judge.id === id) ?? null;
+
+  if (!previousJudge) {
+    throw new Error(`Judge ${id} not found`);
+  }
+
+  const draftJudge = updateJudgeProjection(previousJudge, payload);
+
+  applyJudgeUpsert(draftJudge);
+
+  void (async () => {
+    await commitJudgeMutation({
+      entityId: id,
+      method: "PUT",
+      payload,
+      rollbackPayload: await createJudgeRollbackPayload(
+        id,
+        previousJudge,
+        previousJudges,
+      ),
+      url: `/api/judges/${id}`,
+    });
+  })();
+
+  return draftJudge;
+};
+
 export const deleteJudge = (id: string) => {
-  const previousJudges = getCachedJudges();
+  const previousJudges = getVisibleJudges();
   const previousJudge = previousJudges.find((judge) => judge.id === id) ?? null;
 
   applyJudgeRemoval(id);

@@ -181,7 +181,7 @@ function CompetitionEventDetailBody(props: {
   const [competitorDialogDraft, setCompetitorDialogDraft] =
     createSignal<EventCompetitorDetail | null>(null);
   const [isCreatingJudge, setIsCreatingJudge] = createSignal(false);
-  const [editingJudgeIndex, setEditingJudgeIndex] = createSignal<number | null>(
+  const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(
     null,
   );
   const [judgeDialogDraft, setJudgeDialogDraft] =
@@ -208,7 +208,7 @@ function CompetitionEventDetailBody(props: {
 
   const closeJudgeEditor = () => {
     setIsCreatingJudge(false);
-    setEditingJudgeIndex(null);
+    setEditingJudgeId(null);
     setJudgeDialogDraft(null);
   };
 
@@ -346,14 +346,14 @@ function CompetitionEventDetailBody(props: {
         judges: [...current.judges, draft],
       }));
     } else {
-      const currentEditingJudgeIndex = editingJudgeIndex();
+      const currentEditingJudgeId = editingJudgeId();
 
-      if (currentEditingJudgeIndex === null) return;
+      if (!currentEditingJudgeId) return;
 
       setDraftEvent((current) => ({
         ...current,
-        judges: current.judges.map((entry, judgeIndex) =>
-          judgeIndex === currentEditingJudgeIndex ? draft : entry,
+        judges: current.judges.map((entry) =>
+          entry.id === currentEditingJudgeId ? draft : entry,
         ),
       }));
     }
@@ -459,26 +459,24 @@ function CompetitionEventDetailBody(props: {
     const draft = createDefaultJudge();
 
     setIsCreatingJudge(true);
-    setEditingJudgeIndex(null);
+    setEditingJudgeId(null);
     setJudgeDialogDraft({ ...draft });
   };
 
-  const handleDeleteJudge = (judgeIndexToDelete: number) => {
-    if (editingJudgeIndex() === judgeIndexToDelete) {
+  const handleDeleteJudge = (judgeIdToDelete: string) => {
+    if (editingJudgeId() === judgeIdToDelete) {
       closeJudgeEditor();
     }
 
     setDraftEvent((current) => ({
       ...current,
-      judges: current.judges.filter(
-        (_, judgeIndex) => judgeIndex !== judgeIndexToDelete,
-      ),
+      judges: current.judges.filter((entry) => entry.id !== judgeIdToDelete),
     }));
   };
 
-  const handleOpenJudgeEditor = (index: number, judge: EventJudgeDetail) => {
+  const handleOpenJudgeEditor = (judge: EventJudgeDetail) => {
     setIsCreatingJudge(false);
-    setEditingJudgeIndex(index);
+    setEditingJudgeId(judge.id);
     setJudgeDialogDraft({ ...judge });
   };
 
@@ -595,7 +593,7 @@ function CompetitionEventDetailBody(props: {
       value: TABS.JUDGES,
       content: (
         <EventJudgesSection
-          editingJudgeIndex={editingJudgeIndex()}
+          editingJudgeId={editingJudgeId()}
           isCreatingJudge={isCreatingJudge()}
           isEditing={isEditing()}
           judgeDialogDraft={judgeDialogDraft()}

@@ -56,13 +56,6 @@ const getBaseJudgesFromCache = () =>
 export const getVisibleJudges = () =>
   mergeJudgesWithDrafts(getBaseJudgesFromCache());
 
-const syncJudgeUpsertToCache = (judge: Judge) => {
-  queryClient.setQueryData<Judge[] | undefined>(
-    getJudgesQueryKey(),
-    (previousJudges) => buildNextJudges(previousJudges ?? [], judge),
-  );
-};
-
 const syncJudgeRemovalToCache = (id: string) => {
   queryClient.setQueryData<Judge[] | undefined>(
     getJudgesQueryKey(),
@@ -70,10 +63,13 @@ const syncJudgeRemovalToCache = (id: string) => {
   );
 };
 
+const syncJudgesToCache = (judges: Judge[]) => {
+  queryClient.setQueryData<Judge[]>(getJudgesQueryKey(), judges);
+};
+
 export const commitJudgeMutationSuccess = async ({
   entityId,
   method,
-  payload,
 }: {
   entityId: string;
   method: PendingTaskMethod;
@@ -83,14 +79,16 @@ export const commitJudgeMutationSuccess = async ({
 
   if (method === "DELETE") {
     syncJudgeRemovalToCache(entityId);
-  } else if (isJudgePayload(payload)) {
-    syncJudgeUpsertToCache(payload);
+  } else if (method === "POST" || method === "PUT") {
+    syncJudgesToCache(visibleJudges);
   } else {
     return;
   }
 
-  replaceJudgeDrafts(visibleJudges, getBaseJudgesFromCache());
-  await saveJudgesSnapshot(getVisibleJudges());
+  const nextBaseJudges = getBaseJudgesFromCache();
+
+  replaceJudgeDrafts(visibleJudges, nextBaseJudges);
+  await saveJudgesSnapshot(nextBaseJudges);
 };
 
 export const readJudgesSnapshot = () =>
@@ -168,14 +166,10 @@ const rollbackJudgePayload = async (rollbackPayload: JudgeRollbackPayload) => {
   }
 };
 
-const isJudgePayload = (payload: unknown): payload is Judge =>
-  typeof payload === "object" && payload !== null && "id" in payload;
-
 const commitJudgeTask = async (task: PendingTask) => {
   await commitJudgeMutationSuccess({
     entityId: task.entityId,
     method: task.method,
-    payload: task.payload,
   });
 };
 
