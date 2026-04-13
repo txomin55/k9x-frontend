@@ -12,6 +12,7 @@ import {
   useApiStage
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
+import { toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -175,22 +176,6 @@ function CompetitionStageDetailBody(props: {
   const [editingEventId, setEditingEventId] = createSignal<string | null>(null);
   const [eventDialogDraft, setEventDialogDraft] =
     createSignal<EventEditorDraft | null>(null);
-
-  const toEventEditorDraft = (event: EventResponse): EventEditorDraft => ({
-    competitors: event.competitors.map((competitor) => ({ ...competitor })),
-    configuration: {
-      federation: event.configuration.federation,
-      id: event.configuration.id,
-      name: event.configuration.name,
-    },
-    discipline: event.discipline,
-    exercises: event.exercises.map((exercise) => ({ ...exercise })),
-    id: event.id,
-    judges: event.judges.map((judge) => ({ ...judge })),
-    name: event.name,
-    stageId: event.stageId,
-    status: event.status,
-  });
 
   createEffect(() => {
     if (isEditing()) return;

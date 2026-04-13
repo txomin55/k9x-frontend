@@ -108,13 +108,13 @@ function AuthCallbackPage() {
       <Title>--Auth Callback</Title>
       <Switch>
         <Match when={status() === "loading" || status() === "pending"}>
-          <p>--Autenticando con Google...</p>
+          <p>--Authenticated with Google...</p>
         </Match>
         <Match when={status() === "loaded"}>
-          <p>--Autenticado. Redirigiendo...</p>
+          <p>--Authenticated. Redirecting...</p>
         </Match>
         <Match when={status() === "error"}>
-          <p>{`--Error de autenticacion: ${errorMessage()}`}</p>
+          <p>{`--Authentication error: ${errorMessage()}`}</p>
         </Match>
       </Switch>
     </>

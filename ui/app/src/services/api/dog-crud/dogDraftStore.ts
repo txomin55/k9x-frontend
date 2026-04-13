@@ -7,9 +7,6 @@ const [removedDogIds, setRemovedDogIds] = createSignal<string[]>([]);
 const removeId = (ids: string[], id: string) =>
   ids.filter((entry) => entry !== id);
 
-export const getDogDrafts = dogDrafts;
-export const getRemovedDogIds = removedDogIds;
-
 export const mergeDogsWithDrafts = (baseDogs?: Dog[]) => {
   const drafts = dogDrafts();
   const removedIds = new Set(removedDogIds());

@@ -11,9 +11,6 @@ const [removedCompetitionIds, setRemovedCompetitionIds] = createSignal<
 const removeId = (ids: string[], id: string) =>
   ids.filter((entry) => entry !== id);
 
-export const getCompetitionDrafts = competitionDrafts;
-export const getRemovedCompetitionIds = removedCompetitionIds;
-
 export const mergeCompetitionsWithDrafts = (
   baseCompetitions?: Competition[],
 ): Competition[] => {

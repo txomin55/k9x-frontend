@@ -1,7 +1,5 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { Index } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
@@ -51,7 +49,7 @@ export default function StageCard(props: StageCardProps) {
               <div>
                 <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
                 <AtomButton type={BUTTON_TYPES.PRIMARY}>
-                  --Ver clasificacion
+                  --See classification
                 </AtomButton>
               </div>
             </div>
