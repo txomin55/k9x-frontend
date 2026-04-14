@@ -21,6 +21,7 @@ type EventCompetitorsSectionProps = {
   isEditing: boolean;
   onAddCompetitor: () => void;
   onCloseCompetitorEditor: () => void;
+  onCommitCompetitor: () => void;
   onCompetitorDraftChange: (
     updater: (
       current: EventCompetitorDetail | null,
@@ -78,6 +79,7 @@ export default function EventCompetitorsSection(
               <CompetitorEditorForm
                 competitorDialogDraft={props.competitorDialogDraft}
                 onCloseCompetitorEditor={props.onCloseCompetitorEditor}
+                onCommitCompetitor={props.onCommitCompetitor}
                 onCompetitorDraftChange={props.onCompetitorDraftChange}
                 onSaveCompetitor={props.onSaveCompetitor}
                 orderBounds={competitorOrderBounds()}
@@ -128,39 +130,11 @@ export default function EventCompetitorsSection(
                           --Delete
                         </AtomButton>
                       </ConfirmActionButton>
-                      <AtomDialog
-                        closeButtonText="--Close dialog"
-                        content={
-                          <CompetitorEditorForm
-                            competitorDialogDraft={props.competitorDialogDraft}
-                            onCloseCompetitorEditor={
-                              props.onCloseCompetitorEditor
-                            }
-                            onCompetitorDraftChange={
-                              props.onCompetitorDraftChange
-                            }
-                            onSaveCompetitor={props.onSaveCompetitor}
-                            orderBounds={competitorOrderBounds()}
-                            dogOptions={dogOptions()}
-                            dogsById={dogsById()}
-                          />
-                        }
-                        onOpenChange={(isOpen) => {
-                          if (isOpen) {
-                            props.onOpenCompetitorEditor(competitor());
-                            return;
-                          }
-
-                          if (
-                            props.editingCompetitorId === competitor().dogId
-                          ) {
-                            props.onCloseCompetitorEditor();
-                          }
-                        }}
-                        open={props.editingCompetitorId === competitor().dogId}
-                        title={`--Edit ${competitor().name}`}
-                        trigger={<span>--Edit</span>}
-                      />
+                      <span
+                        onClick={() => props.onOpenCompetitorEditor(competitor())}
+                      >
+                        --Edit
+                      </span>
                     </div>
                   ) : undefined
                 }
@@ -169,6 +143,29 @@ export default function EventCompetitorsSection(
           </Index>
         </div>
       </Show>
+      <AtomDialog
+        closeButtonText="--Close dialog"
+        content={
+          <CompetitorEditorForm
+            competitorDialogDraft={props.competitorDialogDraft}
+            onCloseCompetitorEditor={props.onCloseCompetitorEditor}
+            onCommitCompetitor={props.onCommitCompetitor}
+            onCompetitorDraftChange={props.onCompetitorDraftChange}
+            onSaveCompetitor={props.onSaveCompetitor}
+            orderBounds={competitorOrderBounds()}
+            dogOptions={dogOptions()}
+            dogsById={dogsById()}
+          />
+        }
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            props.onCloseCompetitorEditor();
+          }
+        }}
+        open={props.editingCompetitorId !== null}
+        title="--Edit competitor"
+        trigger={<span />}
+      />
     </section>
   );
 }

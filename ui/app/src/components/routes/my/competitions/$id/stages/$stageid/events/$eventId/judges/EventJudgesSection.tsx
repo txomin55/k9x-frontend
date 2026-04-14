@@ -11,6 +11,7 @@ import "./styles.css";
 
 type EventJudgesSectionProps = {
   editingJudgeId: string | null;
+  onCommitJudge: () => void;
   isCreatingJudge: boolean;
   isEditing: boolean;
   judgeDialogDraft: EventJudgeDetail | null;
@@ -59,6 +60,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                 {(draft) => (
                   <JudgeEditorForm
                     draft={draft}
+                    onCommit={props.onCommitJudge}
                     onDraftChange={props.onJudgeDraftChange}
                     onCancel={props.onCloseJudgeEditor}
                     onSave={props.onSaveJudge}
@@ -98,33 +100,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           --Delete
                         </AtomButton>
                       </ConfirmActionButton>
-                      <AtomDialog
-                        closeButtonText="--Close dialog"
-                        content={
-                          <Show when={props.judgeDialogDraft}>
-                            {(draft) => (
-                              <JudgeEditorForm
-                                draft={draft}
-                                onDraftChange={props.onJudgeDraftChange}
-                                onCancel={props.onCloseJudgeEditor}
-                                onSave={props.onSaveJudge}
-                                judgeOptions={judgeOptions()}
-                              />
-                            )}
-                          </Show>
-                        }
-                        onOpenChange={(isOpen) => {
-                          if (isOpen) {
-                            props.onOpenJudgeEditor(judge());
-                            return;
-                          }
-
-                          props.onCloseJudgeEditor();
-                        }}
-                        open={props.editingJudgeId === judge().id}
-                        title={`--Edit judge`}
-                        trigger={<span>--Edit</span>}
-                      />
+                      <span onClick={() => props.onOpenJudgeEditor(judge())}>
+                        --Edit
+                      </span>
                     </div>
                   ) : undefined
                 }
@@ -133,6 +111,31 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           </Index>
         </div>
       </Show>
+      <AtomDialog
+        closeButtonText="--Close dialog"
+        content={
+          <Show when={props.judgeDialogDraft}>
+            {(draft) => (
+              <JudgeEditorForm
+                draft={draft}
+                onCommit={props.onCommitJudge}
+                onDraftChange={props.onJudgeDraftChange}
+                onCancel={props.onCloseJudgeEditor}
+                onSave={props.onSaveJudge}
+                judgeOptions={judgeOptions()}
+              />
+            )}
+          </Show>
+        }
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            props.onCloseJudgeEditor();
+          }
+        }}
+        open={props.editingJudgeId !== null}
+        title="--Edit judge"
+        trigger={<span />}
+      />
     </section>
   );
 }

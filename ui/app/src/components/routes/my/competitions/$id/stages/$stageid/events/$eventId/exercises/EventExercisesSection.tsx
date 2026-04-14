@@ -12,6 +12,7 @@ import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
 import "./styles.css";
 
 type EventExercisesSectionProps = {
+  onCommitExercise: () => void;
   editingExerciseId: string | null;
   exerciseDialogDraft: EventExerciseDetail | null;
   exercises: EventExerciseDetail[];
@@ -58,6 +59,7 @@ export default function EventExercisesSection(
                 {(draft) => (
                   <ExerciseEditorForm
                     draft={draft}
+                    onCommit={props.onCommitExercise}
                     onDraftChange={props.onExerciseDraftChange}
                     onCancel={props.onCloseExerciseEditor}
                     onSave={props.onSaveExercise}
@@ -113,6 +115,7 @@ export default function EventExercisesSection(
                             {(draft) => (
                               <ExerciseEditorForm
                                 draft={draft}
+                                onCommit={props.onCommitExercise}
                                 onDraftChange={props.onExerciseDraftChange}
                                 onCancel={props.onCloseExerciseEditor}
                                 onSave={props.onSaveExercise}

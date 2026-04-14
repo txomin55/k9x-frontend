@@ -17,6 +17,7 @@ type OrderBounds = {
 type CompetitorDialogContentProps = {
   competitorDialogDraft: EventCompetitorDetail | null;
   onCloseCompetitorEditor: () => void;
+  onCommitCompetitor: () => void;
   onCompetitorDraftChange: (
     updater: (
       current: EventCompetitorDetail | null,
@@ -34,7 +35,7 @@ export default function CompetitorEditorForm(
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
-  const setIdentity = (value) =>
+  const setIdentity = (value: string) =>
     props.onCompetitorDraftChange((current) =>
       current
         ? {
@@ -44,7 +45,7 @@ export default function CompetitorEditorForm(
         : current,
     );
 
-  const setTeam = (value) =>
+  const setTeam = (value: string) =>
     props.onCompetitorDraftChange((current) =>
       current
         ? {
@@ -54,7 +55,7 @@ export default function CompetitorEditorForm(
         : current,
     );
 
-  const setOwner = (value) =>
+  const setOwner = (value: string) =>
     props.onCompetitorDraftChange((current) =>
       current
         ? {
@@ -64,7 +65,7 @@ export default function CompetitorEditorForm(
         : current,
     );
 
-  const setCountry = (value) =>
+  const setCountry = (value: string) =>
     props.onCompetitorDraftChange((current) =>
       current
         ? {
@@ -104,6 +105,8 @@ export default function CompetitorEditorForm(
           }
         : current,
     );
+
+    props.onCommitCompetitor();
   };
 
   return (
@@ -124,6 +127,7 @@ export default function CompetitorEditorForm(
           <AtomInput
             label="--Owner"
             value={draft().owner}
+            onBlur={props.onCommitCompetitor}
             onChange={setOwner}
           />
           <p>
@@ -132,17 +136,25 @@ export default function CompetitorEditorForm(
           <AtomInput
             label="--Identity"
             value={draft().identity}
+            onBlur={props.onCommitCompetitor}
             onChange={setIdentity}
           />
-          <AtomInput label="--Team" value={draft().team} onChange={setTeam} />
+          <AtomInput
+            label="--Team"
+            value={draft().team}
+            onBlur={props.onCommitCompetitor}
+            onChange={setTeam}
+          />
           <AtomInput
             label="--Country"
             value={draft().country}
+            onBlur={props.onCommitCompetitor}
             onChange={setCountry}
           />
           <AtomNumberInput
             label="--Order"
             value={draft().order}
+            onBlur={props.onCommitCompetitor}
             onChange={setOrder}
             minValue={minOrder}
             maxValue={maxOrder}

@@ -8,6 +8,7 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.t
 
 type JudgeEditorFormProps = {
   draft: () => EventJudgeDetail;
+  onCommit: () => void;
   onDraftChange: (
     updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
@@ -40,7 +41,10 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
     <div class="judge-editor-form">
       <AtomSelect
         label="--Judge"
-        onChange={handleJudgeChange}
+        onChange={(option) => {
+          handleJudgeChange(option);
+          props.onCommit();
+        }}
         options={props.judgeOptions}
         placeholder="--Select a judge"
         value={selectedJudgeOption()}
@@ -49,6 +53,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         label="--Email"
         type="email"
         value={props.draft().collectorEmail}
+        onBlur={props.onCommit}
         onChange={updateField("collectorEmail")}
       />
       <div class="judge-editor-form__actions">

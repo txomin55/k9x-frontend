@@ -12,6 +12,7 @@ type OrderBounds = {
 
 type ExerciseEditorFormProps = {
   draft: () => EventExerciseDetail;
+  onCommit: () => void;
   onDraftChange: (
     updater: (
       current: EventExerciseDetail | null,
@@ -69,14 +70,21 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
       <AtomNumberInput
         label="--Order"
         value={props.draft().order}
+        onBlur={props.onCommit}
         onChange={setOrder}
         minValue={minOrder}
         maxValue={maxOrder}
       />
-      <AtomInput label="--Text" value={props.draft().name} onChange={setText} />
+      <AtomInput
+        label="--Text"
+        value={props.draft().name}
+        onBlur={props.onCommit}
+        onChange={setText}
+      />
       <AtomInput
         label="--Tags"
         value={props.draft().tags.join(", ")}
+        onBlur={props.onCommit}
         onChange={setTags}
         description="--Comma separated text"
       />
