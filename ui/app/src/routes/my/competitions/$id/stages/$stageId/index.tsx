@@ -299,7 +299,6 @@ function CompetitionStageDetailBody(props: {
         id: draft.id,
         name: draft.name,
         stageId: draft.stageId,
-        discipline: draft.discipline,
       });
       closeEventEditor();
       return;

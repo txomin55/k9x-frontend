@@ -1,4 +1,4 @@
-import { Federation } from "@/services/api/configurations/configurations.types";
+import { FederationConfiguration } from "@/services/api/configurations/configurations.types";
 
 export interface CompetitionLocationDetail {
   address?: string;
@@ -20,7 +20,7 @@ export interface EventExerciseDetail {
 }
 
 export interface EventConfigurationDetail {
-  federation?: Federation;
+  federation?: FederationConfiguration;
   id: string;
   name: string;
 }
@@ -54,7 +54,7 @@ export interface EventDetail {
 }
 
 export interface EventConfiguration {
-  federation?: Federation;
+  federation?: FederationConfiguration;
   id?: string;
   name?: string;
 }
@@ -77,7 +77,6 @@ export interface CreateEventRequest {
   id: string;
   name: string;
   stageId: string;
-  discipline: string;
 }
 
 export interface UpdateEventRequest {
@@ -112,10 +111,7 @@ export interface CompetitionDetail {
 }
 
 export interface CreateCompetitionRequest {
-  country?: string;
-  description?: string;
   id: string;
-  location?: CompetitionLocationDetail;
   name: string;
 }
 
@@ -138,7 +134,6 @@ export interface CreateStageRequest {
   competitionId: string;
   dateFrom?: number;
   dateTo?: number;
-  events?: EventDetail[];
   id: string;
   name: string;
 }

@@ -7,7 +7,7 @@ import type { DisciplineFederationConfigurations } from "./configurations.types"
 export type {
   DisciplineFederationConfigurations,
   Configuration,
-  Federation,
+  FederationConfiguration,
 } from "./configurations.types";
 
 const fetchConfigurations = () =>

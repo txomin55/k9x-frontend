@@ -184,7 +184,6 @@ const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
   id: createId(),
   name: "--Default event",
   stageId,
-  discipline: "",
 });
 
 const findEventContextInCompetition = (

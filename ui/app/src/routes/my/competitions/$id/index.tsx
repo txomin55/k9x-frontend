@@ -180,8 +180,8 @@ function CompetitionDetailBody(props: {
     setEditingStageId(draft.id ?? null);
     setStageDialogDraft({
       competitionId: draft.competitionId ?? competition.id,
-      dateFrom: draft.dateFrom ?? Date.now(),
-      dateTo: draft.dateTo ?? Date.now(),
+      dateFrom: Date.now(),
+      dateTo: Date.now(),
       events: [],
       id: draft.id ?? globalThis.crypto.randomUUID(),
       name: draft.name ?? "",

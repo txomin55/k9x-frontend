@@ -95,15 +95,14 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
 };
 
 const toCompetitionLocation = (
-  location?: CompetitionLocationDetail,
   previousLocation?: CompetitionLocationDetail,
 ): CompetitionLocationDetail | undefined => {
   if (!location && !previousLocation) return undefined;
 
   return {
-    address: location?.address ?? previousLocation?.address,
-    latitude: location?.latitude ?? previousLocation?.latitude,
-    longitude: location?.longitude ?? previousLocation?.longitude,
+    address: previousLocation?.address,
+    latitude: previousLocation?.latitude,
+    longitude: previousLocation?.longitude,
   };
 };
 
@@ -114,13 +113,10 @@ const mergeCompetitionWithPayload = (
   const payloadId = "id" in payload ? payload.id : undefined;
 
   return {
-    country: payload.country ?? previousCompetition?.country ?? "",
-    description: payload.description ?? previousCompetition?.description,
+    country: previousCompetition?.country ?? "",
+    description: previousCompetition?.description,
     id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
-    location: toCompetitionLocation(
-      payload.location,
-      previousCompetition?.location,
-    ),
+    location: toCompetitionLocation(previousCompetition?.location),
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications,
     stages: previousCompetition?.stages,

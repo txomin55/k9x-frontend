@@ -3,7 +3,10 @@ import type { EventEditorDraft } from "@/services/api/competition-crud/competiti
 import { useConfigurations } from "@/services/api/configurations/configurations";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { Federation, FederationConfigurations } from "@/services/api/configurations/configurations.types";
+import {
+  FederationConfiguration,
+  FederationConfigurations,
+} from "@/services/api/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 type ConfigurationEditorFormProps = {
@@ -96,7 +99,7 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as Federation,
+                federation: federation.info as FederationConfiguration,
                 id: "",
                 name: "",
               },
@@ -124,7 +127,7 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as Federation,
+                federation: federation.info as FederationConfiguration,
                 id: configuration.id,
                 name: configuration.name,
               },

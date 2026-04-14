@@ -3,14 +3,14 @@ export interface Configuration {
   name: string;
 }
 
-export interface Federation {
+export interface FederationConfiguration {
   id: string;
   name: string;
   country: string;
 }
 
 export interface FederationConfigurations {
-  info: Federation;
+  info: FederationConfiguration;
   configurations: Configuration[];
 }
 
