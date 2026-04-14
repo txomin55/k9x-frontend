@@ -52,13 +52,6 @@ interface EventDetail {
   status: string;
 }
 
-export interface EventExercise {
-  id?: string;
-  order?: number;
-  name?: string;
-  tags?: string[];
-}
-
 export interface EventConfiguration {
   federation?: Federation;
   id?: string;
@@ -87,11 +80,10 @@ export interface CreateEventRequest {
 }
 
 export interface UpdateEventRequest {
-  competitors: EventCompetitor[];
-  configurationId: string;
-  discipline: string;
-  exercises: EventExercise[];
-  judges: EventJudge[];
+  competitors?: EventCompetitor[];
+  configurationId?: string;
+  exercises?: EventExerciseDetail[];
+  judges?: EventJudge[];
   name: string;
 }
 
@@ -131,10 +123,10 @@ export interface CreateCompetitionRequest {
 }
 
 export interface UpdateCompetitionRequest {
-  country?: string;
+  country: string;
   description?: string;
   location?: CompetitionLocation;
-  name?: string;
+  name: string;
 }
 
 export interface Stage {
@@ -155,10 +147,9 @@ export interface CreateStageRequest {
 }
 
 export interface UpdateStageRequest {
-  dateFrom?: number;
-  dateTo?: number;
-  events?: EventResponse[];
-  name?: string;
+  dateFrom: number;
+  dateTo: number;
+  name: string;
 }
 
 export interface StageEditorModel {

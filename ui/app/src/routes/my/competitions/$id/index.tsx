@@ -1,18 +1,34 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
-import { type Competition, type UpdateCompetitionRequest } from "@/services/api/competition-crud/competitionCrud.types";
+import {
+  type Competition,
+  type UpdateCompetitionRequest,
+} from "@/services/api/competition-crud/competitionCrud.types";
 import {
   type CreateStageRequest,
   type StageEditorModel,
   toApiStage,
   type UpdateStageRequest,
-  useApiStage
+  useApiStage,
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
@@ -195,7 +211,6 @@ function CompetitionDetailBody(props: {
       updateApiStage(draft.competitionId, draft.id, {
         dateFrom: draft.dateFrom,
         dateTo: draft.dateTo,
-        events: draft.events,
         name: draft.name,
       } satisfies UpdateStageRequest);
     }

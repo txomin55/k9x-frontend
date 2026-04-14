@@ -232,7 +232,6 @@ function CompetitionStageDetailBody(props: {
     const nextStage: UpdateStageRequest = {
       dateFrom: parseDateInputValue(dateFrom(), stage.dateFrom),
       dateTo: parseDateInputValue(dateTo(), stage.dateTo),
-      events: stage.events,
       name: title(),
     };
     const hasChanges =
@@ -305,7 +304,6 @@ function CompetitionStageDetailBody(props: {
         team: competitor.team,
       })),
       configurationId: draft.configuration.id,
-      discipline: draft.discipline,
       exercises: draft.exercises,
       judges: draft.judges,
       name: draft.name,

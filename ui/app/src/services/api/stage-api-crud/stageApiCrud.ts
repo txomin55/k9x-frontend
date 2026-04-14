@@ -41,13 +41,7 @@ const mergeApiStageWithPayload = (
     competitionId: payloadCompetitionId ?? previousStage?.competitionId ?? "",
     dateFrom: payload.dateFrom ?? previousStage?.dateFrom ?? 0,
     dateTo: payload.dateTo ?? previousStage?.dateTo ?? 0,
-    events:
-      payload.events?.map((event) => ({
-        ...event,
-        stageId: event.stageId ?? nextStageId,
-      })) ??
-      previousStage?.events ??
-      [],
+    events: previousStage?.events ?? [],
     id: nextStageId,
     name: payload.name ?? previousStage?.name ?? "",
   };

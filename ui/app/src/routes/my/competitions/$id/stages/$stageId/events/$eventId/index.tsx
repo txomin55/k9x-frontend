@@ -256,11 +256,7 @@ function CompetitionEventDetailBody(props: {
     const insertionIndex = normalizedOrder - 1;
     const nextItems = [...itemsWithoutUpdated];
 
-    nextItems.splice(
-      insertionIndex,
-      0,
-      setOrder(updatedItem, normalizedOrder),
-    );
+    nextItems.splice(insertionIndex, 0, setOrder(updatedItem, normalizedOrder));
 
     return nextItems.map((entry, index) => setOrder(entry, index + 1));
   };
@@ -394,7 +390,11 @@ function CompetitionEventDetailBody(props: {
         const shouldReorder = orderChanged || hasConflict;
 
         const nextExercises = shouldReorder
-          ? reorderExercises(current.exercises, normalizedDraft.order, normalizedDraft)
+          ? reorderExercises(
+              current.exercises,
+              normalizedDraft.order,
+              normalizedDraft,
+            )
           : current.exercises.map((entry) =>
               entry.id === currentEditingExerciseId ? normalizedDraft : entry,
             );
@@ -457,7 +457,9 @@ function CompetitionEventDetailBody(props: {
               normalizedDraft,
             )
           : current.competitors.map((entry) =>
-              entry.dogId === currentEditingCompetitorId ? normalizedDraft : entry,
+              entry.dogId === currentEditingCompetitorId
+                ? normalizedDraft
+                : entry,
             );
 
         return {
@@ -566,7 +568,6 @@ function CompetitionEventDetailBody(props: {
         mapCompetitorForUpdate(competitor),
       ),
       configurationId: nextEvent.configuration.id,
-      discipline: nextEvent.discipline,
       exercises: nextEvent.exercises,
       judges: nextEvent.judges,
       name: nextEvent.name,

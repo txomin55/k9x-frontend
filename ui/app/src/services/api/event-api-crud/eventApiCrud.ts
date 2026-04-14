@@ -4,16 +4,13 @@ import {
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload,
+  createApiEventRollbackPayload
 } from "@/services/api/event-api-crud/eventApiCrudOfflineUtils";
-import {
-  getCachedCompetitions,
-  useCompetition,
-} from "@/services/api/competition-crud/competitionCrud";
+import { getCachedCompetitions, useCompetition } from "@/services/api/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import {
-  getConfigurationsQueryKey,
   type DisciplineFederationConfigurations,
+  getConfigurationsQueryKey
 } from "@/services/api/configurations/configurations";
 import type {
   Competition,
@@ -22,12 +19,11 @@ import type {
   EventCompetitorDetail,
   EventConfiguration,
   EventConfigurationDetail,
-  EventExercise,
   EventExerciseDetail,
   EventJudge,
   EventJudgeDetail,
   EventResponse,
-  UpdateEventRequest,
+  UpdateEventRequest
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 
@@ -40,7 +36,7 @@ export type {
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiExercise = (
-  exercise: EventExercise,
+  exercise: EventExerciseDetail,
   previousExercise?: EventExerciseDetail,
 ): EventExerciseDetail => ({
   id: exercise.id ?? previousExercise?.id ?? createId(),
@@ -53,8 +49,7 @@ const toApiEventConfiguration = (
   configuration?: EventConfiguration,
   previousConfiguration?: EventConfigurationDetail,
 ): EventConfigurationDetail => ({
-  federation:
-    configuration?.federation ?? previousConfiguration?.federation,
+  federation: configuration?.federation ?? previousConfiguration?.federation,
   id: configuration?.id ?? previousConfiguration?.id ?? createId(),
   name: configuration?.name ?? previousConfiguration?.name ?? "",
 });
@@ -143,10 +138,10 @@ const mergeApiEventWithPayload = (
     (previousEvent?.exercises ?? []).map((exercise) => [exercise.id, exercise]),
   );
   const resolvedConfiguration = updatePayload?.configurationId
-    ? findConfigurationDetail(
-        updatePayload.discipline ?? previousEvent?.discipline,
+    ? (findConfigurationDetail(
+        previousEvent?.discipline,
         updatePayload.configurationId,
-      ) ?? { id: updatePayload.configurationId }
+      ) ?? { id: updatePayload.configurationId })
     : undefined;
 
   return {
@@ -165,7 +160,7 @@ const mergeApiEventWithPayload = (
       resolvedConfiguration,
       previousEvent?.configuration,
     ),
-    discipline: payload.discipline ?? previousEvent?.discipline ?? "",
+    discipline: previousEvent?.discipline ?? "",
     exercises:
       updatePayload?.exercises?.map((exercise) =>
         toApiExercise(
