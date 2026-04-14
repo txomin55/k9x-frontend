@@ -1,7 +1,4 @@
-import type {
-  EventEditorDraft,
-  EventResponse,
-} from "@/services/api/competition-crud/competitionCrud.types";
+import type { EventDetail, EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
 import { Show } from "solid-js";
 import ConfigurationEditorForm
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
@@ -10,7 +7,7 @@ import "./styles.css";
 
 export default function (props: {
   draft: EventEditorDraft;
-  event: EventResponse;
+  event: EventDetail;
   isEditing: boolean;
   onDraftChange: (
     updater: (current: EventEditorDraft) => EventEditorDraft,

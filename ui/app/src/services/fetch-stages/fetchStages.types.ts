@@ -1,4 +1,4 @@
-import type { CompetitionLocation } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionLocationDetail } from "@/services/api/competition-crud/competitionCrud.types";
 
 export interface StageEventSummary {
   competitors: number;
@@ -14,7 +14,7 @@ export interface StageSummary {
   description?: string;
   events: StageEventSummary[];
   id: string;
-  location?: CompetitionLocation;
+  location?: CompetitionLocationDetail;
   name: string;
 }
 

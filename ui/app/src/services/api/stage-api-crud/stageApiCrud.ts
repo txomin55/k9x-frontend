@@ -7,14 +7,14 @@ import {
 } from "@/services/api/stage-api-crud/stageApiCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
-  type Competition,
+  type CompetitionDetail,
   getCachedCompetitions,
   useCompetition
 } from "@/services/api/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
+  CompetitionStageDetail,
   CreateStageRequest,
-  Stage,
   StageEditorModel,
   UpdateStageRequest
 } from "@/services/api/competition-crud/competitionCrud.types";
@@ -22,7 +22,7 @@ import type {
 export type {
   CreateStageRequest,
   StageEditorModel,
-  EventResponse,
+  EventDetail,
   UpdateStageRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 
@@ -54,7 +54,7 @@ const createDefaultApiStage = (competitionId: string): CreateStageRequest => ({
 });
 
 export const toApiStage = (
-  stage: Stage,
+  stage: CompetitionStageDetail,
   competitionId: string,
 ): StageEditorModel => ({
   competitionId,
@@ -101,7 +101,7 @@ export const toApiStage = (
 });
 
 const findCachedApiStage = (
-  competitions: Competition[] | undefined,
+  competitions: CompetitionDetail[] | undefined,
   competitionId: string,
   stageId: string,
 ): StageEditorModel | null => {

@@ -15,7 +15,7 @@ import CompetitionInfo from "@/components/routes/my/competitions/$id/competition
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
 import {
-  type Competition,
+  type CompetitionDetail,
   type UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import {
@@ -96,7 +96,7 @@ function CompetitionDetailContent(props: { id: string }) {
 }
 
 function CompetitionDetailBody(props: {
-  competition: Accessor<Competition | undefined>;
+  competition: Accessor<CompetitionDetail | undefined>;
   onDelete: () => void;
   onUpdate: (
     competitionId: string,
@@ -158,7 +158,7 @@ function CompetitionDetailBody(props: {
   });
 
   const openStageEditor = (
-    stage: NonNullable<Competition["stages"]>[number],
+    stage: NonNullable<CompetitionDetail["stages"]>[number],
   ) => {
     const competition = props.competition();
 

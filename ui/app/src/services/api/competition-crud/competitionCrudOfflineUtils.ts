@@ -18,8 +18,8 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
-  Competition,
-  CompetitionLocation,
+  CompetitionDetail,
+  CompetitionLocationDetail,
   CompetitionRollbackPayload,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
@@ -31,9 +31,9 @@ import {
 } from "@/services/api/competition-crud/competitionDraftStore";
 
 export const toCompetitionListItem = (
-  competition: Competition,
-  previousCompetition?: Competition,
-): Competition => ({
+  competition: CompetitionDetail,
+  previousCompetition?: CompetitionDetail,
+): CompetitionDetail => ({
   country: competition.country,
   description:
     competition.description ?? previousCompetition?.description ?? "",
@@ -43,7 +43,7 @@ export const toCompetitionListItem = (
         address: competition.location.address,
         latitude: competition.location.latitude,
         longitude: competition.location.longitude,
-      } satisfies CompetitionLocation)
+      } satisfies CompetitionLocationDetail)
     : previousCompetition?.location,
   name: competition.name,
   notifications:
@@ -53,8 +53,8 @@ export const toCompetitionListItem = (
 });
 
 export const buildNextCompetitions = (
-  previousCompetitions: Competition[],
-  competition: Competition,
+  previousCompetitions: CompetitionDetail[],
+  competition: CompetitionDetail,
 ) => {
   const nextCompetition = toCompetitionListItem(
     competition,
@@ -74,26 +74,30 @@ export const buildNextCompetitions = (
 };
 
 export const buildCompetitionsWithoutEntity = (
-  previousCompetitions: Competition[],
+  previousCompetitions: CompetitionDetail[],
   id: string,
 ) => previousCompetitions.filter((competition) => competition.id !== id);
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()) ?? [];
+  queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()) ??
+  [];
 
 export const getVisibleCompetitions = () =>
   mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
 
 const syncCompetitionRemovalToCache = (id: string) => {
-  queryClient.setQueryData<Competition[] | undefined>(
+  queryClient.setQueryData<CompetitionDetail[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
       buildCompetitionsWithoutEntity(previousCompetitions ?? [], id),
   );
 };
 
-const syncCompetitionsToCache = (competitions: Competition[]) => {
-  queryClient.setQueryData<Competition[]>(getCompetitionsQueryKey(), competitions);
+const syncCompetitionsToCache = (competitions: CompetitionDetail[]) => {
+  queryClient.setQueryData<CompetitionDetail[]>(
+    getCompetitionsQueryKey(),
+    competitions,
+  );
 };
 
 export const commitCompetitionMutationSuccess = async ({
@@ -122,18 +126,18 @@ export const commitCompetitionMutationSuccess = async ({
 
 export const readCompetitionsSnapshot = () =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
-    getPersistedQuerySnapshot<Competition[]>(COMPETITIONS_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<CompetitionDetail[]>(COMPETITIONS_SNAPSHOT_ID),
   );
 
-export const saveCompetitionsSnapshot = (competitions: Competition[]) =>
+export const saveCompetitionsSnapshot = (competitions: CompetitionDetail[]) =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
     saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions),
   );
 
 export const createCompetitionRollbackPayload = async (
   entityId: string,
-  previousCompetition: Competition | null,
-  previousCompetitionsFromCache?: Competition[],
+  previousCompetition: CompetitionDetail | null,
+  previousCompetitionsFromCache?: CompetitionDetail[],
 ): Promise<CompetitionRollbackPayload> => ({
   entityId,
   previousCompetition,
@@ -213,7 +217,7 @@ const competitionPendingTaskHandler: PendingTaskHandler = {
 
 registerPendingTaskHandler("competition", competitionPendingTaskHandler);
 
-export const applyCompetitionUpsert = (competition: Competition) => {
+export const applyCompetitionUpsert = (competition: CompetitionDetail) => {
   upsertCompetitionDraft(competition);
   const visibleCompetitions = getVisibleCompetitions();
 

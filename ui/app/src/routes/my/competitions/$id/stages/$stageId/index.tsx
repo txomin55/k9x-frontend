@@ -1,29 +1,40 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import {
-  type CreateEventRequest,
-  type EventResponse,
-  type UpdateEventRequest,
-  useApiEvent
-} from "@/services/api/event-api-crud/eventApiCrud";
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
+import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import {
   type StageEditorModel,
   type UpdateStageRequest,
-  useApiStage
+  useApiStage,
 } from "@/services/api/stage-api-crud/stageApiCrud";
-import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
+import type {
+  CreateEventRequest,
+  EventDetail,
+  EventEditorDraft,
+  UpdateEventRequest,
+} from "@/services/api/competition-crud/competitionCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import {
-  getEventDisciplineLabel
-} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
 
@@ -192,7 +203,7 @@ function CompetitionStageDetailBody(props: {
     closeEventEditor();
   });
 
-  const openEventEditor = (event: EventResponse) => {
+  const openEventEditor = (event: EventDetail) => {
     setIsCreatingEvent(false);
     setEditingEventId(event.id);
     setEventDialogDraft(toEventEditorDraft(event));
@@ -250,7 +261,7 @@ function CompetitionStageDetailBody(props: {
       closeEventEditor();
     }
   };
-  const createNavigateToEvent = (event: Accessor<EventResponse>) => () =>
+  const createNavigateToEvent = (event: Accessor<EventDetail>) => () =>
     void navigate({
       params: {
         eventId: event().id,
@@ -260,7 +271,7 @@ function CompetitionStageDetailBody(props: {
       to: "/my/competitions/$id/stages/$stageId/events/$eventId",
     });
   const createEditDialogOpenChange =
-    (event: Accessor<EventResponse>) => (isOpen: boolean) => {
+    (event: Accessor<EventDetail>) => (isOpen: boolean) => {
       if (isOpen) {
         openEventEditor(event());
         return;
@@ -270,7 +281,7 @@ function CompetitionStageDetailBody(props: {
         closeEventEditor();
       }
     };
-  const createDeleteEventClick = (event: Accessor<EventResponse>) => () => {
+  const createDeleteEventClick = (event: Accessor<EventDetail>) => () => {
     if (editingEventId() === event().id) {
       closeEventEditor();
     }

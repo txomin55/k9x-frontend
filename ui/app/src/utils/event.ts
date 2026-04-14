@@ -1,9 +1,6 @@
-import type { EventResponse } from "@/services/api/event-api-crud/eventApiCrud";
-import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
+import type { EventDetail, EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
 
-export const toEventEditorDraft = (
-  event: EventResponse,
-): EventEditorDraft => ({
+export const toEventEditorDraft = (event: EventDetail): EventEditorDraft => ({
   competitors: event.competitors.map((competitor) => ({ ...competitor })),
   configuration: {
     federation: event.configuration.federation,

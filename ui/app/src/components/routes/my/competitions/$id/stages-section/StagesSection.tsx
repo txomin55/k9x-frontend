@@ -1,5 +1,5 @@
 import { type Accessor, Index, Show } from "solid-js";
-import type { Competition } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import type { StageEditorModel } from "@/services/api/stage-api-crud/stageApiCrud";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/stage";
@@ -12,7 +12,7 @@ import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 
-type StageItem = NonNullable<Competition["stages"]>[number];
+type StageItem = NonNullable<CompetitionDetail["stages"]>[number];
 
 type StagesSectionProps = {
   draft: Accessor<StageEditorModel | null>;
@@ -28,7 +28,7 @@ type StagesSectionProps = {
   onUpdateStageDialogDraft: (
     updater: (current: StageEditorModel | null) => StageEditorModel | null,
   ) => void;
-  stages?: Competition["stages"];
+  stages?: CompetitionDetail["stages"];
 };
 
 export default function StagesSection(props: StagesSectionProps) {

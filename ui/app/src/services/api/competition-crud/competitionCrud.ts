@@ -13,8 +13,8 @@ import {
   getVisibleCompetitions,
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
-  Competition,
-  CompetitionLocation,
+  CompetitionDetail,
+  CompetitionLocationDetail,
   CreateCompetitionRequest,
   UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
@@ -23,9 +23,9 @@ import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/qu
 import { mergeCompetitionsWithDrafts } from "@/services/api/competition-crud/competitionDraftStore";
 
 export type {
-  CompetitionLocation,
-  Stage,
-  Competition,
+  CompetitionLocationDetail,
+  CompetitionStageDetail,
+  CompetitionDetail,
 } from "@/services/api/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
@@ -36,7 +36,7 @@ export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionsSnapshot = async () => {
-  const competitions = await rawRequest<Competition[]>({
+  const competitions = await rawRequest<CompetitionDetail[]>({
     path: "/api/competitions",
   });
 
@@ -95,9 +95,9 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
 };
 
 const toCompetitionLocation = (
-  location?: CompetitionLocation,
-  previousLocation?: CompetitionLocation,
-): CompetitionLocation | undefined => {
+  location?: CompetitionLocationDetail,
+  previousLocation?: CompetitionLocationDetail,
+): CompetitionLocationDetail | undefined => {
   if (!location && !previousLocation) return undefined;
 
   return {
@@ -109,8 +109,8 @@ const toCompetitionLocation = (
 
 const mergeCompetitionWithPayload = (
   payload: CreateCompetitionRequest | UpdateCompetitionRequest,
-  previousCompetition?: Competition,
-): Competition => {
+  previousCompetition?: CompetitionDetail,
+): CompetitionDetail => {
   const payloadId = "id" in payload ? payload.id : undefined;
 
   return {
@@ -135,7 +135,7 @@ const createDefaultCompetition = (): CreateCompetitionRequest => ({
 
 export const getCachedCompetitions = () =>
   mergeCompetitionsWithDrafts(
-    queryClient.getQueryData<Competition[]>(getCompetitionsQueryKey()),
+    queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()),
   );
 
 export const useCompetition = () => {

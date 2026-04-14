@@ -1,6 +1,6 @@
 import { Federation } from "@/services/api/configurations/configurations.types";
 
-export interface CompetitionLocation {
+export interface CompetitionLocationDetail {
   address?: string;
   latitude?: number;
   longitude?: number;
@@ -41,12 +41,13 @@ export interface EventCompetitorDetail {
   order: number;
 }
 
-interface EventDetail {
+export interface EventDetail {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetail;
   discipline: string;
   exercises: EventExerciseDetail[];
   id: string;
+  stageId: string;
   judges: EventJudgeDetail[];
   name: string;
   status: string;
@@ -87,10 +88,6 @@ export interface UpdateEventRequest {
   name: string;
 }
 
-export interface EventResponse extends EventDetail {
-  stageId: string;
-}
-
 export interface EventEditorDraft {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetail;
@@ -103,14 +100,14 @@ export interface EventEditorDraft {
   status: string;
 }
 
-export interface Competition {
+export interface CompetitionDetail {
   country: string;
   description?: string;
   id: string;
-  location?: CompetitionLocation;
+  location?: CompetitionLocationDetail;
   name: string;
   notifications?: CompetitionNotificationDetail[];
-  stages?: Stage[];
+  stages?: CompetitionStageDetail[];
   status: string;
 }
 
@@ -118,21 +115,21 @@ export interface CreateCompetitionRequest {
   country?: string;
   description?: string;
   id: string;
-  location?: CompetitionLocation;
+  location?: CompetitionLocationDetail;
   name: string;
 }
 
 export interface UpdateCompetitionRequest {
   country: string;
   description?: string;
-  location?: CompetitionLocation;
+  location?: CompetitionLocationDetail;
   name: string;
 }
 
-export interface Stage {
+export interface CompetitionStageDetail {
   dateFrom: number;
   dateTo: number;
-  events: EventResponse[];
+  events: EventDetail[];
   id: string;
   name: string;
 }
@@ -141,7 +138,7 @@ export interface CreateStageRequest {
   competitionId: string;
   dateFrom?: number;
   dateTo?: number;
-  events?: EventResponse[];
+  events?: EventDetail[];
   id: string;
   name: string;
 }
@@ -156,30 +153,30 @@ export interface StageEditorModel {
   competitionId: string;
   dateFrom: number;
   dateTo: number;
-  events: EventResponse[];
+  events: EventDetail[];
   id: string;
   name: string;
 }
 
 export interface CompetitionRollbackPayload {
   entityId: string;
-  previousCompetition: Competition | null;
-  previousCompetitions: Competition[] | null;
+  previousCompetition: CompetitionDetail | null;
+  previousCompetitions: CompetitionDetail[] | null;
 }
 
 export interface ApiStageRollbackPayload {
   competitionId: string;
   entityId: string;
-  previousCompetition: Competition | null;
-  previousCompetitions: Competition[] | null;
+  previousCompetition: CompetitionDetail | null;
+  previousCompetitions: CompetitionDetail[] | null;
   previousStage: StageEditorModel | null;
 }
 
 export interface ApiEventRollbackPayload {
   competitionId: string;
   entityId: string;
-  previousCompetition: Competition | null;
-  previousCompetitions: Competition[] | null;
-  previousEvent: EventResponse | null;
+  previousCompetition: CompetitionDetail | null;
+  previousCompetitions: CompetitionDetail[] | null;
+  previousEvent: EventDetail | null;
   stageId: string;
 }

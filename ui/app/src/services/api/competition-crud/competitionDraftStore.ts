@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
-import type { Competition } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
 
 const [competitionDrafts, setCompetitionDrafts] = createSignal<
-  Record<string, Competition>
+  Record<string, CompetitionDetail>
 >({});
 const [removedCompetitionIds, setRemovedCompetitionIds] = createSignal<
   string[]
@@ -12,8 +12,8 @@ const removeId = (ids: string[], id: string) =>
   ids.filter((entry) => entry !== id);
 
 export const mergeCompetitionsWithDrafts = (
-  baseCompetitions?: Competition[],
-): Competition[] => {
+  baseCompetitions?: CompetitionDetail[],
+): CompetitionDetail[] => {
   const drafts = competitionDrafts();
   const removedIds = new Set(removedCompetitionIds());
   const competitions = baseCompetitions ?? [];
@@ -29,7 +29,7 @@ export const mergeCompetitionsWithDrafts = (
   return [...appendedDrafts, ...nextCompetitions];
 };
 
-export const upsertCompetitionDraft = (competition: Competition) => {
+export const upsertCompetitionDraft = (competition: CompetitionDetail) => {
   setCompetitionDrafts((current) => ({
     ...current,
     [competition.id]: competition,
@@ -64,8 +64,8 @@ export const clearCompetitionDraft = (competitionId: string) => {
 };
 
 export const replaceCompetitionDrafts = (
-  visibleCompetitions: Competition[] | null,
-  baseCompetitions?: Competition[],
+  visibleCompetitions: CompetitionDetail[] | null,
+  baseCompetitions?: CompetitionDetail[],
 ) => {
   const baseById = new Map(
     (baseCompetitions ?? []).map((competition) => [
@@ -76,7 +76,7 @@ export const replaceCompetitionDrafts = (
   const visibleIds = new Set(
     (visibleCompetitions ?? []).map((competition) => competition.id),
   );
-  const nextDrafts: Record<string, Competition> = {};
+  const nextDrafts: Record<string, CompetitionDetail> = {};
   const nextRemovedIds: string[] = [];
 
   for (const competition of visibleCompetitions ?? []) {

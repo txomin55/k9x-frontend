@@ -4,34 +4,31 @@ import {
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload
+  createApiEventRollbackPayload,
 } from "@/services/api/event-api-crud/eventApiCrudOfflineUtils";
-import { getCachedCompetitions, useCompetition } from "@/services/api/competition-crud/competitionCrud";
+import {
+  getCachedCompetitions,
+  useCompetition,
+} from "@/services/api/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import {
   type DisciplineFederationConfigurations,
-  getConfigurationsQueryKey
+  getConfigurationsQueryKey,
 } from "@/services/api/configurations/configurations";
 import type {
-  Competition,
+  CompetitionDetail,
   CreateEventRequest,
   EventCompetitor,
   EventCompetitorDetail,
   EventConfiguration,
   EventConfigurationDetail,
+  EventDetail,
   EventExerciseDetail,
   EventJudge,
   EventJudgeDetail,
-  EventResponse,
-  UpdateEventRequest
-} from "@/services/api/competition-crud/competitionCrud.types";
-import { queryClient } from "@/utils/http/query-client";
-
-export type {
-  CreateEventRequest,
-  EventResponse,
   UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
+import { queryClient } from "@/utils/http/query-client";
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -112,12 +109,12 @@ const toApiCompetitor = (
 
 const mergeApiEventWithPayload = (
   payload: CreateEventRequest | UpdateEventRequest,
-  previousEvent?: EventResponse,
+  previousEvent?: EventDetail,
   context?: {
     eventId?: string;
     stageId?: string;
   },
-): EventResponse => {
+): EventDetail => {
   const isCreatePayload = "id" in payload && "stageId" in payload;
   const updatePayload = "configurationId" in payload ? payload : null;
   const nextEventId =
@@ -191,7 +188,7 @@ const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
 });
 
 const findEventContextInCompetition = (
-  competition: Competition | undefined,
+  competition: CompetitionDetail | undefined,
   stageId: string,
   eventId?: string,
 ) => {
@@ -214,7 +211,7 @@ const findEventContextInCompetition = (
 };
 
 const findEventContext = (
-  competitions: Competition[] | undefined,
+  competitions: CompetitionDetail[] | undefined,
   stageId: string,
   competitionId?: string,
   eventId?: string,

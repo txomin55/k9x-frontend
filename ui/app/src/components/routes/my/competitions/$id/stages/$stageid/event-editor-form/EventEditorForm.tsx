@@ -2,16 +2,16 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import { type EventResponse } from "@/services/api/event-api-crud/eventApiCrud";
 import EventDisciplineField from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { EventDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import "./styles.css";
 
 type EventEditorFormProps = {
-  draft: EventResponse;
+  draft: EventDetail;
   onCancel: () => void;
   onChange: (
-    updater: (current: EventResponse | null) => EventResponse | null,
+    updater: (current: EventDetail | null) => EventDetail | null,
   ) => void;
   onSave: () => void;
   isCreate?: boolean;

@@ -1,32 +1,39 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import type { EventResponse, UpdateEventRequest } from "@/services/api/event-api-crud/eventApiCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import type {
   EventCompetitor,
   EventCompetitorDetail,
+  EventDetail,
   EventEditorDraft,
   EventExerciseDetail,
-  EventJudgeDetail
+  EventJudgeDetail,
+  UpdateEventRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
-import {
-  getEventDisciplineLabel
-} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import EventConfigurationSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -111,7 +118,7 @@ function CompetitionEventDetailPage() {
 
 function CompetitionEventDetailContentContainer(props: {
   competitionId: string;
-  event: Accessor<EventResponse | undefined>;
+  event: Accessor<EventDetail | undefined>;
   eventId: string;
   onDeleteEvent: (eventId: string) => void;
   onUpdate: (eventId: string, event: UpdateEventRequest) => void;
@@ -119,7 +126,7 @@ function CompetitionEventDetailContentContainer(props: {
 }) {
   const navigate = useNavigate();
   const [resolvedEvent, setResolvedEvent] = createSignal<
-    EventResponse | undefined
+    EventDetail | undefined
   >(props.event());
 
   createEffect(() => {
@@ -156,7 +163,7 @@ function CompetitionEventDetailContentContainer(props: {
 }
 
 function CompetitionEventDetailBody(props: {
-  event: Accessor<EventResponse>;
+  event: Accessor<EventDetail>;
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequest) => void;
 }) {
@@ -207,7 +214,7 @@ function CompetitionEventDetailBody(props: {
     setExerciseDialogDraft(null);
   };
 
-  const getEventDraftKey = (event: EventEditorDraft | EventResponse) => {
+  const getEventDraftKey = (event: EventEditorDraft | EventDetail) => {
     return JSON.stringify({
       competitors: event.competitors,
       configuration: event.configuration,
