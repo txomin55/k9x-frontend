@@ -1,40 +1,29 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import {
   type StageEditorModel,
   type UpdateStageRequest,
-  useApiStage,
+  useApiStage
 } from "@/services/api/stage-api-crud/stageApiCrud";
 import type {
   CreateEventRequest,
   EventDetail,
   EventEditorDraft,
-  UpdateEventRequest,
+  UpdateEventRequest
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import {
+  getEventDisciplineLabel
+} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
 
@@ -281,7 +270,7 @@ function CompetitionStageDetailBody(props: {
         closeEventEditor();
       }
     };
-  const createDeleteEventClick = (event: Accessor<EventDetail>) => () => {
+  const deleteEventClick = (event: Accessor<EventDetail>) => () => {
     if (editingEventId() === event().id) {
       closeEventEditor();
     }
@@ -409,12 +398,14 @@ function CompetitionStageDetailBody(props: {
                   actions={
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
-                        <AtomButton
-                          type={BUTTON_TYPES.DESTRUCTIVE}
-                          onClick={createDeleteEventClick(event)}
+                        <ConfirmActionButton
+                          text={event().name}
+                          onConfirm={deleteEventClick(event)}
                         >
-                          --Delete
-                        </AtomButton>
+                          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                            --Delete
+                          </AtomButton>
+                        </ConfirmActionButton>
                         <AtomDialog
                           closeButtonText="--Close dialog"
                           content={

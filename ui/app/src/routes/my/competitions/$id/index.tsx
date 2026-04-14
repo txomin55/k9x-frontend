@@ -298,7 +298,7 @@ function CompetitionDetailBody(props: {
         isCreatingStage={isCreatingStage()}
         isEditing={isEditing()}
         onCloseStageEditor={closeStageEditor}
-        onDeleteStage={getOnDeleteStage}
+        onDeleteStage={getOnDeleteStage()}
         onNavigateToStage={onNavigateToStage}
         onOpenNewStageEditor={openNewStageEditor}
         onOpenStageEditor={openStageEditor}
