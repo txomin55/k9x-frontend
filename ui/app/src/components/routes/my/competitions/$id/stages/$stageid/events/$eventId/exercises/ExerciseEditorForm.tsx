@@ -1,9 +1,9 @@
-import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
 
 type OrderBounds = {
   minValue: number;

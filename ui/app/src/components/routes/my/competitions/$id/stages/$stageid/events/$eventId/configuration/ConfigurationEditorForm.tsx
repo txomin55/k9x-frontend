@@ -1,5 +1,4 @@
 import { createMemo } from "solid-js";
-import type { EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
 import { useConfigurations } from "@/services/api/configurations/configurations";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -8,6 +7,7 @@ import {
   FederationConfigurations,
 } from "@/services/api/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { EventEditorDraft } from "@/services/api/event-crud/eventCrud.types";
 
 type ConfigurationEditorFormProps = {
   draft: EventEditorDraft;

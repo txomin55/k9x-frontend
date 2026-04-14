@@ -1,7 +1,7 @@
 import type {
   EventDetail,
   EventEditorDraft,
-} from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/api/event-crud/eventCrud.types";
 
 export const toEventEditorDraft = (event: EventDetail): EventEditorDraft => ({
   competitors: event.competitors.map((competitor) => ({ ...competitor })),

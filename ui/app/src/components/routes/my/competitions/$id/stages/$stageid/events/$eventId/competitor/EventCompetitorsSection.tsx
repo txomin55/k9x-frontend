@@ -1,5 +1,4 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -12,6 +11,7 @@ import { useDogs } from "@/services/api/dog-crud/dogCrud";
 import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
+import { EventCompetitorDetail } from "@/services/api/event-crud/eventCrud.types";
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: EventCompetitorDetail | null;
@@ -131,7 +131,9 @@ export default function EventCompetitorsSection(
                         </AtomButton>
                       </ConfirmActionButton>
                       <span
-                        onClick={() => props.onOpenCompetitorEditor(competitor())}
+                        onClick={() =>
+                          props.onOpenCompetitorEditor(competitor())
+                        }
                       >
                         --Edit
                       </span>

@@ -13,6 +13,7 @@ import { prefetchCompetitions } from "@/services/api/competition-crud/competitio
 import { prefetchConfigurations } from "@/services/api/configurations/configurations";
 import { prefetchDogs } from "@/services/api/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/api/judge-crud/judgeCrud";
+import { prefetchCollections } from "@/services/api/collection-crud/collectionCrud";
 
 export default function AppShell() {
   const i18n = useI18n();
@@ -55,6 +56,10 @@ export default function AppShell() {
         gcTime: 2 * 60 * 1000,
       });
       void prefetchJudges({
+        refetchOnMount: false,
+        gcTime: 2 * 60 * 1000,
+      });
+      void prefetchCollections({
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
       });

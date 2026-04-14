@@ -1,12 +1,19 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Show, Suspense } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import { useApiEvent } from "@/services/api/event-crud/eventCrud";
 import type {
   EventCompetitor,
   EventCompetitorDetail,
@@ -14,20 +21,19 @@ import type {
   EventEditorDraft,
   EventExerciseDetail,
   EventJudgeDetail,
-  UpdateEventRequest
-} from "@/services/api/competition-crud/competitionCrud.types";
+  UpdateEventRequest,
+} from "@/services/api/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
-import {
-  getEventDisciplineLabel
-} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import EventConfigurationSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -810,7 +816,7 @@ function CompetitionEventDetailBody(props: {
         onClick={() => toggleEditingMode()}
         toggled={isEditing()}
         nonToggledText="--Edit"
-        toggledText="--Save"
+        toggledText="--View"
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>

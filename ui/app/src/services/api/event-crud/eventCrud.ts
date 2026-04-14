@@ -5,8 +5,9 @@ import {
   commitApiEventMutation,
   commitApiEventMutationSuccess,
   createApiEventRollbackPayload,
-} from "@/services/api/event-api-crud/eventApiCrudOfflineUtils";
+} from "@/services/api/event-crud/eventCrudOfflineUtils";
 import {
+  CompetitionDetail,
   getCachedCompetitions,
   useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
@@ -16,7 +17,6 @@ import {
   getConfigurationsQueryKey,
 } from "@/services/api/configurations/configurations";
 import type {
-  CompetitionDetail,
   CreateEventRequest,
   EventCompetitor,
   EventCompetitorDetail,
@@ -27,7 +27,7 @@ import type {
   EventJudge,
   EventJudgeDetail,
   UpdateEventRequest,
-} from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/api/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 
 const createId = () => globalThis.crypto.randomUUID();

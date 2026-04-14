@@ -1,4 +1,3 @@
-import type { EventCompetitorDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -8,6 +7,7 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
+import { EventCompetitorDetail } from "@/services/api/event-crud/eventCrud.types";
 
 type OrderBounds = {
   minValue: number;

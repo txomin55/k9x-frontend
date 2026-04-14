@@ -45,7 +45,7 @@ const createJudgesQuery = (options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
-  } as any);
+  });
 
 export const prefetchJudges = (options?: TanstackCreateQuery) => {
   const { queryFn, queryKey } = judgesQuery.options();

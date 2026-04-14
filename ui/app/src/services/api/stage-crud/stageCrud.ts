@@ -3,28 +3,21 @@ import {
   applyApiStageUpsert,
   commitApiStageMutation,
   commitApiStageMutationSuccess,
-  createApiStageRollbackPayload
-} from "@/services/api/stage-api-crud/stageApiCrudOfflineUtils";
+  createApiStageRollbackPayload,
+} from "@/services/api/stage-crud/stageCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
   type CompetitionDetail,
   getCachedCompetitions,
-  useCompetition
+  useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
-import type {
+import {
   CompetitionStageDetail,
   CreateStageRequest,
   StageEditorModel,
-  UpdateStageRequest
-} from "@/services/api/competition-crud/competitionCrud.types";
-
-export type {
-  CreateStageRequest,
-  StageEditorModel,
-  EventDetail,
   UpdateStageRequest,
-} from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/api/stage-crud/stageCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 

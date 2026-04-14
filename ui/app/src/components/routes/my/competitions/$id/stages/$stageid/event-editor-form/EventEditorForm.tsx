@@ -4,7 +4,7 @@ import AtomButton, {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import EventDisciplineField from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { EventDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import { EventDetail } from "@/services/api/event-crud/eventCrud.types";
 import "./styles.css";
 
 type EventEditorFormProps = {

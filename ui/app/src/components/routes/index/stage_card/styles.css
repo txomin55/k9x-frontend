@@ -38,3 +38,9 @@
     background-position: center;
     line-height: 1;
 }
+
+.stage-card__actions {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}

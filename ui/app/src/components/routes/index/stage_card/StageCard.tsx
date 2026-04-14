@@ -1,5 +1,7 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { Index } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/index/stage_card/StageCard.types";
@@ -42,19 +44,19 @@ export default function StageCard(props: StageCardProps) {
         <Index each={props.events}>
           {(event) => (
             <div class="stage-card__events-content">
-              <div>
-                <span>{event().name}</span>
-                <span>{event().competitors}</span>
-              </div>
-              <div>
-                <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
-                <AtomButton type={BUTTON_TYPES.PRIMARY}>
-                  --See classification
-                </AtomButton>
-              </div>
+              <span>{event().name}</span>
+              <span>{event().competitors}</span>
             </div>
           )}
         </Index>
+      }
+      actions={
+        <div class="stage-card__actions">
+          <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
+          <AtomButton type={BUTTON_TYPES.PRIMARY}>
+            --See classification
+          </AtomButton>
+        </div>
       }
     />
   );

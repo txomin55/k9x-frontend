@@ -1,20 +1,10 @@
+import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import { getCompetitionsQueryKey } from "@/services/api/competition-crud/competitionCrud";
-import type {
-  ApiEventRollbackPayload,
-  CompetitionDetail,
-  CompetitionStageDetail,
-  EventDetail,
-} from "@/services/api/competition-crud/competitionCrud.types";
-import {
-  clearCompetitionDraft,
-  replaceCompetitionDrafts,
-  upsertCompetitionDraft,
-} from "@/services/api/competition-crud/competitionDraftStore";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
@@ -25,86 +15,79 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
+import {
+  clearCompetitionDraft,
+  replaceCompetitionDrafts,
+  upsertCompetitionDraft,
+} from "@/services/api/competition-crud/competitionDraftStore";
+import {
+  ApiStageRollbackPayload,
+  CompetitionStageDetail,
+  StageEditorModel,
+} from "@/services/api/stage-crud/stageCrud.types";
 
-const buildNextStageDetail = (
-  stage: CompetitionStageDetail,
-  event: EventDetail,
-): CompetitionStageDetail => {
-  const previousEvents = stage.events ?? [];
-  const existingIndex = previousEvents.findIndex(
-    ({ id }) => String(id) === String(event.id),
-  );
-
-  return {
-    ...stage,
-    events:
-      existingIndex === -1
-        ? [...previousEvents, event]
-        : previousEvents.map((previousEvent) =>
-            String(previousEvent.id) === String(event.id)
-              ? event
-              : previousEvent,
-          ),
-  };
-};
-
-const buildStageDetailWithoutEvent = (
-  stage: CompetitionStageDetail,
-  eventId: string,
+const toCompetitionDetailStage = (
+  stage: StageEditorModel,
 ): CompetitionStageDetail => ({
-  ...stage,
-  events: (stage.events ?? []).filter(
-    ({ id }) => String(id) !== String(eventId),
-  ),
+  dateFrom: stage.dateFrom,
+  dateTo: stage.dateTo,
+  events: stage.events,
+  id: stage.id,
+  name: stage.name,
 });
 
 const buildNextCompetitionDetail = (
   competition: CompetitionDetail,
-  stageId: string,
-  event: EventDetail,
-): CompetitionDetail => ({
-  ...competition,
-  stages: (competition.stages ?? []).map((stage) =>
-    String(stage.id) === String(stageId)
-      ? buildNextStageDetail(stage, event)
-      : stage,
-  ),
-});
+  stage: StageEditorModel,
+): CompetitionDetail => {
+  const nextStage = toCompetitionDetailStage(stage);
+  const previousStages = competition.stages ?? [];
+  const existingIndex = previousStages.findIndex(
+    ({ id }) => String(id) === String(stage.id),
+  );
 
-const buildCompetitionDetailWithoutEvent = (
+  return {
+    ...competition,
+    stages:
+      existingIndex === -1
+        ? [...previousStages, nextStage]
+        : previousStages.map((previousStage) =>
+            String(previousStage.id) === String(stage.id)
+              ? nextStage
+              : previousStage,
+          ),
+  };
+};
+
+const buildCompetitionDetailWithoutStage = (
   competition: CompetitionDetail,
   stageId: string,
-  eventId: string,
 ): CompetitionDetail => ({
   ...competition,
-  stages: (competition.stages ?? []).map((stage) =>
-    String(stage.id) === String(stageId)
-      ? buildStageDetailWithoutEvent(stage, eventId)
-      : stage,
+  stages: (competition.stages ?? []).filter(
+    ({ id }) => String(id) !== String(stageId),
   ),
 });
 
 const buildNextCompetitionsList = (
   competitions: CompetitionDetail[],
-  competitionId: string,
-  stageId: string,
-  event: EventDetail,
+  apiStage: StageEditorModel,
 ): CompetitionDetail[] =>
-  competitions.map((competition) =>
-    String(competition.id) === String(competitionId)
-      ? buildNextCompetitionDetail(competition, stageId, event)
-      : competition,
-  );
+  competitions.map((competition) => {
+    if (String(competition.id) !== String(apiStage.competitionId)) {
+      return competition;
+    }
+    return buildNextCompetitionDetail(competition, apiStage);
+  });
 
-const buildCompetitionsListWithoutEvent = (
+const buildCompetitionsListWithoutStage = (
   competitions: CompetitionDetail[],
   competitionId: string,
   stageId: string,
-  eventId: string,
 ): CompetitionDetail[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
-      ? buildCompetitionDetailWithoutEvent(competition, stageId, eventId)
+      ? buildCompetitionDetailWithoutStage(competition, stageId)
       : competition,
   );
 
@@ -112,14 +95,12 @@ const getBaseCompetitionsFromCache = () =>
   queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()) ??
   [];
 
-const persistApiEventCompetitionSnapshot = async (
-  competitionId: string,
-  stageId: string,
-  event: EventDetail,
+const persistApiStageCompetitionSnapshot = async (
+  apiStage: StageEditorModel,
 ) => {
   const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
-    (competition) => String(competition.id) === String(competitionId),
+    (competition) => String(competition.id) === String(apiStage.competitionId),
   );
 
   if (!parentCompetition) {
@@ -128,12 +109,11 @@ const persistApiEventCompetitionSnapshot = async (
 
   const nextCompetitions = buildNextCompetitionsList(
     previousCompetitions,
-    competitionId,
-    stageId,
-    event,
+    apiStage,
   );
+
   const nextCompetition = nextCompetitions.find(
-    (competition) => String(competition.id) === String(competitionId),
+    (competition) => String(competition.id) === String(apiStage.competitionId),
   );
 
   if (nextCompetition) {
@@ -143,18 +123,17 @@ const persistApiEventCompetitionSnapshot = async (
   await saveCompetitionsSnapshot(nextCompetitions);
 };
 
-const removeApiEventFromCompetitionSnapshot = async (
+const removeApiStageFromCompetitionSnapshot = async (
   competitionId: string,
   stageId: string,
-  eventId: string,
 ) => {
   const previousCompetitions = getVisibleCompetitions();
-  const nextCompetitions = buildCompetitionsListWithoutEvent(
+  const nextCompetitions = buildCompetitionsListWithoutStage(
     previousCompetitions,
     competitionId,
     stageId,
-    eventId,
   );
+
   const nextCompetition = nextCompetitions.find(
     (competition) => String(competition.id) === String(competitionId),
   );
@@ -168,29 +147,26 @@ const removeApiEventFromCompetitionSnapshot = async (
   await saveCompetitionsSnapshot(nextCompetitions);
 };
 
-export const createApiEventRollbackPayload = async ({
+export const createApiStageRollbackPayload = async ({
   competitionId,
   entityId,
   previousCompetitionsFromCache,
-  previousEvent,
-  stageId,
+  previousStage,
 }: {
   competitionId: string;
   entityId: string;
   previousCompetitionsFromCache?: CompetitionDetail[];
-  previousEvent: EventDetail | null;
-  stageId: string;
-}): Promise<ApiEventRollbackPayload> => ({
+  previousStage: StageEditorModel | null;
+}): Promise<ApiStageRollbackPayload> => ({
   competitionId,
   entityId,
   previousCompetition: null,
   previousCompetitions:
     previousCompetitionsFromCache ?? (await readCompetitionsSnapshot()) ?? null,
-  previousEvent,
-  stageId,
+  previousStage,
 });
 
-export const commitApiEventMutation = async ({
+export const commitApiStageMutation = async ({
   entityId,
   method,
   onCommitted,
@@ -202,39 +178,38 @@ export const commitApiEventMutation = async ({
   method: PendingTaskMethod;
   onCommitted?: () => Promise<void> | void;
   payload?: unknown;
-  rollbackPayload: ApiEventRollbackPayload;
+  rollbackPayload: ApiStageRollbackPayload;
   url: string;
 }) =>
   commitOptimisticMutation({
     entityId,
-    entityType: "event",
+    entityType: "stage",
     method,
     onCommitted,
     payload,
-    rollback: rollbackApiEventPayload,
+    rollback: rollbackApiStagePayload,
     rollbackPayload,
     url,
   });
 
-const isApiEventRollbackPayload = (
+const isApiStageRollbackPayload = (
   rollbackPayload: unknown,
-): rollbackPayload is ApiEventRollbackPayload =>
+): rollbackPayload is ApiStageRollbackPayload =>
   typeof rollbackPayload === "object" &&
   rollbackPayload !== null &&
   "competitionId" in rollbackPayload &&
-  "entityId" in rollbackPayload &&
-  "stageId" in rollbackPayload;
+  "entityId" in rollbackPayload;
 
-const rollbackApiEventTask = async (task: PendingTask) => {
-  if (!isApiEventRollbackPayload(task.rollbackPayload)) {
+const rollbackApiStageTask = async (task: PendingTask) => {
+  if (!isApiStageRollbackPayload(task.rollbackPayload)) {
     return;
   }
 
-  await rollbackApiEventPayload(task.rollbackPayload);
+  await rollbackApiStagePayload(task.rollbackPayload);
 };
 
-const rollbackApiEventPayload = async (
-  rollbackPayload: ApiEventRollbackPayload,
+const rollbackApiStagePayload = async (
+  rollbackPayload: ApiStageRollbackPayload,
 ) => {
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
@@ -248,14 +223,12 @@ const rollbackApiEventPayload = async (
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
 
-export const commitApiEventMutationSuccess = async ({
+export const commitApiStageMutationSuccess = async ({
   competitionId,
-  eventId,
   method,
   stageId,
 }: {
   competitionId: string;
-  eventId: string;
   method: PendingTaskMethod;
   payload?: unknown;
   stageId: string;
@@ -266,11 +239,10 @@ export const commitApiEventMutationSuccess = async ({
     queryClient.setQueryData<CompetitionDetail[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
-        buildCompetitionsListWithoutEvent(
+        buildCompetitionsListWithoutStage(
           previousCompetitions ?? [],
           competitionId,
           stageId,
-          eventId,
         ),
     );
   } else if (method === "POST" || method === "PUT") {
@@ -288,38 +260,32 @@ export const commitApiEventMutationSuccess = async ({
   await saveCompetitionsSnapshot(nextBaseCompetitions);
 };
 
-const commitApiEventTask = async (task: PendingTask) => {
-  if (!isApiEventRollbackPayload(task.rollbackPayload)) {
+const commitApiStageTask = async (task: PendingTask) => {
+  if (!isApiStageRollbackPayload(task.rollbackPayload)) {
     return;
   }
 
-  await commitApiEventMutationSuccess({
+  await commitApiStageMutationSuccess({
     competitionId: task.rollbackPayload.competitionId,
-    eventId: task.entityId,
     method: task.method,
-    stageId: task.rollbackPayload.stageId,
+    stageId: task.entityId,
   });
 };
 
-const apiEventPendingTaskHandler: PendingTaskHandler = {
-  onHttpError: rollbackApiEventTask,
-  onSuccess: commitApiEventTask,
+const apiStagePendingTaskHandler: PendingTaskHandler = {
+  onHttpError: rollbackApiStageTask,
+  onSuccess: commitApiStageTask,
 };
 
-registerPendingTaskHandler("event", apiEventPendingTaskHandler);
+registerPendingTaskHandler("stage", apiStagePendingTaskHandler);
 
-export const applyApiEventUpsert = (
-  competitionId: string,
-  stageId: string,
-  event: EventDetail,
-) => {
-  void persistApiEventCompetitionSnapshot(competitionId, stageId, event);
+export const applyApiStageUpsert = (apiStage: StageEditorModel) => {
+  void persistApiStageCompetitionSnapshot(apiStage);
 };
 
-export const applyApiEventRemoval = (
+export const applyApiStageRemoval = (
   competitionId: string,
   stageId: string,
-  eventId: string,
 ) => {
-  void removeApiEventFromCompetitionSnapshot(competitionId, stageId, eventId);
+  void removeApiStageFromCompetitionSnapshot(competitionId, stageId);
 };

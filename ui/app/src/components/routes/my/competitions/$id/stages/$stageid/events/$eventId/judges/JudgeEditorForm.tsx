@@ -1,4 +1,4 @@
-import type { EventJudgeDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import type { EventJudgeDetail } from "@/services/api/event-crud/eventCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

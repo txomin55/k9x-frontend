@@ -1,31 +1,42 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
-import { useApiEvent } from "@/services/api/event-api-crud/eventApiCrud";
 import {
-  type StageEditorModel,
-  type UpdateStageRequest,
-  useApiStage
-} from "@/services/api/stage-api-crud/stageApiCrud";
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
+import { useApiEvent } from "@/services/api/event-crud/eventCrud";
+import { useApiStage } from "@/services/api/stage-crud/stageCrud";
 import type {
   CreateEventRequest,
   EventDetail,
   EventEditorDraft,
-  UpdateEventRequest
-} from "@/services/api/competition-crud/competitionCrud.types";
+  UpdateEventRequest,
+} from "@/services/api/event-crud/eventCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import {
-  getEventDisciplineLabel
-} from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
+import {
+  StageEditorModel,
+  UpdateStageRequest,
+} from "@/services/api/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -445,7 +456,7 @@ function CompetitionStageDetailBody(props: {
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
         nonToggledText="--Edit"
-        toggledText="--Save"
+        toggledText="--View"
       />
       <Show when={isEditing()}>
         <ConfirmActionButton

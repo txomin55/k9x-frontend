@@ -10,13 +10,13 @@ import {
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
-  getVisibleCompetitions
+  getVisibleCompetitions,
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionDetail,
   CompetitionLocationDetail,
   CreateCompetitionRequest,
-  UpdateCompetitionRequest
+  UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
@@ -24,7 +24,6 @@ import { mergeCompetitionsWithDrafts } from "@/services/api/competition-crud/com
 
 export type {
   CompetitionLocationDetail,
-  CompetitionStageDetail,
   CompetitionDetail,
 } from "@/services/api/competition-crud/competitionCrud.types";
 

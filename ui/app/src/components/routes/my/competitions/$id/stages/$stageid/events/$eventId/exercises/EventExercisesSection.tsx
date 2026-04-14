@@ -1,5 +1,4 @@
 import { createMemo, Index, Show } from "solid-js";
-import type { EventExerciseDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -10,6 +9,7 @@ import AtomButton, {
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
 import "./styles.css";
+import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
 
 type EventExercisesSectionProps = {
   onCommitExercise: () => void;

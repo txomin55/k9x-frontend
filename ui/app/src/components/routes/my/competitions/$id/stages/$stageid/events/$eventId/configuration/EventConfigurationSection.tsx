@@ -1,7 +1,9 @@
-import type { EventDetail, EventEditorDraft } from "@/services/api/competition-crud/competitionCrud.types";
+import type {
+  EventDetail,
+  EventEditorDraft,
+} from "@/services/api/event-crud/eventCrud.types";
 import { Show } from "solid-js";
-import ConfigurationEditorForm
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
+import ConfigurationEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import "./styles.css";
 

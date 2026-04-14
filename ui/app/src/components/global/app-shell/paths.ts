@@ -8,6 +8,6 @@ export enum AppRoutePath {
   COMPETITION_STAGE_DETAIL = "/my/competitions/$id/stages/$stageId",
   COMPETITION_EVENT_DETAIL = "/my/competitions/$id/stages/$stageId/events/$eventId",
   NOT_FOUND = "/404.html",
+  MY_COLLECTIONS = "/my/collections",
+  COLLECTION_DETAIL = "/my/collections/$id",
 }
-
-export const trimLeadingSlash = (path: AppRoutePath) => path.slice(1);

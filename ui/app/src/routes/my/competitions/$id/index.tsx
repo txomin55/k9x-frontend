@@ -18,13 +18,7 @@ import {
   type CompetitionDetail,
   type UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
-import {
-  type CreateStageRequest,
-  type StageEditorModel,
-  toApiStage,
-  type UpdateStageRequest,
-  useApiStage,
-} from "@/services/api/stage-api-crud/stageApiCrud";
+import { toApiStage, useApiStage } from "@/services/api/stage-crud/stageCrud";
 import { toUndefinedIfBlank } from "@/utils/stage";
 import AtomButton, {
   BUTTON_TYPES,
@@ -32,6 +26,11 @@ import AtomButton, {
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
+import {
+  CreateStageRequest,
+  StageEditorModel,
+  UpdateStageRequest,
+} from "@/services/api/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
   component: CompetitionDetailPage,
@@ -310,7 +309,7 @@ function CompetitionDetailBody(props: {
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
         nonToggledText="--Edit"
-        toggledText="--Save"
+        toggledText="--View"
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
