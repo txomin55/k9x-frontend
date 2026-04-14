@@ -10,13 +10,13 @@ import {
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
-  getVisibleCompetitions,
+  getVisibleCompetitions
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionDetail,
   CompetitionLocationDetail,
   CreateCompetitionRequest,
-  UpdateCompetitionRequest,
+  UpdateCompetitionRequest
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
@@ -95,14 +95,15 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
 };
 
 const toCompetitionLocation = (
+  location?: CompetitionLocationDetail,
   previousLocation?: CompetitionLocationDetail,
 ): CompetitionLocationDetail | undefined => {
   if (!location && !previousLocation) return undefined;
 
   return {
-    address: previousLocation?.address,
-    latitude: previousLocation?.latitude,
-    longitude: previousLocation?.longitude,
+    address: location?.address ?? previousLocation?.address,
+    latitude: location?.latitude ?? previousLocation?.latitude,
+    longitude: location?.longitude ?? previousLocation?.longitude,
   };
 };
 
@@ -111,12 +112,22 @@ const mergeCompetitionWithPayload = (
   previousCompetition?: CompetitionDetail,
 ): CompetitionDetail => {
   const payloadId = "id" in payload ? payload.id : undefined;
+  const country =
+    "country" in payload
+      ? payload.country
+      : (previousCompetition?.country ?? "");
+  const description =
+    "description" in payload
+      ? payload.description
+      : previousCompetition?.description;
+  const location =
+    "location" in payload ? payload.location : previousCompetition?.location;
 
   return {
-    country: previousCompetition?.country ?? "",
-    description: previousCompetition?.description,
+    country,
+    description,
     id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
-    location: toCompetitionLocation(previousCompetition?.location),
+    location: toCompetitionLocation(location, previousCompetition?.location),
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications,
     stages: previousCompetition?.stages,
