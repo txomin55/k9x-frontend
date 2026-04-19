@@ -1,4 +1,4 @@
-import { createMemo, Index, Show } from "solid-js";
+import { createMemo, createSignal, Index, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
@@ -17,13 +17,12 @@ type EventJudgesSectionProps = {
   judgeDialogDraft: EventJudgeDetail | null;
   judges: EventJudgeDetail[];
   onAddJudge: () => void;
-  onCloseJudgeEditor: () => void;
   onDeleteJudge: (judgeId: string) => void;
   onJudgeDraftChange: (
     updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
   onOpenJudgeEditor: (judge: EventJudgeDetail) => void;
-  onSaveJudge: () => void;
+  onCreateJudge: () => void;
 };
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
@@ -49,37 +48,28 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
   const getJudgeName = (judgeId: string) =>
     judgeNameById().get(judgeId) ?? judgeId;
 
+  const [dialogOpen, setDialogOpen] = createSignal(false);
+
+  const viewDialogTitle = () => {
+    if (props.isCreatingJudge) {
+      return "--New judge";
+    }
+
+    return "--Edit judge";
+  };
+
   return (
     <section class="event-judges-section">
       <div class="event-judges-section__header">
         <Show when={props.isEditing}>
-          <AtomDialog
-            closeButtonText="--Close dialog"
-            content={
-              <Show when={props.judgeDialogDraft}>
-                {(draft) => (
-                  <JudgeEditorForm
-                    draft={draft}
-                    onCommit={props.onCommitJudge}
-                    onDraftChange={props.onJudgeDraftChange}
-                    onCancel={props.onCloseJudgeEditor}
-                    onSave={props.onSaveJudge}
-                    judgeOptions={judgeOptions()}
-                  />
-                )}
-              </Show>
-            }
-            onOpenChange={(isOpen) => {
-              if (isOpen) {
-                props.onAddJudge();
-              } else {
-                props.onCloseJudgeEditor();
-              }
+          <CircleButton
+            onClick={() => {
+              props.onAddJudge();
+              setDialogOpen(true);
             }}
-            open={props.isCreatingJudge}
-            title="--New judge"
-            trigger={<CircleButton>+</CircleButton>}
-          />
+          >
+            +
+          </CircleButton>
         </Show>
       </div>
       <Show when={props.judges.length > 0} fallback={<p>--No judges.</p>}>
@@ -100,7 +90,12 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           --Delete
                         </AtomButton>
                       </ConfirmActionButton>
-                      <span onClick={() => props.onOpenJudgeEditor(judge())}>
+                      <span
+                        onClick={() => {
+                          props.onOpenJudgeEditor(judge());
+                          setDialogOpen(true);
+                        }}
+                      >
                         --Edit
                       </span>
                     </div>
@@ -120,21 +115,22 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                 draft={draft}
                 onCommit={props.onCommitJudge}
                 onDraftChange={props.onJudgeDraftChange}
-                onCancel={props.onCloseJudgeEditor}
-                onSave={props.onSaveJudge}
+                onCancel={() => {
+                  setDialogOpen(false);
+                }}
+                onCreate={() => {
+                  props.onCreateJudge();
+                  setDialogOpen(false);
+                }}
                 judgeOptions={judgeOptions()}
+                displaySave={props.isCreatingJudge}
               />
             )}
           </Show>
         }
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            props.onCloseJudgeEditor();
-          }
-        }}
-        open={props.editingJudgeId !== null}
-        title="--Edit judge"
-        trigger={<span />}
+        onOpenChange={setDialogOpen}
+        open={dialogOpen()}
+        title={viewDialogTitle()}
       />
     </section>
   );

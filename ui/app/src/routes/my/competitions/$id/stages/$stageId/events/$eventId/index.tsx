@@ -374,53 +374,52 @@ function CompetitionEventDetailBody(props: {
     persistEventEdits(draftEvent(), name());
   };
 
-  const saveJudgeEditor = (options?: { closeEditor?: boolean }) => {
+  const createJudge = () => {
     const draft = judgeDialogDraft();
-    const shouldCloseEditor = options?.closeEditor ?? true;
 
     if (!draft) return;
 
-    if (isCreatingJudge()) {
-      updateDraftEvent(
-        (current) => ({
-          ...current,
-          judges: [...current.judges, draft],
-        }),
-        {
-          persist: true,
-        },
-      );
-
-      setIsCreatingJudge(false);
-      setEditingJudgeId(draft.id);
-    } else {
-      const currentEditingJudgeId = editingJudgeId();
-
-      if (!currentEditingJudgeId) return;
-
-      setEditingJudgeId(draft.id);
-
-      updateDraftEvent(
-        (current) => ({
-          ...current,
-          judges: current.judges.map((entry) =>
-            entry.id === currentEditingJudgeId ? draft : entry,
-          ),
-        }),
-        {
-          persist: true,
-        },
-      );
-    }
-
-    if (shouldCloseEditor) {
-      closeJudgeEditor();
-    }
+    updateDraftEvent(
+      (current) => ({
+        ...current,
+        judges: [...current.judges, draft],
+      }),
+      {
+        persist: true,
+      },
+    );
   };
 
-  const saveExerciseEditor = (options?: { closeEditor?: boolean }) => {
+  const saveJudgeEditor = () => {
+    if (isCreatingJudge()) {
+      return;
+    }
+
+    const draft = judgeDialogDraft();
+
+    if (!draft) return;
+
+    const currentEditingJudgeId = editingJudgeId();
+
+    if (!currentEditingJudgeId) return;
+
+    setEditingJudgeId(draft.id);
+
+    updateDraftEvent(
+      (current) => ({
+        ...current,
+        judges: current.judges.map((entry) =>
+          entry.id === currentEditingJudgeId ? draft : entry,
+        ),
+      }),
+      {
+        persist: true,
+      },
+    );
+  };
+
+  const createExercise = () => {
     const draft = exerciseDialogDraft();
-    const shouldCloseEditor = options?.closeEditor ?? true;
 
     if (!draft) return;
 
@@ -432,68 +431,77 @@ function CompetitionEventDetailBody(props: {
       ),
     };
 
+    updateDraftEvent(
+      (current) => ({
+        ...current,
+        exercises: reorderExercises(
+          current.exercises,
+          normalizedDraft.order,
+          normalizedDraft,
+        ),
+      }),
+      {
+        persist: true,
+      },
+    );
+  };
+
+  const saveExerciseEditor = () => {
     if (isCreatingExercise()) {
-      updateDraftEvent(
-        (current) => ({
+      return;
+    }
+
+    const draft = exerciseDialogDraft();
+
+    if (!draft) return;
+
+    const normalizedDraft = {
+      ...draft,
+      order: clampOrder(
+        draft.order,
+        draftEvent().exercises.length + (isCreatingExercise() ? 1 : 0),
+      ),
+    };
+
+    const currentEditingExerciseId = editingExerciseId();
+
+    if (!currentEditingExerciseId) return;
+
+    updateDraftEvent(
+      (current) => {
+        const previousExercise = current.exercises.find(
+          (entry) => entry.id === currentEditingExerciseId,
+        );
+        const orderChanged =
+          previousExercise &&
+          previousExercise.order !== normalizedDraft.order;
+
+        const hasConflict = current.exercises.some(
+          (entry) =>
+            entry.id !== currentEditingExerciseId &&
+            entry.order === normalizedDraft.order,
+        );
+        const shouldReorder = orderChanged || hasConflict;
+
+        const nextExercises = shouldReorder
+          ? reorderExercises(
+              current.exercises,
+              normalizedDraft.order,
+              normalizedDraft,
+            )
+          : current.exercises.map((entry) =>
+              entry.id === currentEditingExerciseId ? normalizedDraft : entry,
+            );
+
+        return {
           ...current,
-          exercises: reorderExercises(
-            current.exercises,
-            normalizedDraft.order,
-            normalizedDraft,
-          ),
-        }),
-        {
-          persist: true,
-        },
-      );
-
-      setIsCreatingExercise(false);
-      setEditingExerciseId(normalizedDraft.id);
-    } else {
-      const currentEditingExerciseId = editingExerciseId();
-
-      if (!currentEditingExerciseId) return;
-
-      updateDraftEvent(
-        (current) => {
-          const previousExercise = current.exercises.find(
-            (entry) => entry.id === currentEditingExerciseId,
-          );
-          const orderChanged =
-            previousExercise &&
-            previousExercise.order !== normalizedDraft.order;
-
-          const hasConflict = current.exercises.some(
-            (entry) =>
-              entry.id !== currentEditingExerciseId &&
-              entry.order === normalizedDraft.order,
-          );
-          const shouldReorder = orderChanged || hasConflict;
-
-          const nextExercises = shouldReorder
-            ? reorderExercises(
-                current.exercises,
-                normalizedDraft.order,
-                normalizedDraft,
-              )
-            : current.exercises.map((entry) =>
-                entry.id === currentEditingExerciseId ? normalizedDraft : entry,
-              );
-
-          return {
-            ...current,
-            exercises: nextExercises,
-          };
-        },
-        {
-          persist: true,
-        },
-      );
-    }
-
-    if (shouldCloseEditor) {
-      closeExerciseEditor();
-    }
+          exercises: nextExercises,
+        };
+      },
+      {
+        persist: true,
+      },
+    );
   };
 
   const createCompetitor = () => {
@@ -695,12 +703,11 @@ function CompetitionEventDetailBody(props: {
           judgeDialogDraft={judgeDialogDraft()}
           judges={draftEvent().judges}
           onAddJudge={handleAddJudge}
-          onCloseJudgeEditor={closeJudgeEditor}
           onDeleteJudge={handleDeleteJudge}
           onJudgeDraftChange={setJudgeDialogDraft}
           onOpenJudgeEditor={handleOpenJudgeEditor}
-          onSaveJudge={() => saveJudgeEditor()}
-          onCommitJudge={() => saveJudgeEditor({ closeEditor: false })}
+          onCreateJudge={createJudge}
+          onCommitJudge={saveJudgeEditor}
         />
       ),
     },
@@ -714,12 +721,11 @@ function CompetitionEventDetailBody(props: {
           isCreatingExercise={isCreatingExercise()}
           isEditing={isEditing()}
           onAddExercise={handleAddExercise}
-          onCloseExerciseEditor={closeExerciseEditor}
           onDeleteExercise={handleDeleteExercise}
           onExerciseDraftChange={setExerciseDialogDraft}
           onOpenExerciseEditor={handleOpenExerciseEditor}
-          onSaveExercise={() => saveExerciseEditor()}
-          onCommitExercise={() => saveExerciseEditor({ closeEditor: false })}
+          onCreateExercise={createExercise}
+          onCommitExercise={saveExerciseEditor}
         />
       ),
     },

@@ -5,6 +5,7 @@ import AtomButton, {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { Show } from "solid-js";
 
 type JudgeEditorFormProps = {
   draft: () => EventJudgeDetail;
@@ -13,8 +14,9 @@ type JudgeEditorFormProps = {
     updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
   ) => void;
   onCancel: () => void;
-  onSave: () => void;
+  onCreate: () => void;
   judgeOptions: AtomSelectOption[];
+  displaySave?: boolean;
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
@@ -58,9 +60,11 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
       />
       <div class="judge-editor-form__actions">
         <AtomButton onClick={props.onCancel} type={BUTTON_TYPES.ACCENT}>
-          --Cancel
+          --Close
         </AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
+        <Show when={props.displaySave}>
+          <AtomButton onClick={props.onCreate}>--Create</AtomButton>
+        </Show>
       </div>
     </div>
   );

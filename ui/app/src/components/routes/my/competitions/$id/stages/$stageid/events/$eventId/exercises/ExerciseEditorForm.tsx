@@ -4,6 +4,7 @@ import AtomButton, {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
+import { Show } from "solid-js";
 
 type OrderBounds = {
   minValue: number;
@@ -19,8 +20,9 @@ type ExerciseEditorFormProps = {
     ) => EventExerciseDetail | null,
   ) => void;
   onCancel: () => void;
-  onSave: () => void;
+  onCreate: () => void;
   orderBounds: OrderBounds;
+  displaySave?: boolean;
 };
 
 export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
@@ -90,9 +92,11 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
       />
       <div class="exercise-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-          --Cancel
+          --Close
         </AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
+        <Show when={props.displaySave}>
+          <AtomButton onClick={props.onCreate}>--Create</AtomButton>
+        </Show>
       </div>
     </div>
   );

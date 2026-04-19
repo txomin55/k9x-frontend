@@ -1,4 +1,4 @@
-import { createMemo, Index, Show } from "solid-js";
+import { createMemo, createSignal, Index, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
@@ -19,7 +19,6 @@ type EventExercisesSectionProps = {
   isCreatingExercise: boolean;
   isEditing: boolean;
   onAddExercise: () => void;
-  onCloseExerciseEditor: () => void;
   onDeleteExercise: (exerciseId: string) => void;
   onExerciseDraftChange: (
     updater: (
@@ -27,7 +26,7 @@ type EventExercisesSectionProps = {
     ) => EventExerciseDetail | null,
   ) => void;
   onOpenExerciseEditor: (exercise: EventExerciseDetail) => void;
-  onSaveExercise: () => void;
+  onCreateExercise: () => void;
 };
 
 export default function EventExercisesSection(
@@ -48,37 +47,28 @@ export default function EventExercisesSection(
     ),
   });
 
+  const [dialogOpen, setDialogOpen] = createSignal(false);
+
+  const viewDialogTitle = () => {
+    if (props.isCreatingExercise) {
+      return "--New exercise";
+    }
+
+    return "--Edit exercise";
+  };
+
   return (
     <section class="event-exercises-section">
       <div class="event-exercises-section__header">
         <Show when={props.isEditing}>
-          <AtomDialog
-            closeButtonText="--Close dialog"
-            content={
-              <Show when={props.exerciseDialogDraft}>
-                {(draft) => (
-                  <ExerciseEditorForm
-                    draft={draft}
-                    onCommit={props.onCommitExercise}
-                    onDraftChange={props.onExerciseDraftChange}
-                    onCancel={props.onCloseExerciseEditor}
-                    onSave={props.onSaveExercise}
-                    orderBounds={exerciseOrderBounds()}
-                  />
-                )}
-              </Show>
-            }
-            onOpenChange={(isOpen) => {
-              if (isOpen) {
-                props.onAddExercise();
-              } else {
-                props.onCloseExerciseEditor();
-              }
+          <CircleButton
+            onClick={() => {
+              props.onAddExercise();
+              setDialogOpen(true);
             }}
-            open={props.isCreatingExercise}
-            title="--New exercise"
-            trigger={<CircleButton>+</CircleButton>}
-          />
+          >
+            +
+          </CircleButton>
         </Show>
       </div>
       <Show when={props.exercises.length > 0} fallback={<p>--No exercises.</p>}>
@@ -108,36 +98,14 @@ export default function EventExercisesSection(
                           --Delete
                         </AtomButton>
                       </ConfirmActionButton>
-                      <AtomDialog
-                        closeButtonText="--Close dialog"
-                        content={
-                          <Show when={props.exerciseDialogDraft}>
-                            {(draft) => (
-                              <ExerciseEditorForm
-                                draft={draft}
-                                onCommit={props.onCommitExercise}
-                                onDraftChange={props.onExerciseDraftChange}
-                                onCancel={props.onCloseExerciseEditor}
-                                onSave={props.onSaveExercise}
-                                orderBounds={exerciseOrderBounds()}
-                              />
-                            )}
-                          </Show>
-                        }
-                        onOpenChange={(isOpen) => {
-                          if (isOpen) {
-                            props.onOpenExerciseEditor(exercise());
-                            return;
-                          }
-
-                          if (props.editingExerciseId === exercise().id) {
-                            props.onCloseExerciseEditor();
-                          }
+                      <span
+                        onClick={() => {
+                          props.onOpenExerciseEditor(exercise());
+                          setDialogOpen(true);
                         }}
-                        open={props.editingExerciseId === exercise().id}
-                        title={`--Edit exercise ${exercise().order}`}
-                        trigger={<span>--Edit</span>}
-                      />
+                      >
+                        --Edit
+                      </span>
                     </div>
                   ) : undefined
                 }
@@ -146,6 +114,32 @@ export default function EventExercisesSection(
           </Index>
         </div>
       </Show>
+      <AtomDialog
+        closeButtonText="--Close dialog"
+        content={
+          <Show when={props.exerciseDialogDraft}>
+            {(draft) => (
+              <ExerciseEditorForm
+                draft={draft}
+                onCommit={props.onCommitExercise}
+                onDraftChange={props.onExerciseDraftChange}
+                onCancel={() => {
+                  setDialogOpen(false);
+                }}
+                onCreate={() => {
+                  props.onCreateExercise();
+                  setDialogOpen(false);
+                }}
+                orderBounds={exerciseOrderBounds()}
+                displaySave={props.isCreatingExercise}
+              />
+            )}
+          </Show>
+        }
+        onOpenChange={setDialogOpen}
+        open={dialogOpen()}
+        title={viewDialogTitle()}
+      />
     </section>
   );
 }
