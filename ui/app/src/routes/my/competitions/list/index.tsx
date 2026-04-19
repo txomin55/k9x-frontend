@@ -28,7 +28,7 @@ function MyCompetitionsIndexPage() {
               description={competition.description}
               country={competition.country}
               stages={competition.stages}
-              address={competition?.location?.address}
+              address={competition?.address}
             />
           )}
         </For>

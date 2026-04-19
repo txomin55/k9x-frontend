@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import CountryField from "@/components/routes/my/competitions/$id/competition-info/CountryField";
+import CountryField from "@/components/global/country-field/CountryField";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import "./styles.css";
@@ -11,8 +11,6 @@ type CompetitionInfoProps = {
   description: string;
   displayAddress?: string;
   displayDescription?: string;
-  displayLatitude?: number;
-  displayLongitude?: number;
   isEditing: boolean;
   onAddressChange: (value: string) => void;
   onCommit: () => void;
@@ -66,10 +64,6 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
           <p>--Description {props.description}</p>
 
           <p>--Address {props.displayAddress}</p>
-          <p>
-            --Coords{" "}
-            {`${props.displayLatitude ?? "--"} / ${props.displayLongitude ?? "--"}`}
-          </p>
         </div>
       </Show>
     </div>

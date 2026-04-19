@@ -19,7 +19,6 @@ import {
 import { queryClient } from "@/utils/http/query-client";
 import type {
   CompetitionDetail,
-  CompetitionLocationDetail,
   CompetitionRollbackPayload,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
@@ -29,49 +28,6 @@ import {
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
 } from "@/services/api/competition-crud/competitionDraftStore";
-
-export const toCompetitionListItem = (
-  competition: CompetitionDetail,
-  previousCompetition?: CompetitionDetail,
-): CompetitionDetail => ({
-  country: competition.country,
-  description:
-    competition.description ?? previousCompetition?.description ?? "",
-  id: competition.id,
-  location: competition.location
-    ? ({
-        address: competition.location.address,
-        latitude: competition.location.latitude,
-        longitude: competition.location.longitude,
-      } satisfies CompetitionLocationDetail)
-    : previousCompetition?.location,
-  name: competition.name,
-  notifications:
-    competition.notifications ?? previousCompetition?.notifications,
-  stages: competition.stages ?? previousCompetition?.stages ?? [],
-  status: competition.status ?? previousCompetition?.status ?? "draft",
-});
-
-export const buildNextCompetitions = (
-  previousCompetitions: CompetitionDetail[],
-  competition: CompetitionDetail,
-) => {
-  const nextCompetition = toCompetitionListItem(
-    competition,
-    previousCompetitions.find(({ id }) => id === competition.id),
-  );
-  const existingIndex = previousCompetitions.findIndex(
-    ({ id }) => id === competition.id,
-  );
-
-  return existingIndex === -1
-    ? [nextCompetition, ...previousCompetitions]
-    : previousCompetitions.map((previousCompetition) =>
-        previousCompetition.id === competition.id
-          ? nextCompetition
-          : previousCompetition,
-      );
-};
 
 export const buildCompetitionsWithoutEntity = (
   previousCompetitions: CompetitionDetail[],

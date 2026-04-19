@@ -1,11 +1,5 @@
 import { CompetitionStageDetail } from "@/services/api/stage-crud/stageCrud.types";
 
-export interface CompetitionLocationDetail {
-  address?: string;
-  latitude?: number;
-  longitude?: number;
-}
-
 export interface CompetitionNotificationDetail {
   date: number;
   id: string;
@@ -16,7 +10,7 @@ export interface CompetitionDetail {
   country: string;
   description?: string;
   id: string;
-  location?: CompetitionLocationDetail;
+  address?: string;
   name: string;
   notifications?: CompetitionNotificationDetail[];
   stages?: CompetitionStageDetail[];
@@ -31,7 +25,7 @@ export interface CreateCompetitionRequest {
 export interface UpdateCompetitionRequest {
   country: string;
   description?: string;
-  location?: CompetitionLocationDetail;
+  address?: string;
   name: string;
 }
 

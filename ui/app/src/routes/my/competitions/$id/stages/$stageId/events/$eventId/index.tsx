@@ -25,7 +25,7 @@ import type {
 } from "@/services/api/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
-import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import { getEventDisciplineLabel } from "@/components/global/event-discipline-field/EventDisciplineField";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

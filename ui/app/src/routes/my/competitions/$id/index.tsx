@@ -118,7 +118,7 @@ function CompetitionDetailBody(props: {
     props.competition()?.description ?? "",
   );
   const [address, setAddress] = createSignal(
-    props.competition()?.location?.address ?? "",
+    props.competition()?.address ?? "",
   );
   const [isCreatingStage, setIsCreatingStage] = createSignal(false);
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
@@ -147,7 +147,7 @@ function CompetitionDetailBody(props: {
     setTitle(competition.name);
     setCountry(competition.country);
     setDescription(competition.description ?? "");
-    setAddress(competition.location?.address ?? "");
+    setAddress(competition.address ?? "");
   });
 
   createEffect(() => {
@@ -255,17 +255,14 @@ function CompetitionDetailBody(props: {
     const nextCompetition: UpdateCompetitionRequest = {
       country: country(),
       description: description(),
-      location: {
-        address: toUndefinedIfBlank(address()),
-      },
+      address: toUndefinedIfBlank(address()),
       name: title(),
     };
     const hasChanges =
       nextCompetition.name !== competition.name ||
       nextCompetition.country !== competition.country ||
       nextCompetition.description !== (competition.description ?? "") ||
-      nextCompetition.location?.address !==
-        (competition.location?.address ?? "");
+      nextCompetition.address !== (competition.address ?? "");
 
     if (!hasChanges) return;
 
@@ -278,10 +275,8 @@ function CompetitionDetailBody(props: {
         address={address()}
         country={country()}
         description={description()}
-        displayAddress={props.competition()?.location?.address}
+        displayAddress={props.competition()?.address}
         displayDescription={props.competition()?.description}
-        displayLatitude={props.competition()?.location?.latitude}
-        displayLongitude={props.competition()?.location?.longitude}
         isEditing={isEditing()}
         onAddressChange={setAddress}
         onCommit={commitCompetitionEdits}

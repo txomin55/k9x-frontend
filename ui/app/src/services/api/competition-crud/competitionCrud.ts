@@ -14,7 +14,6 @@ import {
 } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionDetail,
-  CompetitionLocationDetail,
   CreateCompetitionRequest,
   UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
@@ -22,10 +21,7 @@ import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/api/competition-crud/competitionDraftStore";
 
-export type {
-  CompetitionLocationDetail,
-  CompetitionDetail,
-} from "@/services/api/competition-crud/competitionCrud.types";
+export type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
 
@@ -93,19 +89,6 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
   });
 };
 
-const toCompetitionLocation = (
-  location?: CompetitionLocationDetail,
-  previousLocation?: CompetitionLocationDetail,
-): CompetitionLocationDetail | undefined => {
-  if (!location && !previousLocation) return undefined;
-
-  return {
-    address: location?.address ?? previousLocation?.address,
-    latitude: location?.latitude ?? previousLocation?.latitude,
-    longitude: location?.longitude ?? previousLocation?.longitude,
-  };
-};
-
 const mergeCompetitionWithPayload = (
   payload: CreateCompetitionRequest | UpdateCompetitionRequest,
   previousCompetition?: CompetitionDetail,
@@ -119,14 +102,14 @@ const mergeCompetitionWithPayload = (
     "description" in payload
       ? payload.description
       : previousCompetition?.description;
-  const location =
-    "location" in payload ? payload.location : previousCompetition?.location;
+  const address =
+    "address" in payload ? payload.address : previousCompetition?.address;
 
   return {
     country,
     description,
     id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
-    location: toCompetitionLocation(location, previousCompetition?.location),
+    address: address ?? previousCompetition?.address ?? "",
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications,
     stages: previousCompetition?.stages,

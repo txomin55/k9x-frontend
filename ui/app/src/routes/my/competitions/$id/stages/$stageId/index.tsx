@@ -30,7 +30,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import { getEventDisciplineLabel } from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventDisciplineField";
+import { getEventDisciplineLabel } from "@/components/global/event-discipline-field/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import "./styles.css";
 import {
