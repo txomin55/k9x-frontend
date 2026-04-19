@@ -1,7 +1,7 @@
 import type { JSX } from "solid-js";
 
 export type AtomDialogProps = {
-  trigger: JSX.Element;
+  trigger?: JSX.Element;
   title?: JSX.Element;
   description?: JSX.Element;
   content: JSX.Element;

@@ -23,10 +23,11 @@ type CompetitorDialogContentProps = {
       current: EventCompetitorDetail | null,
     ) => EventCompetitorDetail | null,
   ) => void;
-  onSaveCompetitor: () => void;
+  onCreateCompetitor: () => void;
   orderBounds: OrderBounds;
   dogOptions: AtomSelectOption[];
   dogsById: Map<string, Dog>;
+  displaySave?: boolean;
 };
 
 export default function CompetitorEditorForm(
@@ -164,9 +165,13 @@ export default function CompetitorEditorForm(
               type={BUTTON_TYPES.ACCENT}
               onClick={props.onCloseCompetitorEditor}
             >
-              --Cancel
+              --Close
             </AtomButton>
-            <AtomButton onClick={props.onSaveCompetitor}>--Save</AtomButton>
+            <Show when={props.displaySave}>
+              <AtomButton onClick={props.onCreateCompetitor}>
+                --Create
+              </AtomButton>
+            </Show>
           </div>
         </div>
       )}

@@ -195,12 +195,6 @@ function CompetitionEventDetailBody(props: {
     COMPETITORS: "COMPETITORS",
   };
 
-  const closeCompetitorEditor = () => {
-    setIsCreatingCompetitor(false);
-    setEditingCompetitorId(null);
-    setCompetitorDialogDraft(null);
-  };
-
   const closeJudgeEditor = () => {
     setIsCreatingJudge(false);
     setEditingJudgeId(null);
@@ -502,9 +496,8 @@ function CompetitionEventDetailBody(props: {
     }
   };
 
-  const saveCompetitorEditor = (options?: { closeEditor?: boolean }) => {
+  const createCompetitor = () => {
     const draft = competitorDialogDraft();
-    const shouldCloseEditor = options?.closeEditor ?? true;
 
     if (!draft) return;
 
@@ -516,24 +509,34 @@ function CompetitionEventDetailBody(props: {
       ),
     };
 
-    if (isCreatingCompetitor()) {
-      updateDraftEvent(
-        (current) => ({
-          ...current,
-          competitors: reorderCompetitors(
-            current.competitors,
-            normalizedDraft.order,
-            normalizedDraft,
-          ),
-        }),
-        {
-          persist: true,
-        },
-      );
+    updateDraftEvent(
+      (current) => ({
+        ...current,
+        competitors: reorderCompetitors(
+          current.competitors,
+          normalizedDraft.order,
+          normalizedDraft,
+        ),
+      }),
+      {
+        persist: true,
+      },
+    );
+  };
+  const saveCompetitorEditor = () => {
+    if (!isCreatingCompetitor()) {
+      const draft = competitorDialogDraft();
 
-      setIsCreatingCompetitor(false);
-      setEditingCompetitorId(normalizedDraft.dogId);
-    } else {
+      if (!draft) return;
+
+      const normalizedDraft = {
+        ...draft,
+        order: clampOrder(
+          draft.order,
+          draftEvent().competitors.length + (isCreatingCompetitor() ? 1 : 0),
+        ),
+      };
+
       const currentEditingCompetitorId = editingCompetitorId();
 
       if (!currentEditingCompetitorId) return;
@@ -576,10 +579,6 @@ function CompetitionEventDetailBody(props: {
           persist: true,
         },
       );
-    }
-
-    if (shouldCloseEditor) {
-      closeCompetitorEditor();
     }
   };
 
@@ -654,10 +653,6 @@ function CompetitionEventDetailBody(props: {
   };
 
   const handleDeleteCompetitor = (dogId: string) => {
-    if (editingCompetitorId() === dogId) {
-      closeCompetitorEditor();
-    }
-
     updateDraftEvent(
       (current) => ({
         ...current,
@@ -738,14 +733,11 @@ function CompetitionEventDetailBody(props: {
           isCreatingCompetitor={isCreatingCompetitor()}
           isEditing={isEditing()}
           onAddCompetitor={handleAddCompetitor}
-          onCloseCompetitorEditor={closeCompetitorEditor}
           onCompetitorDraftChange={setCompetitorDialogDraft}
           onDeleteCompetitor={handleDeleteCompetitor}
           onOpenCompetitorEditor={handleOpenCompetitorEditor}
-          onSaveCompetitor={() => saveCompetitorEditor()}
-          onCommitCompetitor={() =>
-            saveCompetitorEditor({ closeEditor: false })
-          }
+          onCreateCompetitor={createCompetitor}
+          onCommitCompetitor={saveCompetitorEditor}
         />
       ),
     },
@@ -763,7 +755,6 @@ function CompetitionEventDetailBody(props: {
   createEffect(() => {
     if (isEditing()) return;
 
-    closeCompetitorEditor();
     closeJudgeEditor();
     closeExerciseEditor();
   });

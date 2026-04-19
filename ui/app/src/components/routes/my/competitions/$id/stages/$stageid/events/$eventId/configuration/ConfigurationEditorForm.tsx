@@ -137,7 +137,7 @@ export default function ConfigurationEditorForm(
   };
 
   return (
-    <div>
+    <>
       <AtomSelect
         label="--Federation"
         options={federationOptions()}
@@ -154,6 +154,6 @@ export default function ConfigurationEditorForm(
         placeholder="--Select a configuration"
         disabled={!selectedFederation() || configurationOptions().length === 0}
       />
-    </div>
+    </>
   );
 }
