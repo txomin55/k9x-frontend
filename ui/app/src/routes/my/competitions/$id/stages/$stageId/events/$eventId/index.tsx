@@ -1,18 +1,11 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/api/event-crud/eventCrud";
 import type {
   EventCompetitor,
@@ -21,19 +14,20 @@ import type {
   EventEditorDraft,
   EventExerciseDetail,
   EventJudgeDetail,
-  UpdateEventRequest,
+  UpdateEventRequest
 } from "@/services/api/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
-import { getEventDisciplineLabel } from "@/components/global/event-discipline-field/EventDisciplineField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
-import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import { useConfigurations } from "@/services/api/configurations/configurations";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -188,12 +182,33 @@ function CompetitionEventDetailBody(props: {
   );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
     createSignal<EventExerciseDetail | null>(null);
+  const configurations = useConfigurations({
+    staleTime: Number.POSITIVE_INFINITY,
+  });
 
   const TABS = {
     JUDGES: "JUDGES",
     EXERCISES: "EXERCISES",
     COMPETITORS: "COMPETITORS",
   };
+
+  const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
+    const configurationExercises =
+      configurations.data
+        ?.find((entry) => entry.disciplineId === draftEvent().discipline.id)
+        ?.federations.find(
+          (entry) =>
+            entry.info.id === draftEvent().configuration.federation?.id,
+        )
+        ?.configurations.find(
+          (entry) => entry.id === draftEvent().configuration.id,
+        )?.exercises ?? [];
+
+    return configurationExercises.map((exercise) => ({
+      label: `--${exercise.name}`,
+      value: exercise.id,
+    }));
+  });
 
   const closeJudgeEditor = () => {
     setIsCreatingJudge(false);
@@ -473,8 +488,7 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.id === currentEditingExerciseId,
         );
         const orderChanged =
-          previousExercise &&
-          previousExercise.order !== normalizedDraft.order;
+          previousExercise && previousExercise.order !== normalizedDraft.order;
 
         const hasConflict = current.exercises.some(
           (entry) =>
@@ -718,6 +732,7 @@ function CompetitionEventDetailBody(props: {
           editingExerciseId={editingExerciseId()}
           exerciseDialogDraft={exerciseDialogDraft()}
           exercises={draftEvent().exercises}
+          exerciseCandidatesOptions={exerciseSelectOptions()}
           isCreatingExercise={isCreatingExercise()}
           isEditing={isEditing()}
           onAddExercise={handleAddExercise}
@@ -774,7 +789,7 @@ function CompetitionEventDetailBody(props: {
             <>
               <h1>{props.event().name}</h1>
               <p>{`--Status: ${props.event().status}`}</p>
-              <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline)}`}</p>
+              <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
               <p>{`--Participants: ${props.event().competitors.length}`}</p>
             </>
           }
@@ -786,7 +801,7 @@ function CompetitionEventDetailBody(props: {
               value={name()}
               onChange={setName}
             />
-            <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline)}`}</p>
+            <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
             <p>{`--Participants: ${props.event().competitors.length}`}</p>
           </div>
         </Show>

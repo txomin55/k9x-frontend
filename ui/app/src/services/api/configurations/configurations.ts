@@ -4,15 +4,14 @@ import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { queryClient } from "@/utils/http/query-client";
 import type { DisciplineFederationConfigurations } from "./configurations.types";
 
-export type {
-  DisciplineFederationConfigurations,
-  Configuration,
-  FederationConfiguration,
-} from "./configurations.types";
+export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 
 const fetchConfigurations = () =>
   rawRequest<DisciplineFederationConfigurations[]>({
     path: "/api/disciplines/configurations",
+  }).then((c) => {
+    c[0].disciplineId = "fci_ob";
+    return c;
   });
 
 const configurationsQuery = defineQuery({

@@ -1,42 +1,27 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import { useApiEvent } from "@/services/api/event-crud/eventCrud";
 import { useApiStage } from "@/services/api/stage-crud/stageCrud";
 import type {
   CreateEventRequest,
   EventDetail,
   EventEditorDraft,
-  UpdateEventRequest,
+  UpdateEventRequest
 } from "@/services/api/event-crud/eventCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import Card from "@lib/components/molecules/card/Card";
-import { getEventDisciplineLabel } from "@/components/global/event-discipline-field/EventDisciplineField";
+import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
+import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/api/configurations/configurations";
 import "./styles.css";
-import {
-  StageEditorModel,
-  UpdateStageRequest,
-} from "@/services/api/stage-crud/stageCrud.types";
+import { StageEditorModel, UpdateStageRequest } from "@/services/api/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -217,11 +202,14 @@ function CompetitionStageDetailBody(props: {
     setEventDialogDraft({
       competitors: [],
       configuration: {
-        federation: undefined,
+        federation: EMPTY_FEDERATION_CONFIGURATION,
         id: globalThis.crypto.randomUUID(),
         name: "",
       },
-      discipline: "",
+      discipline: {
+        id: draft.disciplineId,
+        name: "",
+      },
       exercises: [],
       id: draft.id ?? globalThis.crypto.randomUUID(),
       judges: [],
@@ -296,6 +284,7 @@ function CompetitionStageDetailBody(props: {
 
     if (isCreatingEvent()) {
       props.onCreateEvent({
+        disciplineId: draft.discipline.id,
         id: draft.id,
         name: draft.name,
         stageId: draft.stageId,
@@ -402,7 +391,7 @@ function CompetitionStageDetailBody(props: {
                   subHeader={<p>{`--Status: ${event().status}`}</p>}
                   content={
                     <div class="aaaaa">
-                      <p>{`--Discipline: ${getEventDisciplineLabel(event().discipline)}`}</p>
+                      <p>{`--Discipline: ${getEventDisciplineLabel(event().discipline.id)}`}</p>
                       <p>{`--Participants: ${event().competitors.length}`}</p>
                     </div>
                   }

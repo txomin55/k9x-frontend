@@ -1,6 +1,12 @@
+export interface ConfigurationExercise {
+  id: string;
+  name: string;
+}
+
 export interface Configuration {
   id: string;
   name: string;
+  exercises: ConfigurationExercise[];
 }
 
 export interface FederationConfiguration {
@@ -8,6 +14,12 @@ export interface FederationConfiguration {
   name: string;
   country: string;
 }
+
+export const EMPTY_FEDERATION_CONFIGURATION: FederationConfiguration = {
+  country: "",
+  id: "",
+  name: "",
+};
 
 export interface FederationConfigurations {
   info: FederationConfiguration;

@@ -71,7 +71,10 @@ export const toApiStage = (
         id: event.configuration?.id ?? "",
         name: event.configuration?.name ?? "",
       },
-      discipline: event.discipline ?? "",
+      discipline: event.discipline ?? {
+        id: "",
+        name: "",
+      },
       exercises:
         event.exercises?.map((exercise) => ({
           id: exercise.id ?? "",

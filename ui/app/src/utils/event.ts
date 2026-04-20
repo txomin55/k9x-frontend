@@ -10,7 +10,10 @@ export const toEventEditorDraft = (event: EventDetail): EventEditorDraft => ({
     id: event.configuration.id,
     name: event.configuration.name,
   },
-  discipline: event.discipline,
+  discipline: {
+    id: event.discipline.id,
+    name: event.discipline.name,
+  },
   exercises: event.exercises.map((exercise) => ({ ...exercise })),
   id: event.id,
   judges: event.judges.map((judge) => ({ ...judge })),

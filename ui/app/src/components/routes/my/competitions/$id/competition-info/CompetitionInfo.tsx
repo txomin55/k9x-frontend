@@ -1,6 +1,6 @@
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import CountryField from "@/components/global/country-field/CountryField";
+import CountryField from "@/components/common/country-field/CountryField";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import "./styles.css";

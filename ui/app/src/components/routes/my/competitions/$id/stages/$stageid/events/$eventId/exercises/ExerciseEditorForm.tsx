@@ -3,8 +3,10 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
-import { Show } from "solid-js";
+import { createMemo, Show } from "solid-js";
 
 type OrderBounds = {
   minValue: number;
@@ -22,6 +24,7 @@ type ExerciseEditorFormProps = {
   onCancel: () => void;
   onCreate: () => void;
   orderBounds: OrderBounds;
+  exerciseOptions: AtomSelectOption[];
   displaySave?: boolean;
 };
 
@@ -45,15 +48,29 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
     );
   };
 
-  const setText = (value: string) => {
+  const selectedExerciseOption = createMemo<AtomSelectOption | null>(() => {
+    const draft = props.draft();
+
+    return (
+      props.exerciseOptions.find((option) => option.value === draft.id) ?? {
+        label: `--${draft.name}`,
+        value: draft.id,
+      }
+    );
+  });
+
+  const setExercise = (option: AtomSelectOption) => {
     props.onDraftChange((current) =>
       current
         ? {
             ...current,
-            name: value,
+            id: option.value,
+            name: option.label.replace(/^--/, ""),
           }
         : current,
     );
+
+    props.onCommit();
   };
 
   const setTags = (value: string) => {
@@ -77,11 +94,18 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         minValue={minOrder}
         maxValue={maxOrder}
       />
-      <AtomInput
-        label="--Text"
-        value={props.draft().name}
-        onBlur={props.onCommit}
-        onChange={setText}
+      <AtomSelect
+        label="--Exercise"
+        options={props.exerciseOptions}
+        value={selectedExerciseOption()}
+        onChange={setExercise}
+        disabled={props.exerciseOptions.length === 0}
+        description={
+          props.exerciseOptions.length === 0
+            ? "--Select a configuration with exercises first"
+            : undefined
+        }
+        placeholder="--Select an exercise"
       />
       <AtomInput
         label="--Tags"

@@ -5,13 +5,14 @@ export interface CreateEventRequest {
   id: string;
   name: string;
   stageId: string;
+  disciplineId: string;
 }
 
 export interface UpdateEventRequest {
   competitors?: EventCompetitor[];
   configurationId?: string;
-  exercises?: EventExerciseDetail[];
-  judges?: EventJudge[];
+  exercises?: EventExercise[];
+  judges?: EventJudgeDetail[];
   name: string;
 }
 
@@ -35,14 +36,13 @@ export interface EventCompetitorDetail {
   order: number;
 }
 
-export interface EventConfiguration {
-  federation?: FederationConfiguration;
-  id?: string;
-  name?: string;
+export interface EventConfigurationDetail {
+  federation: FederationConfiguration;
+  id: string;
+  name: string;
 }
 
-export interface EventConfigurationDetail {
-  federation?: FederationConfiguration;
+export interface Discipline {
   id: string;
   name: string;
 }
@@ -50,7 +50,7 @@ export interface EventConfigurationDetail {
 export interface EventDetail {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetail;
-  discipline: string;
+  discipline: Discipline;
   exercises: EventExerciseDetail[];
   id: string;
   stageId: string;
@@ -59,16 +59,14 @@ export interface EventDetail {
   status: string;
 }
 
-export interface EventExerciseDetail {
-  id: string;
-  order: number;
+export interface EventExerciseDetail extends EventExercise {
   name: string;
-  tags: string[];
 }
 
-export interface EventJudge {
+export interface EventExercise {
   id: string;
-  collectorEmail?: string;
+  order: number;
+  tags: string[];
 }
 
 export interface EventJudgeDetail {
@@ -79,7 +77,7 @@ export interface EventJudgeDetail {
 export interface EventEditorDraft {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetail;
-  discipline: string;
+  discipline: Discipline;
   exercises: EventExerciseDetail[];
   id: string;
   judges: EventJudgeDetail[];

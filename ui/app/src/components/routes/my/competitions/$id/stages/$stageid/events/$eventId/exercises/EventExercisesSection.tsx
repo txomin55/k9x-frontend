@@ -8,14 +8,16 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import "./styles.css";
 import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import "./styles.css";
 
 type EventExercisesSectionProps = {
   onCommitExercise: () => void;
   editingExerciseId: string | null;
   exerciseDialogDraft: EventExerciseDetail | null;
   exercises: EventExerciseDetail[];
+  exerciseCandidatesOptions: AtomSelectOption[];
   isCreatingExercise: boolean;
   isEditing: boolean;
   onAddExercise: () => void;
@@ -33,6 +35,17 @@ export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
   const getOrderValue = (exercise: EventExerciseDetail) => exercise.order;
+  const getExerciseName = (exercise: EventExerciseDetail) => {
+    if (exercise.name) {
+      return exercise.name;
+    }
+
+    return (
+      props.exerciseCandidatesOptions
+        .find((option) => option.value === exercise.id)
+        ?.label.replace(/^--/, "") ?? exercise.id
+    );
+  };
 
   const sortedExercises = createMemo(() =>
     [...props.exercises].toSorted(
@@ -79,7 +92,7 @@ export default function EventExercisesSection(
                 topLeft={`--#${exercise().order}`}
                 description={
                   <div>
-                    <p>{exercise().name}</p>
+                    <p>{getExerciseName(exercise())}</p>
                     <Index each={exercise().tags}>
                       {(tag) => (
                         <AtomBadge textValue={tag()}>{tag()}</AtomBadge>
@@ -91,7 +104,7 @@ export default function EventExercisesSection(
                   props.isEditing ? (
                     <div class="event-exercises-section__exercises--actions">
                       <ConfirmActionButton
-                        text={exercise().name}
+                        text={getExerciseName(exercise())}
                         onConfirm={() => props.onDeleteExercise(exercise().id)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
@@ -131,6 +144,7 @@ export default function EventExercisesSection(
                   setDialogOpen(false);
                 }}
                 orderBounds={exerciseOrderBounds()}
+                exerciseOptions={props.exerciseCandidatesOptions}
                 displaySave={props.isCreatingExercise}
               />
             )}

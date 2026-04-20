@@ -1,4 +1,4 @@
-import { createMemo, getOwner } from "solid-js";
+import {createMemo, getOwner} from "solid-js";
 import {
   applyApiEventRemoval,
   applyApiEventUpsert,
@@ -11,50 +11,62 @@ import {
   getCachedCompetitions,
   useCompetition,
 } from "@/services/api/competition-crud/competitionCrud";
-import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
-import {
-  type DisciplineFederationConfigurations,
-  getConfigurationsQueryKey,
-} from "@/services/api/configurations/configurations";
+import {getVisibleCompetitions} from "@/services/api/competition-crud/competitionCrudOfflineUtils";
+import {EMPTY_FEDERATION_CONFIGURATION, getConfigurationsQueryKey,} from "@/services/api/configurations/configurations";
 import type {
   CreateEventRequest,
+  Discipline,
   EventCompetitor,
   EventCompetitorDetail,
-  EventConfiguration,
   EventConfigurationDetail,
   EventDetail,
+  EventExercise,
   EventExerciseDetail,
-  EventJudge,
   EventJudgeDetail,
   UpdateEventRequest,
 } from "@/services/api/event-crud/eventCrud.types";
-import { queryClient } from "@/utils/http/query-client";
+import {queryClient} from "@/utils/http/query-client";
+import {DisciplineFederationConfigurations} from "@/services/api/configurations/configurations.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiExercise = (
-  exercise: EventExerciseDetail,
+  exercise: EventExercise,
   previousExercise?: EventExerciseDetail,
 ): EventExerciseDetail => ({
-  id: exercise.id ?? previousExercise?.id ?? createId(),
+  id: exercise.id ?? previousExercise?.id,
   order: exercise.order ?? previousExercise?.order ?? 0,
-  name: exercise.name ?? previousExercise?.name ?? "",
+  name: previousExercise?.name ?? "",
   tags: exercise.tags ?? previousExercise?.tags ?? [],
 });
 
 const toApiEventConfiguration = (
-  configuration?: EventConfiguration,
+  configuration?: EventConfigurationDetail,
   previousConfiguration?: EventConfigurationDetail,
 ): EventConfigurationDetail => ({
-  federation: configuration?.federation ?? previousConfiguration?.federation,
-  id: configuration?.id ?? previousConfiguration?.id ?? createId(),
+  federation:
+    configuration?.federation ??
+    previousConfiguration?.federation ??
+    EMPTY_FEDERATION_CONFIGURATION,
+  id: configuration?.id ?? previousConfiguration?.id ?? "",
   name: configuration?.name ?? previousConfiguration?.name ?? "",
+});
+
+const toApiDiscipline = (
+  disciplineId?: string,
+  previousDiscipline?: Discipline,
+): Discipline => ({
+  id: disciplineId ?? previousDiscipline?.id ?? "",
+  name:
+    previousDiscipline && previousDiscipline.id === disciplineId
+      ? previousDiscipline.name
+      : "",
 });
 
 const findConfigurationDetail = (
   discipline: string | undefined,
   configurationId: string | undefined,
-): EventConfiguration | undefined => {
+): EventConfigurationDetail | undefined => {
   if (!discipline || !configurationId) {
     return undefined;
   }
@@ -84,7 +96,7 @@ const findConfigurationDetail = (
 };
 
 const toApiJudge = (
-  judge: EventJudge,
+  judge: EventJudgeDetail,
   previousJudge?: EventJudgeDetail,
 ): EventJudgeDetail => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
@@ -96,7 +108,7 @@ const toApiCompetitor = (
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
   return {
-    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? createId(),
+    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? "",
     identity: competitor.identity ?? previousCompetitor?.identity ?? "",
     name: previousCompetitor?.name ?? "",
     owner: competitor.owner ?? previousCompetitor?.owner ?? "",
@@ -117,6 +129,7 @@ const mergeApiEventWithPayload = (
 ): EventDetail => {
   const isCreatePayload = "id" in payload && "stageId" in payload;
   const updatePayload = "configurationId" in payload ? payload : null;
+  const createPayload = isCreatePayload ? payload : null;
   const nextEventId =
     (isCreatePayload ? payload.id : context?.eventId) ??
     previousEvent?.id ??
@@ -135,10 +148,10 @@ const mergeApiEventWithPayload = (
     (previousEvent?.exercises ?? []).map((exercise) => [exercise.id, exercise]),
   );
   const resolvedConfiguration = updatePayload?.configurationId
-    ? (findConfigurationDetail(
-        previousEvent?.discipline,
+    ? findConfigurationDetail(
+        previousEvent?.discipline.id,
         updatePayload.configurationId,
-      ) ?? { id: updatePayload.configurationId })
+      )
     : undefined;
 
   return {
@@ -157,7 +170,10 @@ const mergeApiEventWithPayload = (
       resolvedConfiguration,
       previousEvent?.configuration,
     ),
-    discipline: previousEvent?.discipline ?? "",
+    discipline: toApiDiscipline(
+      createPayload?.disciplineId,
+      previousEvent?.discipline,
+    ),
     exercises:
       updatePayload?.exercises?.map((exercise) =>
         toApiExercise(
@@ -181,6 +197,7 @@ const mergeApiEventWithPayload = (
 };
 
 const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
+  disciplineId: "",
   id: createId(),
   name: "--Default event",
   stageId,
@@ -293,7 +310,7 @@ export const useApiEvent = () => {
         entityId: draftApiEvent.id,
         method: "POST",
         payload: {
-          discipline: draftApiEvent.discipline,
+          disciplineId: payload.disciplineId,
           id: draftApiEvent.id,
           name: draftApiEvent.name,
           stageId: draftApiEvent.stageId,

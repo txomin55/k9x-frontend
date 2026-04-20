@@ -2,16 +2,17 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import EventDisciplineField from "@/components/global/event-discipline-field/EventDisciplineField";
+import EventDisciplineField from "@/components/common/event-discipline-field/EventDisciplineField";
+import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/api/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { EventDetail } from "@/services/api/event-crud/eventCrud.types";
+import type { EventEditorDraft } from "@/services/api/event-crud/eventCrud.types";
 import "./styles.css";
 
 type EventEditorFormProps = {
-  draft: EventDetail;
+  draft: EventEditorDraft;
   onCancel: () => void;
   onChange: (
-    updater: (current: EventDetail | null) => EventDetail | null,
+    updater: (current: EventEditorDraft | null) => EventEditorDraft | null,
   ) => void;
   onSave: () => void;
   isCreate?: boolean;
@@ -31,13 +32,16 @@ export default function EventEditorForm(props: EventEditorFormProps) {
   const updateDiscipline = (option: AtomSelectOption) => {
     props.onChange((current) =>
       current
-        ? current.discipline === option.value
+        ? current.discipline.id === option.value
           ? current
           : {
               ...current,
-              discipline: option.value,
+              discipline: {
+                id: option.value,
+                name: option.label,
+              },
               configuration: {
-                federation: undefined,
+                federation: EMPTY_FEDERATION_CONFIGURATION,
                 id: "",
                 name: "",
               },
@@ -54,7 +58,7 @@ export default function EventEditorForm(props: EventEditorFormProps) {
       />
       <EventDisciplineField
         onChange={updateDiscipline}
-        value={props.draft.discipline}
+        value={props.draft.discipline.id}
         disabled={!props.isCreate}
       />
       <div class="event-editor-form__actions">
