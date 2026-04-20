@@ -9,9 +9,6 @@ export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 const fetchConfigurations = () =>
   rawRequest<DisciplineFederationConfigurations[]>({
     path: "/api/disciplines/configurations",
-  }).then((c) => {
-    c[0].disciplineId = "fci_ob";
-    return c;
   });
 
 const configurationsQuery = defineQuery({

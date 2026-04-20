@@ -4,11 +4,16 @@ import { defineQuery } from "@/utils/http/query-factory";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import {
   COLLECTIONS_SNAPSHOT_ID,
+  getCollectionByIdQueryKey,
+  getCollectionSnapshotId,
   getCollectionsQueryKey
 } from "@/services/api/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
-import { saveCollectionsSnapshot } from "@/services/api/collection-crud/collectionCrudOfflineUtils";
-import { CollectionsRequest } from "@/services/api/collection-crud/collectionCrud.types";
+import {
+  saveCollectionSnapshot,
+  saveCollectionsSnapshot
+} from "@/services/api/collection-crud/collectionCrudOfflineUtils";
+import { CollectionsRequest, GetCollectionResponse } from "@/services/api/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import { mergeCollectionsWithDrafts } from "@/services/api/collection-crud/collectionsDrafStore";
 
@@ -26,13 +31,42 @@ const refreshCollectionsSnapshot = async () => {
 const fetchCollections = () =>
   fetchWithOfflineSnapshot(COLLECTIONS_SNAPSHOT_ID, refreshCollectionsSnapshot);
 
+const refreshCollectionSnapshot = async (id: string) => {
+  const collection = await rawRequest<GetCollectionResponse>({
+    path: `/api/collections/${id}`,
+  });
+
+  await saveCollectionSnapshot(id, collection);
+  queryClient.setQueryData(getCollectionByIdQueryKey(id), collection);
+
+  return collection;
+};
+
+const fetchCollectionById = (id: string) =>
+  fetchWithOfflineSnapshot(getCollectionSnapshotId(id), () =>
+    refreshCollectionSnapshot(id),
+  );
+
 const collectionsQuery = defineQuery({
   fetcher: fetchCollections,
   queryKey: ["collections"] as const,
 });
 
+const collectionByIdQuery = defineQuery({
+  fetcher: fetchCollectionById,
+  queryKey: (id: string) => ["collection", id] as const,
+});
+
 const createCollectionsQuery = (options?: TanstackCreateQuery) =>
   collectionsQuery.useQuery({
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+    refetchOnMount: options?.refetchOnMount,
+  });
+
+const createCollectionByIdQuery = (id: string, options?: TanstackCreateQuery) =>
+  collectionByIdQuery.useQuery([id], {
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     networkMode: "always",
@@ -68,7 +102,30 @@ export const prefetchCollections = (options?: TanstackCreateQuery) => {
   });
 };
 
+export const prefetchCollectionById = (
+  id: string,
+  options?: TanstackCreateQuery,
+) => {
+  const { queryFn, queryKey } = collectionByIdQuery.options(id);
+
+  return queryClient.fetchQuery({
+    queryKey,
+    queryFn,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+  });
+};
+
 export const getCachedCollections = () =>
   mergeCollectionsWithDrafts(
     queryClient.getQueryData<CollectionsRequest[]>(getCollectionsQueryKey()),
+  );
+
+export const useCollectionById = (id: string, options?: TanstackCreateQuery) =>
+  createCollectionByIdQuery(id, options);
+
+export const getCachedCollectionById = (id: string) =>
+  queryClient.getQueryData<GetCollectionResponse>(
+    getCollectionByIdQueryKey(id),
   );
