@@ -1,0 +1,4 @@
+.scores-competitor-pre-label {
+    display: flex;
+    gap: var(--unit-1);
+}

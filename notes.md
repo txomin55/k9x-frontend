@@ -9,8 +9,8 @@
   juez, ids de juez y un estado~~
     - ~~Hacer vista de colecta de scores con filtrado por url, así el colector solo ve 1 juez, pero el creador de la
       competi al no pasar por URL el id de juez, puede ver todos y modificarlos todos~~
-    - que la vista tenga un select con un prelabel para identificar si se a terminado la colecta, este select se
-      controla con parametro de url
+    - ~~que la vista tenga un select con un prelabel para identificar si se a terminado la colecta, este select se
+      controla con parametro de url~~
     - ~~una tabla donde primera columna será el ejercicio~~
     - ~~columnas de jueces en base a parametros de url~~
 - Offline retry con sw

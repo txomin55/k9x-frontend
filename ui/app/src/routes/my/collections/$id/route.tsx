@@ -119,10 +119,41 @@ function CollectionDetailPage() {
           {
             label: c.competitor.owner,
             value: c.competitor.dogId,
-            preLabel: <ScoresCompetitorPreLabel competitor={c.competitor} />,
+            preLabel: (
+              <ScoresCompetitorPreLabel
+                competitor={c.competitor}
+                seen={seenCompetitors().includes(c.competitor.dogId)}
+              />
+            ),
           },
         ];
       });
+  });
+
+  const [seenCompetitors, setSeenCompetitors] = createSignal<string[]>([]);
+  const markCompetitorAsSeen = (opt: AtomSelectOption) => {
+    setSeenCompetitors([...seenCompetitors(), opt.value]);
+    setSelectedCompetitor(opt);
+  };
+
+  createEffect(() => {
+    if (collectionData.data?.competitors) {
+      const seen: string[] = [];
+      for (const c of collectionData.data.competitors) {
+        const dogId = c.competitor.dogId;
+
+        for (const e of c.exercises) {
+          const touched = e.scores.some((s) => s.score !== 0);
+
+          if (touched && dogId) {
+            seen.push(dogId);
+            break;
+          }
+        }
+      }
+
+      setSeenCompetitors(seen);
+    }
   });
 
   const [selectedCompetitor, setSelectedCompetitor] = createSignal(
@@ -229,7 +260,7 @@ function CollectionDetailPage() {
         label="--Competitors"
         options={collectionCompetitors()}
         value={selectedCompetitor()}
-        onChange={setSelectedCompetitor}
+        onChange={markCompetitorAsSeen}
       />
 
       <Show when={selectedCompetitor()}>
