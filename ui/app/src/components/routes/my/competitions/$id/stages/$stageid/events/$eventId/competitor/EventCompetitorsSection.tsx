@@ -3,14 +3,13 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useDogs } from "@/services/api/dog-crud/dogCrud";
 import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { EventCompetitorDetail } from "@/services/api/event-crud/eventCrud.types";
+import { useNavigate, useParams } from "@tanstack/solid-router";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -34,6 +33,10 @@ type EventCompetitorsSectionProps = {
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
+  const params = useParams({
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
+  });
+
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
@@ -78,6 +81,16 @@ export default function EventCompetitorsSection(
     return "--Edit competitor";
   };
 
+  const navigate = useNavigate();
+  const openCompetitorCollection = (eventId: string, competitorId: string) =>
+    void navigate({
+      params: { id: eventId },
+      to: "/my/collections/$id",
+      search: {
+        competitorId,
+        judgesIds: [],
+      },
+    });
   return (
     <section class="event-competitors-section">
       <div class="event-competitors-section__header">
@@ -122,16 +135,28 @@ export default function EventCompetitorsSection(
                           --Delete
                         </AtomButton>
                       </ConfirmActionButton>
-                      <span
+                      <AtomButton
+                        type={BUTTON_TYPES.ACCENT}
                         onClick={() => {
                           props.onOpenCompetitorEditor(competitor());
                           setDialogOpen(true);
                         }}
                       >
                         --Edit
-                      </span>
+                      </AtomButton>
                     </div>
-                  ) : undefined
+                  ) : (
+                    <AtomButton
+                      onClick={() => {
+                        openCompetitorCollection(
+                          params().eventId,
+                          competitor().dogId,
+                        );
+                      }}
+                    >
+                      --Scores
+                    </AtomButton>
+                  )
                 }
               />
             )}

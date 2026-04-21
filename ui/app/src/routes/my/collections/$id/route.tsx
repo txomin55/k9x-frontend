@@ -2,17 +2,19 @@ import { createFileRoute, useParams, useSearch } from "@tanstack/solid-router";
 import {
   getCachedCollections,
   updateCollectionScore,
-  useCollectionById,
+  useCollectionById
 } from "@/services/api/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
+import ScoresCompetitorPreLabel
+  from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore
+  from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
 import {
   CollectionScore,
   ExerciseScores,
-  UpdateCollectionScoreRequest,
+  UpdateCollectionScoreRequest
 } from "@/services/api/collection-crud/collectionCrud.types";
 import "./styles.css";
 
@@ -43,13 +45,14 @@ const applyPendingScores = ({
   exercises.map((exerciseScores) => ({
     ...exerciseScores,
     scores: exerciseScores.scores.map((score) => {
-      const pendingScore = pendingScores[
-        getPendingScoreKey({
-          competitorId,
-          exerciseId: exerciseScores.exercise.id,
-          judgeId: score.judge.id,
-        })
-      ];
+      const pendingScore =
+        pendingScores[
+          getPendingScoreKey({
+            competitorId,
+            exerciseId: exerciseScores.exercise.id,
+            judgeId: score.judge.id,
+          })
+        ];
 
       return pendingScore === undefined
         ? score
@@ -96,9 +99,9 @@ function CollectionDetailPage() {
   const search = useSearch({ from: "/my/collections/$id" });
 
   const collectionData = useCollectionById(params().id);
-  const [pendingScores, setPendingScores] = createSignal<Record<string, number>>(
-    {},
-  );
+  const [pendingScores, setPendingScores] = createSignal<
+    Record<string, number>
+  >({});
 
   const collectionCompetitors = createMemo<AtomSelectOption[]>(() => {
     if (!collectionData.data?.competitors) {
