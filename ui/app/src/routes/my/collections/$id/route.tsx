@@ -8,10 +8,11 @@ import ScoresCompetitorPreLabel
 import CollectionExerciseScore
   from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
 import "./styles.css";
+import { CollectionScore } from "@/services/api/collection-crud/collectionCrud.types";
 
 type CollectionDetailSearch = {
-  competitorId?: string;
-  judgesIds?: string[];
+  competitorId: string;
+  judgesIds: string[];
 };
 
 export const Route = createFileRoute("/my/collections/$id")({
@@ -28,14 +29,17 @@ export const Route = createFileRoute("/my/collections/$id")({
   validateSearch: (
     search: Record<string, string | string[]>,
   ): CollectionDetailSearch => {
-    const validatedSearch: CollectionDetailSearch = {};
+    const validatedSearch: CollectionDetailSearch = {
+      competitorId: "",
+      judgesIds: [],
+    };
 
     if (typeof search.competitorId === "string") {
-      validatedSearch.competitorId = search.competitorId;
+      validatedSearch.competitorId = search.competitorId ?? "";
     }
 
     if (Array.isArray(search.judgesIds)) {
-      validatedSearch.judgesIds = search.judgesIds;
+      validatedSearch.judgesIds = search.judgesIds ?? [];
     }
 
     return validatedSearch;
@@ -92,9 +96,19 @@ function CollectionDetailPage() {
     return competitorScores.exercises;
   });
 
-  const collectionJudges = createMemo(
-    () => collectionExercises()[0]?.scores ?? [],
-  );
+  const filterByEligibleJudges = (score: CollectionScore) => {
+    if (search().judgesIds.length) {
+      return search().judgesIds.includes(score.judge.id);
+    }
+    return true;
+  };
+
+  const collectionJudges = createMemo(() => {
+    if (!collectionExercises()[0]?.scores) {
+      return [];
+    }
+    return collectionExercises()[0]?.scores.filter(filterByEligibleJudges);
+  });
 
   const exercisesGridTemplate = createMemo(() => {
     const judgesCount = collectionJudges().length;
@@ -130,7 +144,7 @@ function CollectionDetailPage() {
               {(exerciseScores) => (
                 <CollectionExerciseScore
                   exercise={exerciseScores.exercise}
-                  scores={exerciseScores.scores}
+                  scores={exerciseScores.scores.filter(filterByEligibleJudges)}
                 />
               )}
             </For>
