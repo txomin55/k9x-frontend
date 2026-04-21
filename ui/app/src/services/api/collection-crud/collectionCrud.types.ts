@@ -1,4 +1,5 @@
 import { Judge } from "@/services/api/judge-crud/judgeCrud.types";
+import { EventCompetitor } from "@/services/api/event-crud/eventCrud.types";
 
 export interface CollectionsRequest {
   competitionName: string;
@@ -9,13 +10,9 @@ export interface CollectionsRequest {
   judges: Judge[];
 }
 
-export interface GetCollectionResponse {
-  competitors: ExerciseScores[];
-}
-
-export interface ExerciseScores {
-  exercise: Exercise;
-  scores: Score[];
+export interface CompetitorScores {
+  exercises: ExerciseScores[];
+  competitor: EventCompetitor;
 }
 
 export interface Exercise {
@@ -24,7 +21,12 @@ export interface Exercise {
   order: number;
 }
 
-export interface Score {
+export interface CollectionScore {
   judge: Judge;
   score: number;
+}
+
+export interface ExerciseScores {
+  exercise: Exercise;
+  scores: CollectionScore[];
 }

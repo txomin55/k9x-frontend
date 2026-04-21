@@ -13,7 +13,7 @@ import {
   saveCollectionSnapshot,
   saveCollectionsSnapshot
 } from "@/services/api/collection-crud/collectionCrudOfflineUtils";
-import { CollectionsRequest, GetCollectionResponse } from "@/services/api/collection-crud/collectionCrud.types";
+import { CollectionsRequest, CompetitorScores } from "@/services/api/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import { mergeCollectionsWithDrafts } from "@/services/api/collection-crud/collectionsDrafStore";
 
@@ -32,7 +32,7 @@ const fetchCollections = () =>
   fetchWithOfflineSnapshot(COLLECTIONS_SNAPSHOT_ID, refreshCollectionsSnapshot);
 
 const refreshCollectionSnapshot = async (id: string) => {
-  const collection = await rawRequest<GetCollectionResponse>({
+  const collection = await rawRequest<CompetitorScores[]>({
     path: `/api/collections/${id}`,
   });
 
@@ -126,6 +126,4 @@ export const useCollectionById = (id: string, options?: TanstackCreateQuery) =>
   createCollectionByIdQuery(id, options);
 
 export const getCachedCollectionById = (id: string) =>
-  queryClient.getQueryData<GetCollectionResponse>(
-    getCollectionByIdQueryKey(id),
-  );
+  queryClient.getQueryData<CompetitorScores[]>(getCollectionByIdQueryKey(id));

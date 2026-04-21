@@ -1,0 +1,20 @@
+.collection-exercise-scores {
+    display: grid;
+    grid-template-columns: var(--collection-detail-exercises-columns);
+    align-items: center;
+    gap: var(--unit-1);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--unit-1);
+}
+
+.collection-exercise-scores__score {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.collection-exercise-scores__exercise {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}

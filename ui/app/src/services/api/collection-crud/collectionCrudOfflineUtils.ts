@@ -7,7 +7,7 @@ import {
 } from "@/services/api/collection-crud/collectionCrudConstants";
 import {
   CollectionsRequest,
-  GetCollectionResponse,
+  CompetitorScores,
 } from "@/services/api/collection-crud/collectionCrud.types";
 
 export const saveCollectionsSnapshot = (collections: CollectionsRequest[]) =>
@@ -15,5 +15,5 @@ export const saveCollectionsSnapshot = (collections: CollectionsRequest[]) =>
 
 export const saveCollectionSnapshot = (
   id: string,
-  collection: GetCollectionResponse,
+  collection: CompetitorScores[],
 ) => saveQuerySnapshot(getCollectionSnapshotId(id), collection);

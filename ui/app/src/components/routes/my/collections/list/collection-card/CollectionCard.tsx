@@ -31,7 +31,7 @@ export default function CollectionCard(props: CollectionCardProps) {
       }
       actions={
         <div class="collection-card__actions">
-          <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCollect}>
+          <AtomButton type={BUTTON_TYPES.PRIMARY} onClick={props.onCollect}>
             --Collect
           </AtomButton>
         </div>

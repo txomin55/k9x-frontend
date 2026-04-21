@@ -1,0 +1,26 @@
+.collection-detail__exercises {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.collection-detail__exercises--headers {
+    display: grid;
+    grid-template-columns: var(--collection-detail-exercises-columns);
+    align-items: center;
+    gap: var(--unit-1);
+    width: 100%;
+    padding-top: var(--unit-2);
+    padding-bottom: var(--unit-2);
+    border-bottom: 3px solid var(--border);
+}
+
+.collection-detail__exercises--headers > :not(:first-child) {
+    text-align: end;
+}
+
+.collection-detail__exercises--rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}

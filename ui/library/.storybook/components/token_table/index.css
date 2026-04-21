@@ -9,7 +9,7 @@
     text-align: left;
     padding: 8px 12px;
     vertical-align: middle;
-    border-bottom: 1px solid var(--border, #e5e7eb);
+    border-bottom: 1px solid var(--border);
 }
 
 .token-table th:nth-child(1),
