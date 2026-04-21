@@ -6,21 +6,36 @@ const rawRequest = vi.hoisted(() => vi.fn());
 const createPendingTaskId = vi.hoisted(() => vi.fn());
 const enqueuePendingTask = vi.hoisted(() => vi.fn());
 const processPendingTasks = vi.hoisted(() => vi.fn());
+const HttpRequestError = vi.hoisted(
+  () =>
+    class HttpRequestError extends Error {
+      path: string;
+      status: number;
 
-vi.mock("@/utils/local_first/localFirstPolicy", () => ({
+      constructor(path: string, status: number) {
+        super(`Request failed for ${path} with status ${status}`);
+        this.name = "HttpRequestError";
+        this.path = path;
+        this.status = status;
+      }
+    },
+);
+
+vi.mock("@/utils/local-first/localFirstPolicy", () => ({
   shouldQueueOfflineMutation,
 }));
 
 vi.mock("@/utils/http/client", () => ({
   rawRequest,
+  HttpRequestError,
 }));
 
-vi.mock("@/utils/local_first/pending_tasks/pendingTasksStore", () => ({
+vi.mock("@/utils/local-first/pending_tasks/pendingTasksStore", () => ({
   createPendingTaskId,
   enqueuePendingTask,
 }));
 
-vi.mock("@/utils/local_first/pending_tasks/pendingTasksRunner", () => ({
+vi.mock("@/utils/local-first/pending_tasks/pendingTasksRunner", () => ({
   processPendingTasks,
 }));
 
@@ -107,5 +122,28 @@ describe("commitOptimisticMutation", () => {
     ).rejects.toThrow("boom");
 
     expect(rollback).toHaveBeenCalledWith({ entityId: "1" });
+  });
+
+  it("preserves the optimistic change on matching http errors", async () => {
+    const rollback = vi.fn();
+    const error = new HttpRequestError("/api/collections/1/score", 404);
+
+    shouldQueueOfflineMutation.mockReturnValue(false);
+    rawRequest.mockRejectedValue(error);
+
+    await expect(
+      commitOptimisticMutation({
+        entityId: "1",
+        entityType: "collection",
+        method: "PUT",
+        payload: { score: 2 },
+        preserveOnHttpError: (httpError) => httpError.status === 404,
+        rollback,
+        rollbackPayload: { entityId: "1" },
+        url: "/api/collections/1/score",
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(rollback).not.toHaveBeenCalled();
   });
 });

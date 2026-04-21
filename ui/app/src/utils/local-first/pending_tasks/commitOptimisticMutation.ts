@@ -1,5 +1,5 @@
 import { shouldQueueOfflineMutation } from "@/utils/local-first/localFirstPolicy";
-import { rawRequest } from "@/utils/http/client";
+import { HttpRequestError, rawRequest } from "@/utils/http/client";
 import {
   createPendingTaskId,
   enqueuePendingTask,
@@ -14,6 +14,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   method,
   onCommitted,
   payload,
+  preserveOnHttpError,
   rollbackPayload,
   rollback,
   url,
@@ -23,6 +24,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   method: PendingTaskMethod;
   onCommitted?: () => Promise<void> | void;
   payload?: unknown;
+  preserveOnHttpError?: (error: HttpRequestError) => boolean;
   rollbackPayload: TRollbackPayload;
   rollback: (payload: TRollbackPayload) => Promise<void>;
   url: string;
@@ -37,6 +39,13 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
       await onCommitted?.();
       return;
     } catch (error) {
+      if (
+        error instanceof HttpRequestError &&
+        preserveOnHttpError?.(error)
+      ) {
+        return;
+      }
+
       await rollback(rollbackPayload);
       throw error;
     }

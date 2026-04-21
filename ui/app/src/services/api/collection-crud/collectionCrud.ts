@@ -10,12 +10,24 @@ import {
 } from "@/services/api/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
 import {
+  applyCollectionUpsert,
+  commitCollectionMutation,
+  commitCollectionMutationSuccess,
+  createCollectionRollbackPayload,
+  getVisibleCollectionById,
   saveCollectionSnapshot,
   saveCollectionsSnapshot
 } from "@/services/api/collection-crud/collectionCrudOfflineUtils";
-import { CollectionsRequest, CompetitorScores } from "@/services/api/collection-crud/collectionCrud.types";
+import {
+  CollectionRequest,
+  CollectionsRequest,
+  UpdateCollectionScoreRequest
+} from "@/services/api/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
-import { mergeCollectionsWithDrafts } from "@/services/api/collection-crud/collectionsDrafStore";
+import {
+  mergeCollectionByIdWithDraft,
+  mergeCollectionsWithDrafts
+} from "@/services/api/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
   const collections = await rawRequest<CollectionsRequest[]>({
@@ -32,7 +44,7 @@ const fetchCollections = () =>
   fetchWithOfflineSnapshot(COLLECTIONS_SNAPSHOT_ID, refreshCollectionsSnapshot);
 
 const refreshCollectionSnapshot = async (id: string) => {
-  const collection = await rawRequest<CompetitorScores[]>({
+  const collection = await rawRequest<CollectionRequest>({
     path: `/api/collections/${id}`,
   });
 
@@ -122,8 +134,98 @@ export const getCachedCollections = () =>
     queryClient.getQueryData<CollectionsRequest[]>(getCollectionsQueryKey()),
   );
 
-export const useCollectionById = (id: string, options?: TanstackCreateQuery) =>
-  createCollectionByIdQuery(id, options);
+export const useCollectionById = (
+  id: string,
+  options?: TanstackCreateQuery,
+) => {
+  const collection = createCollectionByIdQuery(id, options);
+  const mergedData = createMemo(() =>
+    mergeCollectionByIdWithDraft(id, collection.data),
+  );
+
+  return new Proxy(collection, {
+    get(target, property, receiver) {
+      if (property === "data") {
+        return mergedData();
+      }
+
+      return Reflect.get(target, property, receiver);
+    },
+  });
+};
 
 export const getCachedCollectionById = (id: string) =>
-  queryClient.getQueryData<CompetitorScores[]>(getCollectionByIdQueryKey(id));
+  queryClient.getQueryData<CollectionRequest>(getCollectionByIdQueryKey(id));
+
+const updateCollectionScoreProjection = (
+  previousCollection: CollectionRequest,
+  payload: UpdateCollectionScoreRequest,
+): CollectionRequest => ({
+  ...previousCollection,
+  competitors: previousCollection.competitors.map((competitorScores) =>
+    competitorScores.competitor.dogId === payload.competitorId
+      ? {
+          ...competitorScores,
+          exercises: competitorScores.exercises.map((exerciseScores) =>
+            exerciseScores.exercise.id === payload.exerciseId
+              ? {
+                  ...exerciseScores,
+                  scores: exerciseScores.scores.map((scoreEntry) =>
+                    scoreEntry.judge.id === payload.judgeId
+                      ? {
+                          ...scoreEntry,
+                          score: payload.score,
+                        }
+                      : scoreEntry,
+                  ),
+                }
+              : exerciseScores,
+          ),
+        }
+      : competitorScores,
+  ),
+});
+
+export const updateCollectionScore = (
+  collectionId: string,
+  payload: UpdateCollectionScoreRequest,
+) => {
+  const previousCollection = getVisibleCollectionById(collectionId);
+
+  if (!previousCollection) {
+    throw new Error(`Collection ${collectionId} not found`);
+  }
+
+  const nextCollection = updateCollectionScoreProjection(
+    previousCollection,
+    payload,
+  );
+  const entityId = [
+    payload.competitorId,
+    payload.exerciseId,
+    payload.judgeId,
+    payload.eventId,
+  ].join(":");
+
+  applyCollectionUpsert(collectionId, nextCollection);
+
+  void (async () => {
+    await commitCollectionMutation({
+      entityId,
+      method: "PUT",
+      payload,
+      onCommitted: () =>
+        commitCollectionMutationSuccess({
+          collectionId,
+          method: "PUT",
+        }),
+      rollbackPayload: await createCollectionRollbackPayload(
+        collectionId,
+        previousCollection,
+      ),
+      url: `/api/collections/${collectionId}/score`,
+    });
+  })();
+
+  return nextCollection;
+};

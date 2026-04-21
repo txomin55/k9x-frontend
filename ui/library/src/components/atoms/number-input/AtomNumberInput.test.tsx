@@ -48,4 +48,21 @@ describe("AtomNumberInput", () => {
 
     expect(getByText("Quantity must be positive")).toBeInTheDocument();
   });
+
+  test("limits long decimal values to two decimals", async () => {
+    const user = userEvent.setup();
+    const onRawValueChange = vi.fn();
+    const { getByRole } = render(() => (
+      <AtomNumberInput rawValue={0} onRawValueChange={onRawValueChange} />
+    ));
+
+    const input = getByRole("spinbutton") as HTMLInputElement;
+
+    await user.clear(input);
+    await user.type(input, "44457999.172979444");
+    await user.tab();
+
+    expect(input.value).toBe("44,457,999.17");
+    expect(onRawValueChange).toHaveBeenLastCalledWith(44457999.17);
+  });
 });

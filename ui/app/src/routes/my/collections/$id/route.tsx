@@ -1,19 +1,64 @@
 import { createFileRoute, useParams, useSearch } from "@tanstack/solid-router";
-import { getCachedCollections, useCollectionById } from "@/services/api/collection-crud/collectionCrud";
+import {
+  getCachedCollections,
+  updateCollectionScore,
+  useCollectionById,
+} from "@/services/api/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel
-  from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore
-  from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
+import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
+import {
+  CollectionScore,
+  ExerciseScores,
+  UpdateCollectionScoreRequest,
+} from "@/services/api/collection-crud/collectionCrud.types";
 import "./styles.css";
-import { CollectionScore } from "@/services/api/collection-crud/collectionCrud.types";
 
 type CollectionDetailSearch = {
   competitorId: string;
   judgesIds: string[];
 };
+
+const getPendingScoreKey = ({
+  competitorId,
+  exerciseId,
+  judgeId,
+}: {
+  competitorId: string;
+  exerciseId: string;
+  judgeId: string;
+}) => `${competitorId}:${exerciseId}:${judgeId}`;
+
+const applyPendingScores = ({
+  competitorId,
+  exercises,
+  pendingScores,
+}: {
+  competitorId: string;
+  exercises: ExerciseScores[];
+  pendingScores: Record<string, number>;
+}) =>
+  exercises.map((exerciseScores) => ({
+    ...exerciseScores,
+    scores: exerciseScores.scores.map((score) => {
+      const pendingScore = pendingScores[
+        getPendingScoreKey({
+          competitorId,
+          exerciseId: exerciseScores.exercise.id,
+          judgeId: score.judge.id,
+        })
+      ];
+
+      return pendingScore === undefined
+        ? score
+        : {
+            ...score,
+            score: pendingScore,
+          };
+    }),
+  }));
 
 export const Route = createFileRoute("/my/collections/$id")({
   component: CollectionDetailPage,
@@ -51,13 +96,16 @@ function CollectionDetailPage() {
   const search = useSearch({ from: "/my/collections/$id" });
 
   const collectionData = useCollectionById(params().id);
+  const [pendingScores, setPendingScores] = createSignal<Record<string, number>>(
+    {},
+  );
 
   const collectionCompetitors = createMemo<AtomSelectOption[]>(() => {
-    if (!collectionData.data) {
+    if (!collectionData.data?.competitors) {
       return [];
     }
 
-    return collectionData.data
+    return collectionData.data.competitors
       .toSorted((a, b) => (a.competitor.order ?? 0) - (b.competitor.order ?? 0))
       .flatMap((c) => {
         if (!c.competitor.owner || !c.competitor.dogId) {
@@ -81,11 +129,11 @@ function CollectionDetailPage() {
   );
 
   const collectionExercises = createMemo(() => {
-    if (!selectedCompetitor() || !collectionData.data) {
+    if (!selectedCompetitor() || !collectionData.data?.competitors) {
       return [];
     }
 
-    const competitorScores = collectionData.data.find(
+    const competitorScores = collectionData.data.competitors.find(
       (c) => c.competitor.dogId === selectedCompetitor()?.value,
     );
 
@@ -93,7 +141,11 @@ function CollectionDetailPage() {
       return [];
     }
 
-    return competitorScores.exercises;
+    return applyPendingScores({
+      competitorId: competitorScores.competitor.dogId ?? "",
+      exercises: competitorScores.exercises,
+      pendingScores: pendingScores(),
+    });
   });
 
   const filterByEligibleJudges = (score: CollectionScore) => {
@@ -114,6 +166,57 @@ function CollectionDetailPage() {
     const judgesCount = collectionJudges().length;
 
     return `2fr repeat(${judgesCount}, 1.25fr)`;
+  });
+
+  const handleCommitScore = (payload: UpdateCollectionScoreRequest) => {
+    const scoreKey = getPendingScoreKey(payload);
+
+    setPendingScores((currentScores) => ({
+      ...currentScores,
+      [scoreKey]: payload.score,
+    }));
+    updateCollectionScore(params().id, payload);
+  };
+
+  createEffect(() => {
+    const currentCollection = collectionData.data;
+    const currentPendingScores = pendingScores();
+
+    if (!currentCollection || Object.keys(currentPendingScores).length === 0) {
+      return;
+    }
+
+    const committedScoreKeys = new Set<string>();
+
+    currentCollection.competitors.forEach((competitorScores) => {
+      competitorScores.exercises.forEach((exerciseScores) => {
+        exerciseScores.scores.forEach((score) => {
+          const scoreKey = getPendingScoreKey({
+            competitorId: competitorScores.competitor.dogId ?? "",
+            exerciseId: exerciseScores.exercise.id,
+            judgeId: score.judge.id,
+          });
+
+          if (currentPendingScores[scoreKey] === score.score) {
+            committedScoreKeys.add(scoreKey);
+          }
+        });
+      });
+    });
+
+    if (committedScoreKeys.size === 0) {
+      return;
+    }
+
+    setPendingScores((currentScores) => {
+      const nextScores = { ...currentScores };
+
+      committedScoreKeys.forEach((scoreKey) => {
+        delete nextScores[scoreKey];
+      });
+
+      return nextScores;
+    });
   });
 
   return (
@@ -142,10 +245,20 @@ function CollectionDetailPage() {
           <div class="collection-detail__exercises--rows">
             <For each={collectionExercises()}>
               {(exerciseScores) => (
-                <CollectionExerciseScore
-                  exercise={exerciseScores.exercise}
-                  scores={exerciseScores.scores.filter(filterByEligibleJudges)}
-                />
+                <Show when={collectionData.data?.configuration}>
+                  {(configuration) => (
+                    <CollectionExerciseScore
+                      competitorId={selectedCompetitor()?.value ?? ""}
+                      eventId={params().id}
+                      exercise={exerciseScores.exercise}
+                      scores={exerciseScores.scores.filter(
+                        filterByEligibleJudges,
+                      )}
+                      allowedValues={configuration().allowedValues}
+                      onCommitScore={handleCommitScore}
+                    />
+                  )}
+                </Show>
               )}
             </For>
           </div>

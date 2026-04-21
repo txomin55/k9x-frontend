@@ -8,6 +8,7 @@ export default function AtomNumberInput(props: AtomNumberInputProps) {
       class="atom-number-input"
       defaultValue={props.defaultValue}
       disabled={props.disabled}
+      formatOptions={{ maximumFractionDigits: 2 }}
       largeStep={props.largeStep}
       maxValue={props.maxValue}
       minValue={props.minValue}

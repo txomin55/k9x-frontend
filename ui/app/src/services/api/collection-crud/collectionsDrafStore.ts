@@ -1,4 +1,7 @@
-import { CollectionsRequest } from "@/services/api/collection-crud/collectionCrud.types";
+import {
+  CollectionRequest,
+  CollectionsRequest,
+} from "@/services/api/collection-crud/collectionCrud.types";
 import { createSignal } from "solid-js";
 
 const [collectionDrafts, setCollectionDrafts] = createSignal<
@@ -7,6 +10,9 @@ const [collectionDrafts, setCollectionDrafts] = createSignal<
 const [removedCollectionIds, setRemovedCollectionsIds] = createSignal<string[]>(
   [],
 );
+const [collectionByIdDrafts, setCollectionByIdDrafts] = createSignal<
+  Record<string, CollectionRequest>
+>({});
 
 export const mergeCollectionsWithDrafts = (
   baseCollections?: CollectionsRequest[],
@@ -24,4 +30,42 @@ export const mergeCollectionsWithDrafts = (
   );
 
   return [...appendedDrafts, ...nextCollections];
+};
+
+export const mergeCollectionByIdWithDraft = (
+  collectionId: string,
+  baseCollection?: CollectionRequest,
+) => collectionByIdDrafts()[collectionId] ?? baseCollection;
+
+export const upsertCollectionByIdDraft = (
+  collectionId: string,
+  collection: CollectionRequest,
+) => {
+  setCollectionByIdDrafts((current) => ({
+    ...current,
+    [collectionId]: collection,
+  }));
+};
+
+export const replaceCollectionByIdDraft = (
+  collectionId: string,
+  visibleCollection: CollectionRequest | null,
+  baseCollection?: CollectionRequest,
+) => {
+  setCollectionByIdDrafts((current) => {
+    const nextDrafts = { ...current };
+
+    if (
+      visibleCollection &&
+      (!baseCollection ||
+        JSON.stringify(baseCollection) !== JSON.stringify(visibleCollection))
+    ) {
+      nextDrafts[collectionId] = visibleCollection;
+      return nextDrafts;
+    }
+
+    delete nextDrafts[collectionId];
+
+    return nextDrafts;
+  });
 };

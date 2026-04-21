@@ -22,6 +22,7 @@ function MyCollectionsListPage() {
         id: eventId,
       },
       search: {
+        competitorId: "",
         judgesIds: judges.map((judge) => judge.id),
       },
       to: "/my/collections/$id",
