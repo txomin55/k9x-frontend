@@ -37,7 +37,7 @@ export interface CollectionScore {
 
 export interface ExerciseScores {
   exercise: Exercise;
-  scores: CollectionScore[];
+  collectionScores: CollectionScore[];
 }
 
 export interface UpdateCollectionScoreRequest {

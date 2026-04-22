@@ -2,19 +2,17 @@ import { createFileRoute, useParams, useSearch } from "@tanstack/solid-router";
 import {
   getCachedCollections,
   updateCollectionScore,
-  useCollectionById
+  useCollectionById,
 } from "@/services/api/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel
-  from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore
-  from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
+import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
 import {
   CollectionScore,
   ExerciseScores,
-  UpdateCollectionScoreRequest
+  UpdateCollectionScoreRequest,
 } from "@/services/api/collection-crud/collectionCrud.types";
 import "./styles.css";
 
@@ -44,7 +42,7 @@ const applyPendingScores = ({
 }) =>
   exercises.map((exerciseScores) => ({
     ...exerciseScores,
-    scores: exerciseScores.scores.map((score) => {
+    scores: exerciseScores.collectionScores.map((score) => {
       const pendingScore =
         pendingScores[
           getPendingScoreKey({
@@ -143,7 +141,7 @@ function CollectionDetailPage() {
         const dogId = c.competitor.dogId;
 
         for (const e of c.exercises) {
-          const touched = e.scores.some((s) => s.score !== 0);
+          const touched = e.collectionScores.some((s) => s.score !== 0);
 
           if (touched && dogId) {
             seen.push(dogId);
@@ -224,7 +222,7 @@ function CollectionDetailPage() {
 
     currentCollection.competitors.forEach((competitorScores) => {
       competitorScores.exercises.forEach((exerciseScores) => {
-        exerciseScores.scores.forEach((score) => {
+        exerciseScores.collectionScores.forEach((score) => {
           const scoreKey = getPendingScoreKey({
             competitorId: competitorScores.competitor.dogId ?? "",
             exerciseId: exerciseScores.exercise.id,

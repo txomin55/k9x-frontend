@@ -6,7 +6,7 @@ import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
   getCollectionSnapshotId,
-  getCollectionsQueryKey
+  getCollectionsQueryKey,
 } from "@/services/api/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
 import {
@@ -16,17 +16,17 @@ import {
   createCollectionRollbackPayload,
   getVisibleCollectionById,
   saveCollectionSnapshot,
-  saveCollectionsSnapshot
+  saveCollectionsSnapshot,
 } from "@/services/api/collection-crud/collectionCrudOfflineUtils";
 import {
   CollectionRequest,
   CollectionsRequest,
-  UpdateCollectionScoreRequest
+  UpdateCollectionScoreRequest,
 } from "@/services/api/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import {
   mergeCollectionByIdWithDraft,
-  mergeCollectionsWithDrafts
+  mergeCollectionsWithDrafts,
 } from "@/services/api/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
@@ -170,13 +170,14 @@ const updateCollectionScoreProjection = (
             exerciseScores.exercise.id === payload.exerciseId
               ? {
                   ...exerciseScores,
-                  scores: exerciseScores.scores.map((scoreEntry) =>
-                    scoreEntry.judge.id === payload.judgeId
-                      ? {
-                          ...scoreEntry,
-                          score: payload.score,
-                        }
-                      : scoreEntry,
+                  collectionScores: exerciseScores.collectionScores.map(
+                    (scoreEntry) =>
+                      scoreEntry.judge.id === payload.judgeId
+                        ? {
+                            ...scoreEntry,
+                            score: payload.score,
+                          }
+                        : scoreEntry,
                   ),
                 }
               : exerciseScores,

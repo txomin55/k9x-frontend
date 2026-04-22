@@ -3,14 +3,18 @@ import userEvent from "@testing-library/user-event";
 import type { JSX } from "solid-js";
 import { createSignal } from "solid-js";
 import type { CollectionRequest } from "@/services/api/collection-crud/collectionCrud.types";
+import { Route } from "@/routes/my/collections/$id/route";
 
 const mocks = vi.hoisted(() => ({
-  collectionDataAccessor: (() => undefined) as () => CollectionRequest | undefined,
+  collectionDataAccessor: (() => undefined) as () =>
+    | CollectionRequest
+    | undefined,
   updateCollectionScore: vi.fn(),
 }));
 
 vi.mock("@tanstack/solid-router", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@tanstack/solid-router")>();
+  const actual =
+    await importOriginal<typeof import("@tanstack/solid-router")>();
 
   return {
     ...actual,
@@ -58,8 +62,6 @@ vi.mock("@lib/components/atoms/number-input/AtomNumberInput", () => ({
   ),
 }));
 
-import { Route } from "@/routes/my/collections/$id/route";
-
 const createCollection = (score: number): CollectionRequest => ({
   configuration: {
     allowedValues: [1, 2, 3],
@@ -78,12 +80,12 @@ const createCollection = (score: number): CollectionRequest => ({
             name: "Exercise 1",
             order: 1,
           },
-          scores: [
+          collectionScores: [
             {
               judge: {
                 id: "judge-1",
                 name: "Judge 1",
-              } as CollectionRequest["competitors"][number]["exercises"][number]["scores"][number]["judge"],
+              } as CollectionRequest["competitors"][number]["exercises"][number]["collectionScores"][number]["judge"],
               score,
             },
           ],
@@ -100,7 +102,9 @@ describe("collection detail route", () => {
 
   test("keeps the edited score visible while stale collection data is re-emitted", async () => {
     const user = userEvent.setup();
-    const [collectionData, setCollectionData] = createSignal(createCollection(1));
+    const [collectionData, setCollectionData] = createSignal(
+      createCollection(1),
+    );
     mocks.collectionDataAccessor = collectionData;
 
     const Component = Route.options.component as () => JSX.Element;
