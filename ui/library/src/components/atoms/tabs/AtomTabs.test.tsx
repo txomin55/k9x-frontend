@@ -1,10 +1,10 @@
 import { render } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
-import AtomTabs from "@lib/components/atoms/tab/AtomTabs";
+import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import type {
   TabsContentProps,
   TabsOptionProps,
-} from "@lib/components/atoms/tab/AtomTabs.types";
+} from "@lib/components/atoms/tabs/AtomTabs.types";
 
 const TAB_OPTIONS: TabsOptionProps[] = [
   { value: "dogs", content: <span>Dogs</span> },

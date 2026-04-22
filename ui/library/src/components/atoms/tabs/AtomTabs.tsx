@@ -1,10 +1,6 @@
 import { createSignal, Index } from "solid-js";
 import { Tabs } from "@kobalte/core/tabs";
-import {
-  TabsContentProps,
-  TabsOptionProps,
-  TabsProps,
-} from "@lib/components/atoms/tab/AtomTabs.types";
+import { TabsContentProps, TabsOptionProps, TabsProps } from "@lib/components/atoms/tabs/AtomTabs.types";
 import "./styles.css";
 
 const AtomTabOption = (props: TabsOptionProps) => (
