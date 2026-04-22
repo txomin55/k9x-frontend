@@ -38,7 +38,6 @@ function CollectionExerciseScoreInput(props: {
       sortedAllowedValues().length === 0 ||
       sortedAllowedValues().includes(roundToTwoDecimals(rawValue())),
   );
-  const allowedValuesText = createMemo(() => sortedAllowedValues().join(", "));
 
   const handleBlur = () => {
     const nextScore = rawValue();
@@ -53,7 +52,7 @@ function CollectionExerciseScoreInput(props: {
     }
 
     props.onCommitScore({
-      competitorId: props.competitorId,
+      dogId: props.competitorId,
       eventId: props.eventId,
       exerciseId: props.exerciseId,
       judgeId: props.score.judge.id,
@@ -61,15 +60,17 @@ function CollectionExerciseScoreInput(props: {
     });
   };
 
+  const minValue = () => sortedAllowedValues().at(0);
+  const maxValue = () => sortedAllowedValues().at(-1);
   return (
     <AtomNumberInput
       rawValue={rawValue()}
       onRawValueChange={setRawValue}
       onBlur={handleBlur}
-      minValue={sortedAllowedValues()[0]}
-      maxValue={sortedAllowedValues()[sortedAllowedValues().length - 1]}
+      minValue={minValue()}
+      maxValue={maxValue()}
       validationState={isValidValue() ? "valid" : "invalid"}
-      errorMessage={`--Allowed values: ${allowedValuesText()}`}
+      errorMessage={`--Allowed values between: ${minValue()} - ${maxValue()}`}
     />
   );
 }

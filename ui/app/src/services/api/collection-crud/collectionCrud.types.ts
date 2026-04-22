@@ -41,7 +41,7 @@ export interface ExerciseScores {
 }
 
 export interface UpdateCollectionScoreRequest {
-  competitorId: string;
+  dogId: string;
   exerciseId: string;
   judgeId: string;
   eventId: string;

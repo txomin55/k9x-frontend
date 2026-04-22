@@ -13,7 +13,6 @@ import {
   CollectionRollbackPayload,
   CollectionsRequest,
 } from "@/services/api/collection-crud/collectionCrud.types";
-import { HttpRequestError } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
@@ -79,10 +78,6 @@ export const commitCollectionMutation = async ({
     method,
     onCommitted,
     payload,
-    preserveOnHttpError: (error) =>
-      error instanceof HttpRequestError &&
-      error.status === 404 &&
-      url.endsWith("/score"),
     rollback: rollbackCollectionPayload,
     rollbackPayload,
     url,
@@ -113,7 +108,10 @@ export const commitCollectionMutationSuccess = async ({
     visibleCollection,
     nextBaseCollection,
   );
-  await saveCollectionSnapshot(collectionId, nextBaseCollection ?? visibleCollection);
+  await saveCollectionSnapshot(
+    collectionId,
+    nextBaseCollection ?? visibleCollection,
+  );
 };
 
 const rollbackCollectionPayload = async (
@@ -144,8 +142,14 @@ const rollbackCollectionPayload = async (
     getCollectionByIdQueryKey(rollbackPayload.collectionId),
     undefined,
   );
-  await removeQuerySnapshot(getCollectionSnapshotId(rollbackPayload.collectionId));
-  replaceCollectionByIdDraft(rollbackPayload.collectionId, null, baseCollection);
+  await removeQuerySnapshot(
+    getCollectionSnapshotId(rollbackPayload.collectionId),
+  );
+  replaceCollectionByIdDraft(
+    rollbackPayload.collectionId,
+    null,
+    baseCollection,
+  );
 };
 
 const isCollectionRollbackPayload = (

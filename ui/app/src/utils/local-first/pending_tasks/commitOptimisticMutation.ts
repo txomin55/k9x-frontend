@@ -4,7 +4,7 @@ import {
   createPendingTaskId,
   enqueuePendingTask,
   type PendingTask,
-  type PendingTaskMethod,
+  type PendingTaskMethod
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { processPendingTasks } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 
@@ -14,7 +14,6 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   method,
   onCommitted,
   payload,
-  preserveOnHttpError,
   rollbackPayload,
   rollback,
   url,
@@ -24,7 +23,6 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   method: PendingTaskMethod;
   onCommitted?: () => Promise<void> | void;
   payload?: unknown;
-  preserveOnHttpError?: (error: HttpRequestError) => boolean;
   rollbackPayload: TRollbackPayload;
   rollback: (payload: TRollbackPayload) => Promise<void>;
   url: string;
@@ -39,10 +37,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
       await onCommitted?.();
       return;
     } catch (error) {
-      if (
-        error instanceof HttpRequestError &&
-        preserveOnHttpError?.(error)
-      ) {
+      if (error instanceof HttpRequestError) {
         return;
       }
 

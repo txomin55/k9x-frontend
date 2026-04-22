@@ -123,27 +123,4 @@ describe("commitOptimisticMutation", () => {
 
     expect(rollback).toHaveBeenCalledWith({ entityId: "1" });
   });
-
-  it("preserves the optimistic change on matching http errors", async () => {
-    const rollback = vi.fn();
-    const error = new HttpRequestError("/api/collections/1/score", 404);
-
-    shouldQueueOfflineMutation.mockReturnValue(false);
-    rawRequest.mockRejectedValue(error);
-
-    await expect(
-      commitOptimisticMutation({
-        entityId: "1",
-        entityType: "collection",
-        method: "PUT",
-        payload: { score: 2 },
-        preserveOnHttpError: (httpError) => httpError.status === 404,
-        rollback,
-        rollbackPayload: { entityId: "1" },
-        url: "/api/collections/1/score",
-      }),
-    ).resolves.toBeUndefined();
-
-    expect(rollback).not.toHaveBeenCalled();
-  });
 });
