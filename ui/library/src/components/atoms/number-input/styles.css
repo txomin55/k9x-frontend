@@ -14,8 +14,6 @@
 
 /* FIELD WRAPPER */
 .atom-number-input__field {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
     align-items: stretch;
     width: 100%;
 
@@ -69,59 +67,6 @@
 /* invalid */
 .atom-number-input__field:has(.atom-number-input__control[aria-invalid="true"]) {
     border-color: var(--error);
-}
-
-/* TRIGGERS (+ / -) */
-.atom-number-input__trigger {
-    appearance: none;
-
-    min-width: var(--control-height-md);
-    min-height: var(--control-height-md);
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 var(--unit-075);
-
-    border: none;
-    background: transparent;
-
-    color: var(--text-primary);
-    font: inherit;
-    font-weight: var(--font-weight-medium);
-
-    cursor: pointer;
-
-    transition: background-color var(--motion-fast) ease,
-    color var(--motion-fast) ease;
-}
-
-/* separator lines (internal borders) */
-.atom-number-input__trigger:first-child {
-    border-right: 1px solid var(--border);
-}
-
-.atom-number-input__trigger:last-child {
-    border-left: 1px solid var(--border);
-}
-
-/* hover */
-.atom-number-input__trigger:hover {
-    background: var(--surface-hover);
-}
-
-/* active */
-.atom-number-input__trigger:active {
-    background: var(--surface-muted);
-}
-
-/* disabled */
-.atom-number-input__trigger:disabled,
-.atom-number-input__trigger[aria-disabled="true"] {
-    cursor: not-allowed;
-    background: var(--surface-muted);
-    color: var(--text-muted);
 }
 
 /* DESCRIPTION */

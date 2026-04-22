@@ -28,18 +28,12 @@ export default function AtomNumberInput(props: AtomNumberInputProps) {
         </NumberField.Label>
       ) : null}
       <div class="atom-number-input__field">
-        <NumberField.DecrementTrigger class="atom-number-input__trigger">
-          -
-        </NumberField.DecrementTrigger>
         <NumberField.Input
           class="atom-number-input__control"
           onBlur={props.onBlur}
           placeholder={props.placeholder}
         />
         <NumberField.HiddenInput />
-        <NumberField.IncrementTrigger class="atom-number-input__trigger">
-          +
-        </NumberField.IncrementTrigger>
       </div>
       {props.description ? (
         <NumberField.Description class="atom-number-input__description">
