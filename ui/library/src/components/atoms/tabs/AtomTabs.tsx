@@ -1,7 +1,22 @@
-import { createSignal, Index } from "solid-js";
+import { createSignal, Index, type JSX } from "solid-js";
 import { Tabs } from "@kobalte/core/tabs";
-import { TabsContentProps, TabsOptionProps, TabsProps } from "@lib/components/atoms/tabs/AtomTabs.types";
 import "./styles.css";
+
+interface TabsOptionProps {
+  value: string;
+  content: JSX.Element;
+}
+
+interface TabsContentProps {
+  value: string;
+  content: JSX.Element;
+}
+
+interface TabsProps {
+  defaultValue: string;
+  options: TabsOptionProps[];
+  contents: TabsContentProps[];
+}
 
 const AtomTabOption = (props: TabsOptionProps) => (
   <Tabs.Trigger value={props.value}>{props.content}</Tabs.Trigger>

@@ -1,18 +1,18 @@
-.segmented-control {
+.atom-segmented-control {
     display: inline-flex;
     flex-direction: column;
     gap: var(--unit-05);
     padding: var(--unit-1) 0;
 }
 
-.segmented-control__label {
+.atom-segmented-control__label {
     font-size: var(--text-caption-md);
     line-height: var(--text-caption-line-height);
     font-weight: var(--font-weight-medium);
     color: var(--text-secondary);
 }
 
-.segmented-control__wrapper {
+.atom-segmented-control__wrapper {
     position: relative;
     display: inline-flex;
     width: fit-content;
@@ -23,7 +23,7 @@
 }
 
 /* 👇 padding real del control */
-.segmented-control__items {
+.atom-segmented-control__items {
     position: relative;
     z-index: 1;
     display: flex;
@@ -31,12 +31,12 @@
     gap: 2px;
 }
 
-.segmented-control__item {
+.atom-segmented-control__item {
     position: relative;
     display: flex;
 }
 
-.segmented-control__item-label {
+.atom-segmented-control__item-label {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -57,15 +57,15 @@
     transition: color 140ms ease;
 }
 
-.segmented-control__item-label:hover {
+.atom-segmented-control__item-label:hover {
     color: var(--text-primary);
 }
 
-.segmented-control__item[data-checked] .segmented-control__item-label {
+.atom-segmented-control__item[data-checked] .atom-segmented-control__item-label {
     color: var(--text-primary);
 }
 
-.segmented-control__indicator {
+.atom-segmented-control__indicator {
     position: absolute;
     top: 5px;
     left: 6px;
@@ -83,7 +83,7 @@
     border-color 160ms ease;
 }
 
-.segmented-control__item-input:focus-visible + .segmented-control__item-label {
+.atom-segmented-control__item-input:focus-visible + .atom-segmented-control__item-label {
     outline: none;
     box-shadow: 0 0 0 3px var(--accent-soft);
 }

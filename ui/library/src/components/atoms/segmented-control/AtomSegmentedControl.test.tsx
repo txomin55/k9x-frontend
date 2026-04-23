@@ -4,9 +4,21 @@ import { afterAll, beforeAll, vi } from "vitest";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 
 const CONTROLS = [
-  { value: "grid", text: "Grid" },
-  { value: "list", text: "List" },
-  { value: "board", text: "Board" },
+  {
+    value: "grid",
+    text: "Grid",
+    content: <div>Grid content</div>,
+  },
+  {
+    value: "list",
+    text: "List",
+    content: <div>List content</div>,
+  },
+  {
+    value: "board",
+    text: "Board",
+    content: <div>Board content</div>,
+  },
 ];
 
 const originalResizeObserver = globalThis.ResizeObserver;
@@ -31,7 +43,7 @@ afterAll(() => {
 });
 
 describe("AtomSegmentedControl", () => {
-  test("renders the title and marks the default control as selected", () => {
+  test("renders the title, marks the default control as selected, and shows its content", () => {
     render(() => (
       <AtomSegmentedControl
         title="View"
@@ -43,18 +55,18 @@ describe("AtomSegmentedControl", () => {
     expect(screen.getByText("View")).toBeInTheDocument();
     expect(screen.getByRole("radio", { name: "Grid" })).toBeChecked();
     expect(screen.getByRole("radio", { name: "List" })).not.toBeChecked();
+    expect(screen.getByText("Grid content")).toBeInTheDocument();
+    expect(screen.queryByText("List content")).not.toBeInTheDocument();
   });
 
-  test("updates the selected control and calls onControlChange when a new option is clicked", async () => {
+  test("updates the selected control and swaps the rendered content when a new option is clicked", async () => {
     const user = userEvent.setup();
-    const onControlChange = vi.fn();
 
     render(() => (
       <AtomSegmentedControl
         title="View"
         defaultValue="grid"
         controls={CONTROLS}
-        onControlChange={onControlChange}
       />
     ));
 
@@ -62,8 +74,8 @@ describe("AtomSegmentedControl", () => {
 
     expect(screen.getByRole("radio", { name: "List" })).toBeChecked();
     expect(screen.getByRole("radio", { name: "Grid" })).not.toBeChecked();
-    expect(onControlChange).toHaveBeenCalledWith("list");
-    expect(onControlChange).toHaveBeenCalledTimes(1);
+    expect(screen.getByText("List content")).toBeInTheDocument();
+    expect(screen.queryByText("Grid content")).not.toBeInTheDocument();
   });
 
   test("allows changing the selection when onControlChange is omitted", async () => {
@@ -80,5 +92,6 @@ describe("AtomSegmentedControl", () => {
     await user.click(screen.getByRole("radio", { name: "Board" }));
 
     expect(screen.getByRole("radio", { name: "Board" })).toBeChecked();
+    expect(screen.getByText("Board content")).toBeInTheDocument();
   });
 });

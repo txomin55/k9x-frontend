@@ -1,5 +1,5 @@
 import { createFileRoute, useLocation, useNavigate } from "@tanstack/solid-router";
-import { createSignal, For, Match, onMount, Suspense, Switch } from "solid-js";
+import { For, onMount, Suspense } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import StageCard from "@/components/routes/index/stage_card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
@@ -16,17 +16,6 @@ const CONTROLS_KEYS = {
   MAP: "MAP",
 };
 
-const CONTROLS = [
-  {
-    value: CONTROLS_KEYS.LIST,
-    text: "--List",
-  },
-  {
-    value: CONTROLS_KEYS.MAP,
-    text: "--Map",
-  },
-];
-
 function IndexRoutePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +24,33 @@ function IndexRoutePage() {
     gcTime: 5 * 60 * 1000,
   });
 
-  const [control, setControl] = createSignal(CONTROLS_KEYS.LIST);
+  const CONTROLS = [
+    {
+      value: CONTROLS_KEYS.LIST,
+      text: "--List",
+      content: (
+        <For each={fetchedStages.data}>
+          {(stage) => (
+            <StageCard
+              id={stage.id}
+              country={stage.country}
+              name={stage.name}
+              from={stage.dateFrom}
+              to={stage.dateTo}
+              description={stage.description}
+              address={stage?.location?.address}
+              events={stage.events}
+            />
+          )}
+        </For>
+      ),
+    },
+    {
+      value: CONTROLS_KEYS.MAP,
+      text: "--Map",
+      content: <div>--MAP</div>,
+    },
+  ];
 
   onMount(async () => {
     const search = location().searchStr;
@@ -53,35 +68,12 @@ function IndexRoutePage() {
 
   return (
     <div class="home">
-      <AtomSegmentedControl
-        title="--Stages by"
-        defaultValue={CONTROLS_KEYS.LIST}
-        controls={CONTROLS}
-        onControlChange={setControl}
-      />
-
       <Suspense fallback={<span>--Loading stages</span>}>
-        <Switch>
-          <Match when={control() === CONTROLS_KEYS.LIST}>
-            <For each={fetchedStages.data}>
-              {(stage) => (
-                <StageCard
-                  id={stage.id}
-                  country={stage.country}
-                  name={stage.name}
-                  from={stage.dateFrom}
-                  to={stage.dateTo}
-                  description={stage.description}
-                  address={stage?.location?.address}
-                  events={stage.events}
-                />
-              )}
-            </For>
-          </Match>
-          <Match when={control() === CONTROLS_KEYS.MAP}>
-            <p>--MAP MODE</p>
-          </Match>
-        </Switch>
+        <AtomSegmentedControl
+          title="--Stages by"
+          defaultValue={CONTROLS_KEYS.LIST}
+          controls={CONTROLS}
+        />
       </Suspense>
     </div>
   );
