@@ -23,6 +23,8 @@
     "@tanstack/router-plugin": "^1.167.4",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/user-event": "catalog:",
+    "@types/leaflet": "^1.9.21",
+    "@types/leaflet.markercluster": "^1.5.6",
     "@types/node": "catalog:",
     "@vitest/coverage-v8": "catalog:",
     "monocart-coverage-reports": "^2.12.9",
@@ -31,6 +33,7 @@
     "vite-jsconfig-paths": "catalog:",
     "vite-plugin-commonjs": "^0.10.4",
     "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-solid": "catalog:",
     "vite-plugin-static-copy": "^3.1.4",
     "vitest": "catalog:"
@@ -47,6 +50,8 @@
     "i18next-browser-languagedetector": "^8.2.0",
     "i18next-http-backend": "^3.0.2",
     "js-yaml": "^4.1.1",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
     "library": "workspace:^",
     "solid-js": "catalog:"
   }

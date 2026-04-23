@@ -1,9 +1,15 @@
-import { createFileRoute, useLocation, useNavigate } from "@tanstack/solid-router";
+import {
+  createFileRoute,
+  useLocation,
+  useNavigate,
+} from "@tanstack/solid-router";
 import { For, onMount, Suspense } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
-import StageCard from "@/components/routes/index/stage_card/StageCard";
+import StageCard from "@/components/routes/index/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import StagesMap from "@/components/routes/index/stages-map/StagesMap";
+import "./styles.css";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -48,7 +54,7 @@ function IndexRoutePage() {
     {
       value: CONTROLS_KEYS.MAP,
       text: "--Map",
-      content: <div>--MAP</div>,
+      content: <StagesMap stages={fetchedStages.data} />,
     },
   ];
 

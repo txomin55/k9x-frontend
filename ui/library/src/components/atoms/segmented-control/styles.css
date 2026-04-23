@@ -1,3 +1,7 @@
+.atom-segmented-control__parent {
+    height: 100%;
+}
+
 .atom-segmented-control {
     display: inline-flex;
     flex-direction: column;
