@@ -19,9 +19,9 @@ export function AtomSegmentedControl(props: AtomSegmentedControlProps) {
   const [selectedValue, setSelectedValue] = createSignal(props.defaultValue);
 
   return (
-    <div class="atom-segmented-control__parent">
+    <div class="atom-segmented-control">
       <SegmentedControl
-        class="atom-segmented-control"
+        class="atom-segmented-control__controls"
         value={selectedValue()}
         onChange={setSelectedValue}
         defaultValue={props.defaultValue}
