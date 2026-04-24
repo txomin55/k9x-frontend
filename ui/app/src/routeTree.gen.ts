@@ -11,14 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as StagesIdRouteRouteImport } from './routes/stages/$id/route'
 import { Route as MyJudgesRouteRouteImport } from './routes/my/judges/route'
 import { Route as MyDogsRouteRouteImport } from './routes/my/dogs/route'
 import { Route as MyCompetitionsRouteRouteImport } from './routes/my/competitions/route'
 import { Route as MyCollectionsRouteRouteImport } from './routes/my/collections/route'
+import { Route as EventsIdRouteRouteImport } from './routes/events/$id/route'
 import { Route as MyJudgesIndexRouteImport } from './routes/my/judges/index'
 import { Route as MyDogsIndexRouteImport } from './routes/my/dogs/index'
 import { Route as MyCompetitionsIndexRouteImport } from './routes/my/competitions/index'
 import { Route as MyCollectionsIndexRouteImport } from './routes/my/collections/index'
+import { Route as StagesIdInfoRouteImport } from './routes/stages/$id/info'
+import { Route as EventsIdQualificationsRouteImport } from './routes/events/$id/qualifications'
 import { Route as MyCompetitionsIdRouteRouteImport } from './routes/my/competitions/$id/route'
 import { Route as MyCollectionsIdRouteRouteImport } from './routes/my/collections/$id/route'
 import { Route as MyJudgesListIndexRouteImport } from './routes/my/judges/list/index'
@@ -38,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
   path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StagesIdRouteRoute = StagesIdRouteRouteImport.update({
+  id: '/stages/$id',
+  path: '/stages/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyJudgesRouteRoute = MyJudgesRouteRouteImport.update({
@@ -60,6 +69,11 @@ const MyCollectionsRouteRoute = MyCollectionsRouteRouteImport.update({
   path: '/my/collections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EventsIdRouteRoute = EventsIdRouteRouteImport.update({
+  id: '/events/$id',
+  path: '/events/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MyJudgesIndexRoute = MyJudgesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -79,6 +93,16 @@ const MyCollectionsIndexRoute = MyCollectionsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MyCollectionsRouteRoute,
+} as any)
+const StagesIdInfoRoute = StagesIdInfoRouteImport.update({
+  id: '/info',
+  path: '/info',
+  getParentRoute: () => StagesIdRouteRoute,
+} as any)
+const EventsIdQualificationsRoute = EventsIdQualificationsRouteImport.update({
+  id: '/qualifications',
+  path: '/qualifications',
+  getParentRoute: () => EventsIdRouteRoute,
 } as any)
 const MyCompetitionsIdRouteRoute = MyCompetitionsIdRouteRouteImport.update({
   id: '/$id',
@@ -136,13 +160,17 @@ const MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/events/$id': typeof EventsIdRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
   '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/my/dogs': typeof MyDogsRouteRouteWithChildren
   '/my/judges': typeof MyJudgesRouteRouteWithChildren
+  '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/events/$id/qualifications': typeof EventsIdQualificationsRoute
+  '/stages/$id/info': typeof StagesIdInfoRoute
   '/my/collections/': typeof MyCollectionsIndexRoute
   '/my/competitions/': typeof MyCompetitionsIndexRoute
   '/my/dogs/': typeof MyDogsIndexRoute
@@ -158,8 +186,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/events/$id': typeof EventsIdRouteRouteWithChildren
+  '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
+  '/events/$id/qualifications': typeof EventsIdQualificationsRoute
+  '/stages/$id/info': typeof StagesIdInfoRoute
   '/my/collections': typeof MyCollectionsIndexRoute
   '/my/competitions': typeof MyCompetitionsIndexRoute
   '/my/dogs': typeof MyDogsIndexRoute
@@ -175,13 +207,17 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/events/$id': typeof EventsIdRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
   '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/my/dogs': typeof MyDogsRouteRouteWithChildren
   '/my/judges': typeof MyJudgesRouteRouteWithChildren
+  '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
+  '/events/$id/qualifications': typeof EventsIdQualificationsRoute
+  '/stages/$id/info': typeof StagesIdInfoRoute
   '/my/collections/': typeof MyCollectionsIndexRoute
   '/my/competitions/': typeof MyCompetitionsIndexRoute
   '/my/dogs/': typeof MyDogsIndexRoute
@@ -199,13 +235,17 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/events/$id'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
     | '/my/judges'
+    | '/stages/$id'
     | '/auth/callback'
     | '/my/collections/$id'
     | '/my/competitions/$id'
+    | '/events/$id/qualifications'
+    | '/stages/$id/info'
     | '/my/collections/'
     | '/my/competitions/'
     | '/my/dogs/'
@@ -221,8 +261,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/events/$id'
+    | '/stages/$id'
     | '/auth/callback'
     | '/my/collections/$id'
+    | '/events/$id/qualifications'
+    | '/stages/$id/info'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
@@ -237,13 +281,17 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/events/$id'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
     | '/my/judges'
+    | '/stages/$id'
     | '/auth/callback'
     | '/my/collections/$id'
     | '/my/competitions/$id'
+    | '/events/$id/qualifications'
+    | '/stages/$id/info'
     | '/my/collections/'
     | '/my/competitions/'
     | '/my/dogs/'
@@ -260,10 +308,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EventsIdRouteRoute: typeof EventsIdRouteRouteWithChildren
   MyCollectionsRouteRoute: typeof MyCollectionsRouteRouteWithChildren
   MyCompetitionsRouteRoute: typeof MyCompetitionsRouteRouteWithChildren
   MyDogsRouteRoute: typeof MyDogsRouteRouteWithChildren
   MyJudgesRouteRoute: typeof MyJudgesRouteRouteWithChildren
+  StagesIdRouteRoute: typeof StagesIdRouteRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
 }
 
@@ -281,6 +331,13 @@ declare module '@tanstack/solid-router' {
       path: '/auth/callback'
       fullPath: '/auth/callback'
       preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stages/$id': {
+      id: '/stages/$id'
+      path: '/stages/$id'
+      fullPath: '/stages/$id'
+      preLoaderRoute: typeof StagesIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my/judges': {
@@ -311,6 +368,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof MyCollectionsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/events/$id': {
+      id: '/events/$id'
+      path: '/events/$id'
+      fullPath: '/events/$id'
+      preLoaderRoute: typeof EventsIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/my/judges/': {
       id: '/my/judges/'
       path: '/'
@@ -338,6 +402,20 @@ declare module '@tanstack/solid-router' {
       fullPath: '/my/collections/'
       preLoaderRoute: typeof MyCollectionsIndexRouteImport
       parentRoute: typeof MyCollectionsRouteRoute
+    }
+    '/stages/$id/info': {
+      id: '/stages/$id/info'
+      path: '/info'
+      fullPath: '/stages/$id/info'
+      preLoaderRoute: typeof StagesIdInfoRouteImport
+      parentRoute: typeof StagesIdRouteRoute
+    }
+    '/events/$id/qualifications': {
+      id: '/events/$id/qualifications'
+      path: '/qualifications'
+      fullPath: '/events/$id/qualifications'
+      preLoaderRoute: typeof EventsIdQualificationsRouteImport
+      parentRoute: typeof EventsIdRouteRoute
     }
     '/my/competitions/$id': {
       id: '/my/competitions/$id'
@@ -411,6 +489,18 @@ declare module '@tanstack/solid-router' {
     }
   }
 }
+
+interface EventsIdRouteRouteChildren {
+  EventsIdQualificationsRoute: typeof EventsIdQualificationsRoute
+}
+
+const EventsIdRouteRouteChildren: EventsIdRouteRouteChildren = {
+  EventsIdQualificationsRoute: EventsIdQualificationsRoute,
+}
+
+const EventsIdRouteRouteWithChildren = EventsIdRouteRoute._addFileChildren(
+  EventsIdRouteRouteChildren,
+)
 
 interface MyCollectionsRouteRouteChildren {
   MyCollectionsIdRouteRoute: typeof MyCollectionsIdRouteRoute
@@ -504,12 +594,26 @@ const MyJudgesRouteRouteWithChildren = MyJudgesRouteRoute._addFileChildren(
   MyJudgesRouteRouteChildren,
 )
 
+interface StagesIdRouteRouteChildren {
+  StagesIdInfoRoute: typeof StagesIdInfoRoute
+}
+
+const StagesIdRouteRouteChildren: StagesIdRouteRouteChildren = {
+  StagesIdInfoRoute: StagesIdInfoRoute,
+}
+
+const StagesIdRouteRouteWithChildren = StagesIdRouteRoute._addFileChildren(
+  StagesIdRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EventsIdRouteRoute: EventsIdRouteRouteWithChildren,
   MyCollectionsRouteRoute: MyCollectionsRouteRouteWithChildren,
   MyCompetitionsRouteRoute: MyCompetitionsRouteRouteWithChildren,
   MyDogsRouteRoute: MyDogsRouteRouteWithChildren,
   MyJudgesRouteRoute: MyJudgesRouteRouteWithChildren,
+  StagesIdRouteRoute: StagesIdRouteRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,6 +1,7 @@
 import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
 import { Index } from "solid-js";
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import { useNavigate } from "@tanstack/solid-router";
 
 interface StageMapMarker {
   stage: StageSummary;
@@ -13,6 +14,19 @@ const STAGE_STATUS = {
 };
 
 export function StageMapMarkerPopup(props: StageMapMarker) {
+  const navigate = useNavigate();
+  const navigateToQualifications = (eventId: string) =>
+    void navigate({
+      params: { id: eventId },
+      to: "/events/$id/qualifications",
+    });
+
+  const navigateToStageInfo = (stageId: string) =>
+    void navigate({
+      params: { id: stageId },
+      to: "/stages/$id/info",
+    });
+
   return (
     <div class="stages-map-marker-popup">
       <span class="stages-map-marker-popup__title">
@@ -22,6 +36,12 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
         </span>
       </span>
       <span class="text-body-sm">{props.stage.description}</span>
+      <AtomButton
+        type={BUTTON_TYPES.ACCENT}
+        onClick={() => navigateToStageInfo(props.stage.id)}
+      >
+        --+Info
+      </AtomButton>
 
       <Index each={props.stage.events}>
         {(event) => (
@@ -32,7 +52,9 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                 {event().name} {event().discipline}
               </span>
             </div>
-            <AtomButton>--View Qualifications</AtomButton>
+            <AtomButton onClick={() => navigateToQualifications(event().id)}>
+              --View Qualifications
+            </AtomButton>
           </div>
         )}
       </Index>
