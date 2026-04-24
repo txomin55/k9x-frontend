@@ -1,6 +1,6 @@
 import { createMemo, onCleanup, onMount } from "solid-js";
 import L from "leaflet";
-import type { Stage } from "@/services/fetch-stages/fetchStages.types";
+import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
 import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/index/stages-map/StageMapMarker";
 import { render } from "solid-js/web";
 import "leaflet.markercluster";
@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 import "./styles.css";
 
 interface StagesMapProps {
-  stages: Stage[] | undefined;
+  stages: StageSummary[] | undefined;
 }
 
 export default function StagesMap(_props: StagesMapProps) {
@@ -34,18 +34,17 @@ export default function StagesMap(_props: StagesMapProps) {
     map.invalidateSize(true);
   };
 
-  const getIconStyle = (stage: Stage) =>
-    {
-      const container = document.createElement("div");
-      const dispose = render(() => <StageMapMarker stage={stage} />, container);
+  const getIconStyle = (stage: StageSummary) => {
+    const container = document.createElement("div");
+    const dispose = render(() => <StageMapMarker stage={stage} />, container);
 
-      disposers.push(dispose);
+    disposers.push(dispose);
 
-      return L.divIcon({
-        className: "stage-map-marker",
-        html: container,
-      });
-    };
+    return L.divIcon({
+      className: "stage-map-marker",
+      html: container,
+    });
+  };
 
   const markers = createMemo(() => {
     const points = [
@@ -59,6 +58,18 @@ export default function StagesMap(_props: StagesMapProps) {
             discipline: "obdx",
             competitors: 1,
             name: "--event name",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
           },
         ],
         country: "es",
@@ -77,6 +88,12 @@ export default function StagesMap(_props: StagesMapProps) {
             competitors: 1,
             name: "--event name",
           },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
         ],
         country: "es",
         description: "--desc 2",
@@ -93,6 +110,12 @@ export default function StagesMap(_props: StagesMapProps) {
             discipline: "obdx",
             competitors: 1,
             name: "--event name",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
           },
         ],
         country: "es",
@@ -111,6 +134,18 @@ export default function StagesMap(_props: StagesMapProps) {
             competitors: 1,
             name: "--event name",
           },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
         ],
         country: "es",
         description: "--desc 4",
@@ -128,6 +163,12 @@ export default function StagesMap(_props: StagesMapProps) {
             competitors: 1,
             name: "--event name",
           },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
         ],
         country: "pt",
         description: "--desc portugal",
@@ -144,6 +185,24 @@ export default function StagesMap(_props: StagesMapProps) {
             discipline: "obdx",
             competitors: 1,
             name: "--event name",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
+          },
+          {
+            id: "1",
+            discipline: "obdx",
+            competitors: 1,
+            name: "--event name 2",
           },
         ],
         country: "fr",
@@ -206,7 +265,7 @@ export default function StagesMap(_props: StagesMapProps) {
           longitude: 37.6173,
         },
       },
-    ] as Stage[];
+    ] as StageSummary[];
 
     return points.map((stage) => {
       const marker = L.marker(
@@ -215,10 +274,12 @@ export default function StagesMap(_props: StagesMapProps) {
       );
 
       const container = document.createElement("div");
-      const dispose = render(() => <StageMapMarkerPopup stage={stage} />, container);
+      const dispose = render(
+        () => <StageMapMarkerPopup stage={stage} />,
+        container,
+      );
 
       disposers.push(dispose);
-
       marker.bindPopup(container);
 
       return marker;

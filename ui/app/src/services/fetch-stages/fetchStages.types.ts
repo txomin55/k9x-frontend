@@ -1,23 +1,25 @@
-export interface StageEvent {
-  competitors: number;
-  discipline: string;
-  id: string;
-  name: string;
+export interface StageEventSummary {
+    competitors: number;
+    discipline: string;
+    id: string;
+    name: string;
+    status: string;
 }
 
-export interface Stage {
-  country: string;
-  dateFrom: number;
-  dateTo: number;
-  description?: string;
-  events: StageEvent[];
-  id: string;
-  location?: CompetitionLocationDetail;
-  name: string;
+export interface StageSummary {
+    country: string;
+    dateFrom: number;
+    dateTo: number;
+    description?: string;
+    events: StageEventSummary[];
+    id: string;
+    location?: CompetitionLocationDetail;
+    name: string;
+    status: string;
 }
 
 export interface CompetitionLocationDetail {
-  address: string;
-  latitude: number;
-  longitude: number;
+    address: string;
+    latitude: number;
+    longitude: number;
 }
