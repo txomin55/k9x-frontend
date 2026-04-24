@@ -22,21 +22,21 @@ type CollectionDetailSearch = {
 };
 
 const getPendingScoreKey = ({
-  competitorId,
+  dogId,
   exerciseId,
   judgeId,
 }: {
-  competitorId: string;
+  dogId: string;
   exerciseId: string;
   judgeId: string;
-}) => `${competitorId}:${exerciseId}:${judgeId}`;
+}) => `${dogId}:${exerciseId}:${judgeId}`;
 
 const applyPendingScores = ({
-  competitorId,
+  dogId,
   exercises,
   pendingScores,
 }: {
-  competitorId: string;
+  dogId: string;
   exercises: ExerciseScores[];
   pendingScores: Record<string, number>;
 }) =>
@@ -46,7 +46,7 @@ const applyPendingScores = ({
       const pendingScore =
         pendingScores[
           getPendingScoreKey({
-            competitorId,
+            dogId,
             exerciseId: exerciseScores.exercise.id,
             judgeId: score.judge.id,
           })
@@ -174,7 +174,7 @@ function CollectionDetailPage() {
     }
 
     return applyPendingScores({
-      competitorId: competitorScores.competitor.dogId ?? "",
+      dogId: competitorScores.competitor.dogId ?? "",
       exercises: competitorScores.exercises,
       pendingScores: pendingScores(),
     });
@@ -224,7 +224,7 @@ function CollectionDetailPage() {
       competitorScores.exercises.forEach((exerciseScores) => {
         exerciseScores.collectionScores.forEach((score) => {
           const scoreKey = getPendingScoreKey({
-            competitorId: competitorScores.competitor.dogId ?? "",
+            dogId: competitorScores.competitor.dogId ?? "",
             exerciseId: exerciseScores.exercise.id,
             judgeId: score.judge.id,
           });

@@ -17,7 +17,7 @@ export interface Stage {
 }
 
 export interface CompetitionLocationDetail {
-  address?: string;
-  latitude?: number;
-  longitude?: number;
+  address: string;
+  latitude: number;
+  longitude: number;
 }

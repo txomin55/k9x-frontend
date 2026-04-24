@@ -44,8 +44,13 @@ export default function StageCard(props: StageCardProps) {
         <Index each={props.events}>
           {(event) => (
             <div class="stage-card__events-content">
-              <span>{event().name}</span>
-              <span>{event().competitors}</span>
+              <div class="stage-card__events-content--info">
+                <span>{event().name}</span>
+                <span>({event().competitors}(</span>
+              </div>
+              <AtomButton type={BUTTON_TYPES.PRIMARY}>
+                --See classification
+              </AtomButton>
             </div>
           )}
         </Index>
@@ -53,9 +58,6 @@ export default function StageCard(props: StageCardProps) {
       actions={
         <div class="stage-card__actions">
           <AtomButton type={BUTTON_TYPES.ACCENT}>--+ Info</AtomButton>
-          <AtomButton type={BUTTON_TYPES.PRIMARY}>
-            --See classification
-          </AtomButton>
         </div>
       }
     />

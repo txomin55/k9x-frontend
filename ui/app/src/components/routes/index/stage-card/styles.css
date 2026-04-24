@@ -44,3 +44,15 @@
     width: 100%;
     justify-content: space-between;
 }
+
+.stage-card__events-content {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.stage-card__events-content--info {
+    display: flex;
+    gap: var(--unit-1);
+}

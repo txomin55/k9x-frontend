@@ -1,0 +1,12 @@
+.stages-map {
+    height: 100%;
+    width: 100%;
+}
+
+.stages-map-marker {
+    width: var(--unit-1);
+    height: var(--unit-1);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+    background: var(--primary);
+}
