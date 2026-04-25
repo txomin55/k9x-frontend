@@ -1,10 +1,5 @@
-type StageDateRange = {
-  dateFrom: number;
-  dateTo: number;
-};
-
-export function formatStageDateRange(stage: StageDateRange) {
-  return `${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`;
+export function formatStageDateRange(dateFrom: number, dateTo: number) {
+  return `${new Date(dateFrom).toDateString()} - ${new Date(dateTo).toDateString()}`;
 }
 
 export function toUndefinedIfBlank(value: string) {
@@ -29,4 +24,10 @@ export function toDateInputValue(timestamp: number) {
 export function parseDateInputValue(value: string, fallback: number) {
   if (!value) return fallback;
   return new Date(`${value}T00:00:00`).getTime();
+}
+
+export function formatDateLabel(value: string) {
+  if (!value) return "--No date";
+
+  return value;
 }

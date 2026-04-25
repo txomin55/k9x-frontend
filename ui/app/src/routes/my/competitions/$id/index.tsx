@@ -19,7 +19,7 @@ import {
   type UpdateCompetitionRequest,
 } from "@/services/api/competition-crud/competitionCrud.types";
 import { toApiStage, useApiStage } from "@/services/api/stage-crud/stageCrud";
-import { toUndefinedIfBlank } from "@/utils/stage";
+import { toUndefinedIfBlank } from "@/utils/date";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

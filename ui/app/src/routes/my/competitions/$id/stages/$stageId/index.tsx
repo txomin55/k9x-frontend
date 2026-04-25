@@ -1,16 +1,33 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
 import { useApiEvent } from "@/services/api/event-crud/eventCrud";
 import { useApiStage } from "@/services/api/stage-crud/stageCrud";
 import type {
   CreateEventRequest,
   EventDetail,
   EventEditorDraft,
-  UpdateEventRequest
+  UpdateEventRequest,
 } from "@/services/api/event-crud/eventCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
-import { parseDateInputValue, toDateInputValue } from "@/utils/stage";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {
+  formatDateLabel,
+  parseDateInputValue,
+  toDateInputValue,
+} from "@/utils/date";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
@@ -21,7 +38,10 @@ import { getEventDisciplineLabel } from "@/components/common/event-discipline-fi
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/api/configurations/configurations";
 import "./styles.css";
-import { StageEditorModel, UpdateStageRequest } from "@/services/api/stage-crud/stageCrud.types";
+import {
+  StageEditorModel,
+  UpdateStageRequest,
+} from "@/services/api/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -309,12 +329,6 @@ function CompetitionStageDetailBody(props: {
     });
 
     closeEventEditor();
-  };
-
-  const formatDateLabel = (value: string) => {
-    if (!value) return "--No date";
-
-    return value;
   };
 
   return (

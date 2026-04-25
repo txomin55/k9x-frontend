@@ -1,7 +1,7 @@
 import { type Accessor, Index, Show } from "solid-js";
 import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
-import { formatStageDateRange } from "@/utils/stage";
+import { formatStageDateRange } from "@/utils/date";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

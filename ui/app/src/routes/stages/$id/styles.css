@@ -1,0 +1,12 @@
+.stage-info__events {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.stage-info__events--item {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: baseline;
+}

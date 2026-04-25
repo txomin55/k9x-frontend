@@ -86,3 +86,11 @@
     width: 100%;
     overflow: auto;
 }
+
+.atom-tabs [role="tab"][disabled],
+.atom-tabs [role="tab"][aria-disabled="true"],
+.atom-tabs [role="tab"][data-disabled] {
+    color: var(--text-muted);
+    cursor: not-allowed;
+    pointer-events: none;
+}

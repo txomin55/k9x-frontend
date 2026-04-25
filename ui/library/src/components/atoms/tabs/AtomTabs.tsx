@@ -5,6 +5,7 @@ import "./styles.css";
 interface TabsOptionProps {
   value: string;
   content: JSX.Element;
+  disabled?: boolean;
 }
 
 interface TabsContentProps {
@@ -19,7 +20,9 @@ interface TabsProps {
 }
 
 const AtomTabOption = (props: TabsOptionProps) => (
-  <Tabs.Trigger value={props.value}>{props.content}</Tabs.Trigger>
+  <Tabs.Trigger value={props.value} disabled={props.disabled}>
+    {props.content}
+  </Tabs.Trigger>
 );
 
 const AtomTabContent = (props: TabsContentProps) => (
@@ -33,7 +36,11 @@ export default (props: TabsProps) => {
       <Tabs.List>
         <Index each={props.options}>
           {(option) => (
-            <AtomTabOption value={option().value} content={option().content} />
+            <AtomTabOption
+              value={option().value}
+              content={option().content}
+              disabled={option().disabled}
+            />
           )}
         </Index>
       </Tabs.List>
