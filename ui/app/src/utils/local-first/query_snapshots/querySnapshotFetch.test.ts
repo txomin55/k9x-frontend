@@ -6,7 +6,7 @@ const getQuerySnapshot = vi.hoisted(() => vi.fn());
 const getPersistedQuerySnapshot = vi.hoisted(() => vi.fn());
 const saveQuerySnapshot = vi.hoisted(() => vi.fn());
 
-vi.mock("@/utils/local_first/query_snapshots/querySnapshotsStore", () => ({
+vi.mock("@/utils/local-first/query_snapshots/querySnapshotsStore", () => ({
   getQuerySnapshot,
   getPersistedQuerySnapshot,
   saveQuerySnapshot,

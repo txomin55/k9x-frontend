@@ -22,13 +22,13 @@ describe("offlinePreloadManifest", () => {
 
     expect(manifest.assets).toEqual([
       "/",
+      "/_build/assets/competitions-456.js",
       "/_build/assets/main-123.css",
       "/_build/assets/main-123.js",
-      "/_build/assets/competitions-456.js",
+      "/competitions",
       "/img/icons/favicon.svg",
       "/locales/es/translation.json",
       "/manifest.webmanifest",
-      "/competitions",
     ]);
     expect(manifest.version).toHaveLength(12);
   });

@@ -31,9 +31,10 @@ describe("AtomNumberInput", () => {
       />
     ));
 
-    const incrementButton = getByRole("button", { name: "+" });
+    const input = getByRole("spinbutton") as HTMLInputElement;
 
-    await user.click(incrementButton);
+    await user.click(input);
+    await user.keyboard("{ArrowUp}");
 
     expect(onRawValueChange).toHaveBeenCalledWith(2);
   });

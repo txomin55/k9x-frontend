@@ -13,7 +13,7 @@ describe("AtomCollapsible", () => {
       />
     ));
 
-    const trigger = getByRole("button", { name: "More details" });
+    const trigger = getByRole("button", { name: "More details+" });
 
     expect(trigger).toBeInTheDocument();
     expect(trigger).toHaveAttribute("aria-expanded", "false");
@@ -41,7 +41,7 @@ describe("AtomCollapsible", () => {
       />
     ));
 
-    const trigger = getByRole("button", { name: "More details" });
+    const trigger = getByRole("button", { name: "More details+" });
 
     expect(await findByText("Collapsible content")).toBeInTheDocument();
 

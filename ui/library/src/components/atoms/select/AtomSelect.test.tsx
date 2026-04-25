@@ -1,4 +1,4 @@
-import { render, screen } from "@solidjs/testing-library";
+import { render, screen, within } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 
@@ -70,9 +70,15 @@ describe("AtomSelect", () => {
       />
     ));
 
-    await user.click(screen.getByRole("button", { name: "Select a country" }));
+    await user.click(
+      screen.getByRole("button", { name: "Country Select a country" }),
+    );
 
-    expect(await screen.findByText("PT")).toBeInTheDocument();
-    expect(await screen.findByText("Portugal")).toBeInTheDocument();
+    const portugalOption = await screen.findByRole("option", {
+      name: "Portugal",
+    });
+
+    expect(within(portugalOption).getByText("PT")).toBeInTheDocument();
+    expect(within(portugalOption).getByText("Portugal")).toBeInTheDocument();
   });
 });

@@ -24,7 +24,7 @@ const TAB_CONTENTS: TabsContentProps[] = [
 
 describe("AtomTabs", () => {
   test("renders given options and shows the default content", () => {
-    const { getByText, queryByText } = render(() => (
+    const { getByRole, getByText, queryByText } = render(() => (
       <AtomTabs
         defaultValue="dogs"
         options={TAB_OPTIONS}
@@ -32,14 +32,17 @@ describe("AtomTabs", () => {
       />
     ));
 
-    expect(getByText("Dogs")).toBeInTheDocument();
-    expect(getByText("Dogs are loyal companions.")).toBeInTheDocument();
+    expect(getByRole("tab", { name: "Dogs" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(getByText("Dogs are loyal companions.")).toBeVisible();
     expect(queryByText("Cats are curious by nature.")).not.toBeInTheDocument();
   });
 
   test("switches content when a different tab is activated", async () => {
     const user = userEvent.setup();
-    const { getByText, findByText, queryByText } = render(() => (
+    const { getByRole, findByText } = render(() => (
       <AtomTabs
         defaultValue="dogs"
         options={TAB_OPTIONS}
@@ -47,10 +50,14 @@ describe("AtomTabs", () => {
       />
     ));
 
-    const catsTab = getByText("Cats");
+    const catsTab = getByRole("tab", { name: "Cats" });
     await user.click(catsTab);
 
-    expect(await findByText("Cats are curious by nature.")).toBeInTheDocument();
-    expect(queryByText("Dogs are loyal companions.")).not.toBeInTheDocument();
+    expect(catsTab).toHaveAttribute("aria-selected", "true");
+    expect(await findByText("Cats are curious by nature.")).toBeVisible();
+    expect(getByRole("tab", { name: "Dogs" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
   });
 });

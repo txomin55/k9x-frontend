@@ -68,7 +68,7 @@ describe("AtomDialog", () => {
     await user.click(screen.getByRole("button", { name: "Open dialog" }));
     expect(await screen.findByText("Dialog content")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Close dialog" }));
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
 
     await waitFor(() => {
       expect(screen.queryByText("Dialog content")).not.toBeInTheDocument();

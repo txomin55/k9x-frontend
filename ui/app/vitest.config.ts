@@ -28,6 +28,7 @@ export default defineConfig({
       inline: [
         /^@lib\//,
         /\/ui\/library\/src\//,
+        /^@kobalte\/core/,
         /^@solidjs\//,
         /^solid-js$/,
         /^solid-js\//,
@@ -42,7 +43,6 @@ export default defineConfig({
       extension: [".ts", ".tsx"],
       include: [
         path.resolve(__dirname, "src/**/*.{ts,tsx}"),
-        path.resolve(__dirname, "../library/src/**/*.{ts,tsx}"),
       ],
     },
   },

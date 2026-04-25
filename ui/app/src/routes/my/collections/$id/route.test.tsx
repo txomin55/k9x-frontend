@@ -120,7 +120,7 @@ describe("collection detail route", () => {
     fireEvent.blur(getScoreInput());
 
     expect(mocks.updateCollectionScore).toHaveBeenCalledWith("event-1", {
-      competitorId: "dog-1",
+      dogId: "dog-1",
       eventId: "event-1",
       exerciseId: "exercise-1",
       judgeId: "judge-1",
