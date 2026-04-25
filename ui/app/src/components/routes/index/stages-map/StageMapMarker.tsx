@@ -1,6 +1,8 @@
 import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
 import { Index } from "solid-js";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 
 interface StageMapMarker {
@@ -15,10 +17,10 @@ const STAGE_STATUS = {
 
 export function StageMapMarkerPopup(props: StageMapMarker) {
   const navigate = useNavigate();
-  const navigateToQualifications = (eventId: string) =>
+  const navigateToClassification = (eventId: string) =>
     void navigate({
-      params: { id: eventId },
-      to: "/events/$id/qualifications",
+      params: { id: props.stage.id, eventId },
+      to: "/stages/$id/events/$eventId/classification",
     });
 
   const navigateToStageInfo = (stageId: string) =>
@@ -52,7 +54,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                 {event().name} {event().discipline}
               </span>
             </div>
-            <AtomButton onClick={() => navigateToQualifications(event().id)}>
+            <AtomButton onClick={() => navigateToClassification(event().id)}>
               --View Qualifications
             </AtomButton>
           </div>
@@ -63,7 +65,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
 }
 
 export function StageMapMarker(props: StageMapMarker) {
-  const getMarkerColorByStatus = (status) => {
+  const getMarkerColorByStatus = (status: string) => {
     switch (status) {
       case STAGE_STATUS.PENDING:
         return "var(-warning-border)";

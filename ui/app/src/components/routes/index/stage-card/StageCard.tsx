@@ -1,17 +1,17 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import { Index } from "solid-js";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import {Index} from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type { StageCardProps } from "@/components/routes/index/stage-card/StageCard.types";
-import { useNavigate } from "@tanstack/solid-router";
+import type {StageCardProps} from "@/components/routes/index/stage-card/StageCard.types";
+import {useNavigate} from "@tanstack/solid-router";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
-  const navigateToQualifications = (eventId: string) =>
+  const navigateToClassification = (eventId: string) =>
     void navigate({
-      params: { id: eventId },
-      to: "/events/$id/qualifications",
+      params: { id: props.id, eventId },
+      to: "/stages/$id/events/$eventId/classification",
     });
 
   const navigateToStageInfo = (stageId: string) =>
@@ -62,7 +62,7 @@ export default function StageCard(props: StageCardProps) {
               </div>
               <AtomButton
                 type={BUTTON_TYPES.PRIMARY}
-                onClick={() => navigateToQualifications(event().id)}
+                onClick={() => navigateToClassification(event().id)}
               >
                 --See classification
               </AtomButton>
