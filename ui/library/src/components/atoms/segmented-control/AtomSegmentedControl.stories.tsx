@@ -30,7 +30,7 @@ export default meta;
 export const Basic = {
   args: {
     title: "View",
-    defaultValue: "grid",
+    control: "grid",
     controls: CONTROLS,
   },
 };

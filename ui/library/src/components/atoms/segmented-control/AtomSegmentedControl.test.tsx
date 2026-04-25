@@ -45,11 +45,7 @@ afterAll(() => {
 describe("AtomSegmentedControl", () => {
   test("renders the title, marks the default control as selected, and shows its content", () => {
     render(() => (
-      <AtomSegmentedControl
-        title="View"
-        defaultValue="grid"
-        controls={CONTROLS}
-      />
+      <AtomSegmentedControl title="View" control="grid" controls={CONTROLS} />
     ));
 
     expect(screen.getByText("View")).toBeInTheDocument();
@@ -63,11 +59,7 @@ describe("AtomSegmentedControl", () => {
     const user = userEvent.setup();
 
     render(() => (
-      <AtomSegmentedControl
-        title="View"
-        defaultValue="grid"
-        controls={CONTROLS}
-      />
+      <AtomSegmentedControl title="View" control="grid" controls={CONTROLS} />
     ));
 
     await user.click(screen.getByRole("radio", { name: "List" }));
@@ -82,11 +74,7 @@ describe("AtomSegmentedControl", () => {
     const user = userEvent.setup();
 
     render(() => (
-      <AtomSegmentedControl
-        title="View"
-        defaultValue="grid"
-        controls={CONTROLS}
-      />
+      <AtomSegmentedControl title="View" control="grid" controls={CONTROLS} />
     ));
 
     await user.click(screen.getByRole("radio", { name: "Board" }));

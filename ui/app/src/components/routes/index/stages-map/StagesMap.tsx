@@ -310,10 +310,32 @@ export default function StagesMap(_props: StagesMapProps) {
     });
 
     resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(fixSize);
+      requestAnimationFrame(() => {
+        if (!map) {
+          return;
+        }
+
+        fixSize();
+
+        const bounds = clusterGroup.getBounds();
+
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, {
+            padding: [48, 48],
+            maxZoom: 5,
+            animate: false,
+          });
+        }
+      });
     });
 
     resizeObserver.observe(mapEl);
+
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        fixSize();
+      }, 250);
+    });
   });
 
   onCleanup(() => {

@@ -1,12 +1,9 @@
-import {
-  createFileRoute,
-  useLocation,
-  useNavigate,
-} from "@tanstack/solid-router";
-import { For, onMount, Suspense } from "solid-js";
+import { createFileRoute, useLocation, useNavigate } from "@tanstack/solid-router";
+import { createEffect, createMemo, createSignal, For, onMount, Suspense } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import StageCard from "@/components/routes/index/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
+import { useOffline } from "@/stores/network";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import StagesMap from "@/components/routes/index/stages-map/StagesMap";
 import "./styles.css";
@@ -25,12 +22,14 @@ const CONTROLS_KEYS = {
 function IndexRoutePage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isOffline } = useOffline();
+
   const fetchedStages = useStages({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
   });
 
-  const CONTROLS = [
+  const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
       text: "--List",
@@ -54,9 +53,17 @@ function IndexRoutePage() {
     {
       value: CONTROLS_KEYS.MAP,
       text: "--Map",
+      disabled: isOffline(),
       content: <StagesMap stages={fetchedStages.data} />,
     },
-  ];
+  ]);
+
+  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+  createEffect(() => {
+    if (isOffline()) {
+      setControlValue(CONTROLS_KEYS.LIST);
+    }
+  });
 
   onMount(async () => {
     const search = location().searchStr;
@@ -77,8 +84,9 @@ function IndexRoutePage() {
       <Suspense fallback={<span>--Loading stages</span>}>
         <AtomSegmentedControl
           title="--Stages by"
-          defaultValue={CONTROLS_KEYS.LIST}
-          controls={CONTROLS}
+          control={controlValue()}
+          onControlChange={setControlValue}
+          controls={controls()}
         />
       </Suspense>
     </div>

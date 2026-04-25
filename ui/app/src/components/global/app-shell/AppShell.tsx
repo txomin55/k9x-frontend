@@ -6,6 +6,7 @@ import NewsVisualizer from "@/components/global/news-visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
+import { initNetworkStore } from "@/stores/network";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
@@ -24,6 +25,8 @@ export default function AppShell() {
   const navigate = useNavigate();
 
   onMount(async () => {
+    initNetworkStore();
+
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         globalThis.location.reload();

@@ -254,6 +254,9 @@ function CollectionDetailPage() {
   return (
     <div class="collection-detail">
       <h1>--SPECIFIC SCORES</h1>
+      <span class="text-caption-sm">
+        {collectionData.data?.configuration?.description}
+      </span>
       <AtomSelect
         label="--Competitors"
         options={collectionCompetitors()}
