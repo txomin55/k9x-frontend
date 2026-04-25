@@ -13,7 +13,6 @@ export interface CollectionsRequest {
 interface ScoresConfiguration {
   allowedValues: number[];
   description: string;
-  s;
 }
 
 export interface CollectionRequest {

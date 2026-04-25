@@ -1,10 +1,10 @@
-import type { StageEvent } from "@/services/fetch-stages/fetchStages.types";
+import type { StageEventSummary } from "@/services/fetch-stages/fetchStages.types";
 
 export interface StageCardProps {
   address?: string;
   country: string;
   description?: string;
-  events: StageEvent[];
+  events: StageEventSummary[];
   from: number;
   id: string;
   name: string;
