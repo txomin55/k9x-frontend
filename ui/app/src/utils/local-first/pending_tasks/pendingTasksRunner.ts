@@ -28,6 +28,16 @@ const executePendingTask = (task: PendingTask) =>
     path: task.url,
   });
 
+const discardPendingTask = async (task: PendingTask, error: unknown) => {
+  console.error("Discarding pending task after unexpected local-first error", {
+    error,
+    taskId: task.id,
+    taskType: task.entityType,
+  });
+
+  await removePendingTask(task.id);
+};
+
 export const registerPendingTaskHandler = (
   entityType: string,
   handler: PendingTaskHandler,
@@ -50,38 +60,49 @@ export const processPendingTasks = () => {
     const tasks = await getRetryablePendingTasks(STALE_PROCESSING_MS);
 
     for (const task of tasks) {
-      await updatePendingTask(task.id, (currentTask) => ({
-        ...currentTask,
-        attemptCount: currentTask.attemptCount + 1,
-        status: "processing",
-        updatedAt: Date.now(),
-      }));
-
       try {
+        await updatePendingTask(task.id, (currentTask) => ({
+          ...currentTask,
+          attemptCount: currentTask.attemptCount + 1,
+          status: "processing",
+          updatedAt: Date.now(),
+        }));
+
         await executePendingTask(task);
         const successHandler = pendingTaskHandlers.get(task.entityType);
         await successHandler?.onSuccess?.(task);
         await removePendingTask(task.id);
       } catch (error) {
         if (error instanceof NetworkRequestError) {
-          const networkErrorHandler = pendingTaskHandlers.get(task.entityType);
-          await networkErrorHandler?.onNetworkError?.(task, error);
-          await updatePendingTask(task.id, (currentTask) => ({
-            ...currentTask,
-            status: "failed",
-            updatedAt: Date.now(),
-          }));
+          try {
+            const networkErrorHandler = pendingTaskHandlers.get(task.entityType);
+            await networkErrorHandler?.onNetworkError?.(task, error);
+            await updatePendingTask(task.id, (currentTask) => ({
+              ...currentTask,
+              status: "failed",
+              updatedAt: Date.now(),
+            }));
+          } catch (handlerError) {
+            await discardPendingTask(task, handlerError);
+            continue;
+          }
+
           break;
         }
 
         if (error instanceof HttpRequestError) {
-          const httpErrorHandler = pendingTaskHandlers.get(task.entityType);
-          await httpErrorHandler?.onHttpError?.(task, error);
-          await removePendingTask(task.id);
+          try {
+            const httpErrorHandler = pendingTaskHandlers.get(task.entityType);
+            await httpErrorHandler?.onHttpError?.(task, error);
+            await removePendingTask(task.id);
+          } catch (handlerError) {
+            await discardPendingTask(task, handlerError);
+          }
+
           continue;
         }
 
-        throw error;
+        await discardPendingTask(task, error);
       }
     }
   })().finally(() => {
