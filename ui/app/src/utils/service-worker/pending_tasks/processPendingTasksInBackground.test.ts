@@ -11,7 +11,6 @@ vi.mock("@/utils/local-first/pending_tasks/pendingTasksStore", () => ({
 }));
 
 describe("processPendingTasksInBackground", () => {
-  const originalFetch = globalThis.fetch;
   const fetchMock = vi.fn();
 
   beforeEach(() => {
@@ -38,17 +37,19 @@ describe("processPendingTasksInBackground", () => {
     removePendingTask.mockResolvedValue(undefined);
     fetchMock.mockResolvedValue({ ok: true });
 
-    const { processPendingTasksInBackground } = await import(
-      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
-    );
+    const { processPendingTasksInBackground } =
+      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
 
     await processPendingTasksInBackground();
 
-    expect(fetchMock).toHaveBeenCalledWith("https://api.example.test/api/dogs", {
-      body: '{"name":"dog"}',
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "https://api.example.test/api/dogs",
+      {
+        body: '{"name":"dog"}',
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+      },
+    );
     expect(updatePendingTask).toHaveBeenCalledTimes(1);
     expect(removePendingTask).toHaveBeenCalledWith("task-1", {
       skipPersistenceCheck: true,
@@ -71,9 +72,8 @@ describe("processPendingTasksInBackground", () => {
     updatePendingTask.mockResolvedValue(undefined);
     fetchMock.mockRejectedValue(networkError);
 
-    const { processPendingTasksInBackground } = await import(
-      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
-    );
+    const { processPendingTasksInBackground } =
+      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
 
     await expect(processPendingTasksInBackground()).rejects.toThrow("offline");
 
@@ -88,9 +88,8 @@ describe("processPendingTasksInBackground", () => {
       },
     ]);
 
-    const { processPendingTasksInBackground } = await import(
-      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
-    );
+    const { processPendingTasksInBackground } =
+      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
 
     await processPendingTasksInBackground();
 
@@ -99,4 +98,3 @@ describe("processPendingTasksInBackground", () => {
     expect(removePendingTask).not.toHaveBeenCalled();
   });
 });
-
