@@ -34,14 +34,14 @@
 - Añadir checkbox de owned habilitado por defecto en creación de perros
 - Endpoint de enroll solo tiene que devolver los perros owned
 - En el stage publico mostrar el organizador
-- Ordenar stages por fechas
-- Añadir estilo disabled al botón del mapa
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
 - Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~Ordenar stages por fechas~~
+- ~~Añadir estilo disabled al botón del mapa~~
 - ~~El endpoint que devuelve la lista de competidores con todos los scores tiene que traer de alguna forma una
   configuración para las puntuaciones, máximas, mínimas, o valores válidos o valores no válidos...~~
 - ~~Cuando se entra directamente en offline, no funciona app~~

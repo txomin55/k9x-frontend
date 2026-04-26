@@ -29,12 +29,16 @@ function IndexRoutePage() {
     gcTime: 5 * 60 * 1000,
   });
 
+  const sortedStages = createMemo(() =>
+    fetchedStages.data?.toSorted((left, right) => left.dateFrom - right.dateFrom),
+  );
+
   const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
       text: "--List",
       content: (
-        <For each={fetchedStages.data}>
+        <For each={sortedStages()}>
           {(stage) => (
             <StageCard
               id={stage.id}
