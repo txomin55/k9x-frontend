@@ -21,6 +21,25 @@ const CONTROLS = [
   },
 ];
 
+const CONTROLS_WITH_DISABLED = [
+  {
+    value: "grid",
+    text: "Grid",
+    content: <div>Grid content</div>,
+  },
+  {
+    value: "list",
+    text: "List",
+    content: <div>List content</div>,
+    disabled: true,
+  },
+  {
+    value: "board",
+    text: "Board",
+    content: <div>Board content</div>,
+  },
+];
+
 const originalResizeObserver = globalThis.ResizeObserver;
 
 beforeAll(() => {
@@ -81,5 +100,41 @@ describe("AtomSegmentedControl", () => {
 
     expect(screen.getByRole("radio", { name: "Board" })).toBeChecked();
     expect(screen.getByText("Board content")).toBeInTheDocument();
+  });
+
+  test("renders disabled controls as unavailable", () => {
+    render(() => (
+      <AtomSegmentedControl
+        title="View"
+        control="grid"
+        controls={CONTROLS_WITH_DISABLED}
+      />
+    ));
+
+    expect(screen.getByRole("radio", { name: "Grid" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "List" })).toBeDisabled();
+    expect(screen.getByText("Grid content")).toBeInTheDocument();
+  });
+
+  test("does not change the selection when a disabled control is clicked", async () => {
+    const user = userEvent.setup();
+    const onControlChange = vi.fn();
+
+    render(() => (
+      <AtomSegmentedControl
+        title="View"
+        control="grid"
+        controls={CONTROLS_WITH_DISABLED}
+        onControlChange={onControlChange}
+      />
+    ));
+
+    await user.click(screen.getByRole("radio", { name: "List" }));
+
+    expect(screen.getByRole("radio", { name: "Grid" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "List" })).not.toBeChecked();
+    expect(screen.getByText("Grid content")).toBeInTheDocument();
+    expect(screen.queryByText("List content")).not.toBeInTheDocument();
+    expect(onControlChange).not.toHaveBeenCalled();
   });
 });

@@ -93,3 +93,36 @@
     outline: none;
     box-shadow: 0 0 0 3px var(--accent-soft);
 }
+
+/* Disabled item */
+.atom-segmented-control__item[data-disabled] {
+    pointer-events: none;
+}
+
+/* Disabled label */
+.atom-segmented-control__item-label[data-disabled],
+.atom-segmented-control__item[data-disabled] .atom-segmented-control__item-label {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Hover no debe activar */
+.atom-segmented-control__item[data-disabled] .atom-segmented-control__item-label:hover {
+    color: var(--text-muted);
+}
+
+/* Si por error estuviera seleccionado */
+.atom-segmented-control__item[data-disabled][data-checked] .atom-segmented-control__item-label {
+    color: var(--text-muted);
+}
+
+/* Input disabled (extra seguridad) */
+.atom-segmented-control__item-input:disabled + .atom-segmented-control__item-label {
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Opcional: bajar un poco la opacidad */
+.atom-segmented-control__item[data-disabled] {
+    opacity: 0.6;
+}
