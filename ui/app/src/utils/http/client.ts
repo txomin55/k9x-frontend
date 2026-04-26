@@ -4,7 +4,10 @@ import {
 } from "@/utils/google-auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n";
 import type { LoginRequest } from "@/services/api/do-login/doLogin.types";
-import type { RequestOptions } from "@/utils/http/client.types";
+import type {
+  RequestOptions,
+  SerializableRequest,
+} from "@/utils/http/client.types";
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 const LOGIN_ENDPOINT_PATH = "/login";
@@ -54,6 +57,24 @@ const buildHeaders = (path: string, headers?: HeadersInit) => {
   return nextHeaders;
 };
 
+const serializeHeaders = (headers: Headers) =>
+  Object.fromEntries(headers.entries());
+
+const serializeBody = (body: unknown) =>
+  body === undefined ? undefined : JSON.stringify(body);
+
+const createSerializableRequest = ({
+  body,
+  headers,
+  method = "GET",
+  path,
+}: RequestOptions): SerializableRequest => ({
+  body: serializeBody(body),
+  headers: serializeHeaders(buildHeaders(path, headers)),
+  method,
+  url: `${getApiBaseUrl()}${path}`,
+});
+
 const rawRequest = async <TResponse>({
   auth = false,
   body,
@@ -65,10 +86,17 @@ const rawRequest = async <TResponse>({
   let response: Response;
 
   try {
-    response = await fetch(`${getApiBaseUrl()}${path}`, {
-      body: body === undefined ? undefined : JSON.stringify(body),
-      headers: buildHeaders(path, headers),
+    const request = createSerializableRequest({
+      body,
+      headers,
       method,
+      path,
+    });
+
+    response = await fetch(request.url, {
+      body: request.body,
+      headers: request.headers,
+      method: request.method,
     });
   } catch (error) {
     throw new NetworkRequestError(path, error);
@@ -147,3 +175,4 @@ const shouldAttemptSilentLogin = (path: string) => {
 };
 
 export { HttpRequestError, loginWithToken, NetworkRequestError, rawRequest };
+export { ACCESS_TOKEN_KEY, createSerializableRequest };

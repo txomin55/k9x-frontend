@@ -6,7 +6,6 @@
 ## MVP
 
 - Ver como simplificar el modelo oas
-- Offline retry con sw
 - Terminar push manager
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Permitir en clasificación publica modo tabla o modo resumen
@@ -36,10 +35,11 @@
 - En el stage publico mostrar el organizador
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
-- ~~Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero~~
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~Offline retry con sw~~
+- ~~Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero~~
 - ~~Ordenar stages por fechas~~
 - ~~Añadir estilo disabled al botón del mapa~~
 - ~~El endpoint que devuelve la lista de competidores con todos los scores tiene que traer de alguna forma una

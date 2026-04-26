@@ -2,6 +2,7 @@ import type {
   HttpRequestError,
   NetworkRequestError,
 } from "@/utils/http/client";
+import type { SerializableRequest } from "@/utils/http/client.types";
 
 export type PendingTaskStatus = "pending" | "processing" | "failed";
 export type PendingTaskMethod = "POST" | "PUT" | "DELETE";
@@ -13,6 +14,7 @@ export interface PendingTask {
   id: string;
   method: PendingTaskMethod;
   payload: unknown;
+  request?: SerializableRequest;
   rollbackPayload?: unknown;
   status: PendingTaskStatus;
   timestamp: number;

@@ -7,6 +7,8 @@ import {
   registerAppShellCache,
 } from "@/utils/service-worker/events/runtime-cache";
 import { registerServiceWorkerSetup } from "@/utils/service-worker/events/setup";
+import { processPendingTasksInBackground } from "@/utils/service-worker/pending_tasks/processPendingTasksInBackground";
+import { registerPendingTasksBackgroundSync } from "@/utils/service-worker/pending_tasks/backgroundSync";
 
 declare const self: ServiceWorkerGlobalScope;
 
@@ -16,3 +18,4 @@ registerServiceWorkerSetup(self, {
 registerNotificationClickHandler(self);
 registerAnimalIconCache(self);
 registerAppShellCache(self);
+registerPendingTasksBackgroundSync(self, processPendingTasksInBackground);

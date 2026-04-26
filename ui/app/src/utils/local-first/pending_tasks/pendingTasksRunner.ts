@@ -1,17 +1,6 @@
-import {
-  HttpRequestError,
-  NetworkRequestError,
-  rawRequest,
-} from "@/utils/http/client";
-import {
-  getRetryablePendingTasks,
-  removePendingTask,
-  updatePendingTask,
-} from "./pendingTasksStore";
-import type {
-  PendingTask,
-  PendingTaskHandler,
-} from "@/utils/local-first/pending_tasks/pendingTasks.types";
+import { HttpRequestError, NetworkRequestError, rawRequest } from "@/utils/http/client";
+import { getRetryablePendingTasks, removePendingTask, updatePendingTask } from "./pendingTasksStore";
+import type { PendingTask, PendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
 export type { PendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
@@ -75,7 +64,9 @@ export const processPendingTasks = () => {
       } catch (error) {
         if (error instanceof NetworkRequestError) {
           try {
-            const networkErrorHandler = pendingTaskHandlers.get(task.entityType);
+            const networkErrorHandler = pendingTaskHandlers.get(
+              task.entityType,
+            );
             await networkErrorHandler?.onNetworkError?.(task, error);
             await updatePendingTask(task.id, (currentTask) => ({
               ...currentTask,

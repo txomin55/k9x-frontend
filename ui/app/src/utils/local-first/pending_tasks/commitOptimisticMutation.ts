@@ -1,5 +1,9 @@
 import { shouldQueueOfflineMutation } from "@/utils/local-first/localFirstPolicy";
-import { HttpRequestError, rawRequest } from "@/utils/http/client";
+import {
+  createSerializableRequest,
+  HttpRequestError,
+  rawRequest,
+} from "@/utils/http/client";
 import {
   createPendingTaskId,
   enqueuePendingTask,
@@ -7,6 +11,7 @@ import {
   type PendingTaskMethod
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { processPendingTasks } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
+import { requestPendingTasksBackgroundSync } from "@/utils/service-worker/pending_tasks/backgroundSync";
 
 export const commitOptimisticMutation = async <TRollbackPayload>({
   entityId,
@@ -60,6 +65,11 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
     }),
     method,
     payload,
+    request: createSerializableRequest({
+      body: method === "DELETE" ? undefined : payload,
+      method,
+      path: url,
+    }),
     rollbackPayload,
     status: "pending",
     timestamp,
@@ -67,5 +77,6 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
     url,
   } satisfies PendingTask);
 
+  void requestPendingTasksBackgroundSync().catch(() => {});
   void processPendingTasks();
 };

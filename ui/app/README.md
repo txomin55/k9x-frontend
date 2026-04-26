@@ -47,9 +47,12 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
 ## Reconnect behavior
 
 - When the browser fires `online`, pending offline mutations are retried.
+- Pending offline mutations also register `Background Sync`, so the service worker can retry them after connectivity
+  returns even if the app is no longer open.
 - Cached TanStack queries are also refetched on reconnect via `setupQueryRefetchOnReconnect()` in
   `src/utils/http/query-client.ts`.
 - This reconnect refetch applies to queries, not to mutations. Writes continue to go through the pending-task queue.
+- Manual verification steps for this flow live in `BACKGROUND_SYNC_TESTING.md`.
 
 ## Environments and startup
 
@@ -79,6 +82,8 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
   Coverage uses the Vitest `v8` provider. Reports include `ui/app` files plus any `ui/library` components that are
   actually executed from app tests. This is intentional so shared UI exercised through the app is accounted for without
   forcing coverage over the whole library package.
+- Background Sync:
+  - See `BACKGROUND_SYNC_TESTING.md` for the unit-test scope plus the Chrome/Chromium manual verification flow.
 - E2E (Playwright, Chromium):
     - `pnpm run test:e2e:coverage` runs the Playwright suite against standalone mode.
     - Playwright starts `pnpm run start:standalone` locally and `pnpm run start:standalone:prepared` in CI.

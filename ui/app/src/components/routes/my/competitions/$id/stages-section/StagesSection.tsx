@@ -65,7 +65,9 @@ export default function StagesSection(props: StagesSectionProps) {
           {(stage) => (
             <Card
               topLeft={stage().name}
-              subHeader={<p>{formatStageDateRange(stage())}</p>}
+              subHeader={
+                <p>{formatStageDateRange(stage().dateFrom, stage().dateTo)}</p>
+              }
               actions={
                 props.isEditing ? (
                   <div class="stages-section__stages--actions">
