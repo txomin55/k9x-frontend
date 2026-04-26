@@ -36,7 +36,7 @@
 - En el stage publico mostrar el organizador
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
-- Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero
+- ~~Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero~~
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion

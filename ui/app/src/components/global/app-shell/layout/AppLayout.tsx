@@ -4,13 +4,12 @@ import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
 import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
+import { useOffline } from "@/stores/network";
 import "./styles.css";
 
 const DESKTOP_BREAKPOINT = 1024;
@@ -18,6 +17,8 @@ const DESKTOP_BREAKPOINT = 1024;
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
   const user = useAuthUser();
+  const { isOffline } = useOffline();
+
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
   const [isDark, setIsDark] = createSignal(false);
@@ -101,7 +102,9 @@ export default function AppLayout(props: ParentProps) {
             <span />
           </span>
         </button>
-
+        <Show when={isOffline()}>
+          <span>--Offline</span>
+        </Show>
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
             <AtomPopover
