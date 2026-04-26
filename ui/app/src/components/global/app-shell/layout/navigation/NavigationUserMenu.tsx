@@ -1,6 +1,8 @@
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
+import { useNavigate } from "@tanstack/solid-router";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { For, Show } from "solid-js";
 import { clearAuth, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
@@ -12,11 +14,13 @@ import type { NavigationUserMenuProps } from "@/components/global/app-shell/layo
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const user = useAuthUser();
   const i18n = useI18n();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     queryClient.clear();
     clearAuth();
     globalThis.localStorage.removeItem("k9x_access_token");
+    await navigate({ to: AppRoutePath.HOME as "/", replace: true });
   };
 
   return (

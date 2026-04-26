@@ -63,3 +63,12 @@ export const useStageById = (id: string, options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
   });
+
+export const getCachedStageById = (id: string) =>
+  queryClient.getQueryData<GetStageResponse>(getStageByIdQueryKey(id)) ??
+  queryClient
+    .getQueryData<StageSummary[]>(getStagesQueryKey())
+    ?.find((stage) => stage.id === id);
+
+export const getCachedEventById = (stageId: string, eventId: string) =>
+  getCachedStageById(stageId)?.events.find((event) => event.id === eventId);

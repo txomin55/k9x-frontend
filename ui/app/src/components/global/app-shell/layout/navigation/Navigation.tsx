@@ -19,14 +19,17 @@ export default function Navigation(props) {
     >
       <div class="navigation__sidebar-panel">
         <nav class="navigation__sidebar-panel--navigation">
-          <Link to={AppRoutePath.HOME as "/"}>--Stages</Link>
+          <Link to={AppRoutePath.HOME as "/"}>--Landing</Link>
+          <Link to={AppRoutePath.STAGES as "/stages"}>--Stages</Link>
           <Show when={user()}>
             <p>--My</p>
-            <Link to={AppRoutePath.MY_COMPETITIONS as never}>
-              --Competitions
-            </Link>
+            <Show when={user()?.organizer}>
+              <Link to={AppRoutePath.MY_COMPETITIONS as never}>
+                --Competitions
+              </Link>
+              <Link to={AppRoutePath.MY_JUDGES as never}>--Judges</Link>
+            </Show>
             <Link to={AppRoutePath.MY_COLLECTIONS as never}>--Collections</Link>
-            <Link to={AppRoutePath.MY_JUDGES as never}>--Judges</Link>
             <Link to={AppRoutePath.MY_DOGS as never}>--Dogs</Link>
           </Show>
         </nav>

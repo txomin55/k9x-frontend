@@ -18,18 +18,15 @@
 - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
   dogid o eventid a secas. Hay que modificar contratos
 - Mock de markers con estados diferentes
-- Brwadcrumbs en clasificación e info
 - Crear combobox para poder reemplazar los select de perros
     - Lo mismo paea participantes
     - Lo mismo para juecez
     - Lo mismo para ejercicios
-- Formularios de contacto pra
+- Formularios de contacto para
     - own de perro
     - contacto general en menú contextual de usuario
     - localizacion mal
     - peticion de ser organizador
-- Devolver si es organizador en endpoint de usuario
-- Mostrar jueces y competiciones si eres organizador
 - Añadir checkbox de owned habilitado por defecto en creación de perros
 - Endpoint de enroll solo tiene que devolver los perros owned
 - En el stage publico mostrar el organizador
@@ -38,6 +35,9 @@
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~Mostrar jueces y competiciones si eres organizador~~
+- ~~Devolver si es organizador en endpoint de usuario~~
+- ~~Brwadcrumbs en clasificación e info~~
 - ~~Offline retry con sw~~
 - ~~Mostrar algún icono o algo cuando se esté offline, igual un olerlas ligero~~
 - ~~Ordenar stages por fechas~~

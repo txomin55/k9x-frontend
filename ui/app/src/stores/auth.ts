@@ -2,8 +2,8 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
+  UserProfile,
 } from "@/services/api/fetch-user-data/fetchUserData";
-import type { User } from "@/services/api/fetch-user-data/UserResponse.types";
 import type { AuthState } from "@/stores/auth.types";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
@@ -20,7 +20,7 @@ const setAuthState = (updater: (state: AuthState) => AuthState) => {
   setState(updater);
 };
 
-const setUser = (user: User | null) => {
+const setUser = (user: UserProfile | null) => {
   setAuthState(() => ({
     user,
     loading: false,
@@ -74,5 +74,12 @@ const useAuth = <TSelected>(selector: (state: AuthState) => TSelected) =>
   useAppStore(selector);
 
 const useAuthUser = () => useAuth((state) => state.user);
+const useAuthLoading = () => useAuth((state) => state.loading);
 
-export { clearAuth, fetchUserIfAuthenticated, setUser, useAuthUser };
+export {
+  clearAuth,
+  fetchUserIfAuthenticated,
+  setUser,
+  useAuthLoading,
+  useAuthUser,
+};

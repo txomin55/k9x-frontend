@@ -1,5 +1,4 @@
 import { getCurrentLocale } from "@/stores/i18n";
-import UserResponse from "@/services/api/fetch-user-data/UserResponse";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";
@@ -17,12 +16,10 @@ export const getUserQueryKey = () => ["user", getCurrentLocale()] as const;
 
 const fetchUserData = async () =>
   await fetchWithOfflineSnapshot(USER_SNAPSHOT_ID, async () => {
-    const rawUser = await rawRequest<UserProfile>({
+    return await rawRequest<UserProfile>({
       auth: true,
       path: "/api/user",
     });
-
-    return UserResponse(rawUser);
   });
 
 export const userQuery = defineQuery({
