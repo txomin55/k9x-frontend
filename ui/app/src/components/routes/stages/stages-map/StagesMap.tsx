@@ -1,7 +1,7 @@
 import { createMemo, onCleanup, onMount } from "solid-js";
 import L from "leaflet";
 import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
-import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/index/stages-map/StageMapMarker";
+import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/stages/stages-map/StageMapMarker";
 import { render } from "solid-js/web";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -52,12 +52,14 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "1",
         dateFrom: 123,
         dateTo: 123,
+        status: "pending",
         events: [
           {
             id: "1",
             discipline: "obdx",
             competitors: 1,
             name: "--event name",
+            status: "",
           },
           {
             id: "1",
@@ -81,6 +83,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "2",
         dateFrom: 123,
         dateTo: 123,
+        status: "started",
         events: [
           {
             id: "2",
@@ -104,6 +107,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "3",
         dateFrom: 123,
         dateTo: 123,
+        status: "pending",
         events: [
           {
             id: "3",
@@ -127,6 +131,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "4",
         dateFrom: 123,
         dateTo: 123,
+        status: "completed",
         events: [
           {
             id: "4",
@@ -156,6 +161,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "5",
         dateFrom: 123,
         dateTo: 123,
+        status: "completed",
         events: [
           {
             id: "5",
@@ -179,6 +185,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "6",
         dateFrom: 123,
         dateTo: 123,
+        status: "started",
         events: [
           {
             id: "6",
@@ -214,6 +221,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "7",
         dateFrom: 123,
         dateTo: 123,
+        status: "pending",
         events: [
           {
             id: "7",
@@ -231,6 +239,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "8",
         dateFrom: 123,
         dateTo: 123,
+        status: "completed",
         events: [
           {
             id: "8",
@@ -248,6 +257,7 @@ export default function StagesMap(_props: StagesMapProps) {
         id: "9",
         dateFrom: 123,
         dateTo: 123,
+        status: "started",
         events: [
           {
             id: "9",

@@ -1,11 +1,17 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createEffect, createMemo, createSignal, For, Suspense } from "solid-js";
-import StageCard from "@/components/routes/index/stage-card/StageCard";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Suspense,
+} from "solid-js";
+import StageCard from "@/components/routes/stages/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useOffline } from "@/stores/network";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import StagesMap from "@/components/routes/index/stages-map/StagesMap";
-import "../styles.css";
+import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
+import "./styles.css";
 
 export const Route = createFileRoute("/stages/")({
   component: StagesIndexPage,
@@ -68,7 +74,7 @@ function StagesIndexPage() {
   });
 
   return (
-    <div class="home">
+    <div class="stages">
       <Suspense fallback={<span>--Loading stages</span>}>
         <AtomSegmentedControl
           title="--Stages by"

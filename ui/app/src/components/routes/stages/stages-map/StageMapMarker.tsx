@@ -77,8 +77,14 @@ export function StageMapMarker(props: StageMapMarker) {
   };
   return (
     <div
-      class="stages-map-marker"
-      style={{ background: getMarkerColorByStatus(props.stage.status) }}
+      classList={{
+        "stages-map-marker": true,
+        "stages-map-marker--live": props.stage.status === STAGE_STATUS.STARTED,
+      }}
+      style={{
+        background: getMarkerColorByStatus(props.stage.status),
+        color: getMarkerColorByStatus(props.stage.status),
+      }}
     />
   );
 }

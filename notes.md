@@ -17,7 +17,6 @@
 - meter newrelic
 - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
   dogid o eventid a secas. Hay que modificar contratos
-- Mock de markers con estados diferentes
 - Crear combobox para poder reemplazar los select de perros
     - Lo mismo paea participantes
     - Lo mismo para juecez
@@ -35,6 +34,7 @@
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~Mock de markers con estados diferentes~~
 - ~~Mostrar jueces y competiciones si eres organizador~~
 - ~~Devolver si es organizador en endpoint de usuario~~
 - ~~Brwadcrumbs en clasificación e info~~
