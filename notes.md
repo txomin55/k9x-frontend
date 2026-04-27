@@ -4,20 +4,23 @@
 - Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 
+## CON BACKEND
+
+- Hacer campos obligatorios para edición y creación
+- Terminar push manager
+- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
+  dogid o eventid a secas. Hay que modificar contratos
+
 ## MVP
 
 - Ver como simplificar el modelo oas
-- Terminar push manager
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Permitir en clasificación publica modo tabla o modo resumen
-- Hacer campos obligatorios para edición y creación
 - Modificar URLs de colección para que cuelgue de events/id/collection
     - Lo mismo para la clasificación
 - Collection max width a la row de score y empezar columnas de derecha a izquierda
 - reemplazar /api por /secured
 - meter newrelic
-- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
-  dogid o eventid a secas. Hay que modificar contratos
 - Crear combobox para poder reemplazar los select de perros
     - Lo mismo paea participantes
     - Lo mismo para juecez
@@ -29,6 +32,8 @@
     - peticion de ser organizador
 - Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador
 - Endpoint de enroll solo tiene que devolver los perros owned
+- enroll no aparece cuando event ha empezado o terminado
+- classification no aparece cuando event es pending
 - En el stage publico mostrar el organizador
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
 - 4 tipos de usuario
