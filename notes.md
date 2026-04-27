@@ -2,6 +2,7 @@
 
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
+- Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 
 ## MVP
 
@@ -26,11 +27,18 @@
     - contacto general en menú contextual de usuario
     - localizacion mal
     - peticion de ser organizador
-- Añadir checkbox de owned habilitado por defecto en creación de perros
+- Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador
 - Endpoint de enroll solo tiene que devolver los perros owned
 - En el stage publico mostrar el organizador
-- Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
+- 4 tipos de usuario
+    - visitante
+    - competidor
+    - organizador
+    - admin
+- añadir boton de crear perros para competidor en caso de no tener ninguno
+    - ocultar check de owned y tenerlo a true
+- hacer que la app a 720 cambie de lista de cards a modo tabla
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion

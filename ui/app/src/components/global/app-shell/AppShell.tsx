@@ -2,7 +2,6 @@ import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
-import NewsVisualizer from "@/components/global/news-visualizer/NewsVisualizer";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth";
 import { useI18n } from "@/stores/i18n";
@@ -80,7 +79,6 @@ export default function AppShell() {
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">
-              <NewsVisualizer />
               <Outlet />
             </div>
           </AppLayout>

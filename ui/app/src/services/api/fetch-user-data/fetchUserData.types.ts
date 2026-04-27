@@ -3,7 +3,6 @@ export interface UserProfile {
   image: string;
   name: string;
   organizer: boolean;
-  news: [];
 }
 
 export type UserModel = UserProfile;
