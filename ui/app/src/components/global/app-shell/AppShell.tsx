@@ -14,6 +14,7 @@ import { prefetchConfigurations } from "@/services/api/configurations/configurat
 import { prefetchDogs } from "@/services/api/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/api/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/api/collection-crud/collectionCrud";
+import "./styles.css";
 
 export default function AppShell() {
   const i18n = useI18n();

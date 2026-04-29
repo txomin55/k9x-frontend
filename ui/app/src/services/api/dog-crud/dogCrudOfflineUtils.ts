@@ -34,6 +34,7 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   owner: dog.owner ?? previousDog?.owner,
   team: dog.team ?? previousDog?.team,
   country: dog.country ?? previousDog?.country,
+  owned: dog.owned ?? previousDog?.owned,
 });
 
 export const buildNextDogs = (previousDogs: Dog[], dog: Dog) => {

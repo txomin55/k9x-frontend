@@ -1,10 +1,11 @@
 import type { CreateDogRequest } from "@/services/api/dog-crud/dogCrud.types";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { Show } from "solid-js";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
+import { useAuthUser } from "@/stores/auth";
 import "./styles.css";
 
 type DogFormProps = {
@@ -25,42 +26,50 @@ export default function DogForm(props: DogFormProps) {
     { label: "--Golder retriever", value: "golden-retriever" },
   ];
 
+  const user = useAuthUser();
+
   const selectedBreedOption = () =>
     BREED_SELECT_OPTIONS.find(
       (breedOption) => breedOption.value === props.draft().breed,
     ) ?? null;
 
-  const updateName = (name) =>
+  const updateName = (name: string) =>
     props.onDraftChange((current) => ({
       ...current,
       name,
     }));
 
-  const updateBreed = (breed) =>
+  const updateOwned = (owned: boolean) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      owned,
+    }));
+
+  const updateBreed = (breed: string) =>
     props.onDraftChange((current) => ({
       ...current,
       breed,
     }));
 
-  const updateIdentifier = (identifier) =>
+  const updateIdentifier = (identifier: string) =>
     props.onDraftChange((current) => ({
       ...current,
       identifier,
     }));
 
-  const updateOwner = (owner) =>
+  const updateOwner = (owner: string) =>
     props.onDraftChange((current) => ({
       ...current,
       owner,
     }));
 
-  const updateTeam = (team) =>
+  const updateTeam = (team: string) =>
     props.onDraftChange((current) => ({
       ...current,
       team,
     }));
 
-  const updateCountry = (country) =>
+  const updateCountry = (country: string) =>
     props.onDraftChange((current) => ({
       ...current,
       country,
@@ -72,6 +81,13 @@ export default function DogForm(props: DogFormProps) {
         value={props.draft().name}
         onChange={updateName}
       />
+      <Show when={!!user()?.organizer}>
+        <AtomCheckbox
+          label="--Owned"
+          checked={props.draft().owned}
+          setChecked={updateOwned}
+        />
+      </Show>
       <AtomInput label="--Image" value={props.draft().image} disabled />
       <AtomSelect
         label="--Breed"

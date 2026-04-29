@@ -85,6 +85,11 @@
     flex: 1 1 auto;
 }
 
+.app-shell:has(.landing-page) {
+    background: radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 12%, transparent), transparent 35%),
+    linear-gradient(180deg, var(--surface-muted) 0%, var(--surface) 100%);
+}
+
 .app-layout__user-img {
     display: flex;
     height: var(--unit-4);

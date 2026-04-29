@@ -1,17 +1,18 @@
-# Pendientes
+# NOTAS
+
+- 4 tipos de usuario
+    - visitante
+    - competidor
+    - organizador
+    - admin
+
+# PENDIENTES FURUROS
 
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 
-## CON BACKEND
-
-- Hacer campos obligatorios para edición y creación
-- Terminar push manager
-- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
-  dogid o eventid a secas. Hay que modificar contratos
-
-## MVP
+### MVP
 
 - Ver como simplificar el modelo oas
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
@@ -30,17 +31,12 @@
     - contacto general en menú contextual de usuario
     - localizacion mal
     - peticion de ser organizador
-- Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador
+- ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~
 - Endpoint de enroll solo tiene que devolver los perros owned
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - En el stage publico mostrar el organizador
 - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
-- 4 tipos de usuario
-    - visitante
-    - competidor
-    - organizador
-    - admin
 - añadir boton de crear perros para competidor en caso de no tener ninguno
     - ocultar check de owned y tenerlo a true
 - hacer que la app a 720 cambie de lista de cards a modo tabla
@@ -67,6 +63,13 @@
     - ~~una tabla donde primera columna será el ejercicio~~
     - ~~columnas de jueces en base a parametros de url~~
 - ~~Que los guias se puedan apuntar a eventos desde stages~~
+
+#### UNA VEZ ESTÉ EL BACKEND
+
+- Hacer campos obligatorios para edición y creación
+- Terminar push manager
+- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
+  dogid o eventid a secas. Hay que modificar contratos
 
 # Funcionalidades premium
 

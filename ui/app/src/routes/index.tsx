@@ -52,12 +52,6 @@ function EntryRoutePage() {
           >
             --Browse stages
           </Link>
-          <Link
-            class="landing-page__action landing-page__action--secondary"
-            to={AppRoutePath.MY_COMPETITIONS as never}
-          >
-            --Open my competitions
-          </Link>
         </div>
       </div>
 

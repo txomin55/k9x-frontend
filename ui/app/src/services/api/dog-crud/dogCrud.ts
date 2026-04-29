@@ -82,6 +82,7 @@ const mergeDogWithPayload = (
   owner: payload.owner ?? existingDog?.owner,
   team: payload.team ?? existingDog?.team,
   country: payload.country ?? existingDog?.country,
+  owned: payload.owned ?? existingDog?.owned,
 });
 
 export const createDog = (payload: CreateDogRequest) => {

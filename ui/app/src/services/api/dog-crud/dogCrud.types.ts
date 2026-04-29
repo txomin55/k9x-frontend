@@ -7,6 +7,7 @@ export interface Dog {
   owner?: string;
   team?: string;
   country?: string;
+  owned: boolean;
 }
 
 export interface CreateDogRequest {
@@ -18,6 +19,7 @@ export interface CreateDogRequest {
   owner?: string;
   team?: string;
   country?: string;
+  owned: boolean;
 }
 
 export interface UpdateDogRequest {
@@ -28,6 +30,7 @@ export interface UpdateDogRequest {
   owner?: string;
   team?: string;
   country?: string;
+  owned: boolean;
 }
 
 export interface DogRollbackPayload {

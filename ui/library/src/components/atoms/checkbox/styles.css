@@ -1,0 +1,96 @@
+/* Wrapper */
+.atom-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--unit-05);
+    cursor: pointer;
+}
+
+/* Input (ya lo tienes visually hidden) */
+.atom-checkbox__input {
+    position: absolute;
+}
+
+/* Control (la caja) */
+.atom-checkbox__control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 20px;
+    height: 20px;
+
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+
+    transition: background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+/* Indicator (check) */
+.atom-checkbox__control > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+    line-height: 1;
+    color: var(--text-inverted);
+
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 120ms ease, transform 120ms ease;
+}
+
+/* Checked state */
+.atom-checkbox[data-checked] .atom-checkbox__control {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.atom-checkbox[data-checked] .atom-checkbox__control > div {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hover */
+.atom-checkbox:hover .atom-checkbox__control {
+    border-color: var(--accent);
+}
+
+/* Focus (accessibility) */
+.atom-checkbox__input:focus-visible + .atom-checkbox__control {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Label */
+.atom-checkbox__label {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-line-height);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+/* Disabled */
+.atom-checkbox[data-disabled],
+.atom-checkbox__input:disabled {
+    cursor: not-allowed;
+}
+
+.atom-checkbox[data-disabled] .atom-checkbox__control,
+.atom-checkbox__input:disabled + .atom-checkbox__control {
+    background: var(--surface-muted);
+    border-color: var(--border-muted);
+}
+
+.atom-checkbox[data-disabled] .atom-checkbox__label,
+.atom-checkbox__input:disabled ~ .atom-checkbox__label {
+    color: var(--text-muted);
+}
+
+.atom-checkbox[data-disabled] {
+    opacity: 0.6;
+}

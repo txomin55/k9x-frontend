@@ -4,19 +4,12 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import {
-  createDog,
-  deleteDog,
-  updateDog,
-  useDogs,
-} from "@/services/api/dog-crud/dogCrud";
-import type {
-  CreateDogRequest,
-  Dog,
-} from "@/services/api/dog-crud/dogCrud.types";
+import { createDog, deleteDog, updateDog, useDogs } from "@/services/api/dog-crud/dogCrud";
+import type { CreateDogRequest, Dog } from "@/services/api/dog-crud/dogCrud.types";
 import "./styles.css";
+import { useAuthUser } from "@/stores/auth";
 
-const buildDogDraft = (): CreateDogRequest => ({
+const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
   id:
     typeof globalThis !== "undefined" &&
     "crypto" in globalThis &&
@@ -26,6 +19,7 @@ const buildDogDraft = (): CreateDogRequest => ({
   name: "--Default dog",
   image: "",
   breed: "--Default breed",
+  owned: !isOrganizer,
 });
 
 export const Route = createFileRoute("/my/dogs/list/")({
@@ -33,6 +27,7 @@ export const Route = createFileRoute("/my/dogs/list/")({
 });
 
 function MyDogsListPage() {
+  const user = useAuthUser();
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
@@ -40,12 +35,13 @@ function MyDogsListPage() {
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
   const [editingDogId, setEditingDogId] = createSignal<string | null>(null);
-  const [draftDog, setDraftDog] =
-    createSignal<CreateDogRequest>(buildDogDraft());
+  const [draftDog, setDraftDog] = createSignal<CreateDogRequest>(
+    buildDogDraft(!!user()?.organizer),
+  );
 
   const openCreateDialog = () => {
     setEditingDogId(null);
-    setDraftDog(buildDogDraft());
+    setDraftDog(buildDogDraft(!!user()?.organizer));
     setDialogOpen(true);
   };
 
@@ -65,6 +61,7 @@ function MyDogsListPage() {
       owner: dog.owner,
       team: dog.team,
       country: dog.country,
+      owned: dog.owned,
     }));
     setDialogOpen(true);
   };
@@ -82,6 +79,7 @@ function MyDogsListPage() {
         owner: payload.owner,
         team: payload.team,
         country: payload.country,
+        owned: payload.owned,
       });
     } else {
       createDog(payload);

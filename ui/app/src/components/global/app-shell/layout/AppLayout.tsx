@@ -10,9 +10,8 @@ import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
 import { useOffline } from "@/stores/network";
-import "./styles.css";
 
-const DESKTOP_BREAKPOINT = 1024;
+const DESKTOP_BREAKPOINT = 720;
 
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
@@ -76,8 +75,7 @@ export default function AppLayout(props: ParentProps) {
   });
 
   createEffect(() => {
-    location().pathname;
-    if (!isDesktop()) {
+    if (!isDesktop() || location().pathname === "/") {
       setIsNavOpen(false);
     }
   });

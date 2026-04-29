@@ -11,8 +11,8 @@
 }
 
 .navigation__sidebar--desktop.navigation__sidebar--open {
-    flex-basis: 300px;
-    width: 300px;
+    flex-basis: 180px;
+    width: 180px;
     pointer-events: auto;
 }
 
@@ -53,7 +53,7 @@
     padding: var(--unit-1) var(--unit-2);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 720px) {
     .navigation__sidebar {
         position: absolute;
         top: var(--unit-6);

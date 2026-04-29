@@ -3,8 +3,6 @@
     display: grid;
     gap: var(--unit-3);
     padding: var(--unit-2);
-    background: radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 12%, transparent), transparent 35%),
-    linear-gradient(180deg, var(--surface-muted) 0%, var(--surface) 100%);
 }
 
 .landing-page__hero {
