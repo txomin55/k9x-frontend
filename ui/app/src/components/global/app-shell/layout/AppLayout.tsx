@@ -6,10 +6,12 @@ import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs"
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth";
-import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
-import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
-import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
 import { useOffline } from "@/stores/network";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
+import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
+import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
+import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
 
 const DESKTOP_BREAKPOINT = 720;
 
@@ -55,6 +57,8 @@ export default function AppLayout(props: ParentProps) {
       --Login
     </AtomButton>
   );
+
+  const [openOrganizerForm, setOpenOrganizerForm] = createSignal(false);
 
   onMount(() => {
     document.documentElement.setAttribute(
@@ -105,24 +109,40 @@ export default function AppLayout(props: ParentProps) {
         </Show>
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
-            <AtomPopover
-              trigger={
-                <div class="app-layout__user-img">
-                  <ProfileImage
-                    src={currentUser().image}
-                    fallback={currentUser().name.slice(0, 2)}
-                  />
-                </div>
-              }
-              content={
-                <div class="app-layout__user-img--menu">
-                  <NavigationUserMenu
-                    isDark={isDark()}
-                    onToggleMode={toggleMode}
-                  />
-                </div>
-              }
-            />
+            <div class="app-layout__actions">
+              <Show when={!currentUser().organizer}>
+                <AtomDialog
+                  closeButtonText="--Close dialog"
+                  content={<OrganizerForm />}
+                  onOpenChange={setOpenOrganizerForm}
+                  open={openOrganizerForm()}
+                  title="--Organizer request"
+                  trigger={
+                    <AtomButton type={BUTTON_TYPES.GHOST}>
+                      --Want to be organizer?
+                    </AtomButton>
+                  }
+                />
+              </Show>
+              <AtomPopover
+                trigger={
+                  <div class="app-layout__user-img">
+                    <ProfileImage
+                      src={currentUser().image}
+                      fallback={currentUser().name.slice(0, 2)}
+                    />
+                  </div>
+                }
+                content={
+                  <div class="app-layout__user-img--menu">
+                    <NavigationUserMenu
+                      isDark={isDark()}
+                      onToggleMode={toggleMode}
+                    />
+                  </div>
+                }
+              />
+            </div>
           )}
         </Show>
       </div>

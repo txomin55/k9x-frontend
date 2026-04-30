@@ -5,6 +5,11 @@
     flex-direction: column;
 }
 
+.app-layout__actions {
+    display: flex;
+    gap: var(--unit-2);
+}
+
 .app-layout__navigation {
     position: sticky;
     top: 0;

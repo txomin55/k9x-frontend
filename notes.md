@@ -19,6 +19,7 @@
 
 ### MVP
 
+- Estilos tooltip mapa en oscuro
 - Añadir boton ghost que reemplaza enroll por "login for enroll"
 - Ver como simplificar el modelo oas
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
@@ -37,6 +38,7 @@
     - ~~contacto general en menú contextual de usuario~~
     - ~~localizacion mal~~
     - peticion de ser organizador
+    - cerrar formularios y poner un success
 - ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~
 - Endpoint de enroll solo tiene que devolver los perros owned
 - enroll no aparece cuando event ha empezado o terminado

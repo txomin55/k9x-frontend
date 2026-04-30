@@ -13,7 +13,7 @@ export default function WrongLocationForm(props: WrongLocationFormProps) {
 
   const [description, setDescription] = createSignal("");
 
-  const sendContactForm = () =>
+  const sendWrongLocationForm = () =>
     postGoogleForm("1FAIpQLScikWNNKevmwQfpLMkFxkTtgHk3UKQFHXw8P_J-iWLvsTAw3w", {
       "entry.1931094736": user()?.email,
       "entry.897265685": description(),
@@ -23,7 +23,7 @@ export default function WrongLocationForm(props: WrongLocationFormProps) {
   return (
     <div class="wrong-location-form">
       <AtomTextArea value={description()} onChange={setDescription} />
-      <AtomButton onClick={sendContactForm}>--Send</AtomButton>
+      <AtomButton onClick={sendWrongLocationForm}>--Send</AtomButton>
     </div>
   );
 }
