@@ -19,22 +19,21 @@
 
 ### MVP
 
-- ~~Estilos tooltip mapa en oscuro~~
-- Añadir boton ghost que reemplaza enroll por "login for enroll"
+- Crear combobox para poder reemplazar los select de perros
+    - Lo mismo paea participantes
+    - Lo mismo para juecez
+    - Lo mismo para ejercicios
 - Ver como simplificar el modelo oas
-- Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Permitir en clasificación publica modo tabla o modo resumen
 - Modificar URLs de colección para que cuelgue de events/id/collection
     - Lo mismo para la clasificación
 - Collection max width a la row de score y empezar columnas de derecha a izquierda
 - reemplazar /api por /secured
 - meter newrelic
-- Crear combobox para poder reemplazar los select de perros
-    - Lo mismo paea participantes
-    - Lo mismo para juecez
-    - Lo mismo para ejercicios
 - Formularios de contacto para
     - own de perro
+        - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del
+          perro
     - ~~contacto general en menú contextual de usuario~~
     - ~~localizacion mal~~
     - ~~peticion de ser organizador~~
@@ -44,13 +43,14 @@
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - En el stage publico mostrar el organizador
-- En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del perro
 - añadir boton de crear perros para competidor en caso de no tener ninguno
     - ocultar check de owned y tenerlo a true
 - hacer que la app a 720 cambie de lista de cards a modo tabla
 - Para mapa:
     - ~~openstreetmap + leaflet~~
     - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~Añadir boton ghost que reemplaza enroll por "login for enroll"~~
+- ~~Estilos tooltip mapa en oscuro~~
 - ~~Mock de markers con estados diferentes~~
 - ~~Mostrar jueces y competiciones si eres organizador~~
 - ~~Devolver si es organizador en endpoint de usuario~~
@@ -74,6 +74,7 @@
 
 #### UNA VEZ ESTÉ EL BACKEND
 
+- Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Hacer campos obligatorios para edición y creación
 - Terminar push manager
 - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar

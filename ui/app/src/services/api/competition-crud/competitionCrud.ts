@@ -1,5 +1,5 @@
 import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
-import { getCurrentLocale } from "../../../stores/i18n/i18n";
+import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { createMemo, getOwner } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";

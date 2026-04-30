@@ -4,8 +4,8 @@ import AtomButton, {
 import { useNavigate } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { createSignal, For, Show } from "solid-js";
-import { clearAuth, useAuthUser } from "../../../../../stores/auth/auth";
-import { useI18n } from "../../../../../stores/i18n/i18n";
+import { clearAuth, useAuthUser } from "@/stores/auth/auth";
+import { useI18n } from "@/stores/i18n/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import { displayNotification } from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";

@@ -15,7 +15,7 @@ import type {
   Dog,
 } from "@/services/api/dog-crud/dogCrud.types";
 import "./styles.css";
-import { useAuthUser } from "../../../../stores/auth/auth";
+import { useAuthUser } from "@/stores/auth/auth";
 
 const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
   id:

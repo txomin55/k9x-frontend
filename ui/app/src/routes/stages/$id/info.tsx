@@ -1,18 +1,20 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
-import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
-import { createMemo, createSignal, Index, Show } from "solid-js";
-import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {createFileRoute, useParams} from "@tanstack/solid-router";
+import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
+import {useStageById} from "@/services/fetch-stages/fetchStages";
+import {useDogs} from "@/services/api/dog-crud/dogCrud";
+import type {Dog} from "@/services/api/dog-crud/dogCrud.types";
+import {createMemo, createSignal, Index, Show} from "solid-js";
+import {formatDateLabel, toDateInputValue} from "@/utils/date";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
+import {useAuthUser} from "@/stores/auth/auth";
 import "./styles.css";
+import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -40,6 +42,7 @@ function StageInfoPage() {
     NOTIFICATIONS: "NOTIFICATIONS",
   };
 
+  const user = useAuthUser();
   const params = useParams({ from: "/stages/$id/info" });
 
   const stageInfo = useStageById(params().id);
@@ -62,7 +65,6 @@ function StageInfoPage() {
   });
   const [dialogOpen, setDialogOpen] = createSignal(false);
   const [selectedEventId, setSelectedEventId] = createSignal("");
-  const [selectedEventName, setSelectedEventName] = createSignal("");
   const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
     createEmptyEnrollDraft(),
   );
@@ -83,9 +85,8 @@ function StageInfoPage() {
     }));
   };
 
-  const openEnrollDialog = (eventId: string, eventName: string) => {
+  const openEnrollDialog = (eventId: string) => {
     setSelectedEventId(eventId);
-    setSelectedEventName(eventName);
     setEnrollDraft(createEmptyEnrollDraft());
     setDialogOpen(true);
   };
@@ -93,7 +94,6 @@ function StageInfoPage() {
   const closeEnrollDialog = () => {
     setDialogOpen(false);
     setSelectedEventId("");
-    setSelectedEventName("");
     setEnrollDraft(createEmptyEnrollDraft());
   };
 
@@ -143,13 +143,23 @@ function StageInfoPage() {
                           {event().name} ({event().competitors.length})
                         </span>
                       </div>
-                      <AtomButton
-                        onClick={() =>
-                          openEnrollDialog(event().id, event().name)
+                      <Show
+                        when={user()}
+                        fallback={
+                          <AtomButton
+                            type={BUTTON_TYPES.GHOST}
+                            onClick={startGoogleInteractiveLogin}
+                          >
+                            --Login to enroll
+                          </AtomButton>
                         }
                       >
-                        --Enroll
-                      </AtomButton>
+                        <AtomButton
+                          onClick={() => openEnrollDialog(event().id)}
+                        >
+                          --Enroll
+                        </AtomButton>
+                      </Show>
                     </div>
                   )}
                 </Index>
@@ -241,15 +251,7 @@ function StageInfoPage() {
                     >
                       --Cancel
                     </AtomButton>
-                    <AtomButton
-                      onClick={() => {
-                        void handleEnroll().catch((error) => {
-                          console.error("Failed to enroll competitor", error);
-                        });
-                      }}
-                    >
-                      --Enroll
-                    </AtomButton>
+                    <AtomButton onClick={handleEnroll}>--Enroll</AtomButton>
                   </div>
                 </div>
               }

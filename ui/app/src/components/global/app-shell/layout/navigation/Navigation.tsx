@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
-import { useAuthUser } from "../../../../../stores/auth/auth";
 import "@/components/global/app-shell/layout/navigation/styles.css";
 import { Show } from "solid-js";
+import { useAuthUser } from "@/stores/auth/auth";
 
 export default function Navigation(props) {
   const user = useAuthUser();

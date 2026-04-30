@@ -3,12 +3,7 @@ import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
-import {
-  fetchUserIfAuthenticated,
-  useAuthUser,
-} from "../../../stores/auth/auth";
-import { useI18n } from "../../../stores/i18n/i18n";
-import { initNetworkStore } from "../../../stores/network/network";
+
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
@@ -17,6 +12,9 @@ import { prefetchConfigurations } from "@/services/api/configurations/configurat
 import { prefetchDogs } from "@/services/api/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/api/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/api/collection-crud/collectionCrud";
+import { useI18n } from "@/stores/i18n/i18n";
+import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth/auth";
+import { initNetworkStore } from "@/stores/network/network";
 import "./styles.css";
 
 export default function AppShell() {

@@ -7,7 +7,7 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
-import { useAuthUser } from "../../../../../../stores/auth/auth";
+import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
 
 type DogFormProps = {

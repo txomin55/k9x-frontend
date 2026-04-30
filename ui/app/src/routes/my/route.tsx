@@ -1,6 +1,6 @@
 import { createFileRoute, Navigate, Outlet } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
-import { useAuthLoading, useAuthUser } from "../../stores/auth/auth";
+import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
 
 export const Route = createFileRoute("/my")({
   component: MyLayoutPage,

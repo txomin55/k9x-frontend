@@ -1,5 +1,5 @@
 import { createEffect } from "solid-js";
-import { useAuthUser } from "../../stores/auth/auth";
+import { useAuthUser } from "@/stores/auth/auth";
 import {
   enablePushNotifications,
   requestNotificationPermission,

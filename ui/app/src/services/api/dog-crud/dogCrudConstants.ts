@@ -1,4 +1,4 @@
-import { getCurrentLocale } from "../../../stores/i18n/i18n";
+import { getCurrentLocale } from "@/stores/i18n/i18n";
 
 export const DOGS_SNAPSHOT_ID = "dogs";
 

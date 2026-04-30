@@ -3,7 +3,7 @@ import {
   createQuery,
   type QueryKey,
 } from "@tanstack/solid-query";
-import { getCurrentLocale, useI18n } from "../../stores/i18n/i18n";
+import { getCurrentLocale, useI18n } from "@/stores/i18n/i18n";
 import type {
   MutationFactoryOptions,
   MutationOverride,

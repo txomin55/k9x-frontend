@@ -11,7 +11,7 @@ import {
   GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
 } from "@/utils/google-auth/googleAuth";
 import { useLogin } from "@/services/api/do-login/doLogin";
-import { setUser } from "../../stores/auth/auth";
+import { setUser } from "@/stores/auth/auth";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
