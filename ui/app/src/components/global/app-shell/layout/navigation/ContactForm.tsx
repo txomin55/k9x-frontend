@@ -1,7 +1,7 @@
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import { createSignal } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
-import { useAuthUser } from "@/stores/auth";
+import { useAuthUser } from "../../../../../stores/auth/auth";
 import postGoogleForm from "@/utils/google-forms/postGoogleForm";
 
 export default function ContactForm() {

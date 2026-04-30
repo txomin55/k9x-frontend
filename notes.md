@@ -19,7 +19,7 @@
 
 ### MVP
 
-- Estilos tooltip mapa en oscuro
+- ~~Estilos tooltip mapa en oscuro~~
 - Añadir boton ghost que reemplaza enroll por "login for enroll"
 - Ver como simplificar el modelo oas
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio

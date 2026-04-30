@@ -3,9 +3,12 @@ import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
-import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth";
-import { useI18n } from "@/stores/i18n";
-import { initNetworkStore } from "@/stores/network";
+import {
+  fetchUserIfAuthenticated,
+  useAuthUser,
+} from "../../../stores/auth/auth";
+import { useI18n } from "../../../stores/i18n/i18n";
+import { initNetworkStore } from "../../../stores/network/network";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";

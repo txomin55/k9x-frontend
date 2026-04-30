@@ -1,11 +1,13 @@
 import type { CreateDogRequest } from "@/services/api/dog-crud/dogCrud.types";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
-import { useAuthUser } from "@/stores/auth";
+import { useAuthUser } from "../../../../../../stores/auth/auth";
 import "./styles.css";
 
 type DogFormProps = {

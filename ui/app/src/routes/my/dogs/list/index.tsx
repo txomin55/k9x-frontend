@@ -4,10 +4,18 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import { createDog, deleteDog, updateDog, useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { CreateDogRequest, Dog } from "@/services/api/dog-crud/dogCrud.types";
+import {
+  createDog,
+  deleteDog,
+  updateDog,
+  useDogs,
+} from "@/services/api/dog-crud/dogCrud";
+import type {
+  CreateDogRequest,
+  Dog,
+} from "@/services/api/dog-crud/dogCrud.types";
 import "./styles.css";
-import { useAuthUser } from "@/stores/auth";
+import { useAuthUser } from "../../../../stores/auth/auth";
 
 const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
   id:

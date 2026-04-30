@@ -1,6 +1,9 @@
 import { createEffect } from "solid-js";
-import { useAuthUser } from "@/stores/auth";
-import { enablePushNotifications, requestNotificationPermission } from "@/utils/notifications/notifications";
+import { useAuthUser } from "../../stores/auth/auth";
+import {
+  enablePushNotifications,
+  requestNotificationPermission,
+} from "@/utils/notifications/notifications";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);

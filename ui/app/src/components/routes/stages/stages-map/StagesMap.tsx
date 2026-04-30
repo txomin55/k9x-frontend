@@ -1,8 +1,9 @@
-import { createMemo, onCleanup, onMount } from "solid-js";
+import { createEffect, createMemo, onCleanup, onMount } from "solid-js";
 import L from "leaflet";
 import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
 import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/stages/stages-map/StageMapMarker";
 import { render } from "solid-js/web";
+import { isDark } from "@/stores/theme/theme";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -17,6 +18,7 @@ export default function StagesMap(_props: StagesMapProps) {
   let mapEl!: HTMLDivElement;
   let map: L.Map | undefined;
   let resizeObserver: ResizeObserver | undefined;
+  let tileLayer: L.TileLayer | undefined;
   const disposers: Array<() => void> = [];
 
   const clusterGroup = L.markerClusterGroup({
@@ -294,6 +296,25 @@ export default function StagesMap(_props: StagesMapProps) {
 
       return marker;
     });
+  });
+
+  const getTileLayerUrl = (isDark: boolean) =>
+    isDark
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+
+  const addTileLayer = (isDark: boolean) => {
+    if (!map) return;
+
+    tileLayer?.remove();
+
+    tileLayer = L.tileLayer(getTileLayerUrl(isDark), {
+      maxZoom: 20,
+    }).addTo(map);
+  };
+
+  createEffect(() => {
+    addTileLayer(isDark());
   });
 
   onMount(() => {

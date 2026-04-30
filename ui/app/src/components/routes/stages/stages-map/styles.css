@@ -87,6 +87,10 @@
     padding: var(--unit-1);
 }
 
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: var(--surface);
+}
+
 .wrong-location-form {
     display: flex;
     flex-direction: column;

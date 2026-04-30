@@ -1,4 +1,4 @@
-import { getCurrentLocale } from "@/stores/i18n";
+import { getCurrentLocale } from "../../../stores/i18n/i18n";
 
 export const COLLECTIONS_SNAPSHOT_ID = "collections";
 export const COLLECTION_SNAPSHOT_PREFIX = "collection:";

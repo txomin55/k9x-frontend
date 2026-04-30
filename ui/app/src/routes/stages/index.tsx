@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
-import { useOffline } from "@/stores/network";
+import { useOffline } from "../../stores/network/network";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import "./styles.css";

@@ -5,13 +5,14 @@ import Navigation from "@/components/global/app-shell/layout/navigation/Navigati
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import { useAuthUser } from "@/stores/auth";
-import { useOffline } from "@/stores/network";
+import { useAuthUser } from "@/stores/auth/auth";
+import { useOffline } from "@/stores/network/network";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
+import { isDark, setIsDark } from "@/stores/theme/theme";
 
 const DESKTOP_BREAKPOINT = 720;
 
@@ -22,7 +23,6 @@ export default function AppLayout(props: ParentProps) {
 
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
-  const [isDark, setIsDark] = createSignal(false);
   let previousDesktop = false;
 
   const toggleMode = () => {

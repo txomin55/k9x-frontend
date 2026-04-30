@@ -62,8 +62,8 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
         {(event) => (
           <div class="stages-map-marker-popup__row">
             <div class="stages-map-marker-popup__row--title">
-              <span>{event().status}</span>
-              <span>
+              <span class="text-caption-sm">{event().status}</span>
+              <span class="text-caption-sm">
                 {event().name} {event().discipline}
               </span>
             </div>

@@ -1,4 +1,4 @@
-import { getCurrentLocale } from "@/stores/i18n";
+import { getCurrentLocale } from "../../../stores/i18n/i18n";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";

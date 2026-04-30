@@ -2,7 +2,7 @@ import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { createAppStore } from "@/utils/store/createAppStore";
-import type { I18nState, Locale } from "@/stores/i18n.types";
+import type { I18nState, Locale } from "@/stores/i18n/i18n.types";
 
 enum TranslationLocale {
   EN = "en",
