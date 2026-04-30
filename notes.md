@@ -37,7 +37,7 @@
     - own de perro
     - ~~contacto general en menú contextual de usuario~~
     - ~~localizacion mal~~
-    - peticion de ser organizador
+    - ~~peticion de ser organizador~~
     - cerrar formularios y poner un success
 - ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~
 - Endpoint de enroll solo tiene que devolver los perros owned
