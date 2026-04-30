@@ -1,9 +1,11 @@
 import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
-import { Index } from "solid-js";
+import { createSignal, Index } from "solid-js";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 
 interface StageMapMarker {
   stage: StageSummary;
@@ -29,6 +31,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       to: "/stages/$id/info",
     });
 
+  const [openWrongLocationForm, setOpenWrongLocationForm] = createSignal(false);
   return (
     <div class="stages-map-marker-popup">
       <span class="stages-map-marker-popup__title">
@@ -38,6 +41,16 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
         </span>
       </span>
       <span class="text-body-sm">{props.stage.description}</span>
+      <AtomDialog
+        closeButtonText="--Close dialog"
+        content={<WrongLocationForm stageId={props.stage.id} />}
+        onOpenChange={setOpenWrongLocationForm}
+        open={openWrongLocationForm()}
+        title="--Wrong location"
+        trigger={
+          <AtomButton type={BUTTON_TYPES.GHOST}>--Wrong location?</AtomButton>
+        }
+      />
       <AtomButton
         type={BUTTON_TYPES.ACCENT}
         onClick={() => navigateToStageInfo(props.stage.id)}

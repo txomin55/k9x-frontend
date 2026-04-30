@@ -9,7 +9,7 @@ import {displayNotification} from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";
 import type {NavigationUserMenuProps} from "@/components/global/app-shell/layout/navigation/NavigationUserMenu.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import {ContactForm} from "@/components/global/app-shell/layout/navigation/ContactForm";
+import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const user = useAuthUser();
