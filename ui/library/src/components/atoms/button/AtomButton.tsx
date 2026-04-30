@@ -15,8 +15,8 @@ export default function AtomButton(props: CoreButtonProps) {
   const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
   const className = () =>
     props.class
-      ? `button ${typeClass()} ${props.class}`
-      : `button ${typeClass()}`;
+      ? `atom-button ${typeClass()} ${props.class}`
+      : `atom-button ${typeClass()}`;
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event,
@@ -33,7 +33,7 @@ export default function AtomButton(props: CoreButtonProps) {
       onClick={handleClick}
       style={props.style}
     >
-      {props.children}
+      <span>{props.children}</span>
     </Button>
   );
 }

@@ -2,11 +2,16 @@
 
 - 4 tipos de usuario
     - visitante
+        - puede ver stages y eventos
     - competidor
+        - puede hacer enroll en evento
     - organizador
+        - puede crear jueces
+        - puede crear competiciones
+        - puede elegir si owns a dog
     - admin
 
-# PENDIENTES FURUROS
+# PENDIENTES FUTUROS
 
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
@@ -14,6 +19,7 @@
 
 ### MVP
 
+- Añadir boton ghost que reemplaza enroll por "login for enroll"
 - Ver como simplificar el modelo oas
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Permitir en clasificación publica modo tabla o modo resumen
@@ -28,7 +34,7 @@
     - Lo mismo para ejercicios
 - Formularios de contacto para
     - own de perro
-    - contacto general en menú contextual de usuario
+    - ~~contacto general en menú contextual de usuario~~
     - localizacion mal
     - peticion de ser organizador
 - ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~

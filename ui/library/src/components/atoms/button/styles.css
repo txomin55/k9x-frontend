@@ -7,7 +7,7 @@
 }
 
 /* BASE */
-.button {
+.atom-button {
     height: var(--unit-5);
     width: auto;
     outline: none;
@@ -23,16 +23,16 @@
     cursor: pointer;
 }
 
-.button:hover {
+.atom-button:hover {
     --button-background-color: var(--button-background-color-hover);
 }
 
-.button:active {
+.atom-button:active {
     --button-background-color: var(--button-background-color-active);
 }
 
 /* DISABLED BASE */
-.button:disabled {
+.atom-button:disabled {
     cursor: not-allowed;
     --button-text-color: var(--text-muted);
     --button-background-color: var(--surface-muted);
@@ -42,7 +42,7 @@
 /* ----------------------------- */
 /* PRIMARY                       */
 /* ----------------------------- */
-.button.primary {
+.atom-button.primary {
     --button-background-color: var(--primary);
     --button-background-color-hover: var(--primary-hover);
     --button-background-color-active: var(--primary-active);
@@ -50,7 +50,7 @@
     --button-border-color: var(--primary);
 }
 
-.button.primary:disabled {
+.atom-button.primary:disabled {
     --button-text-color: var(--text-secondary);
     --button-background-color: var(--primary-soft);
     --button-border-color: var(--primary-border);
@@ -59,7 +59,7 @@
 /* ----------------------------- */
 /* ACCENT (Outline / Secondary)  */
 /* ----------------------------- */
-.button.accent {
+.atom-button.accent {
     --button-background-color: transparent;
     --button-background-color-hover: var(--accent-soft);
     --button-background-color-active: var(--surface-muted);
@@ -67,12 +67,12 @@
     --button-border-color: var(--text-primary);
 }
 
-.button.accent:hover {
+.atom-button.accent:hover {
     --button-text-color: var(--text-primary);
     --button-border-color: var(--text-primary);
 }
 
-.button.accent:disabled {
+.atom-button.accent:disabled {
     --button-text-color: var(--text-muted);
     --button-background-color: transparent;
     --button-border-color: var(--border-muted);
@@ -81,7 +81,7 @@
 /* ----------------------------- */
 /* DESTRUCTIVE                   */
 /* ----------------------------- */
-.button.destructive {
+.atom-button.destructive {
     --button-background-color: var(--error);
     --button-background-color-hover: var(--error-text);
     --button-background-color-active: var(--error-text);
@@ -89,7 +89,7 @@
     --button-border-color: var(--error);
 }
 
-.button.destructive:disabled {
+.atom-button.destructive:disabled {
     --button-text-color: var(--error-text);
     --button-background-color: var(--error-bg);
     --button-border-color: var(--error-border);
@@ -98,7 +98,7 @@
 /* ----------------------------- */
 /* GHOST                         */
 /* ----------------------------- */
-.button.ghost {
+.atom-button.ghost {
     --button-background-color: transparent;
     --button-background-color-hover: var(--surface-hover);
     --button-background-color-active: var(--surface-muted);
@@ -106,7 +106,12 @@
     border-color: transparent;
 }
 
-.button.ghost:disabled {
+.atom-button.ghost > span {
+    padding-bottom: var(--unit-025);
+    border-bottom: 1px solid var(--text-primary);
+}
+
+.atom-button.ghost:disabled {
     --button-text-color: var(--text-muted);
     --button-background-color: transparent;
     --button-border-color: transparent;

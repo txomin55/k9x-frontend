@@ -1,20 +1,23 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
-import { useNavigate } from "@tanstack/solid-router";
-import { AppRoutePath } from "@/components/global/app-shell/paths";
-import { For, Show } from "solid-js";
-import { clearAuth, useAuthUser } from "@/stores/auth";
-import { useI18n } from "@/stores/i18n";
-import { queryClient } from "@/utils/http/query-client";
-import { displayNotification } from "@/utils/notifications/notifications";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import {useNavigate} from "@tanstack/solid-router";
+import {AppRoutePath} from "@/components/global/app-shell/paths";
+import {createSignal, For, Show} from "solid-js";
+import {clearAuth, useAuthUser} from "@/stores/auth";
+import {useI18n} from "@/stores/i18n";
+import {queryClient} from "@/utils/http/query-client";
+import {displayNotification} from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";
-import type { NavigationUserMenuProps } from "@/components/global/app-shell/layout/navigation/NavigationUserMenu.types";
+import type {NavigationUserMenuProps} from "@/components/global/app-shell/layout/navigation/NavigationUserMenu.types";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import {ContactForm} from "@/components/global/app-shell/layout/navigation/ContactForm";
 
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const user = useAuthUser();
   const i18n = useI18n();
   const navigate = useNavigate();
+
+  const [openGenericContactForm, setOpenGenericContactForm] =
+    createSignal(false);
 
   const handleLogout = async () => {
     queryClient.clear();
@@ -48,12 +51,20 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
           </For>
         </div>
 
-        <button
-          class="news-visualizer__toast-button"
-          onClick={() => displayNotification(mockedNotification)}
-        >
+        <AtomDialog
+          closeButtonText="--Close dialog"
+          content={<ContactForm />}
+          onOpenChange={setOpenGenericContactForm}
+          open={openGenericContactForm()}
+          title="--Contact us"
+          trigger={
+            <AtomButton type={BUTTON_TYPES.GHOST}>--Contact us</AtomButton>
+          }
+        />
+
+        <AtomButton onClick={() => displayNotification(mockedNotification)}>
           --Trigger notification
-        </button>
+        </AtomButton>
 
         <Show when={user()}>
           <p>{i18n.t("hello", { name: "txomin" })}</p>
