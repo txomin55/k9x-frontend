@@ -1,32 +1,29 @@
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
-  saveQuerySnapshot,
+  saveQuerySnapshot
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
-  getCollectionSnapshotId,
+  getCollectionSnapshotId
 } from "@/services/secured/collection-crud/collectionCrudConstants";
 import {
   CollectionRequest,
   CollectionRollbackPayload,
-  CollectionsRequest,
+  CollectionsRequest
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import {
-  type PendingTask,
-  type PendingTaskMethod,
-} from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler,
+  registerPendingTaskHandler
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import {
   mergeCollectionByIdWithDraft,
   replaceCollectionByIdDraft,
-  upsertCollectionByIdDraft,
+  upsertCollectionByIdDraft
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 
 export const saveCollectionsSnapshot = (collections: CollectionsRequest[]) =>
@@ -84,32 +81,28 @@ export const commitCollectionMutation = async ({
   });
 
 export const commitCollectionMutationSuccess = async ({
-  collectionId,
+  eventId,
   method,
 }: {
-  collectionId: string;
+  eventId: string;
   method: PendingTaskMethod;
 }) => {
-  const visibleCollection = getVisibleCollectionById(collectionId);
+  const visibleCollection = getVisibleCollectionById(eventId);
 
   if (!visibleCollection || method !== "PUT") {
     return;
   }
 
   queryClient.setQueryData<CollectionRequest>(
-    getCollectionByIdQueryKey(collectionId),
+    getCollectionByIdQueryKey(eventId),
     visibleCollection,
   );
 
-  const nextBaseCollection = getBaseCollectionByIdFromCache(collectionId);
+  const nextBaseCollection = getBaseCollectionByIdFromCache(eventId);
 
-  replaceCollectionByIdDraft(
-    collectionId,
-    visibleCollection,
-    nextBaseCollection,
-  );
+  replaceCollectionByIdDraft(eventId, visibleCollection, nextBaseCollection);
   await saveCollectionSnapshot(
-    collectionId,
+    eventId,
     nextBaseCollection ?? visibleCollection,
   );
 };
@@ -173,7 +166,7 @@ const commitCollectionTask = async (task: PendingTask) => {
   }
 
   await commitCollectionMutationSuccess({
-    collectionId: task.rollbackPayload.collectionId,
+    eventId: task.rollbackPayload.collectionId,
     method: task.method,
   });
 };

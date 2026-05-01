@@ -6,7 +6,7 @@ import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
   getCollectionSnapshotId,
-  getCollectionsQueryKey,
+  getCollectionsQueryKey
 } from "@/services/secured/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
 import {
@@ -16,17 +16,17 @@ import {
   createCollectionRollbackPayload,
   getVisibleCollectionById,
   saveCollectionSnapshot,
-  saveCollectionsSnapshot,
+  saveCollectionsSnapshot
 } from "@/services//secured/collection-crud/collectionCrudOfflineUtils";
 import {
   CollectionRequest,
   CollectionsRequest,
-  UpdateCollectionScoreRequest,
+  UpdateCollectionScoreRequest
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import {
   mergeCollectionByIdWithDraft,
-  mergeCollectionsWithDrafts,
+  mergeCollectionsWithDrafts
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
@@ -45,7 +45,7 @@ const fetchCollections = () =>
 
 const refreshCollectionSnapshot = async (id: string) => {
   const collection = await rawRequest<CollectionRequest>({
-    path: `/secured/collections/${id}`,
+    path: `/secured/events/${id}/collections`,
   });
 
   await saveCollectionSnapshot(id, collection);
@@ -188,13 +188,13 @@ const updateCollectionScoreProjection = (
 });
 
 export const updateCollectionScore = (
-  collectionId: string,
+  eventId: string,
   payload: UpdateCollectionScoreRequest,
 ) => {
-  const previousCollection = getVisibleCollectionById(collectionId);
+  const previousCollection = getVisibleCollectionById(eventId);
 
   if (!previousCollection) {
-    throw new Error(`Collection ${collectionId} not found`);
+    throw new Error(`Collection ${eventId} not found`);
   }
 
   const nextCollection = updateCollectionScoreProjection(
@@ -208,7 +208,7 @@ export const updateCollectionScore = (
     payload.eventId,
   ].join(":");
 
-  applyCollectionUpsert(collectionId, nextCollection);
+  applyCollectionUpsert(eventId, nextCollection);
 
   void (async () => {
     await commitCollectionMutation({
@@ -217,14 +217,14 @@ export const updateCollectionScore = (
       payload,
       onCommitted: () =>
         commitCollectionMutationSuccess({
-          collectionId,
+          eventId,
           method: "PUT",
         }),
       rollbackPayload: await createCollectionRollbackPayload(
-        collectionId,
+        eventId,
         previousCollection,
       ),
-      url: `/secured/collections/${collectionId}/score`,
+      url: `/secured/events/${eventId}/score`,
     });
   })();
 

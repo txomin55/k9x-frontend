@@ -29,15 +29,15 @@
 - Modificar URLs de colección para que cuelgue de events/id/collection
     - Lo mismo para la clasificación
 - Collection max width a la row de score y empezar columnas de derecha a izquierda
-- reemplazar /api por /secured
 - meter newrelic
 - cerrar formularios y poner un success
 - Endpoint de enroll solo tiene que devolver los perros owned
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - añadir boton de crear perros para competidor en caso de no tener ninguno
-  - ocultar check de owned y tenerlo a true
+    - ocultar check de owned y tenerlo a true
 - hacer que la app a 720 cambie de lista de cards a modo tabla
+- ~~reemplazar /api por /secured~~
 - ~~En el stage publico mostrar el organizador~~
 - ~~openstreetmap + leaflet~~
 - ~~Añadir boton ghost que reemplaza enroll por "login for enroll"~~
