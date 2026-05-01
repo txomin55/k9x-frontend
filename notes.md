@@ -8,6 +8,7 @@
     - organizador
         - puede crear jueces
         - puede crear competiciones
+            - aceptar enroll
         - puede elegir si owns a dog
     - admin
 
@@ -27,14 +28,11 @@
 - Ver como simplificar el modelo oas
 - Permitir en clasificación publica modo tabla o modo resumen
 - Modificar URLs de colección para que cuelgue de events/id/classification
-- Collection max width a la row de score y empezar columnas de derecha a izquierda
 - meter newrelic
 - cerrar formularios y poner un success
 - Endpoint de enroll solo tiene que devolver los perros owned
-- enroll no aparece cuando event ha empezado o terminado
-- classification no aparece cuando event es pending
 - añadir boton de crear perros para competidor en caso de no tener ninguno
-    - ocultar check de owned y tenerlo a true
+    - ~~ocultar check de owned y tenerlo a true~~
 - hacer que la app a 720 cambie de lista de cards a modo tabla
 - ~~Modificar URLs de colección para que cuelgue de events/id/collection~~
 - ~~reemplazar /api por /secured~~
@@ -69,6 +67,8 @@
 
 #### UNA VEZ ESTÉ EL BACKEND
 
+- enroll no aparece cuando event ha empezado o terminado
+- classification no aparece cuando event es pending
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Hacer campos obligatorios para edición y creación
 - Terminar push manager
