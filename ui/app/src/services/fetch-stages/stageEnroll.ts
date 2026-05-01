@@ -1,5 +1,7 @@
 import type {
-  GetStageResponse,
+  EnrollStageEventRequest,
+  StageDetail,
+  StageEnrollRollbackPayload,
   StageSummary,
 } from "@/services/fetch-stages/fetchStages.types";
 import {
@@ -15,9 +17,9 @@ import {
   saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import {
-  type PendingTask,
   createPendingTaskId,
   enqueuePendingTask,
+  type PendingTask,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
@@ -28,26 +30,10 @@ import {
 const STAGES_SNAPSHOT_ID = "stages";
 const getStageSnapshotId = (stageId: string) => `stage:${stageId}`;
 
-export type EnrollStageEventRequest = {
-  country: string;
-  dogId: string;
-  eventId: string;
-  identifier: string;
-  owner: string;
-  stageId: string;
-  team: string;
-};
-
-type StageEnrollRollbackPayload = {
-  previousStage: GetStageResponse | null;
-  previousStages: StageSummary[] | null;
-  stageId: string;
-};
-
 const buildNextStage = (
-  stage: GetStageResponse,
+  stage: StageDetail,
   payload: EnrollStageEventRequest,
-): GetStageResponse => ({
+): StageDetail => ({
   ...stage,
   events: stage.events.map((event) => {
     if (String(event.id) !== String(payload.eventId)) {
@@ -80,7 +66,7 @@ const buildNextStage = (
 const buildNextStagesSummary = (
   stages: StageSummary[],
   payload: EnrollStageEventRequest,
-  nextStage: GetStageResponse,
+  nextStage: StageDetail,
 ): StageSummary[] =>
   stages.map((stage) => {
     if (String(stage.id) !== String(payload.stageId)) {
@@ -107,7 +93,7 @@ const buildNextStagesSummary = (
   });
 
 const applyOptimisticEnroll = async (payload: EnrollStageEventRequest) => {
-  const previousStage = queryClient.getQueryData<GetStageResponse>(
+  const previousStage = queryClient.getQueryData<StageDetail>(
     getStageByIdQueryKey(payload.stageId),
   );
 
@@ -120,12 +106,15 @@ const applyOptimisticEnroll = async (payload: EnrollStageEventRequest) => {
   queryClient.setQueryData(getStageByIdQueryKey(payload.stageId), nextStage);
   await saveQuerySnapshot(getStageSnapshotId(payload.stageId), nextStage);
 
-  const previousStages = queryClient.getQueryData<StageSummary[]>(
-    getStagesQueryKey(),
-  );
+  const previousStages =
+    queryClient.getQueryData<StageSummary[]>(getStagesQueryKey());
 
   if (previousStages) {
-    const nextStages = buildNextStagesSummary(previousStages, payload, nextStage);
+    const nextStages = buildNextStagesSummary(
+      previousStages,
+      payload,
+      nextStage,
+    );
     queryClient.setQueryData(getStagesQueryKey(), nextStages);
     await saveQuerySnapshot(STAGES_SNAPSHOT_ID, nextStages);
   }
@@ -152,7 +141,10 @@ const rollbackStageEnroll = async (
   }
 
   if (rollbackPayload.previousStages) {
-    queryClient.setQueryData(getStagesQueryKey(), rollbackPayload.previousStages);
+    queryClient.setQueryData(
+      getStagesQueryKey(),
+      rollbackPayload.previousStages,
+    );
     await saveQuerySnapshot(STAGES_SNAPSHOT_ID, rollbackPayload.previousStages);
   } else {
     queryClient.setQueryData(getStagesQueryKey(), undefined);
@@ -185,8 +177,10 @@ const createRollbackPayload = async (
   stageId: string,
 ): Promise<StageEnrollRollbackPayload> => ({
   previousStage:
-    queryClient.getQueryData<GetStageResponse>(getStageByIdQueryKey(stageId)) ??
-    (await getPersistedQuerySnapshot<GetStageResponse>(getStageSnapshotId(stageId))) ??
+    queryClient.getQueryData<StageDetail>(getStageByIdQueryKey(stageId)) ??
+    (await getPersistedQuerySnapshot<StageDetail>(
+      getStageSnapshotId(stageId),
+    )) ??
     null,
   previousStages:
     queryClient.getQueryData<StageSummary[]>(getStagesQueryKey()) ??

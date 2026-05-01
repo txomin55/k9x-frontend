@@ -16,6 +16,7 @@ export interface StageSummary {
   location?: CompetitionLocationDetail;
   name: string;
   status: string;
+  organizer: string;
 }
 
 export interface CompetitionLocationDetail {
@@ -24,7 +25,7 @@ export interface CompetitionLocationDetail {
   longitude: number;
 }
 
-export interface GetStageResponse {
+export interface StageDetail {
   dateFrom: number;
   dateTo: number;
   events: StageEventDetail[];
@@ -32,6 +33,7 @@ export interface GetStageResponse {
   address: string;
   name: string;
   notifications?: CompetitionNotificationDetail[];
+  organizer: string;
 }
 
 export interface StageEventDetail {
@@ -46,3 +48,19 @@ export interface CompetitionNotificationDetail {
   id: string;
   text: string;
 }
+
+export type StageEnrollRollbackPayload = {
+  previousStage: StageDetail | null;
+  previousStages: StageSummary[] | null;
+  stageId: string;
+};
+
+export type EnrollStageEventRequest = {
+  country: string;
+  dogId: string;
+  eventId: string;
+  identifier: string;
+  owner: string;
+  stageId: string;
+  team: string;
+};

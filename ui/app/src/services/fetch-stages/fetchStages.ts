@@ -4,7 +4,7 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import type {
-  GetStageResponse,
+  StageDetail,
   StageSummary,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -26,7 +26,7 @@ const fetchStages = () =>
   );
 
 const refreshStageByIdSnapshot = async (id: string) => {
-  const stage = await rawRequest<GetStageResponse>({
+  const stage = await rawRequest<StageDetail>({
     path: `/stages/${id}`,
   });
 
@@ -65,7 +65,7 @@ export const useStageById = (id: string, options?: TanstackCreateQuery) =>
   });
 
 export const getCachedStageById = (id: string) =>
-  queryClient.getQueryData<GetStageResponse>(getStageByIdQueryKey(id)) ??
+  queryClient.getQueryData<StageDetail>(getStageByIdQueryKey(id)) ??
   queryClient
     .getQueryData<StageSummary[]>(getStagesQueryKey())
     ?.find((stage) => stage.id === id);

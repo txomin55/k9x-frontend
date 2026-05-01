@@ -38,6 +38,9 @@ export default function StageCard(props: StageCardProps) {
       subHeader={
         <div class="stage-card__meta">
           <span class="stage-card__address text-caption-md">
+            {props.organizer}
+          </span>
+          <span class="stage-card__address text-caption-md">
             {props.address}
           </span>
           <span class="stage-card__date text-caption-sm">

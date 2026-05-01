@@ -16,6 +16,7 @@
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
+- Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
 
 ### MVP
 
@@ -30,25 +31,15 @@
 - Collection max width a la row de score y empezar columnas de derecha a izquierda
 - reemplazar /api por /secured
 - meter newrelic
-- Formularios de contacto para
-    - own de perro
-        - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del
-          perro
-    - ~~contacto general en menú contextual de usuario~~
-    - ~~localizacion mal~~
-    - ~~peticion de ser organizador~~
-    - cerrar formularios y poner un success
-- ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~
+- cerrar formularios y poner un success
 - Endpoint de enroll solo tiene que devolver los perros owned
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
-- En el stage publico mostrar el organizador
 - añadir boton de crear perros para competidor en caso de no tener ninguno
-    - ocultar check de owned y tenerlo a true
+  - ocultar check de owned y tenerlo a true
 - hacer que la app a 720 cambie de lista de cards a modo tabla
-- Para mapa:
-    - ~~openstreetmap + leaflet~~
-    - Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
+- ~~En el stage publico mostrar el organizador~~
+- ~~openstreetmap + leaflet~~
 - ~~Añadir boton ghost que reemplaza enroll por "login for enroll"~~
 - ~~Estilos tooltip mapa en oscuro~~
 - ~~Mock de markers con estados diferentes~~
@@ -71,6 +62,10 @@
     - ~~una tabla donde primera columna será el ejercicio~~
     - ~~columnas de jueces en base a parametros de url~~
 - ~~Que los guias se puedan apuntar a eventos desde stages~~
+- ~~contacto general en menú contextual de usuario~~
+- ~~localizacion mal~~
+- ~~peticion de ser organizador~~
+- ~~Añadir checkbox de owned deshabilitado por defecto en creación de perros para organizador~~
 
 #### UNA VEZ ESTÉ EL BACKEND
 
@@ -79,6 +74,10 @@
 - Terminar push manager
 - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
   dogid o eventid a secas. Hay que modificar contratos
+- Formularios de contacto para
+    - own de perro
+        - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del
+          perro
 
 # Funcionalidades premium
 

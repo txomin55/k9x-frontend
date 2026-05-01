@@ -9,4 +9,5 @@ export interface StageCardProps {
   id: string;
   name: string;
   to: number;
+  organizer: string;
 }

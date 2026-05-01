@@ -50,6 +50,7 @@ function StagesIndexPage() {
               from={stage.dateFrom}
               to={stage.dateTo}
               description={stage.description}
+              organizer={stage.organizer}
               address={stage?.location?.address}
               events={stage.events}
             />
