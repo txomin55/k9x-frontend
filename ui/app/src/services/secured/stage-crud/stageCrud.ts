@@ -4,20 +4,20 @@ import {
   commitApiStageMutation,
   commitApiStageMutationSuccess,
   createApiStageRollbackPayload,
-} from "@/services/api/stage-crud/stageCrudOfflineUtils";
+} from "@/services/secured/stage-crud/stageCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
   type CompetitionDetail,
   getCachedCompetitions,
   useCompetition,
-} from "@/services/api/competition-crud/competitionCrud";
-import { getVisibleCompetitions } from "@/services/api/competition-crud/competitionCrudOfflineUtils";
+} from "@/services/secured/competition-crud/competitionCrud";
+import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   CompetitionStageDetail,
   CreateStageRequest,
   StageEditorModel,
   UpdateStageRequest,
-} from "@/services/api/stage-crud/stageCrud.types";
+} from "@/services/secured/stage-crud/stageCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 

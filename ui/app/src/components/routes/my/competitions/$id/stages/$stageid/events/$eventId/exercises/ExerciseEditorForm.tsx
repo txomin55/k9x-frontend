@@ -5,7 +5,7 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
+import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
 
 type OrderBounds = {

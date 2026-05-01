@@ -1,13 +1,13 @@
 import { createMemo } from "solid-js";
-import { useConfigurations } from "@/services/api/configurations/configurations";
+import { useConfigurations } from "@/services/secured/configurations/configurations";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import {
   FederationConfiguration,
   FederationConfigurations,
-} from "@/services/api/configurations/configurations.types";
+} from "@/services/secured/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import { EventEditorDraft } from "@/services/api/event-crud/eventCrud.types";
+import { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 
 type ConfigurationEditorFormProps = {
   draft: EventEditorDraft;

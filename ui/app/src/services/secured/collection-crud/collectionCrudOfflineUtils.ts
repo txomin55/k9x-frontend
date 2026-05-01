@@ -7,12 +7,12 @@ import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
   getCollectionSnapshotId,
-} from "@/services/api/collection-crud/collectionCrudConstants";
+} from "@/services/secured/collection-crud/collectionCrudConstants";
 import {
   CollectionRequest,
   CollectionRollbackPayload,
   CollectionsRequest,
-} from "@/services/api/collection-crud/collectionCrud.types";
+} from "@/services/secured/collection-crud/collectionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
@@ -27,7 +27,7 @@ import {
   mergeCollectionByIdWithDraft,
   replaceCollectionByIdDraft,
   upsertCollectionByIdDraft,
-} from "@/services/api/collection-crud/collectionsDrafStore";
+} from "@/services/secured/collection-crud/collectionsDrafStore";
 
 export const saveCollectionsSnapshot = (collections: CollectionsRequest[]) =>
   saveQuerySnapshot(COLLECTIONS_SNAPSHOT_ID, collections);

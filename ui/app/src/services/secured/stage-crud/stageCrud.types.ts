@@ -1,5 +1,5 @@
-import { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
-import { EventDetail } from "@/services/api/event-crud/eventCrud.types";
+import { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+import { EventDetail } from "@/services/secured/event-crud/eventCrud.types";
 
 export interface CompetitionStageDetail {
   dateFrom: number;

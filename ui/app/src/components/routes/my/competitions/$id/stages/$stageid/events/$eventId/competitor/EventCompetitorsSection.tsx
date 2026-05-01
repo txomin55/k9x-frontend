@@ -3,12 +3,14 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import Card from "@lib/components/molecules/card/Card";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
+import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { EventCompetitorDetail } from "@/services/api/event-crud/eventCrud.types";
+import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import "./styles.css";
 

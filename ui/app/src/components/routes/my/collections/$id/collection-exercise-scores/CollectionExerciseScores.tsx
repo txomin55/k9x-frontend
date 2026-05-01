@@ -1,8 +1,8 @@
 import {
   CollectionScore,
   Exercise,
-  UpdateCollectionScoreRequest
-} from "@/services/api/collection-crud/collectionCrud.types";
+  UpdateCollectionScoreRequest,
+} from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo, createSignal, For } from "solid-js";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import "./styles.css";

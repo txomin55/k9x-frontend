@@ -9,11 +9,11 @@ import {
   deleteJudge,
   updateJudge,
   useJudges,
-} from "@/services/api/judge-crud/judgeCrud";
+} from "@/services/secured/judge-crud/judgeCrud";
 import type {
   CreateJudgeRequest,
   Judge,
-} from "@/services/api/judge-crud/judgeCrud.types";
+} from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 
 const buildJudgeDraft = (): CreateJudgeRequest => ({

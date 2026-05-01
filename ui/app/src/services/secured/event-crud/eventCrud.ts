@@ -1,18 +1,21 @@
-import {createMemo, getOwner} from "solid-js";
+import { createMemo, getOwner } from "solid-js";
 import {
   applyApiEventRemoval,
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
   createApiEventRollbackPayload,
-} from "@/services/api/event-crud/eventCrudOfflineUtils";
+} from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import {
   CompetitionDetail,
   getCachedCompetitions,
   useCompetition,
-} from "@/services/api/competition-crud/competitionCrud";
-import {getVisibleCompetitions} from "@/services/api/competition-crud/competitionCrudOfflineUtils";
-import {EMPTY_FEDERATION_CONFIGURATION, getConfigurationsQueryKey,} from "@/services/api/configurations/configurations";
+} from "@/services/secured/competition-crud/competitionCrud";
+import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import {
+  EMPTY_FEDERATION_CONFIGURATION,
+  getConfigurationsQueryKey,
+} from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequest,
   Discipline,
@@ -24,9 +27,9 @@ import type {
   EventExerciseDetail,
   EventJudgeDetail,
   UpdateEventRequest,
-} from "@/services/api/event-crud/eventCrud.types";
-import {queryClient} from "@/utils/http/query-client";
-import {DisciplineFederationConfigurations} from "@/services/api/configurations/configurations.types";
+} from "@/services/secured/event-crud/eventCrud.types";
+import { queryClient } from "@/utils/http/query-client";
+import { DisciplineFederationConfigurations } from "@/services/secured/configurations/configurations.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 

@@ -1,9 +1,11 @@
 import type { Accessor } from "solid-js";
 import { Show } from "solid-js";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import { StageEditorModel } from "@/services/api/stage-crud/stageCrud.types";
+import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
 
 type StageDialogProps = {
   draft: Accessor<StageEditorModel | null>;

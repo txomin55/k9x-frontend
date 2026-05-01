@@ -14,7 +14,7 @@ import {
 import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
-import { useApiEvent } from "@/services/api/event-crud/eventCrud";
+import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitor,
   EventCompetitorDetail,
@@ -23,8 +23,8 @@ import type {
   EventExerciseDetail,
   EventJudgeDetail,
   UpdateEventRequest,
-} from "@/services/api/event-crud/eventCrud.types";
-import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
+} from "@/services/secured/event-crud/eventCrud.types";
+import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import AtomButton, {
@@ -35,7 +35,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
-import { useConfigurations } from "@/services/api/configurations/configurations";
+import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 
 export const Route = createFileRoute(

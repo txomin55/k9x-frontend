@@ -3,9 +3,9 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import EventDisciplineField from "@/components/common/event-discipline-field/EventDisciplineField";
-import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/api/configurations/configurations";
+import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import type { EventEditorDraft } from "@/services/api/event-crud/eventCrud.types";
+import type { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import "./styles.css";
 
 type EventEditorFormProps = {

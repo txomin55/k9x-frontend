@@ -10,7 +10,7 @@ import {
   commitDogMutation,
   createDogRollbackPayload,
   getVisibleDogs,
-  saveDogsSnapshot
+  saveDogsSnapshot,
 } from "./dogCrudOfflineUtils";
 import type { CreateDogRequest, Dog, UpdateDogRequest } from "./dogCrud.types";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";

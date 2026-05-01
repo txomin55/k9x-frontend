@@ -5,12 +5,12 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-} from "@/services/api/fetch-user-data/fetchUserData";
+} from "@/services/secured/fetch-user-data/fetchUserData";
 import {
   GOOGLE_OAUTH_STATE_KEY,
   GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
 } from "@/utils/google-auth/googleAuth";
-import { useLogin } from "@/services/api/do-login/doLogin";
+import { useLogin } from "@/services/secured/do-login/doLogin";
 import { setUser } from "@/stores/auth/auth";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";

@@ -1,4 +1,4 @@
-import type { CreateJudgeRequest } from "@/services/api/judge-crud/judgeCrud.types";
+import type { CreateJudgeRequest } from "@/services/secured/judge-crud/judgeCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

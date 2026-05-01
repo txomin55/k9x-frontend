@@ -1,5 +1,5 @@
-import { FederationConfiguration } from "@/services/api/configurations/configurations.types";
-import { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import { FederationConfiguration } from "@/services/secured/configurations/configurations.types";
+import { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 
 export interface CreateEventRequest {
   id: string;

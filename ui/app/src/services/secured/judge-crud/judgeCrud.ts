@@ -10,13 +10,9 @@ import {
   commitJudgeMutation,
   createJudgeRollbackPayload,
   getVisibleJudges,
-  saveJudgesSnapshot,
+  saveJudgesSnapshot
 } from "./judgeCrudOfflineUtils";
-import type {
-  CreateJudgeRequest,
-  Judge,
-  UpdateJudgeRequest,
-} from "./judgeCrud.types";
+import type { CreateJudgeRequest, Judge, UpdateJudgeRequest } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 

@@ -1,8 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
-import { useCollections } from "@/services/api/collection-crud/collectionCrud";
+import { useCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { For, Show, Suspense } from "solid-js";
 import CollectionCard from "@/components/routes/my/collections/list/collection-card/CollectionCard";
-import { Judge } from "@/services/api/judge-crud/judgeCrud.types";
+import { Judge } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export const Route = createFileRoute("/my/collections/list/")({
   component: MyCollectionsListPage,

@@ -2,14 +2,14 @@ import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
-} from "@/services/api/competition-crud/competitionCrudOfflineUtils";
-import { getCompetitionsQueryKey } from "@/services/api/competition-crud/competitionCrud";
-import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import { getCompetitionsQueryKey } from "@/services/secured/competition-crud/competitionCrud";
+import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
-} from "@/services/api/competition-crud/competitionDraftStore";
+} from "@/services/secured/competition-crud/competitionDraftStore";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
@@ -20,11 +20,11 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import { CompetitionStageDetail } from "@/services/api/stage-crud/stageCrud.types";
+import { CompetitionStageDetail } from "@/services/secured/stage-crud/stageCrud.types";
 import {
   ApiEventRollbackPayload,
   EventDetail,
-} from "@/services/api/event-crud/eventCrud.types";
+} from "@/services/secured/event-crud/eventCrud.types";
 
 const buildNextStageDetail = (
   stage: CompetitionStageDetail,

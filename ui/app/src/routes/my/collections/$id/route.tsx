@@ -3,7 +3,7 @@ import {
   getCachedCollections,
   updateCollectionScore,
   useCollectionById,
-} from "@/services/api/collection-crud/collectionCrud";
+} from "@/services/secured/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -13,7 +13,7 @@ import {
   CollectionScore,
   ExerciseScores,
   UpdateCollectionScoreRequest,
-} from "@/services/api/collection-crud/collectionCrud.types";
+} from "@/services/secured/collection-crud/collectionCrud.types";
 import "./styles.css";
 
 type CollectionDetailSearch = {

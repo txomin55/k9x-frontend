@@ -7,7 +7,7 @@ import {
   getCollectionByIdQueryKey,
   getCollectionSnapshotId,
   getCollectionsQueryKey,
-} from "@/services/api/collection-crud/collectionCrudConstants";
+} from "@/services/secured/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
 import {
   applyCollectionUpsert,
@@ -17,17 +17,17 @@ import {
   getVisibleCollectionById,
   saveCollectionSnapshot,
   saveCollectionsSnapshot,
-} from "@/services/api/collection-crud/collectionCrudOfflineUtils";
+} from "@/services//secured/collection-crud/collectionCrudOfflineUtils";
 import {
   CollectionRequest,
   CollectionsRequest,
   UpdateCollectionScoreRequest,
-} from "@/services/api/collection-crud/collectionCrud.types";
+} from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import {
   mergeCollectionByIdWithDraft,
   mergeCollectionsWithDrafts,
-} from "@/services/api/collection-crud/collectionsDrafStore";
+} from "@/services/secured/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
   const collections = await rawRequest<CollectionsRequest[]>({

@@ -1,10 +1,10 @@
-import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
-} from "@/services/api/competition-crud/competitionCrudOfflineUtils";
-import { getCompetitionsQueryKey } from "@/services/api/competition-crud/competitionCrud";
+} from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import { getCompetitionsQueryKey } from "@/services/secured/competition-crud/competitionCrud";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
@@ -19,12 +19,12 @@ import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
-} from "@/services/api/competition-crud/competitionDraftStore";
+} from "@/services/secured/competition-crud/competitionDraftStore";
 import {
   ApiStageRollbackPayload,
   CompetitionStageDetail,
   StageEditorModel,
-} from "@/services/api/stage-crud/stageCrud.types";
+} from "@/services/secured/stage-crud/stageCrud.types";
 
 const toCompetitionDetailStage = (
   stage: StageEditorModel,

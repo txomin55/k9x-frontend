@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
-import { getCachedCompetitions } from "@/services/api/competition-crud/competitionCrud";
+import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 
 export const Route = createFileRoute("/my/competitions/$id")({
   component: CompetitionDetailLayoutPage,

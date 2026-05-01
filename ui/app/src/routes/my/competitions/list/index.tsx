@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my/competitions/list/competition-card/CompetitionCard";
-import { useCompetitions } from "@/services/api/competition-crud/competitionCrud";
+import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 
 export const Route = createFileRoute("/my/competitions/list/")({

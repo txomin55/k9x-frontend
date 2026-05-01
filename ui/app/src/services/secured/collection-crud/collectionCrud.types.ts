@@ -1,5 +1,5 @@
-import { Judge } from "@/services/api/judge-crud/judgeCrud.types";
-import { EventCompetitor } from "@/services/api/event-crud/eventCrud.types";
+import { Judge } from "@/services/secured/judge-crud/judgeCrud.types";
+import { EventCompetitor } from "@/services/secured/event-crud/eventCrud.types";
 
 export interface CollectionsRequest {
   competitionName: string;

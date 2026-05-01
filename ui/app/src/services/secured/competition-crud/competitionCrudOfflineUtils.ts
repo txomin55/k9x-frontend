@@ -1,7 +1,7 @@
 import {
   COMPETITIONS_SNAPSHOT_ID,
   getCompetitionsQueryKey,
-} from "@/services/api/competition-crud/competitionCrud";
+} from "@/services/secured/competition-crud/competitionCrud";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
@@ -20,14 +20,14 @@ import { queryClient } from "@/utils/http/query-client";
 import type {
   CompetitionDetail,
   CompetitionRollbackPayload,
-} from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/secured/competition-crud/competitionCrud.types";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   mergeCompetitionsWithDrafts,
   removeCompetitionDraft,
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
-} from "@/services/api/competition-crud/competitionDraftStore";
+} from "@/services/secured/competition-crud/competitionDraftStore";
 
 export const buildCompetitionsWithoutEntity = (
   previousCompetitions: CompetitionDetail[],

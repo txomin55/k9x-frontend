@@ -3,7 +3,7 @@ import {
   startGoogleInteractiveLogin,
 } from "@/utils/google-auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
-import type { LoginRequest } from "@/services/api/do-login/doLogin.types";
+import type { LoginRequest } from "@/services/secured/do-login/doLogin.types";
 import type {
   RequestOptions,
   SerializableRequest,

@@ -13,12 +13,15 @@ import {
 } from "solid-js";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
-import { useCompetition } from "@/services/api/competition-crud/competitionCrud";
+import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
 import {
   type CompetitionDetail,
   type UpdateCompetitionRequest,
-} from "@/services/api/competition-crud/competitionCrud.types";
-import { toApiStage, useApiStage } from "@/services/api/stage-crud/stageCrud";
+} from "@/services/secured/competition-crud/competitionCrud.types";
+import {
+  toApiStage,
+  useApiStage,
+} from "@/services/secured/stage-crud/stageCrud";
 import { toUndefinedIfBlank } from "@/utils/date";
 import AtomButton, {
   BUTTON_TYPES,
@@ -30,7 +33,7 @@ import {
   CreateStageRequest,
   StageEditorModel,
   UpdateStageRequest,
-} from "@/services/api/stage-crud/stageCrud.types";
+} from "@/services/secured/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
   component: CompetitionDetailPage,

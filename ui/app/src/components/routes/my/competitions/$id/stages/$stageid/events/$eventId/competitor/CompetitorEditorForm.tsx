@@ -5,9 +5,9 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
-import { EventCompetitorDetail } from "@/services/api/event-crud/eventCrud.types";
+import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 
 type OrderBounds = {
   minValue: number;

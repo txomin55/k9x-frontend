@@ -11,14 +11,14 @@ import {
   Show,
   Suspense,
 } from "solid-js";
-import { useApiEvent } from "@/services/api/event-crud/eventCrud";
-import { useApiStage } from "@/services/api/stage-crud/stageCrud";
+import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
+import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequest,
   EventDetail,
   EventEditorDraft,
   UpdateEventRequest,
-} from "@/services/api/event-crud/eventCrud.types";
+} from "@/services/secured/event-crud/eventCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import {
   formatDateLabel,
@@ -36,12 +36,12 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import Card from "@lib/components/molecules/card/Card";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
-import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/api/configurations/configurations";
+import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import "./styles.css";
 import {
   StageEditorModel,
   UpdateStageRequest,
-} from "@/services/api/stage-crud/stageCrud.types";
+} from "@/services/secured/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,

@@ -26,7 +26,7 @@ vi.mock(
   }),
 );
 
-vi.mock("@/services/api/competition-crud/competitionCrud", () => ({
+vi.mock("@/services/secured/competition-crud/competitionCrud", () => ({
   useCompetitions: () => ({
     data: [],
   }),

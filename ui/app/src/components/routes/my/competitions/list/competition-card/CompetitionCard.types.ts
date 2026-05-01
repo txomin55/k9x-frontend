@@ -1,4 +1,4 @@
-import { CompetitionStageDetail } from "@/services/api/stage-crud/stageCrud.types";
+import { CompetitionStageDetail } from "@/services/secured/stage-crud/stageCrud.types";
 
 export interface CompetitionCardProps {
   address?: string;

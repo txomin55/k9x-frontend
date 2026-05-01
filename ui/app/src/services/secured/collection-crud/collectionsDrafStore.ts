@@ -1,7 +1,7 @@
 import {
   CollectionRequest,
   CollectionsRequest,
-} from "@/services/api/collection-crud/collectionCrud.types";
+} from "@/services/secured/collection-crud/collectionCrud.types";
 import { createSignal } from "solid-js";
 
 const [collectionDrafts, setCollectionDrafts] = createSignal<

@@ -1,4 +1,4 @@
-import { UserProfile } from "@/services/api/fetch-user-data/fetchUserData.types";
+import { UserProfile } from "@/services/secured/fetch-user-data/fetchUserData.types";
 
 export type AuthState = {
   user: UserProfile | null;

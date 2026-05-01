@@ -1,4 +1,4 @@
-import type { CreateDogRequest } from "@/services/api/dog-crud/dogCrud.types";
+import type { CreateDogRequest } from "@/services/secured/dog-crud/dogCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";

@@ -11,17 +11,17 @@ import {
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
   getVisibleCompetitions,
-} from "@/services/api/competition-crud/competitionCrudOfflineUtils";
+} from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionDetail,
   CreateCompetitionRequest,
   UpdateCompetitionRequest,
-} from "@/services/api/competition-crud/competitionCrud.types";
+} from "@/services/secured/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { mergeCompetitionsWithDrafts } from "@/services/api/competition-crud/competitionDraftStore";
+import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
 
-export type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+export type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
 

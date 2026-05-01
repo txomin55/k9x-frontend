@@ -1,5 +1,5 @@
 import { type Accessor, Index, Show } from "solid-js";
-import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/date";
 import AtomButton, {
@@ -10,7 +10,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
-import { StageEditorModel } from "@/services/api/stage-crud/stageCrud.types";
+import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
 
 type StageItem = NonNullable<CompetitionDetail["stages"]>[number];
 

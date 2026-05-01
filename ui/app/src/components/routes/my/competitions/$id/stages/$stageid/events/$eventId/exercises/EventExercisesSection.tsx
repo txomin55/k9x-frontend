@@ -8,7 +8,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import { EventExerciseDetail } from "@/services/api/event-crud/eventCrud.types";
+import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 

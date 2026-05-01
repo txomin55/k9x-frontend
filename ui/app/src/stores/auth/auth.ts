@@ -3,7 +3,7 @@ import {
   clearCachedUserData,
   fetchCachedUserData,
   UserProfile,
-} from "@/services/api/fetch-user-data/fetchUserData";
+} from "@/services/secured/fetch-user-data/fetchUserData";
 import type { AuthState } from "@/stores/auth/auth.types";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";

@@ -2,7 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
 import type { JSX } from "solid-js";
 import { createSignal } from "solid-js";
-import type { CollectionRequest } from "@/services/api/collection-crud/collectionCrud.types";
+import type { CollectionRequest } from "@/services/secured/collection-crud/collectionCrud.types";
 import { Route } from "@/routes/my/collections/$id/route";
 
 const mocks = vi.hoisted(() => ({
@@ -23,7 +23,7 @@ vi.mock("@tanstack/solid-router", async (importOriginal) => {
   };
 });
 
-vi.mock("@/services/api/collection-crud/collectionCrud", () => ({
+vi.mock("@/services/secured/collection-crud/collectionCrud", () => ({
   getCachedCollections: vi.fn(() => []),
   updateCollectionScore: mocks.updateCollectionScore,
   useCollectionById: () => ({

@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import type { CompetitionDetail } from "@/services/api/competition-crud/competitionCrud.types";
+import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
 
 const [competitionDrafts, setCompetitionDrafts] = createSignal<
   Record<string, CompetitionDetail>

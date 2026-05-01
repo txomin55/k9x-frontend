@@ -1,4 +1,4 @@
-import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 
 type DogCardProps = {
   dog: Dog;

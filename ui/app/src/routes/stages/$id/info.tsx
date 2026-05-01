@@ -1,8 +1,8 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useDogs } from "@/services/api/dog-crud/dogCrud";
-import type { Dog } from "@/services/api/dog-crud/dogCrud.types";
+import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { createMemo, createSignal, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
 import AtomButton, {

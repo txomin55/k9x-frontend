@@ -9,11 +9,11 @@ import {
   deleteDog,
   updateDog,
   useDogs,
-} from "@/services/api/dog-crud/dogCrud";
+} from "@/services/secured/dog-crud/dogCrud";
 import type {
   CreateDogRequest,
   Dog,
-} from "@/services/api/dog-crud/dogCrud.types";
+} from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
 

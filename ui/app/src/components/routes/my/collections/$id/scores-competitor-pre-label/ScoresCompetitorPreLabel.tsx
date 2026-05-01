@@ -1,4 +1,4 @@
-import { EventCompetitor } from "@/services/api/event-crud/eventCrud.types";
+import { EventCompetitor } from "@/services/secured/event-crud/eventCrud.types";
 import { Show } from "solid-js";
 import "./styles.css";
 
