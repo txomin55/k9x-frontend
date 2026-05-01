@@ -1,7 +1,5 @@
 import type { CreateDogRequest } from "@/services/secured/dog-crud/dogCrud.types";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -118,7 +116,7 @@ export default function DogForm(props: DogFormProps) {
         onChange={updateCountry}
       />
       <div class="dog-form__actions">
-        <AtomButton type={BUTTON_TYPES.GHOST} onClick={props.onCancel}>
+        <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           --Cancel
         </AtomButton>
         <AtomButton onClick={props.onSave}>--Save</AtomButton>

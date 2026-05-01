@@ -32,7 +32,7 @@ export const getCompetitionsQueryKey = () =>
 
 const refreshCompetitionsSnapshot = async () => {
   const competitions = await rawRequest<CompetitionDetail[]>({
-    path: "/api/competitions",
+    path: "/secured/competitions",
   });
 
   await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions);
@@ -170,7 +170,7 @@ export const useCompetition = () => {
           null,
           previousCompetitionsFromCache,
         ),
-        url: "/api/competitions",
+        url: "/secured/competitions",
       });
     })();
   };
@@ -210,7 +210,7 @@ export const useCompetition = () => {
           previousCompetition ?? null,
           previousCompetitionsFromCache,
         ),
-        url: `/api/competitions/${id}`,
+        url: `/secured/competitions/${id}`,
       });
     })();
   };
@@ -238,7 +238,7 @@ export const useCompetition = () => {
           previousCompetition ?? null,
           previousCompetitionsFromCache,
         ),
-        url: `/api/competitions/${id}`,
+        url: `/secured/competitions/${id}`,
       });
     })();
   };

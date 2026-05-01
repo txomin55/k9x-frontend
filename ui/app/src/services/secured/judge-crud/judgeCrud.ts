@@ -10,15 +10,19 @@ import {
   commitJudgeMutation,
   createJudgeRollbackPayload,
   getVisibleJudges,
-  saveJudgesSnapshot
+  saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
-import type { CreateJudgeRequest, Judge, UpdateJudgeRequest } from "./judgeCrud.types";
+import type {
+  CreateJudgeRequest,
+  Judge,
+  UpdateJudgeRequest,
+} from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 
 const refreshJudgesSnapshot = async () => {
   const judges = await rawRequest<Judge[]>({
-    path: "/api/judges",
+    path: "/secured/judges",
   });
 
   await saveJudgesSnapshot(judges);
@@ -102,7 +106,7 @@ export const createJudge = (payload: CreateJudgeRequest) => {
         null,
         previousJudges,
       ),
-      url: "/api/judges",
+      url: "/secured/judges",
     });
   })();
 
@@ -131,7 +135,7 @@ export const updateJudge = (id: string, payload: UpdateJudgeRequest) => {
         previousJudge,
         previousJudges,
       ),
-      url: `/api/judges/${id}`,
+      url: `/secured/judges/${id}`,
     });
   })();
 
@@ -153,7 +157,7 @@ export const deleteJudge = (id: string) => {
         previousJudge,
         previousJudges,
       ),
-      url: `/api/judges/${id}`,
+      url: `/secured/judges/${id}`,
     });
   })();
 };

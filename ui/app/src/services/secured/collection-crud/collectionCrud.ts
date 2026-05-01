@@ -31,7 +31,7 @@ import {
 
 const refreshCollectionsSnapshot = async () => {
   const collections = await rawRequest<CollectionsRequest[]>({
-    path: "/api/collections",
+    path: "/secured/collections",
   });
 
   await saveCollectionsSnapshot(collections);
@@ -45,7 +45,7 @@ const fetchCollections = () =>
 
 const refreshCollectionSnapshot = async (id: string) => {
   const collection = await rawRequest<CollectionRequest>({
-    path: `/api/collections/${id}`,
+    path: `/secured/collections/${id}`,
   });
 
   await saveCollectionSnapshot(id, collection);
@@ -224,7 +224,7 @@ export const updateCollectionScore = (
         collectionId,
         previousCollection,
       ),
-      url: `/api/collections/${collectionId}/score`,
+      url: `/secured/collections/${collectionId}/score`,
     });
   })();
 

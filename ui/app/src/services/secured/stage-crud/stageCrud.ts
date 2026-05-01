@@ -157,7 +157,7 @@ export const useApiStage = () => {
           previousCompetitionsFromCache,
           previousStage: null,
         }),
-        url: "/api/stages",
+        url: "/secured/stages",
       });
     })();
   };
@@ -202,7 +202,7 @@ export const useApiStage = () => {
           previousCompetitionsFromCache,
           previousStage: previousStage ?? null,
         }),
-        url: `/api/stages/${nextApiStage.id}`,
+        url: `/secured/stages/${nextApiStage.id}`,
       });
     })();
   };
@@ -233,7 +233,7 @@ export const useApiStage = () => {
           previousCompetitionsFromCache,
           previousStage: previousStage ?? null,
         }),
-        url: `/api/stages/${id}`,
+        url: `/secured/stages/${id}`,
       });
     })();
   };

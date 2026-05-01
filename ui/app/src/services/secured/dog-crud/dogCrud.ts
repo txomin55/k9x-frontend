@@ -18,7 +18,7 @@ import { mergeDogsWithDrafts } from "./dogDraftStore";
 
 const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
-    path: "/api/dogs",
+    path: "/secured/dogs",
   });
 
   await saveDogsSnapshot(dogs);
@@ -101,7 +101,7 @@ export const createDog = (payload: CreateDogRequest) => {
         null,
         previousDogs,
       ),
-      url: "/api/dogs",
+      url: "/secured/dogs",
     });
   })();
 
@@ -138,7 +138,7 @@ export const updateDog = (id: string, payload: UpdateDogRequest) => {
         previousDog,
         previousDogs,
       ),
-      url: `/api/dogs/${id}`,
+      url: `/secured/dogs/${id}`,
     });
   })();
 
@@ -160,7 +160,7 @@ export const deleteDog = (id: string) => {
         previousDog,
         previousDogs,
       ),
-      url: `/api/dogs/${id}`,
+      url: `/secured/dogs/${id}`,
     });
   })();
 };

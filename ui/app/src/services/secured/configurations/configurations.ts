@@ -8,7 +8,7 @@ export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 
 const fetchConfigurations = () =>
   rawRequest<DisciplineFederationConfigurations[]>({
-    path: "/api/disciplines/configurations",
+    path: "/secured/disciplines/configurations",
   });
 
 const configurationsQuery = defineQuery({

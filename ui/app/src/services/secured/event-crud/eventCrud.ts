@@ -4,17 +4,17 @@ import {
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload,
+  createApiEventRollbackPayload
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import {
   CompetitionDetail,
   getCachedCompetitions,
-  useCompetition,
+  useCompetition
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  getConfigurationsQueryKey,
+  getConfigurationsQueryKey
 } from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequest,
@@ -26,7 +26,7 @@ import type {
   EventExercise,
   EventExerciseDetail,
   EventJudgeDetail,
-  UpdateEventRequest,
+  UpdateEventRequest
 } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { DisciplineFederationConfigurations } from "@/services/secured/configurations/configurations.types";
@@ -332,7 +332,7 @@ export const useApiEvent = () => {
           previousEvent: null,
           stageId: draftApiEvent.stageId,
         }),
-        url: "/api/events",
+        url: "/secured/events",
       });
     })();
   };
@@ -382,7 +382,7 @@ export const useApiEvent = () => {
           previousEvent: context.event ?? null,
           stageId,
         }),
-        url: `/api/events/${nextApiEvent.id}`,
+        url: `/secured/events/${nextApiEvent.id}`,
       });
     })();
   };
@@ -424,7 +424,7 @@ export const useApiEvent = () => {
           previousEvent: context.event ?? null,
           stageId,
         }),
-        url: `/api/events/${id}`,
+        url: `/secured/events/${id}`,
       });
     })();
   };

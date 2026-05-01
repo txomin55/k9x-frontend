@@ -18,7 +18,7 @@ const fetchUserData = async () =>
   await fetchWithOfflineSnapshot(USER_SNAPSHOT_ID, async () => {
     return await rawRequest<UserProfile>({
       auth: true,
-      path: "/api/user",
+      path: "/secured/user",
     });
   });
 
