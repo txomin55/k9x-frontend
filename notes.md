@@ -26,8 +26,7 @@
     - Lo mismo para ejercicios
 - Ver como simplificar el modelo oas
 - Permitir en clasificación publica modo tabla o modo resumen
-- Modificar URLs de colección para que cuelgue de events/id/collection
-    - Lo mismo para la clasificación
+- Modificar URLs de colección para que cuelgue de events/id/classification
 - Collection max width a la row de score y empezar columnas de derecha a izquierda
 - meter newrelic
 - cerrar formularios y poner un success
@@ -37,6 +36,7 @@
 - añadir boton de crear perros para competidor en caso de no tener ninguno
     - ocultar check de owned y tenerlo a true
 - hacer que la app a 720 cambie de lista de cards a modo tabla
+- ~~Modificar URLs de colección para que cuelgue de events/id/collection~~
 - ~~reemplazar /api por /secured~~
 - ~~En el stage publico mostrar el organizador~~
 - ~~openstreetmap + leaflet~~
