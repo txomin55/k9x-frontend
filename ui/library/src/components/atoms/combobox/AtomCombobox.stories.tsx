@@ -1,14 +1,20 @@
 import { createSignal } from "solid-js";
 import { renderSolid } from "@lib/../.storybook/renderSolid";
+import type { AtomComboboxOption, AtomComboboxProps } from "./AtomCombobox";
 import { AtomCombobox } from "./AtomCombobox";
-import type { AtomComboboxProps } from "./AtomCombobox";
 
-const OPTIONS = ["Apple", "Banana", "Blueberry", "Grapes", "Pineapple"];
+const OPTIONS: AtomComboboxOption[] = [
+  { label: "Apple", value: "apple" },
+  { label: "Banana", value: "banana" },
+  { label: "Blueberry", value: "blueberry" },
+  { label: "Grapes", value: "grapes" },
+  { label: "Pineapple", value: "pineapple" },
+];
 
 const meta = {
   title: "Atoms/AtomCombobox",
   render: (args: AtomComboboxProps) => {
-    const [value, setValue] = createSignal<string | null>(args.value ?? null);
+    const [value, setValue] = createSignal(args.value ?? null);
 
     return renderSolid(() => (
       <AtomCombobox
@@ -27,7 +33,8 @@ export default meta;
 
 export const Basic = {
   args: {
-    ariaLabel: "Favorite fruit",
+    label: "Favorite fruit",
+    description: "Pick one fruit from the list.",
     options: OPTIONS,
     placeholder: "Select a fruit",
   },
@@ -35,9 +42,29 @@ export const Basic = {
 
 export const WithValue = {
   args: {
-    ariaLabel: "Favorite fruit",
+    label: "Favorite fruit",
     options: OPTIONS,
     placeholder: "Select a fruit",
-    value: "Blueberry",
+    value: OPTIONS[2],
+  },
+};
+
+export const WithError = {
+  args: {
+    errorMessage: "Please choose a fruit.",
+    label: "Favorite fruit",
+    options: OPTIONS,
+    placeholder: "Select a fruit",
+    validationState: "invalid",
+  },
+};
+
+export const ErrorMessage = {
+  args: {
+    errorMessage: "This field is required.",
+    label: "Favorite fruit",
+    options: OPTIONS,
+    placeholder: "Select a fruit",
+    validationState: "invalid",
   },
 };

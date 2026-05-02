@@ -1,9 +1,12 @@
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "@lib/components/atoms/combobox/AtomCombobox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
@@ -48,18 +51,31 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
     );
   };
 
-  const selectedExerciseOption = createMemo<AtomSelectOption | null>(() => {
+  const exerciseOptions = createMemo<AtomComboboxOption[]>(() =>
+    props.exerciseOptions.map((option) => ({
+      disabled: option.disabled,
+      label: option.label,
+      preLabel: option.preLabel,
+      value: option.value,
+    })),
+  );
+
+  const selectedExerciseOption = createMemo<AtomComboboxOption | null>(() => {
     const draft = props.draft();
 
     return (
-      props.exerciseOptions.find((option) => option.value === draft.id) ?? {
+      exerciseOptions().find((option) => option.value === draft.id) ?? {
         label: `--${draft.name}`,
         value: draft.id,
       }
     );
   });
 
-  const setExercise = (option: AtomSelectOption) => {
+  const setExercise = (option: AtomComboboxOption | null) => {
+    if (!option) {
+      return;
+    }
+
     props.onDraftChange((current) =>
       current
         ? {
@@ -94,14 +110,14 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         minValue={minOrder}
         maxValue={maxOrder}
       />
-      <AtomSelect
+      <AtomCombobox
         label="--Exercise"
-        options={props.exerciseOptions}
+        options={exerciseOptions()}
         value={selectedExerciseOption()}
         onChange={setExercise}
-        disabled={props.exerciseOptions.length === 0}
+        disabled={exerciseOptions().length === 0}
         description={
-          props.exerciseOptions.length === 0
+          exerciseOptions().length === 0
             ? "--Select a configuration with exercises first"
             : undefined
         }

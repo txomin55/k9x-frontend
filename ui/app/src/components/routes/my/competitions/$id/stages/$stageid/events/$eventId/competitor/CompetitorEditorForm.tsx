@@ -1,9 +1,12 @@
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "@lib/components/atoms/combobox/AtomCombobox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
@@ -90,7 +93,15 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
-  const handleDogChange = (option: AtomSelectOption | null) => {
+  const dogOptions = (): AtomComboboxOption[] =>
+    props.dogOptions.map((option) => ({
+      disabled: option.disabled,
+      label: option.label,
+      preLabel: option.preLabel,
+      value: option.value,
+    }));
+
+  const handleDogChange = (option: AtomComboboxOption | null) => {
     const dog = option ? props.dogsById.get(option.value) : undefined;
 
     props.onCompetitorDraftChange((current) =>
@@ -114,15 +125,14 @@ export default function CompetitorEditorForm(
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
         <div class="competitor-editor-form">
-          <AtomSelect
+          <AtomCombobox
             label="--Dog"
             onChange={handleDogChange}
-            options={props.dogOptions}
+            options={dogOptions()}
             placeholder="--Select a dog"
             value={
-              props.dogOptions.find(
-                (option) => option.value === draft().dogId,
-              ) ?? null
+              dogOptions().find((option) => option.value === draft().dogId) ??
+              null
             }
           />
           <AtomInput

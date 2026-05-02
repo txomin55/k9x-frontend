@@ -2,8 +2,11 @@ import type { EventJudgeDetail } from "@/services/secured/event-crud/eventCrud.t
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "@lib/components/atoms/combobox/AtomCombobox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
 
@@ -31,23 +34,30 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
     );
   };
 
-  const selectedJudgeOption = () =>
-    props.judgeOptions.find((option) => option.value === props.draft().id) ??
-    null;
+  const judgeOptions = (): AtomComboboxOption[] =>
+    props.judgeOptions.map((option) => ({
+      disabled: option.disabled,
+      label: option.label,
+      preLabel: option.preLabel,
+      value: option.value,
+    }));
 
-  const handleJudgeChange = (option: AtomSelectOption | null) => {
+  const selectedJudgeOption = () =>
+    judgeOptions().find((option) => option.value === props.draft().id) ?? null;
+
+  const handleJudgeChange = (option: AtomComboboxOption | null) => {
     updateField("id")(option?.value ?? "");
   };
 
   return (
     <div class="judge-editor-form">
-      <AtomSelect
+      <AtomCombobox
         label="--Judge"
         onChange={(option) => {
           handleJudgeChange(option);
           props.onCommit();
         }}
-        options={props.judgeOptions}
+        options={judgeOptions()}
         placeholder="--Select a judge"
         value={selectedJudgeOption()}
       />
