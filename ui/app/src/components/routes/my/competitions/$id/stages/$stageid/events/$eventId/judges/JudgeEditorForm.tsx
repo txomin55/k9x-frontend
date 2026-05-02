@@ -9,6 +9,7 @@ import {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
+import { useNavigate } from "@tanstack/solid-router";
 
 type JudgeEditorFormProps = {
   draft: () => EventJudgeDetail;
@@ -23,6 +24,8 @@ type JudgeEditorFormProps = {
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
+  const navigate = useNavigate();
+
   const updateField = (field: "id" | "collectorEmail") => (value: string) => {
     props.onDraftChange((current) =>
       current
@@ -49,6 +52,11 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
     updateField("id")(option?.value ?? "");
   };
 
+  const handleGoToJudges = () =>
+    navigate({
+      to: "/my/judges",
+    });
+
   return (
     <div class="judge-editor-form">
       <AtomCombobox
@@ -60,7 +68,13 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         options={judgeOptions()}
         placeholder="--Select a judge"
         value={selectedJudgeOption()}
-      />
+      >
+        <Show when={judgeOptions().length === 0}>
+          <AtomButton type={BUTTON_TYPES.GHOST} onClick={handleGoToJudges}>
+            --Create judge
+          </AtomButton>
+        </Show>
+      </AtomCombobox>
       <AtomInput
         label="--Email"
         type="email"

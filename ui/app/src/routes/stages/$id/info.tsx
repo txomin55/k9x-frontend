@@ -1,4 +1,8 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
@@ -12,11 +16,11 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
+import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -38,12 +42,13 @@ const createEmptyEnrollDraft = (): EnrollDraft => ({
   team: "",
 });
 
-function StageInfoPage() {
-  const TABS = {
-    EVENTS: "EVENTS",
-    NOTIFICATIONS: "NOTIFICATIONS",
-  };
+const TABS = {
+  EVENTS: "EVENTS",
+  NOTIFICATIONS: "NOTIFICATIONS",
+};
 
+function StageInfoPage() {
+  const navigate = useNavigate();
   const user = useAuthUser();
   const params = useParams({ from: "/stages/$id/info" });
 
@@ -176,6 +181,11 @@ function StageInfoPage() {
       },
     ];
   });
+
+  const handleGoToDogs = () =>
+    navigate({
+      to: "/my/dogs",
+    });
   return (
     <div class="stage-info">
       <Show when={stageInfo.data} fallback={<span>--Loading stage data</span>}>
@@ -195,7 +205,7 @@ function StageInfoPage() {
               closeButtonText="--Close dialog"
               content={
                 <div class="stage-info__enroll-form">
-                  <AtomSelect
+                  <AtomCombobox
                     label="--Dog"
                     onChange={handleDogChange}
                     options={dogOptions()}
@@ -205,7 +215,17 @@ function StageInfoPage() {
                         (option) => option.value === enrollDraft().dogId,
                       ) ?? null
                     }
-                  />
+                  >
+                    <Show when={dogOptions().length === 0}>
+                      <AtomButton
+                        type={BUTTON_TYPES.GHOST}
+                        onClick={handleGoToDogs}
+                      >
+                        --Create dog
+                      </AtomButton>
+                    </Show>
+                  </AtomCombobox>
+
                   <AtomInput
                     label="--Identifier"
                     value={enrollDraft().identifier}

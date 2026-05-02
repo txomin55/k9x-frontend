@@ -86,4 +86,14 @@ describe("AtomCombobox", () => {
     expect(getByRole("combobox")).toHaveValue("Blueberry");
     expect(getByText("This field is required")).toBeInTheDocument();
   });
+
+  test("renders custom slot content when children are provided", () => {
+    const { getByText } = render(() => (
+      <AtomCombobox options={OPTIONS}>
+        <div>Contenido extra</div>
+      </AtomCombobox>
+    ));
+
+    expect(getByText("Contenido extra")).toBeInTheDocument();
+  });
 });

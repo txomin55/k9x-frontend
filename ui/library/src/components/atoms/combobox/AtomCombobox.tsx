@@ -1,5 +1,5 @@
 import { Combobox } from "@kobalte/core/combobox";
-import type { JSX } from "solid-js";
+import type { JSX, ParentProps } from "solid-js";
 import "./styles.css";
 
 export type AtomComboboxOption = {
@@ -9,7 +9,7 @@ export type AtomComboboxOption = {
   preLabel?: JSX.Element;
 };
 
-export type AtomComboboxProps = {
+export type AtomComboboxProps = ParentProps<{
   options: AtomComboboxOption[];
   value?: AtomComboboxOption | null;
   defaultValue?: AtomComboboxOption;
@@ -20,7 +20,7 @@ export type AtomComboboxProps = {
   errorMessage?: string;
   disabled?: boolean;
   validationState?: "valid" | "invalid";
-};
+}>;
 
 export function AtomCombobox(props: AtomComboboxProps) {
   return (
@@ -29,6 +29,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
       defaultValue={props.defaultValue}
       aria-label={props.label ?? "--Combobox"}
       disabled={props.disabled}
+      allowsEmptyCollection
       triggerMode="focus"
       validationState={props.validationState}
       options={props.options}
@@ -59,7 +60,10 @@ export function AtomCombobox(props: AtomComboboxProps) {
         </Combobox.Label>
       ) : null}
       <Combobox.Control class="atom-combobox__control">
-        <Combobox.Input class="atom-combobox__input" />
+        <Combobox.Input
+          class="atom-combobox__input"
+          placeholder={props.placeholder}
+        />
         <Combobox.Trigger>
           <Combobox.Icon class="atom-combobox__icon">^</Combobox.Icon>
         </Combobox.Trigger>
@@ -76,6 +80,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
       ) : null}
       <Combobox.Portal>
         <Combobox.Content class="atom-combobox__content">
+          {props.children}
           <Combobox.Listbox class="atom-combobox__listbox" />
         </Combobox.Content>
       </Combobox.Portal>

@@ -1,16 +1,12 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
-import {
-  AtomCombobox,
-  type AtomComboboxOption,
-} from "@lib/components/atoms/combobox/AtomCombobox";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { useNavigate } from "@tanstack/solid-router";
 
 type OrderBounds = {
   minValue: number;
@@ -36,6 +32,7 @@ type CompetitorDialogContentProps = {
 export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
+  const navigate = useNavigate();
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
@@ -121,6 +118,11 @@ export default function CompetitorEditorForm(
     props.onCommitCompetitor();
   };
 
+  const handleGoToDogs = () =>
+    navigate({
+      to: "/my/dogs",
+    });
+
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
@@ -134,7 +136,13 @@ export default function CompetitorEditorForm(
               dogOptions().find((option) => option.value === draft().dogId) ??
               null
             }
-          />
+          >
+            <Show when={dogOptions().length === 0}>
+              <AtomButton type={BUTTON_TYPES.GHOST} onClick={handleGoToDogs}>
+                --Create dog
+              </AtomButton>
+            </Show>
+          </AtomCombobox>
           <AtomInput
             label="--Owner"
             value={draft().owner}
