@@ -26,9 +26,9 @@
 - Modificar URLs de colección para que cuelgue de events/id/classification
 - cerrar formularios y poner un success
 - Endpoint de enroll solo tiene que devolver los perros owned
-- añadir boton de crear perros para competidor en caso de no tener ninguno
 - hacer que la app a 720 cambie de lista de cards a modo tabla
 - meter newrelic
+- ~~añadir boton de crear perros para competidor en caso de no tener ninguno~~
 - ~~ocultar check de owned y tenerlo a true para competidor~~
 - ~~Crear combobox para poder reemplazar los select de perros~~
     - ~~Lo mismo paea participantes~~
