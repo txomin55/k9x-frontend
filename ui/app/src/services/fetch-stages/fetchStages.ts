@@ -3,8 +3,9 @@ import { defineQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import type {
+import {
   StageDetail,
+  StageEventClassificationItem,
   StageSummary,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -45,90 +46,10 @@ export const fetchStageById = (id: string) =>
     refreshStageByIdSnapshot(id),
   );
 
-/*
 const fetchEventClassification = (stageId: string, eventId: string) =>
   rawRequest<StageEventClassificationItem[]>({
     path: `/stages/${stageId}/events/${eventId}/classification`,
   });
-*/
-
-const fetchEventClassification = (stageId: string, eventId: string) =>
-  Promise.resolve([
-    {
-      country: "ES",
-      dog: {
-        id: "dog-001",
-        name: "Nala",
-      },
-      exercises: [
-        {
-          exercise: {
-            id: "ex-1",
-            name: "Obediencia",
-          },
-          scores: [
-            {
-              judge: {
-                id: "judge-1",
-                name: "María López",
-              },
-              value: 9.5,
-            },
-            {
-              judge: {
-                id: "judge-2",
-                name: "Carlos Ruiz",
-              },
-              value: 9.0,
-            },
-          ],
-        },
-      ],
-      owner: "Ana Pérez",
-      team: "K9 Madrid",
-    },
-    {
-      country: "PT",
-      dog: {
-        id: "dog-002",
-        name: "Rex",
-      },
-      exercises: [
-        {
-          exercise: {
-            id: "ex-1",
-            name: "Obediencia",
-          },
-          scores: [
-            {
-              judge: {
-                id: "judge-1",
-                name: "María López",
-              },
-              value: 8.7,
-            },
-          ],
-        },
-        {
-          exercise: {
-            id: "ex-2",
-            name: "Salto",
-          },
-          scores: [
-            {
-              judge: {
-                id: "judge-2",
-                name: "Carlos Ruiz",
-              },
-              value: 9.2,
-            },
-          ],
-        },
-      ],
-      owner: "João Silva",
-      team: "Lisbon Dogs",
-    },
-  ]);
 
 const stagesQuery = defineQuery({
   fetcher: fetchStages,

@@ -80,6 +80,8 @@ export interface StageEventClassificationItem {
   exercises: StageEventClassificationExerciseScores[];
   owner: string;
   team: string;
+  status: string;
+  position: number;
 }
 
 export type StageEnrollRollbackPayload = {
@@ -94,6 +96,5 @@ export type EnrollStageEventRequest = {
   eventId: string;
   identifier: string;
   owner: string;
-  stageId: string;
   team: string;
 };

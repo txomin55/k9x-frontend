@@ -64,12 +64,13 @@ const buildNextStage = (
 });
 
 const buildNextStagesSummary = (
+  stageId: string,
   stages: StageSummary[],
   payload: EnrollStageEventRequest,
   nextStage: StageDetail,
 ): StageSummary[] =>
   stages.map((stage) => {
-    if (String(stage.id) !== String(payload.stageId)) {
+    if (String(stage.id) !== String(stageId)) {
       return stage;
     }
 
@@ -92,25 +93,29 @@ const buildNextStagesSummary = (
     };
   });
 
-const applyOptimisticEnroll = async (payload: EnrollStageEventRequest) => {
+const applyOptimisticEnroll = async (
+  stageId: string,
+  payload: EnrollStageEventRequest,
+) => {
   const previousStage = queryClient.getQueryData<StageDetail>(
-    getStageByIdQueryKey(payload.stageId),
+    getStageByIdQueryKey(stageId),
   );
 
   if (!previousStage) {
-    throw new Error(`Stage ${payload.stageId} not found in cache`);
+    throw new Error(`Stage ${stageId} not found in cache`);
   }
 
   const nextStage = buildNextStage(previousStage, payload);
 
-  queryClient.setQueryData(getStageByIdQueryKey(payload.stageId), nextStage);
-  await saveQuerySnapshot(getStageSnapshotId(payload.stageId), nextStage);
+  queryClient.setQueryData(getStageByIdQueryKey(stageId), nextStage);
+  await saveQuerySnapshot(getStageSnapshotId(stageId), nextStage);
 
   const previousStages =
     queryClient.getQueryData<StageSummary[]>(getStagesQueryKey());
 
   if (previousStages) {
     const nextStages = buildNextStagesSummary(
+      stageId,
       previousStages,
       payload,
       nextStage,
@@ -189,17 +194,20 @@ const createRollbackPayload = async (
   stageId,
 });
 
-export const enrollStageEvent = async (payload: EnrollStageEventRequest) => {
-  const rollbackPayload = await createRollbackPayload(payload.stageId);
+export const enrollStageEvent = async (
+  stageId: string,
+  payload: EnrollStageEventRequest,
+) => {
+  const rollbackPayload = await createRollbackPayload(stageId);
 
-  await applyOptimisticEnroll(payload);
+  await applyOptimisticEnroll(stageId, payload);
 
   if (!shouldQueueOfflineMutation()) {
     try {
       await rawRequest({
         body: payload,
         method: "PUT",
-        path: `/stages/${payload.stageId}/events/${payload.eventId}/enroll`,
+        path: `/stages/${stageId}/events/${payload.eventId}/enroll`,
       });
       return;
     } catch (error) {
@@ -226,7 +234,7 @@ export const enrollStageEvent = async (payload: EnrollStageEventRequest) => {
     status: "pending",
     timestamp,
     updatedAt: timestamp,
-    url: `/stages/${payload.stageId}/events/${payload.eventId}/enroll`,
+    url: `/stages/${stageId}/events/${payload.eventId}/enroll`,
   } satisfies PendingTask);
 
   void processPendingTasks();

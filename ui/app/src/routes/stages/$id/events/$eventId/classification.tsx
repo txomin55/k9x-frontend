@@ -24,16 +24,25 @@ function EventClassificationPage() {
   return (
     <div>
       <h2>Event classification</h2>
-      <Show when={classificationQuery.data} fallback={<span>Loading classification...</span>}>
+      <Show
+        when={classificationQuery.data}
+        fallback={<span>Loading classification...</span>}
+      >
         {(classification) => (
-          <Show when={classification().length > 0} fallback={<span>No classification data available.</span>}>
+          <Show
+            when={classification().length > 0}
+            fallback={<span>No classification data available.</span>}
+          >
             <For each={classification()}>
               {(item) => (
                 <article>
-                  <h3>{item.dog.name}</h3>
+                  <h3>
+                    {item.position}- {item.dog.name}
+                  </h3>
+                  <p>{item.status}</p>
                   <p>
-                    Owner: {item.owner || "-"} | Team: {item.team || "-"} | Country:{" "}
-                    {item.country || "-"}
+                    Owner: {item.owner || "-"} | Team: {item.team || "-"} |
+                    Country: {item.country || "-"}
                   </p>
                   <For each={item.exercises}>
                     {(exerciseEntry) => (

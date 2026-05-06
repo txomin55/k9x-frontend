@@ -1,27 +1,21 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useDogs } from "@/services/secured/dog-crud/dogCrud";
-import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
-import { createMemo, createSignal, Index, Show } from "solid-js";
-import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
+import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
+import {useStageById} from "@/services/fetch-stages/fetchStages";
+import {useDogs} from "@/services/secured/dog-crud/dogCrud";
+import type {Dog} from "@/services/secured/dog-crud/dogCrud.types";
+import {createMemo, createSignal, Index, Show} from "solid-js";
+import {formatDateLabel, toDateInputValue} from "@/utils/date";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { useAuthUser } from "@/stores/auth/auth";
+import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
+import {useAuthUser} from "@/stores/auth/auth";
 import "./styles.css";
-import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
-import { useI18n } from "@/stores/i18n/i18n";
+import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
+import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
+import {useI18n} from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -111,17 +105,19 @@ function StageInfoPage() {
       return;
     }
 
-    await enrollStageEvent({
+    await enrollStageEvent(params().id, {
       ...enrollDraft(),
       eventId: selectedEventId(),
-      stageId: params().id,
     });
 
     closeEnrollDialog();
   };
 
   const stageTabsTitles = [
-    { value: TABS.EVENTS, content: <span>{i18n.t("STAGES.INFO.EVENTS")}</span> },
+    {
+      value: TABS.EVENTS,
+      content: <span>{i18n.t("STAGES.INFO.EVENTS")}</span>,
+    },
     {
       value: TABS.NOTIFICATIONS,
       content: <span>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</span>,
@@ -190,7 +186,10 @@ function StageInfoPage() {
     });
   return (
     <div class="stage-info">
-      <Show when={stageInfo.data} fallback={<span>{i18n.t("STAGES.INFO.LOADING_STAGE_DATA")}</span>}>
+      <Show
+        when={stageInfo.data}
+        fallback={<span>{i18n.t("STAGES.INFO.LOADING_STAGE_DATA")}</span>}
+      >
         {(stage) => (
           <>
             <h2>{stage().name}</h2>
@@ -276,7 +275,9 @@ function StageInfoPage() {
                     >
                       {i18n.t("STAGES.INFO.CANCEL")}
                     </AtomButton>
-                    <AtomButton onClick={handleEnroll}>{i18n.t("STAGES.INFO.ENROLL")}</AtomButton>
+                    <AtomButton onClick={handleEnroll}>
+                      {i18n.t("STAGES.INFO.ENROLL")}
+                    </AtomButton>
                   </div>
                 </div>
               }
