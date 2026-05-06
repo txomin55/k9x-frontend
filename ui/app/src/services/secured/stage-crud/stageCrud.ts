@@ -65,6 +65,7 @@ export const toApiStage = (
           country: competitor.country ?? "",
           breed: competitor.breed ?? "",
           order: competitor.order ?? 0,
+          status: competitor.status ?? "",
         })) ?? [],
       configuration: {
         federation: event.configuration?.federation,

@@ -15,6 +15,11 @@ const STAGE_SNAPSHOT_PREFIX = "stage:";
 export const getStagesQueryKey = () => ["stages", getCurrentLocale()] as const;
 export const getStageByIdQueryKey = (id: string) =>
   ["stage", id, getCurrentLocale()] as const;
+export const getEventClassificationQueryKey = (
+  stageId: string,
+  eventId: string,
+) =>
+  ["stage-event-classification", stageId, eventId, getCurrentLocale()] as const;
 
 const getStageSnapshotId = (id: string) => `${STAGE_SNAPSHOT_PREFIX}${id}`;
 
@@ -40,6 +45,91 @@ export const fetchStageById = (id: string) =>
     refreshStageByIdSnapshot(id),
   );
 
+/*
+const fetchEventClassification = (stageId: string, eventId: string) =>
+  rawRequest<StageEventClassificationItem[]>({
+    path: `/stages/${stageId}/events/${eventId}/classification`,
+  });
+*/
+
+const fetchEventClassification = (stageId: string, eventId: string) =>
+  Promise.resolve([
+    {
+      country: "ES",
+      dog: {
+        id: "dog-001",
+        name: "Nala",
+      },
+      exercises: [
+        {
+          exercise: {
+            id: "ex-1",
+            name: "Obediencia",
+          },
+          scores: [
+            {
+              judge: {
+                id: "judge-1",
+                name: "María López",
+              },
+              value: 9.5,
+            },
+            {
+              judge: {
+                id: "judge-2",
+                name: "Carlos Ruiz",
+              },
+              value: 9.0,
+            },
+          ],
+        },
+      ],
+      owner: "Ana Pérez",
+      team: "K9 Madrid",
+    },
+    {
+      country: "PT",
+      dog: {
+        id: "dog-002",
+        name: "Rex",
+      },
+      exercises: [
+        {
+          exercise: {
+            id: "ex-1",
+            name: "Obediencia",
+          },
+          scores: [
+            {
+              judge: {
+                id: "judge-1",
+                name: "María López",
+              },
+              value: 8.7,
+            },
+          ],
+        },
+        {
+          exercise: {
+            id: "ex-2",
+            name: "Salto",
+          },
+          scores: [
+            {
+              judge: {
+                id: "judge-2",
+                name: "Carlos Ruiz",
+              },
+              value: 9.2,
+            },
+          ],
+        },
+      ],
+      owner: "João Silva",
+      team: "Lisbon Dogs",
+    },
+  ]);
+
 const stagesQuery = defineQuery({
   fetcher: fetchStages,
   queryKey: ["stages"] as const,
@@ -48,6 +138,12 @@ const stagesQuery = defineQuery({
 const stageByIdQuery = defineQuery({
   fetcher: fetchStageById,
   queryKey: (id: string) => ["stage", id] as const,
+});
+
+const eventClassificationQuery = defineQuery({
+  fetcher: fetchEventClassification,
+  queryKey: (stageId: string, eventId: string) =>
+    ["stage-event-classification", stageId, eventId] as const,
 });
 
 export const useStages = (options?: TanstackCreateQuery) =>
@@ -62,6 +158,18 @@ export const useStageById = (id: string, options?: TanstackCreateQuery) =>
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
+  });
+
+export const useEventClassification = (
+  stageId: string,
+  eventId: string,
+  options?: TanstackCreateQuery,
+) =>
+  eventClassificationQuery.useQuery([stageId, eventId], {
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    refetchOnMount: options?.refetchOnMount,
+    refetchInterval: 5_000,
   });
 
 export const getCachedStageById = (id: string) =>

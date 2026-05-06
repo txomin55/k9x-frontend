@@ -23,6 +23,7 @@ export interface EventCompetitor {
   identity?: string;
   owner?: string;
   country?: string;
+  status?: string;
 }
 
 export interface EventCompetitorDetail {
@@ -34,6 +35,7 @@ export interface EventCompetitorDetail {
   country: string;
   breed: string;
   order: number;
+  status: string;
 }
 
 export interface EventConfigurationDetail {

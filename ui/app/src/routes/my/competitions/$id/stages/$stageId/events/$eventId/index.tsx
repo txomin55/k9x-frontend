@@ -155,8 +155,19 @@ function CompetitionEventDetailContentContainer(props: {
 
   return (
     <div class="competition-event-detail">
-      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.LOADING_EVENT_DETAIL")}</span>}>
-        <Show when={resolvedEvent()} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_NOT_FOUND")}</p>}>
+      <Suspense
+        fallback={
+          <span>
+            {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.LOADING_EVENT_DETAIL")}
+          </span>
+        }
+      >
+        <Show
+          when={resolvedEvent()}
+          fallback={
+            <p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_NOT_FOUND")}</p>
+          }
+        >
           <CompetitionEventDetailBody
             event={eventAccessor}
             onDelete={handleDelete}
@@ -257,6 +268,7 @@ function CompetitionEventDetailBody(props: {
       team: "",
       country: "",
       breed: "",
+      status: "",
     };
   };
 
@@ -714,9 +726,20 @@ function CompetitionEventDetailBody(props: {
   };
 
   const eventTabsTitles = [
-    { value: TABS.JUDGES, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.JUDGES")}</span> },
-    { value: TABS.EXERCISES, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXERCISES")}</span> },
-    { value: TABS.COMPETITORS, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")}</span> },
+    {
+      value: TABS.JUDGES,
+      content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.JUDGES")}</span>,
+    },
+    {
+      value: TABS.EXERCISES,
+      content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXERCISES")}</span>,
+    },
+    {
+      value: TABS.COMPETITORS,
+      content: (
+        <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")}</span>
+      ),
+    },
   ];
 
   const eventTabsContents = () => [

@@ -119,6 +119,7 @@ const toApiCompetitor = (
     country: competitor.country ?? previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",
     order: competitor.order ?? previousCompetitor?.order ?? 0,
+    status: competitor.status ?? previousCompetitor?.status ?? "",
   };
 };
 

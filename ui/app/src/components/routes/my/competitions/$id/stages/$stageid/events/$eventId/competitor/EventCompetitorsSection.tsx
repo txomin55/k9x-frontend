@@ -95,6 +95,17 @@ export default function EventCompetitorsSection(
         judgesIds: [],
       },
     });
+
+  const acceptCompetitor = () => {
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            status: "accepted",
+          }
+        : current,
+    );
+  };
   return (
     <section class="event-competitors-section">
       <div class="event-competitors-section__header">
@@ -111,7 +122,9 @@ export default function EventCompetitorsSection(
       </div>
       <Show
         when={props.competitors.length > 0}
-        fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NO_COMPETITORS")}</p>}
+        fallback={
+          <p>{i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NO_COMPETITORS")}</p>
+        }
       >
         <div class="event-competitors-section__competitors">
           <Index each={sortedCompetitors()}>
@@ -150,16 +163,24 @@ export default function EventCompetitorsSection(
                       </AtomButton>
                     </div>
                   ) : (
-                    <AtomButton
-                      onClick={() => {
-                        openCompetitorCollection(
-                          params().eventId,
-                          competitor().dogId,
-                        );
-                      }}
-                    >
-                      {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
-                    </AtomButton>
+                    <>
+                      <AtomButton
+                        type={BUTTON_TYPES.ACCENT}
+                        onClick={() => {
+                          openCompetitorCollection(
+                            params().eventId,
+                            competitor().dogId,
+                          );
+                        }}
+                      >
+                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
+                      </AtomButton>
+                      <Show when={competitor().status === "requested"}>
+                        <AtomButton onClick={acceptCompetitor}>
+                          --Accept enroll
+                        </AtomButton>
+                      </Show>
+                    </>
                   )
                 }
               />
@@ -168,7 +189,9 @@ export default function EventCompetitorsSection(
         </div>
       </Show>
       <AtomDialog
-        closeButtonText={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.CLOSE_DIALOG")}
+        closeButtonText={i18n.t(
+          "MY.COMPETITIONS.EVENT_COMPETITORS.CLOSE_DIALOG",
+        )}
         content={
           <CompetitorEditorForm
             competitorDialogDraft={props.competitorDialogDraft}

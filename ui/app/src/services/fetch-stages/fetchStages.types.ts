@@ -49,6 +49,39 @@ export interface CompetitionNotificationDetail {
   text: string;
 }
 
+export interface StageEventClassificationJudge {
+  id: string;
+  name: string;
+}
+
+export interface StageEventClassificationScore {
+  judge: StageEventClassificationJudge;
+  value: number;
+}
+
+export interface StageEventClassificationExercise {
+  id: string;
+  name: string;
+}
+
+export interface StageEventClassificationExerciseScores {
+  exercise: StageEventClassificationExercise;
+  scores: StageEventClassificationScore[];
+}
+
+export interface StageEventClassificationDog {
+  id: string;
+  name: string;
+}
+
+export interface StageEventClassificationItem {
+  country: string;
+  dog: StageEventClassificationDog;
+  exercises: StageEventClassificationExerciseScores[];
+  owner: string;
+  team: string;
+}
+
 export type StageEnrollRollbackPayload = {
   previousStage: StageDetail | null;
   previousStages: StageSummary[] | null;
