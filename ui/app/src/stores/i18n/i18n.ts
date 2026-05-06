@@ -58,6 +58,8 @@ const initI18n = async () => {
       interpolation: {
         escapeValue: false,
       },
+      keySeparator: false,
+      nsSeparator: false,
       lng: normalizeLocale(languageDetector.detect()),
     })
     .then(() => {
