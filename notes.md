@@ -15,19 +15,17 @@
 # PENDIENTES FUTUROS
 
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
-- Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
-- Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
 
 ### MVP
 
 - Ver como simplificar el modelo oas
-- Permitir en clasificación publica modo tabla o modo resumen
-- Modificar URLs de colección para que cuelgue de events/id/classification
-- cerrar formularios y poner un success
-- Endpoint de enroll solo tiene que devolver los perros owned
+- Borrar endpoints fuera de mvp, (perros publicos)
 - hacer que la app a 720 cambie de lista de cards a modo tabla
-- meter newrelic
+- cerrar formularios y poner un success
+- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
+- ~~Endpoint de hacer enroll solo tiene que devolver los perros owned~~
+- ~~Modificar URLs de colección para que cuelgue de events/id/classification~~
 - ~~añadir boton de crear perros para competidor en caso de no tener ninguno~~
 - ~~ocultar check de owned y tenerlo a true para competidor~~
 - ~~Crear combobox para poder reemplazar los select de perros~~
@@ -67,17 +65,20 @@
 
 #### UNA VEZ ESTÉ EL BACKEND
 
+- meter newrelic
+- Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
+- Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Hacer campos obligatorios para edición y creación
 - Terminar push manager
-- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
   dogid o eventid a secas. Hay que modificar contratos
 - Formularios de contacto para
     - own de perro
         - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del
           perro
+- Profiling con mcp de Chrome para ver comportamiento de la cache
 
 # Funcionalidades premium
 

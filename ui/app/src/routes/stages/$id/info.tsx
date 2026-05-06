@@ -50,8 +50,11 @@ function StageInfoPage() {
 
   const stageInfo = useStageById(params().id);
   const dogsQuery = useDogs({
-    refetchOnMount: false,
-    gcTime: 5 * 60 * 1000,
+    filters: { owned: true },
+    query: {
+      refetchOnMount: false,
+      gcTime: 5 * 60 * 1000,
+    },
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     (dogsQuery.data ?? []).map((dog) => ({

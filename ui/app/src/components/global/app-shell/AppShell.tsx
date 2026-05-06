@@ -56,8 +56,10 @@ export default function AppShell() {
         staleTime: Number.POSITIVE_INFINITY,
       });
       void prefetchDogs({
-        refetchOnMount: false,
-        gcTime: 2 * 60 * 1000,
+        query: {
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        },
       });
       void prefetchJudges({
         refetchOnMount: false,
