@@ -2,7 +2,6 @@
     min-height: 100%;
     display: grid;
     gap: var(--unit-3);
-    padding: var(--unit-2);
 }
 
 .landing-page__hero {
