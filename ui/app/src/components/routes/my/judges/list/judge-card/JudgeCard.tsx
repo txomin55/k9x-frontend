@@ -5,8 +5,10 @@ import AtomButton, {
 import type { JudgeCardProps } from "@/components/routes/my/judges/list/judge-card/JudgeCard.types";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function JudgeCard(props: JudgeCardProps) {
+  const i18n = useI18n();
   return (
     <Card
       topLeft={
@@ -21,10 +23,12 @@ export default function JudgeCard(props: JudgeCardProps) {
             text={props.judge.name}
             onConfirm={props.onDelete}
           >
-            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>--Delete</AtomButton>
+            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+              {i18n.t("MY.JUDGES.JUDGE_CARD.DELETE")}
+            </AtomButton>
           </ConfirmActionButton>
           <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onEdit}>
-            --Edit
+            {i18n.t("MY.JUDGES.JUDGE_CARD.EDIT")}
           </AtomButton>
         </div>
       }

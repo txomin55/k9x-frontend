@@ -3,6 +3,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type JudgeFormProps = {
@@ -15,6 +16,7 @@ type JudgeFormProps = {
 };
 
 export default function JudgeForm(props: JudgeFormProps) {
+  const i18n = useI18n();
   const updateField = (field: keyof CreateJudgeRequest) => (value: string) => {
     props.onDraftChange((current) => ({
       ...current,
@@ -25,15 +27,15 @@ export default function JudgeForm(props: JudgeFormProps) {
   return (
     <div class="judge-form">
       <AtomInput
-        label="--Name"
+        label={i18n.t("MY.JUDGES.JUDGE_FORM.NAME")}
         value={props.draft().name ?? ""}
         onChange={updateField("name")}
       />
       <div class="judge-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-          --Cancel
+          {i18n.t("MY.JUDGES.JUDGE_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
+        <AtomButton onClick={props.onSave}>{i18n.t("MY.JUDGES.JUDGE_FORM.SAVE")}</AtomButton>
       </div>
     </div>
   );

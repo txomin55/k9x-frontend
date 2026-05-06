@@ -4,10 +4,12 @@ import { Index } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
 import { useNavigate } from "@tanstack/solid-router";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
+  const i18n = useI18n();
   const navigateToClassification = (eventId: string) =>
     void navigate({
       params: { id: props.id, eventId },
@@ -32,7 +34,7 @@ export default function StageCard(props: StageCardProps) {
       }
       topRight={
         <div class="stage-card__notifications">
-          <span>--Bell</span>
+          <span>{i18n.t("STAGES.STAGE_CARD.BELL")}</span>
         </div>
       }
       subHeader={
@@ -67,7 +69,7 @@ export default function StageCard(props: StageCardProps) {
                 type={BUTTON_TYPES.PRIMARY}
                 onClick={() => navigateToClassification(event().id)}
               >
-                --See classification
+                {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
               </AtomButton>
             </div>
           )}
@@ -79,7 +81,7 @@ export default function StageCard(props: StageCardProps) {
             type={BUTTON_TYPES.ACCENT}
             onClick={() => navigateToStageInfo(props.id)}
           >
-            --+ Info
+            {i18n.t("STAGES.STAGE_CARD.INFO")}
           </AtomButton>
         </div>
       }

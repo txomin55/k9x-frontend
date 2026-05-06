@@ -1,18 +1,19 @@
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import i18n from "i18next";
 
 export const COUNTRY_OPTIONS = [
-  { label: "--Portugal", value: "pt" },
-  { label: "--Spain", value: "es" },
-  { label: "--France", value: "fr" },
-  { label: "--Italy", value: "it" },
-  { label: "--United Kingdom", value: "gb" },
+  { label: "COMMON.COUNTRY_FIELD.PORTUGAL", value: "pt" },
+  { label: "COMMON.COUNTRY_FIELD.SPAIN", value: "es" },
+  { label: "COMMON.COUNTRY_FIELD.FRANCE", value: "fr" },
+  { label: "COMMON.COUNTRY_FIELD.ITALY", value: "it" },
+  { label: "COMMON.COUNTRY_FIELD.UNITED_KINGDOM", value: "gb" },
 ] as const;
 
 const createCountrySelectOptions = (): AtomSelectOption[] =>
   COUNTRY_OPTIONS.map(({ label, value }) => ({
-    label,
+    label: i18n.t(label),
     value,
     preLabel: <CountryFlag country={value} alt={`${value} flag`} />,
   }));
@@ -36,7 +37,7 @@ export default function CountryField(props: CountryFieldProps) {
 
   return (
     <AtomSelect
-      label="--Country"
+      label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
       onChange={props.onChange}
       options={options}
       value={getCountryOption(props.value, options)}

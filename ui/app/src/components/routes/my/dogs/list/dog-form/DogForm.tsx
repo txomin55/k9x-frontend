@@ -6,6 +6,7 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.t
 import { Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type DogFormProps = {
@@ -18,12 +19,13 @@ type DogFormProps = {
 };
 
 export default function DogForm(props: DogFormProps) {
+  const i18n = useI18n();
   const BREED_SELECT_OPTIONS: AtomSelectOption[] = [
-    { label: "--Border Collie", value: "border-collie" },
-    { label: "--Spanish Waterdog", value: "swd" },
-    { label: "--Belgian Shepperd malinois", value: "belgian-malinois" },
-    { label: "--Labrador retriever", value: "labrador-retriever" },
-    { label: "--Golder retriever", value: "golden-retriever" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.BORDER_COLLIE"), value: "border-collie" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.SPANISH_WATERDOG"), value: "swd" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.BELGIAN_SHEPHERD_MALINOIS"), value: "belgian-malinois" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.LABRADOR_RETRIEVER"), value: "labrador-retriever" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.GOLDEN_RETRIEVER"), value: "golden-retriever" },
   ];
 
   const user = useAuthUser();
@@ -77,49 +79,49 @@ export default function DogForm(props: DogFormProps) {
   return (
     <div class="dog-form">
       <AtomInput
-        label="--Name"
+        label={i18n.t("MY.DOGS.DOG_FORM.NAME")}
         value={props.draft().name}
         onChange={updateName}
       />
       <Show when={!!user()?.organizer}>
         <AtomCheckbox
-          label="--Owned"
+          label={i18n.t("MY.DOGS.DOG_FORM.OWNED")}
           checked={props.draft().owned}
           setChecked={updateOwned}
         />
       </Show>
-      <AtomInput label="--Image" value={props.draft().image} disabled />
+      <AtomInput label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")} value={props.draft().image} disabled />
       <AtomSelect
-        label="--Breed"
+        label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
         onChange={(option) => updateBreed(option.value)}
         options={BREED_SELECT_OPTIONS}
         value={selectedBreedOption()}
       />
       <AtomInput
-        label="--Identifier"
+        label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER")}
         value={props.draft().identifier}
         onChange={updateIdentifier}
       />
       <AtomInput
-        label="--Owner"
+        label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
         value={props.draft().owner}
         onChange={updateOwner}
       />
       <AtomInput
-        label="--Team"
+        label={i18n.t("MY.DOGS.DOG_FORM.TEAM")}
         value={props.draft().team}
         onChange={updateTeam}
       />
       <AtomInput
-        label="--Country"
+        label={i18n.t("MY.DOGS.DOG_FORM.COUNTRY")}
         value={props.draft().country}
         onChange={updateCountry}
       />
       <div class="dog-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-          --Cancel
+          {i18n.t("MY.DOGS.DOG_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
+        <AtomButton onClick={props.onSave}>{i18n.t("MY.DOGS.DOG_FORM.SAVE")}</AtomButton>
       </div>
     </div>
   );

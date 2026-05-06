@@ -3,6 +3,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import CountryField from "@/components/common/country-field/CountryField";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type CompetitionInfoProps = {
@@ -22,12 +23,13 @@ type CompetitionInfoProps = {
 };
 
 export default function CompetitionInfo(props: CompetitionInfoProps) {
+  const i18n = useI18n();
   return (
     <div class="competition-info">
       <Show when={props.isEditing}>
         <div class="competition-info__form">
           <AtomInput
-            label="--Title"
+            label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.TITLE")}
             name="name"
             value={props.title}
             onBlur={props.onCommit}
@@ -41,14 +43,14 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             value={props.country}
           />
           <AtomTextArea
-            label="--Description"
+            label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")}
             name="description"
             value={props.description}
             onBlur={props.onCommit}
             onChange={props.onDescriptionChange}
           />
           <AtomInput
-            label="--Address"
+            label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")}
             name="address"
             value={props.address}
             onBlur={props.onCommit}
@@ -58,12 +60,12 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
       </Show>
       <Show when={!props.isEditing}>
         <div class="competition-info__view">
-          <h1>--Title {props.title}</h1>
+          <h1>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.TITLE")} {props.title}</h1>
           <CountryFlag country={props.country} alt={`${props.title} flag`} />
-          <span>--Status: {props.status}</span>
-          <p>--Description {props.description}</p>
+          <span>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.STATUS")}: {props.status}</span>
+          <p>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")} {props.description}</p>
 
-          <p>--Address {props.displayAddress}</p>
+          <p>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")} {props.displayAddress}</p>
         </div>
       </Show>
     </div>

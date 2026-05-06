@@ -12,6 +12,7 @@ import {
 } from "@/utils/google-auth/googleAuth";
 import { useLogin } from "@/services/secured/do-login/doLogin";
 import { setUser } from "@/stores/auth/auth";
+import { useI18n } from "@/stores/i18n/i18n";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
@@ -38,6 +39,7 @@ function AuthCallbackPage() {
   const [status, setStatus] = createSignal("pending");
   const [errorMessage, setErrorMessage] = createSignal("");
   const login = useLogin();
+  const i18n = useI18n();
 
   onMount(async () => {
     const runCallback = async () => {
@@ -98,23 +100,23 @@ function AuthCallbackPage() {
       console.error(error);
       setStatus("error");
       setErrorMessage(
-        error instanceof Error ? error.message : "--Authentication failed.",
+        error instanceof Error ? error.message : i18n.t("AUTH_CALLBACK.AUTHENTICATION_FAILED"),
       );
     }
   });
 
   return (
     <>
-      <Title>--Auth Callback</Title>
+      <Title>{i18n.t("AUTH_CALLBACK.TITLE")}</Title>
       <Switch>
         <Match when={status() === "loading" || status() === "pending"}>
-          <p>--Authenticated with Google...</p>
+          <p>{i18n.t("AUTH_CALLBACK.AUTHENTICATED_WITH_GOOGLE")}</p>
         </Match>
         <Match when={status() === "loaded"}>
-          <p>--Authenticated. Redirecting...</p>
+          <p>{i18n.t("AUTH_CALLBACK.AUTHENTICATED_REDIRECTING")}</p>
         </Match>
         <Match when={status() === "error"}>
-          <p>{`--Authentication error: ${errorMessage()}`}</p>
+          <p>{`${i18n.t("AUTH_CALLBACK.AUTHENTICATION_ERROR")}: ${errorMessage()}`}</p>
         </Match>
       </Switch>
     </>

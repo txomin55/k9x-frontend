@@ -4,9 +4,11 @@ import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth/auth";
 import postGoogleForm from "@/utils/google-forms/postGoogleForm";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function OrganizerForm() {
   const user = useAuthUser();
+  const i18n = useI18n();
 
   const [description, setDescription] = createSignal("");
   const [organizerName, setOrganizerName] = createSignal("");
@@ -22,7 +24,7 @@ export default function OrganizerForm() {
     <div class="organizer-form">
       <AtomInput value={organizerName()} onChange={setOrganizerName} />
       <AtomTextArea value={description()} onChange={setDescription} />
-      <AtomButton onClick={sendOrganizerForm}>--Send</AtomButton>
+      <AtomButton onClick={sendOrganizerForm}>{i18n.t("GLOBAL.NAVIGATION.SEND")}</AtomButton>
     </div>
   );
 }

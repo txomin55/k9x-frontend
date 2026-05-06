@@ -12,6 +12,7 @@ import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -35,6 +36,7 @@ type EventCompetitorsSectionProps = {
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
+  const i18n = useI18n();
   const params = useParams({
     from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
   });
@@ -77,10 +79,10 @@ export default function EventCompetitorsSection(
 
   const viewDialogTitle = () => {
     if (props.isCreatingCompetitor) {
-      return "--New competitor";
+      return i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NEW_COMPETITOR");
     }
 
-    return "--Edit competitor";
+    return i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT_COMPETITOR");
   };
 
   const navigate = useNavigate();
@@ -109,7 +111,7 @@ export default function EventCompetitorsSection(
       </div>
       <Show
         when={props.competitors.length > 0}
-        fallback={<p>--No competitors.</p>}
+        fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NO_COMPETITORS")}</p>}
       >
         <div class="event-competitors-section__competitors">
           <Index each={sortedCompetitors()}>
@@ -118,10 +120,10 @@ export default function EventCompetitorsSection(
                 topLeft={competitor().owner}
                 content={
                   <div class="event-competitors-section__competitors--competitor">
-                    <p>{`--Dog: ${getDogName(competitor().dogId)}`}</p>
-                    <p>{`--Identity: ${competitor().identity}`}</p>
-                    <p>{`--Team: ${competitor().team}`}</p>
-                    <p>{`--Country: ${competitor().country}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${getDogName(competitor().dogId)}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${competitor().identity}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${competitor().team}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${competitor().country}`}</p>
                   </div>
                 }
                 actions={
@@ -134,7 +136,7 @@ export default function EventCompetitorsSection(
                         }
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                          --Delete
+                          {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
                         </AtomButton>
                       </ConfirmActionButton>
                       <AtomButton
@@ -144,7 +146,7 @@ export default function EventCompetitorsSection(
                           setDialogOpen(true);
                         }}
                       >
-                        --Edit
+                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
                       </AtomButton>
                     </div>
                   ) : (
@@ -156,7 +158,7 @@ export default function EventCompetitorsSection(
                         );
                       }}
                     >
-                      --Scores
+                      {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
                     </AtomButton>
                   )
                 }
@@ -166,7 +168,7 @@ export default function EventCompetitorsSection(
         </div>
       </Show>
       <AtomDialog
-        closeButtonText="--Close dialog"
+        closeButtonText={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.CLOSE_DIALOG")}
         content={
           <CompetitorEditorForm
             competitorDialogDraft={props.competitorDialogDraft}

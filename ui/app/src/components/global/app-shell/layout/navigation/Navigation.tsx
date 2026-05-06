@@ -3,9 +3,11 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import "@/components/global/app-shell/layout/navigation/styles.css";
 import { Show } from "solid-js";
 import { useAuthUser } from "@/stores/auth/auth";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function Navigation(props) {
   const user = useAuthUser();
+  const i18n = useI18n();
 
   return (
     <aside
@@ -19,18 +21,18 @@ export default function Navigation(props) {
     >
       <div class="navigation__sidebar-panel">
         <nav class="navigation__sidebar-panel--navigation">
-          <Link to={AppRoutePath.HOME as "/"}>--Landing</Link>
-          <Link to={AppRoutePath.STAGES as "/stages"}>--Stages</Link>
+          <Link to={AppRoutePath.HOME as "/"}>{i18n.t("GLOBAL.NAVIGATION.LANDING")}</Link>
+          <Link to={AppRoutePath.STAGES as "/stages"}>{i18n.t("GLOBAL.NAVIGATION.STAGES")}</Link>
           <Show when={user()}>
-            <p>--My</p>
+            <p>{i18n.t("GLOBAL.NAVIGATION.MY")}</p>
             <Show when={user()?.organizer}>
               <Link to={AppRoutePath.MY_COMPETITIONS as never}>
-                --Competitions
+                {i18n.t("GLOBAL.NAVIGATION.COMPETITIONS")}
               </Link>
-              <Link to={AppRoutePath.MY_JUDGES as never}>--Judges</Link>
+              <Link to={AppRoutePath.MY_JUDGES as never}>{i18n.t("GLOBAL.NAVIGATION.JUDGES")}</Link>
             </Show>
-            <Link to={AppRoutePath.MY_COLLECTIONS as never}>--Collections</Link>
-            <Link to={AppRoutePath.MY_DOGS as never}>--Dogs</Link>
+            <Link to={AppRoutePath.MY_COLLECTIONS as never}>{i18n.t("GLOBAL.NAVIGATION.COLLECTIONS")}</Link>
+            <Link to={AppRoutePath.MY_DOGS as never}>{i18n.t("GLOBAL.NAVIGATION.DOGS")}</Link>
           </Show>
         </nav>
       </div>

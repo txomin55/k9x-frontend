@@ -42,12 +42,14 @@ import {
   StageEditorModel,
   UpdateStageRequest,
 } from "@/services/secured/stage-crud/stageCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
 });
 
 function CompetitionStageDetailPage() {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const params = useParams({ from: "/my/competitions/$id/stages/$stageId/" });
   const {
@@ -96,7 +98,7 @@ function CompetitionStageDetailPage() {
   });
 
   return params().stageId === "new" ? (
-    <span>--Creating stage</span>
+    <span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CREATING_STAGE")}</span>
   ) : (
     <CompetitionStageDetailContentContainer
       competitionId={params().id}
@@ -131,6 +133,7 @@ function CompetitionStageDetailContentContainer(props: {
   stage: Accessor<StageEditorModel | undefined>;
   stageId: string;
 }) {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const handleDelete = () => {
     props.onDeleteStage(props.stageId);
@@ -145,8 +148,8 @@ function CompetitionStageDetailContentContainer(props: {
 
   return (
     <div class="stage-detail">
-      <Suspense fallback={<span>--Loading stage detail</span>}>
-        <Show when={props.stage()} fallback={<p>--Stage not found.</p>}>
+      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LOADING_STAGE_DETAIL")}</span>}>
+        <Show when={props.stage()} fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STAGE_NOT_FOUND")}</p>}>
           <CompetitionStageDetailBody
             createDefaultEvent={props.createDefaultEvent}
             onCreateEvent={props.onCreateEvent}
@@ -179,6 +182,7 @@ function CompetitionStageDetailBody(props: {
   ) => void;
   stage: Accessor<StageEditorModel>;
 }) {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = createSignal(false);
   const [title, setTitle] = createSignal(props.stage().name);
@@ -343,22 +347,22 @@ function CompetitionStageDetailBody(props: {
             </>
           }
         >
-          <p>--Editing mode active.</p>
+          <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDITING_MODE_ACTIVE")}</p>
           <AtomInput
-            label="--Title"
+            label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.TITLE")}
             value={title()}
             onBlur={commitStageEdits}
             onChange={setTitle}
           />
           <AtomInput
-            label="--Date from"
+            label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_FROM")}
             type="date"
             value={dateFrom()}
             onBlur={commitStageEdits}
             onChange={setDateFrom}
           />
           <AtomInput
-            label="--Date to"
+            label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_TO")}
             type="date"
             value={dateTo()}
             onBlur={commitStageEdits}
@@ -369,10 +373,10 @@ function CompetitionStageDetailBody(props: {
 
       <section class="stage-detail__content">
         <div class="stage-detail__content--events">
-          <h2>--Events</h2>
+          <h2>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}</h2>
           <Show when={isEditing()}>
             <AtomDialog
-              closeButtonText="--Close dialog"
+              closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
               content={
                 <Show when={eventDialogDraft()}>
                   {(draft) => (
@@ -388,25 +392,25 @@ function CompetitionStageDetailBody(props: {
               }
               onOpenChange={handleCreateDialogOpenChange}
               open={isCreatingEvent()}
-              title="--New event"
+              title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
               trigger={<CircleButton>+</CircleButton>}
             />
           </Show>
         </div>
         <Show
           when={props.stage().events.length > 0}
-          fallback={<p>--No events.</p>}
+          fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS")}</p>}
         >
           <div class="stage-detail__content--event">
             <Index each={props.stage().events}>
               {(event) => (
                 <Card
                   topLeft={event().name}
-                  subHeader={<p>{`--Status: ${event().status}`}</p>}
+                  subHeader={<p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STATUS")}: ${event().status}`}</p>}
                   content={
                     <div class="aaaaa">
-                      <p>{`--Discipline: ${getEventDisciplineLabel(event().discipline.id)}`}</p>
-                      <p>{`--Participants: ${event().competitors.length}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(event().discipline.id)}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS")}: ${event().competitors.length}`}</p>
                     </div>
                   }
                   actions={
@@ -417,11 +421,11 @@ function CompetitionStageDetailBody(props: {
                           onConfirm={deleteEventClick(event)}
                         >
                           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                            --Delete
+                            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
                           </AtomButton>
                         </ConfirmActionButton>
                         <AtomDialog
-                          closeButtonText="--Close dialog"
+                          closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
                           content={
                             <Show when={eventDialogDraft()}>
                               {(draft) => (
@@ -436,8 +440,8 @@ function CompetitionStageDetailBody(props: {
                           }
                           onOpenChange={createEditDialogOpenChange(event)}
                           open={editingEventId() === event().id}
-                          title={`--Edit ${event().name}`}
-                          trigger={<span>--Edit</span>}
+                          title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
+                          trigger={<span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}</span>}
                         />
                       </div>
                     ) : (
@@ -445,7 +449,7 @@ function CompetitionStageDetailBody(props: {
                         type={BUTTON_TYPES.ACCENT}
                         onClick={createNavigateToEvent(event)}
                       >
-                        --+Info
+                        {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.INFO")}
                       </AtomButton>
                     )
                   }
@@ -458,8 +462,8 @@ function CompetitionStageDetailBody(props: {
       <FloatingToggleCircle
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
-        nonToggledText="--Edit"
-        toggledText="--View"
+        nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+        toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
       />
       <Show when={isEditing()}>
         <ConfirmActionButton
@@ -467,7 +471,7 @@ function CompetitionStageDetailBody(props: {
           onConfirm={props.onDelete}
         >
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-            --Delete stage
+            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
           </AtomButton>
         </ConfirmActionButton>
       </Show>

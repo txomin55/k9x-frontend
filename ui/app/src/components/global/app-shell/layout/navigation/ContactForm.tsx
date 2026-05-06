@@ -3,9 +3,11 @@ import { createSignal } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth/auth";
 import postGoogleForm from "@/utils/google-forms/postGoogleForm";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function ContactForm() {
   const user = useAuthUser();
+  const i18n = useI18n();
 
   const [description, setDescription] = createSignal("");
 
@@ -18,7 +20,7 @@ export default function ContactForm() {
   return (
     <div class="contact-form">
       <AtomTextArea value={description()} onChange={setDescription} />
-      <AtomButton onClick={sendContactForm}>--Send</AtomButton>
+      <AtomButton onClick={sendContactForm}>{i18n.t("GLOBAL.NAVIGATION.SEND")}</AtomButton>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { createSignal } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { useAuthUser } from "@/stores/auth/auth";
 import postGoogleForm from "@/utils/google-forms/postGoogleForm";
+import { useI18n } from "@/stores/i18n/i18n";
 
 interface WrongLocationFormProps {
   stageId: string;
@@ -10,6 +11,7 @@ interface WrongLocationFormProps {
 
 export default function WrongLocationForm(props: WrongLocationFormProps) {
   const user = useAuthUser();
+  const i18n = useI18n();
 
   const [description, setDescription] = createSignal("");
 
@@ -23,7 +25,9 @@ export default function WrongLocationForm(props: WrongLocationFormProps) {
   return (
     <div class="wrong-location-form">
       <AtomTextArea value={description()} onChange={setDescription} />
-      <AtomButton onClick={sendWrongLocationForm}>--Send</AtomButton>
+      <AtomButton onClick={sendWrongLocationForm}>
+        {i18n.t("STAGES.STAGES_MAP.WRONG_LOCATION_FORM.SEND")}
+      </AtomButton>
     </div>
   );
 }

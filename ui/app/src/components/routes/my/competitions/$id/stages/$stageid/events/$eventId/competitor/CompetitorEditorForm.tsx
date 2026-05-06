@@ -7,6 +7,7 @@ import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate } from "@tanstack/solid-router";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type OrderBounds = {
   minValue: number;
@@ -33,6 +34,7 @@ export default function CompetitorEditorForm(
   props: CompetitorDialogContentProps,
 ) {
   const navigate = useNavigate();
+  const i18n = useI18n();
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
@@ -128,10 +130,10 @@ export default function CompetitorEditorForm(
       {(draft) => (
         <div class="competitor-editor-form">
           <AtomCombobox
-            label="--Dog"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.DOG")}
             onChange={handleDogChange}
             options={dogOptions()}
-            placeholder="--Select a dog"
+            placeholder={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SELECT_DOG")}
             value={
               dogOptions().find((option) => option.value === draft().dogId) ??
               null
@@ -139,39 +141,39 @@ export default function CompetitorEditorForm(
           >
             <Show when={dogOptions().length === 0}>
               <AtomButton type={BUTTON_TYPES.GHOST} onClick={handleGoToDogs}>
-                --Create dog
+                {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CREATE_DOG")}
               </AtomButton>
             </Show>
           </AtomCombobox>
           <AtomInput
-            label="--Owner"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.OWNER")}
             value={draft().owner}
             onBlur={props.onCommitCompetitor}
             onChange={setOwner}
           />
           <p>
-            --Name {draft().name} ({draft().breed})
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")} {draft().name} ({draft().breed})
           </p>
           <AtomInput
-            label="--Identity"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
             value={draft().identity}
             onBlur={props.onCommitCompetitor}
             onChange={setIdentity}
           />
           <AtomInput
-            label="--Team"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
             value={draft().team}
             onBlur={props.onCommitCompetitor}
             onChange={setTeam}
           />
           <AtomInput
-            label="--Country"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
             value={draft().country}
             onBlur={props.onCommitCompetitor}
             onChange={setCountry}
           />
           <AtomNumberInput
-            label="--Order"
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
             value={draft().order}
             onBlur={props.onCommitCompetitor}
             onChange={setOrder}
@@ -183,11 +185,11 @@ export default function CompetitorEditorForm(
               type={BUTTON_TYPES.ACCENT}
               onClick={props.onCloseCompetitorEditor}
             >
-              --Close
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CLOSE")}
             </AtomButton>
             <Show when={props.displaySave}>
               <AtomButton onClick={props.onCreateCompetitor}>
-                --Create
+                {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CREATE")}
               </AtomButton>
             </Show>
           </div>

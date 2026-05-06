@@ -9,6 +9,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { EventJudgeDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type EventJudgesSectionProps = {
@@ -28,6 +29,7 @@ type EventJudgesSectionProps = {
 };
 
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
+  const i18n = useI18n();
   const judgesQuery = useJudges({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
@@ -54,10 +56,10 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
 
   const viewDialogTitle = () => {
     if (props.isCreatingJudge) {
-      return "--New judge";
+      return i18n.t("MY.COMPETITIONS.EVENT_JUDGES.NEW_JUDGE");
     }
 
-    return "--Edit judge";
+    return i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EDIT_JUDGE");
   };
 
   return (
@@ -74,13 +76,13 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           </CircleButton>
         </Show>
       </div>
-      <Show when={props.judges.length > 0} fallback={<p>--No judges.</p>}>
+      <Show when={props.judges.length > 0} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.NO_JUDGES")}</p>}>
         <div class="event-judges-section__judges">
           <Index each={props.judges}>
             {(judge) => (
               <Card
                 topLeft={getJudgeName(judge().id)}
-                description={<p>{`--Email: ${judge().collectorEmail}`}</p>}
+                description={<p>{`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EMAIL")}: ${judge().collectorEmail}`}</p>}
                 actions={
                   props.isEditing ? (
                     <div class="event-judges-section__judges--actions">
@@ -89,7 +91,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                         onConfirm={() => props.onDeleteJudge(judge().id)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                          --Delete
+                          {i18n.t("MY.COMPETITIONS.EVENT_JUDGES.DELETE")}
                         </AtomButton>
                       </ConfirmActionButton>
                       <span
@@ -98,7 +100,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                           setDialogOpen(true);
                         }}
                       >
-                        --Edit
+                        {i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EDIT")}
                       </span>
                     </div>
                   ) : undefined
@@ -109,7 +111,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
         </div>
       </Show>
       <AtomDialog
-        closeButtonText="--Close dialog"
+        closeButtonText={i18n.t("MY.COMPETITIONS.EVENT_JUDGES.CLOSE_DIALOG")}
         content={
           <Show when={props.judgeDialogDraft}>
             {(draft) => (

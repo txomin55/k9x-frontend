@@ -6,6 +6,7 @@ import AtomButton, {
 import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
+import { useI18n } from "@/stores/i18n/i18n";
 
 interface StageMapMarker {
   stage: StageSummary;
@@ -19,6 +20,7 @@ const STAGE_STATUS = {
 
 export function StageMapMarkerPopup(props: StageMapMarker) {
   const navigate = useNavigate();
+  const i18n = useI18n();
   const navigateToClassification = (eventId: string) =>
     void navigate({
       params: { id: props.stage.id, eventId },
@@ -42,20 +44,22 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       </span>
       <span class="text-body-sm">{props.stage.description}</span>
       <AtomDialog
-        closeButtonText="--Close dialog"
+        closeButtonText={i18n.t("STAGES.STAGES_MAP.MARKER.CLOSE_DIALOG")}
         content={<WrongLocationForm stageId={props.stage.id} />}
         onOpenChange={setOpenWrongLocationForm}
         open={openWrongLocationForm()}
-        title="--Wrong location"
+        title={i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION")}
         trigger={
-          <AtomButton type={BUTTON_TYPES.GHOST}>--Wrong location?</AtomButton>
+          <AtomButton type={BUTTON_TYPES.GHOST}>
+            {i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION_QUESTION")}
+          </AtomButton>
         }
       />
       <AtomButton
         type={BUTTON_TYPES.ACCENT}
         onClick={() => navigateToStageInfo(props.stage.id)}
       >
-        --+Info
+        {i18n.t("STAGES.STAGES_MAP.MARKER.INFO")}
       </AtomButton>
 
       <Index each={props.stage.events}>
@@ -68,7 +72,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
               </span>
             </div>
             <AtomButton onClick={() => navigateToClassification(event().id)}>
-              --View Qualifications
+              {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
             </AtomButton>
           </div>
         )}

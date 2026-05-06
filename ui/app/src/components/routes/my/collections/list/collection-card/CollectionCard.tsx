@@ -4,8 +4,10 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomBadge, { BADGE_TYPES } from "@lib/components/atoms/badge/AtomBadge";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function CollectionCard(props: CollectionCardProps) {
+  const i18n = useI18n();
   return (
     <Card
       topLeft={
@@ -24,15 +26,17 @@ export default function CollectionCard(props: CollectionCardProps) {
             {props.collection.status}
           </AtomBadge>
           <p class="text-body-md">
-            --Competition: {props.collection.competitionName}
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COMPETITION")}: {props.collection.competitionName}
           </p>
-          <p class="text-body-md">--Stage: {props.collection.stageName}</p>
+          <p class="text-body-md">
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.STAGE")}: {props.collection.stageName}
+          </p>
         </div>
       }
       actions={
         <div class="collection-card__actions">
           <AtomButton type={BUTTON_TYPES.PRIMARY} onClick={props.onCollect}>
-            --Collect
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COLLECT")}
           </AtomButton>
         </div>
       }

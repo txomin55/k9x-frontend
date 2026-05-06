@@ -5,6 +5,7 @@ import type {
 import { Show } from "solid-js";
 import ConfigurationEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/ConfigurationEditorForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 export default function (props: {
@@ -15,18 +16,19 @@ export default function (props: {
     updater: (current: EventEditorDraft) => EventEditorDraft,
   ) => void;
 }) {
+  const i18n = useI18n();
   return (
     <section class="event-configuration-section">
-      <h3>--Configuration</h3>
+      <h3>{i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.CONFIGURATION")}</h3>
       <div class="event-configuration-section__content">
         <Show
           when={props.isEditing}
           fallback={
             <>
-              <span>{`--Id: ${props.event.configuration.id}`}</span>
-              <span>{`--Name: ${props.event.configuration.name}`}</span>
+              <span>{`${i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.ID")}: ${props.event.configuration.id}`}</span>
+              <span>{`${i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.NAME")}: ${props.event.configuration.name}`}</span>
               <div class="event-configuration-section__content--federation">
-                <span>--Federation:</span>
+                <span>{i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.FEDERATION")}:</span>
                 <Show when={props.event.configuration.federation?.country}>
                   {(country) => (
                     <CountryFlag

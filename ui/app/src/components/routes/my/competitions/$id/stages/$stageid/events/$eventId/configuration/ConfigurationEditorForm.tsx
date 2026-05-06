@@ -8,6 +8,7 @@ import {
 } from "@/services/secured/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type ConfigurationEditorFormProps = {
   draft: EventEditorDraft;
@@ -19,7 +20,7 @@ type ConfigurationEditorFormProps = {
 const getFederationOption = (
   federation: FederationConfigurations,
 ): AtomSelectOption => ({
-  label: `--${federation.info.name}`,
+  label: federation.info.name,
   value: federation.info.id,
   preLabel: (
     <CountryFlag
@@ -33,13 +34,14 @@ const getConfigurationOption = (configuration: {
   id: string;
   name: string;
 }): AtomSelectOption => ({
-  label: `--${configuration.name}`,
+  label: configuration.name,
   value: configuration.id,
 });
 
 export default function ConfigurationEditorForm(
   props: ConfigurationEditorFormProps,
 ) {
+  const i18n = useI18n();
   const configurations = useConfigurations({
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -139,19 +141,19 @@ export default function ConfigurationEditorForm(
   return (
     <>
       <AtomSelect
-        label="--Federation"
+        label={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.FEDERATION")}
         options={federationOptions()}
         value={selectedFederationOption()}
         onChange={handleFederationChange}
-        placeholder="--Select a federation"
+        placeholder={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_FEDERATION")}
         disabled={federationOptions().length === 0}
       />
       <AtomSelect
-        label="--Configuration"
+        label={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.CONFIGURATION")}
         options={configurationOptions()}
         value={selectedConfigurationOption()}
         onChange={handleConfigurationChange}
-        placeholder="--Select a configuration"
+        placeholder={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_CONFIGURATION")}
         disabled={!selectedFederation() || configurationOptions().length === 0}
       />
     </>

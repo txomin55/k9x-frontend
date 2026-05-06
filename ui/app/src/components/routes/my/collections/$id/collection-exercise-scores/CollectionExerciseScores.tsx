@@ -5,6 +5,7 @@ import {
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo, createSignal, For } from "solid-js";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
+import i18n from "i18next";
 import "./styles.css";
 
 const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
@@ -70,7 +71,7 @@ function CollectionExerciseScoreInput(props: {
       minValue={minValue()}
       maxValue={maxValue()}
       validationState={isValidValue() ? "valid" : "invalid"}
-      errorMessage={`--Allowed values between: ${minValue()} - ${maxValue()}`}
+      errorMessage={`${i18n.t("MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN")}: ${minValue()} - ${maxValue()}`}
     />
   );
 }

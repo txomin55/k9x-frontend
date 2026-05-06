@@ -6,6 +6,7 @@ import EventDisciplineField from "@/components/common/event-discipline-field/Eve
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import type { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type EventEditorFormProps = {
@@ -19,6 +20,7 @@ type EventEditorFormProps = {
 };
 
 export default function EventEditorForm(props: EventEditorFormProps) {
+  const i18n = useI18n();
   const handleNameChange = (value: string) =>
     props.onChange((current) =>
       current
@@ -52,7 +54,7 @@ export default function EventEditorForm(props: EventEditorFormProps) {
   return (
     <div class="event-editor-form">
       <AtomInput
-        label="--Event title"
+        label={i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.EVENT_TITLE")}
         value={props.draft.name}
         onChange={handleNameChange}
       />
@@ -63,9 +65,9 @@ export default function EventEditorForm(props: EventEditorFormProps) {
       />
       <div class="event-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-          --Cancel
+          {i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>--Save</AtomButton>
+        <AtomButton onClick={props.onSave}>{i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.SAVE")}</AtomButton>
       </div>
     </div>
   );

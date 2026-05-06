@@ -6,6 +6,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type StageDialogProps = {
   draft: Accessor<StageEditorModel | null>;
@@ -17,6 +18,7 @@ type StageDialogProps = {
 };
 
 export default function StageEditorForm(props: StageDialogProps) {
+  const i18n = useI18n();
   const updateTitle = (value: string) =>
     props.onDraftChange((current) =>
       current
@@ -51,27 +53,29 @@ export default function StageEditorForm(props: StageDialogProps) {
       {(draft) => (
         <div class="stage-editor-form">
           <AtomInput
-            label="--Stage title"
+            label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.STAGE_TITLE")}
             value={draft().name}
             onChange={updateTitle}
           />
           <AtomInput
-            label="--Date from"
+            label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.DATE_FROM")}
             type="date"
             value={toDateInputValue(draft().dateFrom)}
             onChange={updateDateFrom}
           />
           <AtomInput
-            label="--Date to"
+            label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.DATE_TO")}
             type="date"
             value={toDateInputValue(draft().dateTo)}
             onChange={updateDateTo}
           />
           <div class="stage-editor-form__actions">
             <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-              --Cancel
+              {i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.CANCEL")}
             </AtomButton>
-            <AtomButton onClick={props.onSave}>--Save</AtomButton>
+            <AtomButton onClick={props.onSave}>
+              {i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.SAVE")}
+            </AtomButton>
           </div>
         </div>
       )}

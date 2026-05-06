@@ -3,12 +3,14 @@ import { useCollections } from "@/services/secured/collection-crud/collectionCru
 import { For, Show, Suspense } from "solid-js";
 import CollectionCard from "@/components/routes/my/collections/list/collection-card/CollectionCard";
 import { Judge } from "@/services/secured/judge-crud/judgeCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/collections/list/")({
   component: MyCollectionsListPage,
 });
 
 function MyCollectionsListPage() {
+  const i18n = useI18n();
   const navigate = useNavigate();
 
   const collectionsQuery = useCollections({
@@ -30,11 +32,11 @@ function MyCollectionsListPage() {
   };
   return (
     <div class="my-collections-list">
-      <h1>--Collections</h1>
-      <Suspense fallback={<span>--Loading collections</span>}>
+      <h1>{i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}</h1>
+      <Suspense fallback={<span>{i18n.t("MY.COLLECTIONS.LIST.LOADING_COLLECTIONS")}</span>}>
         <Show
           when={collectionsQuery.data?.length}
-          fallback={<p>--No collections available yet.</p>}
+          fallback={<p>{i18n.t("MY.COLLECTIONS.LIST.NO_COLLECTIONS_AVAILABLE_YET")}</p>}
         >
           <div class="collections-list">
             <For each={collectionsQuery.data}>

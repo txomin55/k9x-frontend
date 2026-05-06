@@ -11,6 +11,7 @@ import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useOffline } from "@/stores/network/network";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 export const Route = createFileRoute("/stages/")({
@@ -24,6 +25,7 @@ const CONTROLS_KEYS = {
 
 function StagesIndexPage() {
   const { isOffline } = useOffline();
+  const i18n = useI18n();
 
   const fetchedStages = useStages({
     refetchOnMount: false,
@@ -39,7 +41,7 @@ function StagesIndexPage() {
   const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
-      text: "--List",
+      text: i18n.t("STAGES.INDEX.LIST"),
       content: (
         <For each={sortedStages()}>
           {(stage) => (
@@ -60,7 +62,7 @@ function StagesIndexPage() {
     },
     {
       value: CONTROLS_KEYS.MAP,
-      text: "--Map",
+      text: i18n.t("STAGES.INDEX.MAP"),
       disabled: isOffline(),
       content: <StagesMap stages={fetchedStages.data} />,
     },
@@ -76,9 +78,9 @@ function StagesIndexPage() {
 
   return (
     <div class="stages">
-      <Suspense fallback={<span>--Loading stages</span>}>
+      <Suspense fallback={<span>{i18n.t("STAGES.INDEX.LOADING_STAGES")}</span>}>
         <AtomSegmentedControl
-          title="--Stages by"
+          title={i18n.t("STAGES.INDEX.STAGES_BY")}
           control={controlValue()}
           onControlChange={setControlValue}
           controls={controls()}

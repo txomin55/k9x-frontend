@@ -5,6 +5,7 @@ import {
   useCollectionById,
 } from "@/services/secured/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
@@ -93,6 +94,7 @@ export const Route = createFileRoute("/my/collections/$id")({
 });
 
 function CollectionDetailPage() {
+  const i18n = useI18n();
   const params = useParams({ from: "/my/collections/$id" });
   const search = useSearch({ from: "/my/collections/$id" });
 
@@ -253,12 +255,12 @@ function CollectionDetailPage() {
 
   return (
     <div class="collection-detail">
-      <h1>--SPECIFIC SCORES</h1>
+      <h1>{i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}</h1>
       <span class="text-caption-sm">
         {collectionData.data?.configuration?.description}
       </span>
       <AtomSelect
-        label="--Competitors"
+        label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
         options={collectionCompetitors()}
         value={selectedCompetitor()}
         onChange={markCompetitorAsSeen}
@@ -272,7 +274,7 @@ function CollectionDetailPage() {
           }}
         >
           <div class="collection-detail__exercises--headers">
-            <span>--Exercise</span>
+            <span>{i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}</span>
             <For each={collectionJudges()}>
               {(score) => <span>{score.judge.name}</span>}
             </For>

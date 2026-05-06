@@ -1,8 +1,12 @@
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import i18n from "i18next";
 
 export const EVENT_DISCIPLINE_OPTIONS: AtomSelectOption[] = [
-  { label: "--FCI OBEDIENCE", value: "fci_ob" },
+  {
+    label: i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.FCI_OBEDIENCE"),
+    value: "fci_ob",
+  },
 ];
 
 export const getEventDisciplineOption = (discipline: string) =>
@@ -25,7 +29,7 @@ export default function EventDisciplineField(
 ) {
   return (
     <AtomSelect
-      label="--Discipline"
+      label={i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.DISCIPLINE")}
       onChange={props.onChange}
       options={EVENT_DISCIPLINE_OPTIONS}
       value={getEventDisciplineOption(props.value)}

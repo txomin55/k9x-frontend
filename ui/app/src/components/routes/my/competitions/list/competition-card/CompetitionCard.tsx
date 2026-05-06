@@ -6,10 +6,12 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type {
   CompetitionCardProps
 } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 export default function CompetitionCard(props: CompetitionCardProps) {
   const navigate = useNavigate();
+  const i18n = useI18n();
 
   return (
     <Card
@@ -66,7 +68,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
             })
           }
         >
-          --+ Info
+          {i18n.t("MY.COMPETITIONS.COMPETITION_CARD.INFO")}
         </AtomButton>
       }
     />

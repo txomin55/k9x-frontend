@@ -10,6 +10,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
 import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type EventExercisesSectionProps = {
@@ -34,6 +35,7 @@ type EventExercisesSectionProps = {
 export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
+  const i18n = useI18n();
   const getOrderValue = (exercise: EventExerciseDetail) => exercise.order;
   const getExerciseName = (exercise: EventExerciseDetail) => {
     if (exercise.name) {
@@ -64,10 +66,10 @@ export default function EventExercisesSection(
 
   const viewDialogTitle = () => {
     if (props.isCreatingExercise) {
-      return "--New exercise";
+      return i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.NEW_EXERCISE");
     }
 
-    return "--Edit exercise";
+    return i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.EDIT_EXERCISE");
   };
 
   return (
@@ -84,12 +86,12 @@ export default function EventExercisesSection(
           </CircleButton>
         </Show>
       </div>
-      <Show when={props.exercises.length > 0} fallback={<p>--No exercises.</p>}>
+      <Show when={props.exercises.length > 0} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.NO_EXERCISES")}</p>}>
         <div class="event-exercises-section__exercises">
           <Index each={sortedExercises()}>
             {(exercise) => (
               <Card
-                topLeft={`--#${exercise().order}`}
+                topLeft={`#${exercise().order}`}
                 description={
                   <div>
                     <p>{getExerciseName(exercise())}</p>
@@ -108,7 +110,7 @@ export default function EventExercisesSection(
                         onConfirm={() => props.onDeleteExercise(exercise().id)}
                       >
                         <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                          --Delete
+                          {i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.DELETE")}
                         </AtomButton>
                       </ConfirmActionButton>
                       <span
@@ -117,7 +119,7 @@ export default function EventExercisesSection(
                           setDialogOpen(true);
                         }}
                       >
-                        --Edit
+                        {i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.EDIT")}
                       </span>
                     </div>
                   ) : undefined
@@ -128,7 +130,7 @@ export default function EventExercisesSection(
         </div>
       </Show>
       <AtomDialog
-        closeButtonText="--Close dialog"
+        closeButtonText={i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.CLOSE_DIALOG")}
         content={
           <Show when={props.exerciseDialogDraft}>
             {(draft) => (

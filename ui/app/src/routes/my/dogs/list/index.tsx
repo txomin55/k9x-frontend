@@ -16,19 +16,7 @@ import type {
 } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
-
-const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
-  id:
-    typeof globalThis !== "undefined" &&
-    "crypto" in globalThis &&
-    typeof globalThis.crypto.randomUUID === "function"
-      ? globalThis.crypto.randomUUID()
-      : `${Date.now()}-${Math.random()}`,
-  name: "--Default dog",
-  image: "",
-  breed: "--Default breed",
-  owned: !isOrganizer,
-});
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/dogs/list/")({
   component: MyDogsListPage,
@@ -36,6 +24,19 @@ export const Route = createFileRoute("/my/dogs/list/")({
 
 function MyDogsListPage() {
   const user = useAuthUser();
+  const i18n = useI18n();
+  const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
+    id:
+      typeof globalThis !== "undefined" &&
+      "crypto" in globalThis &&
+      typeof globalThis.crypto.randomUUID === "function"
+        ? globalThis.crypto.randomUUID()
+        : `${Date.now()}-${Math.random()}`,
+    name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
+    image: "",
+    breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
+    owned: !isOrganizer,
+  });
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
@@ -98,9 +99,13 @@ function MyDogsListPage() {
 
   return (
     <div class="my-dogs">
-      <h1>--Dogs</h1>
+      <h1>{i18n.t("MY.DOGS.LIST.DOGS")}</h1>
       <AtomDialog
-        title={editingDogId() ? "--Edit dog" : "--New dog"}
+        title={
+          editingDogId()
+            ? i18n.t("MY.DOGS.LIST.EDIT_DOG")
+            : i18n.t("MY.DOGS.LIST.NEW_DOG")
+        }
         content={
           <DogForm
             draft={draftDog}
@@ -120,10 +125,10 @@ function MyDogsListPage() {
         trigger={<span aria-hidden />}
       />
 
-      <Suspense fallback={<span>--Loading dogs</span>}>
+      <Suspense fallback={<span>{i18n.t("MY.DOGS.LIST.LOADING_DOGS")}</span>}>
         <Show
           when={dogsQuery.data?.length}
-          fallback={<p>--No dogs available yet.</p>}
+          fallback={<p>{i18n.t("MY.DOGS.LIST.NO_DOGS_AVAILABLE_YET")}</p>}
         >
           <div class="dogs-list">
             <For each={dogsQuery.data}>

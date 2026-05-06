@@ -15,17 +15,18 @@ import type {
   Judge,
 } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
-
-const buildJudgeDraft = (): CreateJudgeRequest => ({
-  id: globalThis.crypto.randomUUID(),
-  name: "--Default judge",
-});
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/judges/list/")({
   component: MyJudgesListPage,
 });
 
 function MyJudgesListPage() {
+  const i18n = useI18n();
+  const buildJudgeDraft = (): CreateJudgeRequest => ({
+    id: globalThis.crypto.randomUUID(),
+    name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
+  });
   const judgesQuery = useJudges({
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
@@ -72,9 +73,13 @@ function MyJudgesListPage() {
 
   return (
     <div class="my-judges">
-      <h1>--Judges</h1>
+      <h1>{i18n.t("MY.JUDGES.LIST.JUDGES")}</h1>
       <AtomDialog
-        title={editingJudgeId() ? "--Edit judge" : "--New judge"}
+        title={
+          editingJudgeId()
+            ? i18n.t("MY.JUDGES.LIST.EDIT_JUDGE")
+            : i18n.t("MY.JUDGES.LIST.NEW_JUDGE")
+        }
         content={
           <JudgeForm
             draft={draftJudge}
@@ -94,10 +99,10 @@ function MyJudgesListPage() {
         trigger={<span aria-hidden />}
       />
 
-      <Suspense fallback={<span>--Loading judges</span>}>
+      <Suspense fallback={<span>{i18n.t("MY.JUDGES.LIST.LOADING_JUDGES")}</span>}>
         <Show
           when={judgesQuery.data?.length}
-          fallback={<p>--No judges available yet.</p>}
+          fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
         >
           <div class="judges-list">
             <For each={judgesQuery.data}>

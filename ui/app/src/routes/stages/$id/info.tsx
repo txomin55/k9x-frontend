@@ -21,6 +21,7 @@ import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -48,6 +49,7 @@ const TABS = {
 };
 
 function StageInfoPage() {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const user = useAuthUser();
   const params = useParams({ from: "/stages/$id/info" });
@@ -119,10 +121,10 @@ function StageInfoPage() {
   };
 
   const stageTabsTitles = [
-    { value: TABS.EVENTS, content: <span>--Events</span> },
+    { value: TABS.EVENTS, content: <span>{i18n.t("STAGES.INFO.EVENTS")}</span> },
     {
       value: TABS.NOTIFICATIONS,
-      content: <span>--Notifications</span>,
+      content: <span>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</span>,
       disabled: true,
     },
   ];
@@ -138,7 +140,7 @@ function StageInfoPage() {
         value: TABS.EVENTS,
         content: (
           <Card
-            topLeft={<span>--Events</span>}
+            topLeft={<span>{i18n.t("STAGES.INFO.EVENTS")}</span>}
             content={
               <div class="stage-info__events">
                 <Index each={stage.events}>
@@ -157,14 +159,14 @@ function StageInfoPage() {
                             type={BUTTON_TYPES.GHOST}
                             onClick={startGoogleInteractiveLogin}
                           >
-                            --Login to enroll
+                            {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
                           </AtomButton>
                         }
                       >
                         <AtomButton
                           onClick={() => openEnrollDialog(event().id)}
                         >
-                          --Enroll
+                          {i18n.t("STAGES.INFO.ENROLL")}
                         </AtomButton>
                       </Show>
                     </div>
@@ -177,7 +179,7 @@ function StageInfoPage() {
       },
       {
         value: TABS.NOTIFICATIONS,
-        content: <div>--Notifications</div>,
+        content: <div>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</div>,
       },
     ];
   });
@@ -188,7 +190,7 @@ function StageInfoPage() {
     });
   return (
     <div class="stage-info">
-      <Show when={stageInfo.data} fallback={<span>--Loading stage data</span>}>
+      <Show when={stageInfo.data} fallback={<span>{i18n.t("STAGES.INFO.LOADING_STAGE_DATA")}</span>}>
         {(stage) => (
           <>
             <h2>{stage().name}</h2>
@@ -202,14 +204,14 @@ function StageInfoPage() {
               contents={stageTabsContents()}
             />
             <AtomDialog
-              closeButtonText="--Close dialog"
+              closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}
               content={
                 <div class="stage-info__enroll-form">
                   <AtomCombobox
-                    label="--Dog"
+                    label={i18n.t("STAGES.INFO.DOG")}
                     onChange={handleDogChange}
                     options={dogOptions()}
-                    placeholder="--Select a dog"
+                    placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
                     value={
                       dogOptions().find(
                         (option) => option.value === enrollDraft().dogId,
@@ -221,13 +223,13 @@ function StageInfoPage() {
                         type={BUTTON_TYPES.GHOST}
                         onClick={handleGoToDogs}
                       >
-                        --Create dog
+                        {i18n.t("STAGES.INFO.CREATE_DOG")}
                       </AtomButton>
                     </Show>
                   </AtomCombobox>
 
                   <AtomInput
-                    label="--Identifier"
+                    label={i18n.t("STAGES.INFO.IDENTIFIER")}
                     value={enrollDraft().identifier}
                     onChange={(identifier) =>
                       updateEnrollDraft((current) => ({
@@ -237,7 +239,7 @@ function StageInfoPage() {
                     }
                   />
                   <AtomInput
-                    label="--Owner"
+                    label={i18n.t("STAGES.INFO.OWNER")}
                     value={enrollDraft().owner}
                     onChange={(owner) =>
                       updateEnrollDraft((current) => ({
@@ -247,7 +249,7 @@ function StageInfoPage() {
                     }
                   />
                   <AtomInput
-                    label="--Country"
+                    label={i18n.t("STAGES.INFO.COUNTRY")}
                     value={enrollDraft().country}
                     onChange={(country) =>
                       updateEnrollDraft((current) => ({
@@ -257,7 +259,7 @@ function StageInfoPage() {
                     }
                   />
                   <AtomInput
-                    label="--Team"
+                    label={i18n.t("STAGES.INFO.TEAM")}
                     value={enrollDraft().team}
                     onChange={(team) =>
                       updateEnrollDraft((current) => ({
@@ -272,9 +274,9 @@ function StageInfoPage() {
                       type={BUTTON_TYPES.ACCENT}
                       onClick={closeEnrollDialog}
                     >
-                      --Cancel
+                      {i18n.t("STAGES.INFO.CANCEL")}
                     </AtomButton>
-                    <AtomButton onClick={handleEnroll}>--Enroll</AtomButton>
+                    <AtomButton onClick={handleEnroll}>{i18n.t("STAGES.INFO.ENROLL")}</AtomButton>
                   </div>
                 </div>
               }
@@ -287,7 +289,7 @@ function StageInfoPage() {
                 setDialogOpen(true);
               }}
               open={dialogOpen()}
-              title={`--Enroll in ${stage().name}`}
+              title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${stage().name}`}
             />
           </>
         )}

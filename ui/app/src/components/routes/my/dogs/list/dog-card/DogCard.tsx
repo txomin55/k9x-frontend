@@ -6,8 +6,10 @@ import AtomButton, {
 import type { DogCardProps } from "@/components/routes/my/dogs/list/dog-card/DogCard.types";
 import "./styles.css";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export default function DogCard(props: DogCardProps) {
+  const i18n = useI18n();
   return (
     <Card
       topLeft={
@@ -29,10 +31,12 @@ export default function DogCard(props: DogCardProps) {
       actions={
         <div class="dog-card__actions">
           <ConfirmActionButton text={props.dog.name} onConfirm={props.onDelete}>
-            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>--Delete</AtomButton>
+            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+              {i18n.t("MY.DOGS.DOG_CARD.DELETE")}
+            </AtomButton>
           </ConfirmActionButton>
           <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onEdit}>
-            --Edit
+            {i18n.t("MY.DOGS.DOG_CARD.EDIT")}
           </AtomButton>
         </div>
       }

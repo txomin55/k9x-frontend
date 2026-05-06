@@ -1,6 +1,7 @@
 import { createFileRoute, Navigate, Outlet } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my")({
   component: MyLayoutPage,
@@ -9,9 +10,10 @@ export const Route = createFileRoute("/my")({
 function MyLayoutPage() {
   const user = useAuthUser();
   const loading = useAuthLoading();
+  const i18n = useI18n();
 
   if (loading()) {
-    return <span>--Loading user data</span>;
+    return <span>{i18n.t("MY.LOADING_USER_DATA")}</span>;
   }
 
   if (!user()) {

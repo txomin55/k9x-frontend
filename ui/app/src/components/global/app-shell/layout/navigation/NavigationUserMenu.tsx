@@ -31,15 +31,15 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   return (
     <div class="navigation-tools">
       <div class="navigation-tools__group">
-        <p>--Mode</p>
+        <p>{i18n.t("GLOBAL.NAVIGATION.MODE")}</p>
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onToggleMode}>
-          {props.isDark ? "--Light" : "--Dark"}
+          {props.isDark ? i18n.t("GLOBAL.NAVIGATION.LIGHT") : i18n.t("GLOBAL.NAVIGATION.DARK")}
         </AtomButton>
       </div>
 
       <div class="navigation-tools__group">
-        <p>--LOCALES</p>
-        <p>--locale - {i18n.locale()}</p>
+        <p>{i18n.t("GLOBAL.NAVIGATION.LOCALES")}</p>
+        <p>{i18n.t("GLOBAL.NAVIGATION.LOCALE")} - {i18n.locale()}</p>
         <div class="navigation-tools__locales">
           <For each={i18n.locales}>
             {(nextLocale) => (
@@ -54,24 +54,24 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
         </div>
 
         <AtomDialog
-          closeButtonText="--Close dialog"
+          closeButtonText={i18n.t("GLOBAL.NAVIGATION.CLOSE_DIALOG")}
           content={<ContactForm />}
           onOpenChange={setOpenGenericContactForm}
           open={openGenericContactForm()}
-          title="--Contact us"
+          title={i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
           trigger={
-            <AtomButton type={BUTTON_TYPES.GHOST}>--Contact us</AtomButton>
+            <AtomButton type={BUTTON_TYPES.GHOST}>{i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}</AtomButton>
           }
         />
 
         <AtomButton onClick={() => displayNotification(mockedNotification)}>
-          --Trigger notification
+          {i18n.t("GLOBAL.NAVIGATION.TRIGGER_NOTIFICATION")}
         </AtomButton>
 
         <Show when={user()}>
-          <p>{i18n.t("hello", { name: "txomin" })}</p>
+          <p>{i18n.t("GLOBAL.NAVIGATION.HELLO", { name: "txomin" })}</p>
           <AtomButton type={BUTTON_TYPES.PRIMARY} onClick={handleLogout}>
-            --Logout
+            {i18n.t("GLOBAL.NAVIGATION.LOGOUT")}
           </AtomButton>
         </Show>
       </div>

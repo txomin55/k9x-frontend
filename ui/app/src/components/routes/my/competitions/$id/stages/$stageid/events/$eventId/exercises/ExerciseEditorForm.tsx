@@ -10,6 +10,7 @@ import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput"
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type OrderBounds = {
   minValue: number;
@@ -32,6 +33,7 @@ type ExerciseEditorFormProps = {
 };
 
 export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
+  const i18n = useI18n();
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
@@ -65,7 +67,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
 
     return (
       exerciseOptions().find((option) => option.value === draft.id) ?? {
-        label: `--${draft.name}`,
+        label: draft.name,
         value: draft.id,
       }
     );
@@ -81,7 +83,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         ? {
             ...current,
             id: option.value,
-            name: option.label.replace(/^--/, ""),
+            name: option.label,
           }
         : current,
     );
@@ -103,7 +105,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
   return (
     <div class="exercise-editor-form">
       <AtomNumberInput
-        label="--Order"
+        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
         value={props.draft().order}
         onBlur={props.onCommit}
         onChange={setOrder}
@@ -111,31 +113,31 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         maxValue={maxOrder}
       />
       <AtomCombobox
-        label="--Exercise"
+        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.EXERCISE")}
         options={exerciseOptions()}
         value={selectedExerciseOption()}
         onChange={setExercise}
         disabled={exerciseOptions().length === 0}
         description={
           exerciseOptions().length === 0
-            ? "--Select a configuration with exercises first"
+            ? i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST")
             : undefined
         }
-        placeholder="--Select an exercise"
+        placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE")}
       />
       <AtomInput
-        label="--Tags"
+        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.TAGS")}
         value={props.draft().tags.join(", ")}
         onBlur={props.onCommit}
         onChange={setTags}
-        description="--Comma separated text"
+        description={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.COMMA_SEPARATED_TEXT")}
       />
       <div class="exercise-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
-          --Close
+          {i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CLOSE")}
         </AtomButton>
         <Show when={props.displaySave}>
-          <AtomButton onClick={props.onCreate}>--Create</AtomButton>
+          <AtomButton onClick={props.onCreate}>{i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CREATE")}</AtomButton>
         </Show>
       </div>
     </div>

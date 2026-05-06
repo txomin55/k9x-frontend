@@ -3,6 +3,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type ConfirmActionButtonProps = {
@@ -16,6 +17,7 @@ type ConfirmActionButtonProps = {
 
 export default function ConfirmActionButton(props: ConfirmActionButtonProps) {
   const [isOpen, setIsOpen] = createSignal(false);
+  const i18n = useI18n();
 
   const handleConfirm = () => {
     props.onConfirm();
@@ -24,21 +26,22 @@ export default function ConfirmActionButton(props: ConfirmActionButtonProps) {
 
   return (
     <AtomDialog
-      title={props.title ?? "--Confirm deletion"}
+      title={props.title ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CONFIRM_DELETION")}
       content={
         <div class="confirm-action-button__content">
           <p>
-            --Are you sure you want to remove {props.text ?? "--this item"}?
+            {i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CONFIRM_REMOVE")}{" "}
+            {props.text ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.THIS_ITEM")}?
           </p>
           <div class="confirm-action-button__actions">
             <AtomButton
               type={BUTTON_TYPES.ACCENT}
               onClick={() => setIsOpen(false)}
             >
-              {props.cancelText ?? "--Cancel"}
+              {props.cancelText ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CANCEL")}
             </AtomButton>
             <AtomButton type={BUTTON_TYPES.DESTRUCTIVE} onClick={handleConfirm}>
-              {props.confirmText ?? "--Delete"}
+              {props.confirmText ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.DELETE")}
             </AtomButton>
           </div>
         </div>

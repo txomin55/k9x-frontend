@@ -13,6 +13,7 @@ import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
 import { isDark, setIsDark } from "@/stores/theme/theme";
+import { useI18n } from "@/stores/i18n/i18n";
 
 const DESKTOP_BREAKPOINT = 720;
 
@@ -20,6 +21,7 @@ export default function AppLayout(props: ParentProps) {
   const location = useLocation();
   const user = useAuthUser();
   const { isOffline } = useOffline();
+  const i18n = useI18n();
 
   const [isDesktop, setIsDesktop] = createSignal(false);
   const [isNavOpen, setIsNavOpen] = createSignal(false);
@@ -54,7 +56,7 @@ export default function AppLayout(props: ParentProps) {
       type={BUTTON_TYPES.ACCENT}
       onClick={startGoogleInteractiveLogin}
     >
-      --Login
+      {i18n.t("GLOBAL.APP_LAYOUT.LOGIN")}
     </AtomButton>
   );
 
@@ -105,21 +107,21 @@ export default function AppLayout(props: ParentProps) {
           </span>
         </button>
         <Show when={isOffline()}>
-          <span>--Offline</span>
+          <span>{i18n.t("GLOBAL.APP_LAYOUT.OFFLINE")}</span>
         </Show>
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
             <div class="app-layout__actions">
               <Show when={!currentUser().organizer}>
                 <AtomDialog
-                  closeButtonText="--Close dialog"
+                  closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
                   content={<OrganizerForm />}
                   onOpenChange={setOpenOrganizerForm}
                   open={openOrganizerForm()}
-                  title="--Organizer request"
+                  title={i18n.t("GLOBAL.APP_LAYOUT.ORGANIZER_REQUEST")}
                   trigger={
                     <AtomButton type={BUTTON_TYPES.GHOST}>
-                      --Want to be organizer?
+                      {i18n.t("GLOBAL.APP_LAYOUT.WANT_TO_BE_ORGANIZER")}
                     </AtomButton>
                   }
                 />

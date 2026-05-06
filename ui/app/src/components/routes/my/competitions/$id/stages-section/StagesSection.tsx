@@ -11,6 +11,7 @@ import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type StageItem = NonNullable<CompetitionDetail["stages"]>[number];
 
@@ -32,13 +33,14 @@ type StagesSectionProps = {
 };
 
 export default function StagesSection(props: StagesSectionProps) {
+  const i18n = useI18n();
   return (
     <div class="stages-section">
       <div class="stages-section__title">
-        <h2>--Stages</h2>
+        <h2>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}</h2>
         <Show when={props.isEditing}>
           <AtomDialog
-            closeButtonText="--Close dialog"
+            closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
             content={
               <StageEditorForm
                 draft={props.draft}
@@ -55,7 +57,7 @@ export default function StagesSection(props: StagesSectionProps) {
               }
             }}
             open={props.isCreatingStage}
-            title="--New stage"
+            title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
             trigger={<CircleButton>+</CircleButton>}
           />
         </Show>
@@ -76,11 +78,11 @@ export default function StagesSection(props: StagesSectionProps) {
                       onConfirm={() => props.onDeleteStage(stage().id)}
                     >
                       <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                        --Delete
+                        {i18n.t("MY.COMPETITIONS.STAGES_SECTION.DELETE")}
                       </AtomButton>
                     </ConfirmActionButton>
                     <AtomDialog
-                      closeButtonText="--Close dialog"
+                      closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
                       content={
                         <StageEditorForm
                           draft={props.draft}
@@ -100,8 +102,8 @@ export default function StagesSection(props: StagesSectionProps) {
                         }
                       }}
                       open={props.editingStageId === stage().id}
-                      title={`--Edit ${stage().name}`}
-                      trigger={<span>--Edit</span>}
+                      title={`${i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")} ${stage().name}`}
+                      trigger={<span>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}</span>}
                     />
                   </div>
                 ) : (
@@ -109,7 +111,7 @@ export default function StagesSection(props: StagesSectionProps) {
                     type={BUTTON_TYPES.ACCENT}
                     onClick={() => props.onNavigateToStage(stage().id)}
                   >
-                    --+Info
+                    {i18n.t("MY.COMPETITIONS.STAGES_SECTION.INFO")}
                   </AtomButton>
                 )
               }

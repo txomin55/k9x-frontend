@@ -29,6 +29,7 @@ import AtomButton, {
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
+import { useI18n } from "@/stores/i18n/i18n";
 import {
   CreateStageRequest,
   StageEditorModel,
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/my/competitions/$id/")({
 });
 
 function CompetitionDetailPage() {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const params = useParams({ from: "/my/competitions/$id/" });
   const { createCompetition, createDefaultCompetition } = useCompetition();
@@ -60,13 +62,14 @@ function CompetitionDetailPage() {
   });
 
   return params().id === "new" ? (
-    <span>--Creating competition</span>
+    <span>{i18n.t("MY.COMPETITIONS.DETAIL.CREATING_COMPETITION")}</span>
   ) : (
     <CompetitionDetailContent id={params().id} />
   );
 }
 
 function CompetitionDetailContent(props: { id: string }) {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const { deleteCompetition, updateCompetition, getCompetition } =
     useCompetition();
@@ -75,8 +78,8 @@ function CompetitionDetailContent(props: { id: string }) {
 
   return (
     <div class="competition-detail">
-      <Suspense fallback={<span>--Loading competition</span>}>
-        <Show when={competition()} fallback={<p>--Competition not found.</p>}>
+      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.DETAIL.LOADING_COMPETITION")}</span>}>
+        <Show when={competition()} fallback={<p>{i18n.t("MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND")}</p>}>
           <CompetitionDetailBody
             competition={competition}
             onDelete={() => {
@@ -105,6 +108,7 @@ function CompetitionDetailBody(props: {
     competition: UpdateCompetitionRequest,
   ) => void;
 }) {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const {
     createApiStage,
@@ -306,12 +310,14 @@ function CompetitionDetailBody(props: {
       <FloatingToggleCircle
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}
-        nonToggledText="--Edit"
-        toggledText="--View"
+        nonToggledText={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
+        toggledText={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
-          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>--Delete</AtomButton>
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+            {i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
+          </AtomButton>
         </ConfirmActionButton>
       </Show>
     </div>

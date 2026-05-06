@@ -1,4 +1,5 @@
 import type { AnyRouteMatch } from "@tanstack/solid-router";
+import i18n from "i18next";
 
 export type AppBreadcrumbValue =
   | string
@@ -20,5 +21,5 @@ export const resolveBreadcrumbLabel = (
     return breadcrumb(match) ?? null;
   }
 
-  return breadcrumb;
+  return i18n.t(breadcrumb);
 };

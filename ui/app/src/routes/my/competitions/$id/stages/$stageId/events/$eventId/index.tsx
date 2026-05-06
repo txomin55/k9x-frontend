@@ -37,6 +37,7 @@ import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -60,6 +61,7 @@ export const Route = createFileRoute(
 });
 
 function CompetitionEventDetailPage() {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const params = useParams({
     from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -106,7 +108,7 @@ function CompetitionEventDetailPage() {
   });
 
   return params().eventId === "new" ? (
-    <span>--Creating event</span>
+    <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CREATING_EVENT")}</span>
   ) : (
     <CompetitionEventDetailContentContainer
       competitionId={params().id}
@@ -127,6 +129,7 @@ function CompetitionEventDetailContentContainer(props: {
   onUpdate: (eventId: string, event: UpdateEventRequest) => void;
   stageId: string;
 }) {
+  const i18n = useI18n();
   const navigate = useNavigate();
   const [resolvedEvent, setResolvedEvent] = createSignal<
     EventDetail | undefined
@@ -152,8 +155,8 @@ function CompetitionEventDetailContentContainer(props: {
 
   return (
     <div class="competition-event-detail">
-      <Suspense fallback={<span>--Loading event detail</span>}>
-        <Show when={resolvedEvent()} fallback={<p>--Event not found.</p>}>
+      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.LOADING_EVENT_DETAIL")}</span>}>
+        <Show when={resolvedEvent()} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_NOT_FOUND")}</p>}>
           <CompetitionEventDetailBody
             event={eventAccessor}
             onDelete={handleDelete}
@@ -170,6 +173,7 @@ function CompetitionEventDetailBody(props: {
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequest) => void;
 }) {
+  const i18n = useI18n();
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event()),
@@ -214,7 +218,7 @@ function CompetitionEventDetailBody(props: {
         )?.exercises ?? [];
 
     return configurationExercises.map((exercise) => ({
-      label: `--${exercise.name}`,
+      label: exercise.name,
       value: exercise.id,
     }));
   });
@@ -249,7 +253,7 @@ function CompetitionEventDetailBody(props: {
       dogId: globalThis.crypto.randomUUID(),
       identity: "",
       name: "",
-      owner: "--Default competitor",
+      owner: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_COMPETITOR"),
       team: "",
       country: "",
       breed: "",
@@ -341,7 +345,7 @@ function CompetitionEventDetailBody(props: {
     return {
       id: globalThis.crypto.randomUUID(),
       order,
-      name: "--Default exercise",
+      name: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EXERCISE"),
       tags: [],
     };
   };
@@ -710,9 +714,9 @@ function CompetitionEventDetailBody(props: {
   };
 
   const eventTabsTitles = [
-    { value: TABS.JUDGES, content: <span>--Judges</span> },
-    { value: TABS.EXERCISES, content: <span>--Exercises</span> },
-    { value: TABS.COMPETITORS, content: <span>--Competitors</span> },
+    { value: TABS.JUDGES, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.JUDGES")}</span> },
+    { value: TABS.EXERCISES, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXERCISES")}</span> },
+    { value: TABS.COMPETITORS, content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")}</span> },
   ];
 
   const eventTabsContents = () => [
@@ -797,21 +801,21 @@ function CompetitionEventDetailBody(props: {
           fallback={
             <>
               <h1>{props.event().name}</h1>
-              <p>{`--Status: ${props.event().status}`}</p>
-              <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
-              <p>{`--Participants: ${props.event().competitors.length}`}</p>
+              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.STATUS")}: ${props.event().status}`}</p>
+              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
+              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</p>
             </>
           }
         >
           <div>
             <AtomInput
-              label="--Event title"
+              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_TITLE")}
               onBlur={commitEventNameEdits}
               value={name()}
               onChange={setName}
             />
-            <p>{`--Discipline: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
-            <p>{`--Participants: ${props.event().competitors.length}`}</p>
+            <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
+            <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</p>
           </div>
         </Show>
       </header>
@@ -836,13 +840,13 @@ function CompetitionEventDetailBody(props: {
       <FloatingToggleCircle
         onClick={() => toggleEditingMode()}
         toggled={isEditing()}
-        nonToggledText="--Edit"
-        toggledText="--View"
+        nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
+        toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
       />
       <Show when={isEditing()}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-            --Delete event
+            {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}
           </AtomButton>
         </ConfirmActionButton>
       </Show>
