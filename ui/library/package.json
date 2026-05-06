@@ -39,6 +39,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@tanstack/solid-table": "^8.21.3",
     "@kobalte/core": "^0.13.11",
     "@storybook/html": "^10.3.5",
     "solid-js": "catalog:"
