@@ -1,4 +1,4 @@
-import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
+import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { createSignal, Index } from "solid-js";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
@@ -7,7 +7,7 @@ import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocati
 import { useI18n } from "@/stores/i18n/i18n";
 
 interface StageMapMarker {
-  stage: StageSummary;
+  stage: StageSummaryResponseDTO;
 }
 
 const STAGE_STATUS = {

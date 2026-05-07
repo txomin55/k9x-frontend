@@ -7,22 +7,22 @@ import {
 } from "@/services/secured/stage-crud/stageCrudOfflineUtils";
 import { createMemo, getOwner } from "solid-js";
 import {
-  type CompetitionDetail,
+  type CompetitionResponseDTO,
   getCachedCompetitions,
   useCompetition,
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   CompetitionStageDetail,
-  CreateStageRequest,
+  CreateStageRequestDTO,
   StageEditorModel,
-  UpdateStageRequest,
+  UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const mergeApiStageWithPayload = (
-  payload: CreateStageRequest | UpdateStageRequest,
+  payload: CreateStageRequestDTO | UpdateStageRequestDTO,
   previousStage?: StageEditorModel,
 ): StageEditorModel => {
   const payloadId = "id" in payload ? payload.id : undefined;
@@ -40,7 +40,7 @@ const mergeApiStageWithPayload = (
   };
 };
 
-const createDefaultApiStage = (competitionId: string): CreateStageRequest => ({
+const createDefaultApiStage = (competitionId: string): CreateStageRequestDTO => ({
   competitionId,
   id: createId(),
   name: "--Default stage",
@@ -98,7 +98,7 @@ export const toApiStage = (
 });
 
 const findCachedApiStage = (
-  competitions: CompetitionDetail[] | undefined,
+  competitions: CompetitionResponseDTO[] | undefined,
   competitionId: string,
   stageId: string,
 ): StageEditorModel | null => {
@@ -135,7 +135,7 @@ export const useApiStage = () => {
       return toApiStage(stage, competitionId);
     });
   };
-  const createApiStage = (payload: CreateStageRequest) => {
+  const createApiStage = (payload: CreateStageRequestDTO) => {
     const draftApiStage = mergeApiStageWithPayload(payload);
     const previousCompetitionsFromCache = getVisibleCompetitions();
 
@@ -166,7 +166,7 @@ export const useApiStage = () => {
   const updateApiStage = (
     competitionId: string,
     id: string,
-    payload: UpdateStageRequest,
+    payload: UpdateStageRequestDTO,
   ) => {
     const previousCompetitionsFromCache = getVisibleCompetitions();
     const previousStage = findCachedApiStage(

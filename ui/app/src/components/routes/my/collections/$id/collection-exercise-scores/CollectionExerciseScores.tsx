@@ -1,7 +1,7 @@
 import {
-  CollectionScore,
+  CollectionScoreResponseDTO,
   Exercise,
-  UpdateCollectionScoreRequest,
+  UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo, createSignal, For } from "solid-js";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
@@ -14,18 +14,18 @@ interface CollectionExerciseScoresProps {
   competitorId: string;
   eventId: string;
   exercise: Exercise;
-  scores: CollectionScore[];
+  scores: CollectionScoreResponseDTO[];
   allowedValues: number[];
-  onCommitScore: (payload: UpdateCollectionScoreRequest) => void;
+  onCommitScore: (payload: UpdateCollectionScoreRequestDTO) => void;
 }
 
 function CollectionExerciseScoreInput(props: {
   competitorId: string;
   eventId: string;
   exerciseId: string;
-  score: CollectionScore;
+  score: CollectionScoreResponseDTO;
   allowedValues: number[];
-  onCommitScore: (payload: UpdateCollectionScoreRequest) => void;
+  onCommitScore: (payload: UpdateCollectionScoreRequestDTO) => void;
 }) {
   const [rawValue, setRawValue] = createSignal(props.score.score);
 

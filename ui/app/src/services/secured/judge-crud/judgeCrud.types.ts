@@ -1,19 +1,19 @@
-export interface Judge {
+export interface JudgeResponseDTO {
   id: string;
   name: string;
 }
 
-export interface CreateJudgeRequest {
+export interface CreateJudgeRequestDTO {
   id: string;
   name: string;
 }
 
-export interface UpdateJudgeRequest {
+export interface UpdateJudgeRequestDTO {
   name: string;
 }
 
 export interface JudgeRollbackPayload {
   entityId: string;
-  previousJudge: Judge | null;
-  previousJudges: Judge[] | null;
+  previousJudge: JudgeResponseDTO | null;
+  previousJudges: JudgeResponseDTO[] | null;
 }

@@ -11,7 +11,7 @@ import {
   useDogs,
 } from "@/services/secured/dog-crud/dogCrud";
 import type {
-  CreateDogRequest,
+  CreateDogRequestDTO,
   Dog,
 } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/my/dogs/list/")({
 function MyDogsListPage() {
   const user = useAuthUser();
   const i18n = useI18n();
-  type DogDraft = CreateDogRequest & { creator: string };
+  type DogDraft = CreateDogRequestDTO & { creator: string };
 
   const buildDogDraft = (isOrganizer: boolean): DogDraft => ({
     id:

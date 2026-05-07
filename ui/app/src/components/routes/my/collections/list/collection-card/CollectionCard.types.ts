@@ -1,7 +1,7 @@
-import { CollectionsRequest } from "@/services/secured/collection-crud/collectionCrud.types";
+import { CollectionsResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 
 type CollectionCardProps = {
-  collection: CollectionsRequest;
+  collection: CollectionsResponseDTO;
   onCollect: () => void;
 };
 

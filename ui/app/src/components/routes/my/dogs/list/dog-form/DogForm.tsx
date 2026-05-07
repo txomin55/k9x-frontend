@@ -1,4 +1,4 @@
-import type { CreateDogRequest } from "@/services/secured/dog-crud/dogCrud.types";
+import type { CreateDogRequestDTO } from "@/services/secured/dog-crud/dogCrud.types";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
@@ -10,9 +10,9 @@ import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type DogFormProps = {
-  draft: () => CreateDogRequest;
+  draft: () => CreateDogRequestDTO;
   onDraftChange: (
-    updater: (current: CreateDogRequest) => CreateDogRequest,
+    updater: (current: CreateDogRequestDTO) => CreateDogRequestDTO,
   ) => void;
   onCancel: () => void;
   onSave: () => void;

@@ -14,10 +14,10 @@ import {
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
-  CreateEventRequest,
+  CreateEventRequestDTO,
   EventDetail,
   EventEditorDraft,
-  UpdateEventRequest,
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { toEventEditorDraft } from "@/utils/event";
 import {
@@ -40,7 +40,7 @@ import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configuration
 import "./styles.css";
 import {
   StageEditorModel,
-  UpdateStageRequest,
+  UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -66,7 +66,7 @@ function CompetitionStageDetailPage() {
     updateApiEvent,
   } = useApiEvent();
   let hasCreatedDraftStage = false;
-  const handleCreateEvent = (event: CreateEventRequest) =>
+  const handleCreateEvent = (event: CreateEventRequestDTO) =>
     createApiEvent(event, { competitionId: params().id });
   const handleDeleteStage = (stageId: string) =>
     deleteApiStage(stageId, params().id);
@@ -77,7 +77,7 @@ function CompetitionStageDetailPage() {
   const handleUpdateEvent = (
     stageId: string,
     eventId: string,
-    event: UpdateEventRequest,
+    event: UpdateEventRequestDTO,
   ) => updateApiEvent(stageId, eventId, event, { competitionId: params().id });
 
   createEffect(() => {
@@ -116,19 +116,19 @@ function CompetitionStageDetailPage() {
 
 function CompetitionStageDetailContentContainer(props: {
   competitionId: string;
-  createDefaultEvent: (stageId: string) => CreateEventRequest;
-  onCreateEvent: (event: CreateEventRequest) => void;
+  createDefaultEvent: (stageId: string) => CreateEventRequestDTO;
+  onCreateEvent: (event: CreateEventRequestDTO) => void;
   onDeleteEvent: (eventId: string, stageId: string) => void;
   onDeleteStage: (stageId: string) => void;
   onUpdateEvent: (
     stageId: string,
     eventId: string,
-    event: UpdateEventRequest,
+    event: UpdateEventRequestDTO,
   ) => void;
   onUpdateStage: (
     competitionId: string,
     stageId: string,
-    stage: UpdateStageRequest,
+    stage: UpdateStageRequestDTO,
   ) => void;
   stage: Accessor<StageEditorModel | undefined>;
   stageId: string;
@@ -166,19 +166,19 @@ function CompetitionStageDetailContentContainer(props: {
 }
 
 function CompetitionStageDetailBody(props: {
-  createDefaultEvent: (stageId: string) => CreateEventRequest;
-  onCreateEvent: (event: CreateEventRequest) => void;
+  createDefaultEvent: (stageId: string) => CreateEventRequestDTO;
+  onCreateEvent: (event: CreateEventRequestDTO) => void;
   onDelete: () => void;
   onDeleteEvent: (eventId: string) => void;
   onUpdateEvent: (
     stageId: string,
     eventId: string,
-    event: UpdateEventRequest,
+    event: UpdateEventRequestDTO,
   ) => void;
   onUpdateStage: (
     competitionId: string,
     stageId: string,
-    stage: UpdateStageRequest,
+    stage: UpdateStageRequestDTO,
   ) => void;
   stage: Accessor<StageEditorModel>;
 }) {
@@ -252,7 +252,7 @@ function CompetitionStageDetailBody(props: {
     if (!isEditing()) return;
 
     const stage = props.stage();
-    const nextStage: UpdateStageRequest = {
+    const nextStage: UpdateStageRequestDTO = {
       dateFrom: parseDateInputValue(dateFrom(), stage.dateFrom),
       dateTo: parseDateInputValue(dateTo(), stage.dateTo),
       name: title(),

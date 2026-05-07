@@ -2,12 +2,12 @@ import { fireEvent, render, screen, waitFor } from "@solidjs/testing-library";
 import userEvent from "@testing-library/user-event";
 import type { JSX } from "solid-js";
 import { createSignal } from "solid-js";
-import type { CollectionRequest } from "@/services/secured/collection-crud/collectionCrud.types";
+import type { CollectionResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { Route } from "@/routes/my/collections/$id/route";
 
 const mocks = vi.hoisted(() => ({
   collectionDataAccessor: (() => undefined) as () =>
-    | CollectionRequest
+    | CollectionResponseDTO
     | undefined,
   updateCollectionScore: vi.fn(),
 }));
@@ -62,7 +62,7 @@ vi.mock("@lib/components/atoms/number-input/AtomNumberInput", () => ({
   ),
 }));
 
-const createCollection = (score: number): CollectionRequest => ({
+const createCollection = (score: number): CollectionResponseDTO => ({
   configuration: {
     allowedValues: [1, 2, 3],
     description: "allowed values",
@@ -73,7 +73,7 @@ const createCollection = (score: number): CollectionRequest => ({
         dogId: "dog-1",
         owner: "Owner",
         order: 1,
-      } as CollectionRequest["competitors"][number]["competitor"],
+      } as CollectionResponseDTO["competitors"][number]["competitor"],
       exercises: [
         {
           exercise: {
@@ -85,8 +85,8 @@ const createCollection = (score: number): CollectionRequest => ({
             {
               judge: {
                 id: "judge-1",
-                name: "Judge 1",
-              } as CollectionRequest["competitors"][number]["exercises"][number]["collectionScores"][number]["judge"],
+                name: "JudgeResponseDTO 1",
+              } as CollectionResponseDTO["competitors"][number]["exercises"][number]["collectionScores"][number]["judge"],
               score,
             },
           ],

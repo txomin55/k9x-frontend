@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
-import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
 const [competitionDrafts, setCompetitionDrafts] = createSignal<
-  Record<string, CompetitionDetail>
+  Record<string, CompetitionResponseDTO>
 >({});
 const [removedCompetitionIds, setRemovedCompetitionIds] = createSignal<
   string[]
@@ -12,8 +12,8 @@ const removeId = (ids: string[], id: string) =>
   ids.filter((entry) => entry !== id);
 
 export const mergeCompetitionsWithDrafts = (
-  baseCompetitions?: CompetitionDetail[],
-): CompetitionDetail[] => {
+  baseCompetitions?: CompetitionResponseDTO[],
+): CompetitionResponseDTO[] => {
   const drafts = competitionDrafts();
   const removedIds = new Set(removedCompetitionIds());
   const competitions = baseCompetitions ?? [];
@@ -29,7 +29,7 @@ export const mergeCompetitionsWithDrafts = (
   return [...appendedDrafts, ...nextCompetitions];
 };
 
-export const upsertCompetitionDraft = (competition: CompetitionDetail) => {
+export const upsertCompetitionDraft = (competition: CompetitionResponseDTO) => {
   setCompetitionDrafts((current) => ({
     ...current,
     [competition.id]: competition,
@@ -64,8 +64,8 @@ export const clearCompetitionDraft = (competitionId: string) => {
 };
 
 export const replaceCompetitionDrafts = (
-  visibleCompetitions: CompetitionDetail[] | null,
-  baseCompetitions?: CompetitionDetail[],
+  visibleCompetitions: CompetitionResponseDTO[] | null,
+  baseCompetitions?: CompetitionResponseDTO[],
 ) => {
   const baseById = new Map(
     (baseCompetitions ?? []).map((competition) => [
@@ -76,7 +76,7 @@ export const replaceCompetitionDrafts = (
   const visibleIds = new Set(
     (visibleCompetitions ?? []).map((competition) => competition.id),
   );
-  const nextDrafts: Record<string, CompetitionDetail> = {};
+  const nextDrafts: Record<string, CompetitionResponseDTO> = {};
   const nextRemovedIds: string[] = [];
 
   for (const competition of visibleCompetitions ?? []) {

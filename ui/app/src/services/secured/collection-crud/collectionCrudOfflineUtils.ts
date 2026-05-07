@@ -9,9 +9,9 @@ import {
   getCollectionSnapshotId
 } from "@/services/secured/collection-crud/collectionCrudConstants";
 import {
-  CollectionRequest,
+  CollectionResponseDTO,
   CollectionRollbackPayload,
-  CollectionsRequest
+  CollectionsResponseDTO
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
@@ -26,26 +26,26 @@ import {
   upsertCollectionByIdDraft
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 
-export const saveCollectionsSnapshot = (collections: CollectionsRequest[]) =>
+export const saveCollectionsSnapshot = (collections: CollectionsResponseDTO[]) =>
   saveQuerySnapshot(COLLECTIONS_SNAPSHOT_ID, collections);
 
 export const saveCollectionSnapshot = (
   id: string,
-  collection: CollectionRequest,
+  collection: CollectionResponseDTO,
 ) => saveQuerySnapshot(getCollectionSnapshotId(id), collection);
 
 const getBaseCollectionByIdFromCache = (id: string) =>
-  queryClient.getQueryData<CollectionRequest>(getCollectionByIdQueryKey(id));
+  queryClient.getQueryData<CollectionResponseDTO>(getCollectionByIdQueryKey(id));
 
 export const getVisibleCollectionById = (id: string) =>
   mergeCollectionByIdWithDraft(id, getBaseCollectionByIdFromCache(id));
 
 export const readCollectionSnapshot = (id: string) =>
-  getPersistedQuerySnapshot<CollectionRequest>(getCollectionSnapshotId(id));
+  getPersistedQuerySnapshot<CollectionResponseDTO>(getCollectionSnapshotId(id));
 
 export const createCollectionRollbackPayload = async (
   collectionId: string,
-  previousCollectionFromCache?: CollectionRequest | null,
+  previousCollectionFromCache?: CollectionResponseDTO | null,
 ): Promise<CollectionRollbackPayload> => ({
   collectionId,
   previousCollection:
@@ -93,7 +93,7 @@ export const commitCollectionMutationSuccess = async ({
     return;
   }
 
-  queryClient.setQueryData<CollectionRequest>(
+  queryClient.setQueryData<CollectionResponseDTO>(
     getCollectionByIdQueryKey(eventId),
     visibleCollection,
   );
@@ -115,7 +115,7 @@ const rollbackCollectionPayload = async (
   );
 
   if (rollbackPayload.previousCollection) {
-    queryClient.setQueryData<CollectionRequest>(
+    queryClient.setQueryData<CollectionResponseDTO>(
       getCollectionByIdQueryKey(rollbackPayload.collectionId),
       rollbackPayload.previousCollection,
     );
@@ -131,7 +131,7 @@ const rollbackCollectionPayload = async (
     return;
   }
 
-  queryClient.setQueryData<CollectionRequest | undefined>(
+  queryClient.setQueryData<CollectionResponseDTO | undefined>(
     getCollectionByIdQueryKey(rollbackPayload.collectionId),
     undefined,
   );
@@ -180,9 +180,9 @@ registerPendingTaskHandler("collection", collectionPendingTaskHandler);
 
 export const applyCollectionUpsert = (
   collectionId: string,
-  collection: CollectionRequest,
+  collection: CollectionResponseDTO,
 ) => {
-  queryClient.setQueryData<CollectionRequest>(
+  queryClient.setQueryData<CollectionResponseDTO>(
     getCollectionByIdQueryKey(collectionId),
     collection,
   );

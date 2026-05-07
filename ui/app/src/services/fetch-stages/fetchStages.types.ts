@@ -6,7 +6,7 @@ export interface StageEventSummary {
   status: string;
 }
 
-export interface StageSummary {
+export interface StageSummaryResponseDTO {
   country?: string;
   dateFrom?: number;
   dateTo?: number;
@@ -25,7 +25,7 @@ export interface CompetitionLocationDetail {
   longitude?: number;
 }
 
-export interface StageDetail {
+export interface StageDetailResponseDTO {
   dateFrom?: number;
   dateTo?: number;
   events?: StageEventDetail[];
@@ -85,12 +85,12 @@ export interface StageEventClassificationItem {
 }
 
 export type StageEnrollRollbackPayload = {
-  previousStage: StageDetail | null;
-  previousStages: StageSummary[] | null;
+  previousStage: StageDetailResponseDTO | null;
+  previousStages: StageSummaryResponseDTO[] | null;
   stageId: string;
 };
 
-export type EnrollStageEventRequest = {
+export type EnrollStageEventRequestDTO = {
   country: string;
   dogId: string;
   eventId: string;

@@ -11,8 +11,8 @@ import {
   useJudges,
 } from "@/services/secured/judge-crud/judgeCrud";
 import type {
-  CreateJudgeRequest,
-  Judge,
+  CreateJudgeRequestDTO,
+  JudgeResponseDTO,
 } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/my/judges/list/")({
 
 function MyJudgesListPage() {
   const i18n = useI18n();
-  const buildJudgeDraft = (): CreateJudgeRequest => ({
+  const buildJudgeDraft = (): CreateJudgeRequestDTO => ({
     id: globalThis.crypto.randomUUID(),
     name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
   });
@@ -35,7 +35,7 @@ function MyJudgesListPage() {
   const [isDialogOpen, setDialogOpen] = createSignal(false);
   const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(null);
   const [draftJudge, setDraftJudge] =
-    createSignal<CreateJudgeRequest>(buildJudgeDraft());
+    createSignal<CreateJudgeRequestDTO>(buildJudgeDraft());
 
   const openCreateDialog = () => {
     setEditingJudgeId(null);
@@ -47,7 +47,7 @@ function MyJudgesListPage() {
     setEditingJudgeId(null);
   };
 
-  const openEditDialog = (judge: Judge) => {
+  const openEditDialog = (judge: JudgeResponseDTO) => {
     setEditingJudgeId(judge.id);
     setDraftJudge(() => ({
       id: judge.id,

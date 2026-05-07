@@ -2,7 +2,7 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-  UserProfile,
+  UserProfileResponseDTO,
 } from "@/services/secured/fetch-user-data/fetchUserData";
 import type { AuthState } from "@/stores/auth/auth.types";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
@@ -20,7 +20,7 @@ const setAuthState = (updater: (state: AuthState) => AuthState) => {
   setState(updater);
 };
 
-const setUser = (user: UserProfile | null) => {
+const setUser = (user: UserProfileResponseDTO | null) => {
   setAuthState(() => ({
     user,
     loading: false,

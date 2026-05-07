@@ -22,7 +22,7 @@ import type {
   EventEditorDraft,
   EventExerciseDetail,
   EventJudgeDetail,
-  UpdateEventRequest,
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
@@ -95,7 +95,7 @@ function CompetitionEventDetailPage() {
       competitionId: params().id,
     });
 
-  const handleUpdateEvent = (eventId: string, event: UpdateEventRequest) =>
+  const handleUpdateEvent = (eventId: string, event: UpdateEventRequestDTO) =>
     updateApiEvent(params().stageId, eventId, event, {
       competitionId: params().id,
     });
@@ -126,7 +126,7 @@ function CompetitionEventDetailContentContainer(props: {
   event: Accessor<EventDetail | undefined>;
   eventId: string;
   onDeleteEvent: (eventId: string) => void;
-  onUpdate: (eventId: string, event: UpdateEventRequest) => void;
+  onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
   stageId: string;
 }) {
   const i18n = useI18n();
@@ -182,7 +182,7 @@ function CompetitionEventDetailContentContainer(props: {
 function CompetitionEventDetailBody(props: {
   event: Accessor<EventDetail>;
   onDelete: () => void;
-  onUpdate: (eventId: string, event: UpdateEventRequest) => void;
+  onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
 }) {
   const i18n = useI18n();
   const [isEditing, setIsEditing] = createSignal(false);
@@ -365,7 +365,7 @@ function CompetitionEventDetailBody(props: {
   const buildUpdatePayload = (
     event: EventEditorDraft,
     eventName: string,
-  ): UpdateEventRequest => ({
+  ): UpdateEventRequestDTO => ({
     competitors: event.competitors.map((competitor) =>
       mapCompetitorForUpdate(competitor),
     ),

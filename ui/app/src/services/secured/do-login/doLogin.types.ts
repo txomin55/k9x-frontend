@@ -1,3 +1,3 @@
-export type LoginRequest = {
+export type LoginRequestDTO = {
   code: string;
 };

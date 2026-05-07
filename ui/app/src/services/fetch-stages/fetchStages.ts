@@ -4,9 +4,9 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import {
-  StageDetail,
+  StageDetailResponseDTO,
   StageEventClassificationResponseDTO,
-  StageSummary,
+  StageSummaryResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 
@@ -26,13 +26,13 @@ const getStageSnapshotId = (id: string) => `${STAGE_SNAPSHOT_PREFIX}${id}`;
 
 const fetchStages = () =>
   fetchWithOfflineSnapshot(STAGES_SNAPSHOT_ID, () =>
-    rawRequest<StageSummary[]>({
+    rawRequest<StageSummaryResponseDTO[]>({
       path: "/stages",
     }),
   );
 
 const refreshStageByIdSnapshot = async (id: string) => {
-  const stage = await rawRequest<StageDetail>({
+  const stage = await rawRequest<StageDetailResponseDTO>({
     path: `/stages/${id}`,
   });
 
@@ -94,9 +94,9 @@ export const useEventClassification = (
   });
 
 export const getCachedStageById = (id: string) =>
-  queryClient.getQueryData<StageDetail>(getStageByIdQueryKey(id)) ??
+  queryClient.getQueryData<StageDetailResponseDTO>(getStageByIdQueryKey(id)) ??
   queryClient
-    .getQueryData<StageSummary[]>(getStagesQueryKey())
+    .getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey())
     ?.find((stage) => stage.id === id);
 
 export const getCachedEventById = (stageId: string, eventId: string) =>

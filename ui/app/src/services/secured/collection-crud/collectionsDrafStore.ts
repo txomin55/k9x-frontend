@@ -1,21 +1,21 @@
 import {
-  CollectionRequest,
-  CollectionsRequest,
+  CollectionResponseDTO,
+  CollectionsResponseDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createSignal } from "solid-js";
 
 const [collectionDrafts, setCollectionDrafts] = createSignal<
-  Record<string, CollectionsRequest>
+  Record<string, CollectionsResponseDTO>
 >({});
 const [removedCollectionIds, setRemovedCollectionsIds] = createSignal<string[]>(
   [],
 );
 const [collectionByIdDrafts, setCollectionByIdDrafts] = createSignal<
-  Record<string, CollectionRequest>
+  Record<string, CollectionResponseDTO>
 >({});
 
 export const mergeCollectionsWithDrafts = (
-  baseCollections?: CollectionsRequest[],
+  baseCollections?: CollectionsResponseDTO[],
 ) => {
   const drafts = collectionDrafts();
   const removedIds = new Set(removedCollectionIds());
@@ -34,12 +34,12 @@ export const mergeCollectionsWithDrafts = (
 
 export const mergeCollectionByIdWithDraft = (
   collectionId: string,
-  baseCollection?: CollectionRequest,
+  baseCollection?: CollectionResponseDTO,
 ) => collectionByIdDrafts()[collectionId] ?? baseCollection;
 
 export const upsertCollectionByIdDraft = (
   collectionId: string,
-  collection: CollectionRequest,
+  collection: CollectionResponseDTO,
 ) => {
   setCollectionByIdDrafts((current) => ({
     ...current,
@@ -49,8 +49,8 @@ export const upsertCollectionByIdDraft = (
 
 export const replaceCollectionByIdDraft = (
   collectionId: string,
-  visibleCollection: CollectionRequest | null,
-  baseCollection?: CollectionRequest,
+  visibleCollection: CollectionResponseDTO | null,
+  baseCollection?: CollectionResponseDTO,
 ) => {
   setCollectionByIdDrafts((current) => {
     const nextDrafts = { ...current };

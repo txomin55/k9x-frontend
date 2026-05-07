@@ -1,4 +1,4 @@
-import type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
@@ -37,9 +37,9 @@ const toCompetitionDetailStage = (
 });
 
 const buildNextCompetitionDetail = (
-  competition: CompetitionDetail,
+  competition: CompetitionResponseDTO,
   stage: StageEditorModel,
-): CompetitionDetail => {
+): CompetitionResponseDTO => {
   const nextStage = toCompetitionDetailStage(stage);
   const previousStages = competition.stages ?? [];
   const existingIndex = previousStages.findIndex(
@@ -60,9 +60,9 @@ const buildNextCompetitionDetail = (
 };
 
 const buildCompetitionDetailWithoutStage = (
-  competition: CompetitionDetail,
+  competition: CompetitionResponseDTO,
   stageId: string,
-): CompetitionDetail => ({
+): CompetitionResponseDTO => ({
   ...competition,
   stages: (competition.stages ?? []).filter(
     ({ id }) => String(id) !== String(stageId),
@@ -70,9 +70,9 @@ const buildCompetitionDetailWithoutStage = (
 });
 
 const buildNextCompetitionsList = (
-  competitions: CompetitionDetail[],
+  competitions: CompetitionResponseDTO[],
   apiStage: StageEditorModel,
-): CompetitionDetail[] =>
+): CompetitionResponseDTO[] =>
   competitions.map((competition) => {
     if (String(competition.id) !== String(apiStage.competitionId)) {
       return competition;
@@ -81,10 +81,10 @@ const buildNextCompetitionsList = (
   });
 
 const buildCompetitionsListWithoutStage = (
-  competitions: CompetitionDetail[],
+  competitions: CompetitionResponseDTO[],
   competitionId: string,
   stageId: string,
-): CompetitionDetail[] =>
+): CompetitionResponseDTO[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
       ? buildCompetitionDetailWithoutStage(competition, stageId)
@@ -92,7 +92,7 @@ const buildCompetitionsListWithoutStage = (
   );
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()) ??
+  queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()) ??
   [];
 
 const persistApiStageCompetitionSnapshot = async (
@@ -155,7 +155,7 @@ export const createApiStageRollbackPayload = async ({
 }: {
   competitionId: string;
   entityId: string;
-  previousCompetitionsFromCache?: CompetitionDetail[];
+  previousCompetitionsFromCache?: CompetitionResponseDTO[];
   previousStage: StageEditorModel | null;
 }): Promise<ApiStageRollbackPayload> => ({
   competitionId,
@@ -236,7 +236,7 @@ export const commitApiStageMutationSuccess = async ({
   const visibleCompetitions = getVisibleCompetitions();
 
   if (method === "DELETE") {
-    queryClient.setQueryData<CompetitionDetail[] | undefined>(
+    queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(
       getCompetitionsQueryKey(),
       (previousCompetitions) =>
         buildCompetitionsListWithoutStage(
@@ -246,7 +246,7 @@ export const commitApiStageMutationSuccess = async ({
         ),
     );
   } else if (method === "POST" || method === "PUT") {
-    queryClient.setQueryData<CompetitionDetail[]>(
+    queryClient.setQueryData<CompetitionResponseDTO[]>(
       getCompetitionsQueryKey(),
       visibleCompetitions,
     );

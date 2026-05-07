@@ -13,15 +13,15 @@ import {
   getVisibleCompetitions,
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type {
-  CompetitionDetail,
-  CreateCompetitionRequest,
-  UpdateCompetitionRequest,
+  CompetitionResponseDTO,
+  CreateCompetitionRequestDTO,
+  UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
 
-export type { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
 
@@ -31,7 +31,7 @@ export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionsSnapshot = async () => {
-  const competitions = await rawRequest<CompetitionDetail[]>({
+  const competitions = await rawRequest<CompetitionResponseDTO[]>({
     path: "/secured/competitions",
   });
 
@@ -90,9 +90,9 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
 };
 
 const mergeCompetitionWithPayload = (
-  payload: CreateCompetitionRequest | UpdateCompetitionRequest,
-  previousCompetition?: CompetitionDetail,
-): CompetitionDetail => {
+  payload: CreateCompetitionRequestDTO | UpdateCompetitionRequestDTO,
+  previousCompetition?: CompetitionResponseDTO,
+): CompetitionResponseDTO => {
   const payloadId = "id" in payload ? payload.id : undefined;
   const country =
     "country" in payload
@@ -117,14 +117,14 @@ const mergeCompetitionWithPayload = (
   };
 };
 
-const createDefaultCompetition = (): CreateCompetitionRequest => ({
+const createDefaultCompetition = (): CreateCompetitionRequestDTO => ({
   id: globalThis.crypto.randomUUID(),
   name: "--Default competition",
 });
 
 export const getCachedCompetitions = () =>
   mergeCompetitionsWithDrafts(
-    queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()),
+    queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()),
   );
 
 export const useCompetition = () => {
@@ -148,7 +148,7 @@ export const useCompetition = () => {
     );
   };
 
-  const createCompetition = (payload: CreateCompetitionRequest) => {
+  const createCompetition = (payload: CreateCompetitionRequestDTO) => {
     const previousCompetitionsFromCache = getCachedCompetitions();
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
@@ -175,7 +175,7 @@ export const useCompetition = () => {
     })();
   };
 
-  const updateCompetition = (id: string, payload: UpdateCompetitionRequest) => {
+  const updateCompetition = (id: string, payload: UpdateCompetitionRequestDTO) => {
     const previousCompetitionsFromCache = getVisibleCompetitions();
     const previousCompetition =
       previousCompetitionsFromCache.find(

@@ -6,7 +6,7 @@ export interface CompetitionNotificationDetail {
   text: string;
 }
 
-export interface CompetitionDetail {
+export interface CompetitionResponseDTO {
   country: string;
   description?: string;
   id: string;
@@ -17,12 +17,12 @@ export interface CompetitionDetail {
   status: string;
 }
 
-export interface CreateCompetitionRequest {
+export interface CreateCompetitionRequestDTO {
   id: string;
   name: string;
 }
 
-export interface UpdateCompetitionRequest {
+export interface UpdateCompetitionRequestDTO {
   country: string;
   description?: string;
   address?: string;
@@ -31,6 +31,6 @@ export interface UpdateCompetitionRequest {
 
 export interface CompetitionRollbackPayload {
   entityId: string;
-  previousCompetition: CompetitionDetail | null;
-  previousCompetitions: CompetitionDetail[] | null;
+  previousCompetition: CompetitionResponseDTO | null;
+  previousCompetitions: CompetitionResponseDTO[] | null;
 }

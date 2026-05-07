@@ -1,7 +1,7 @@
-import type { Judge } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 type JudgeCardProps = {
-  judge: Judge;
+  judge: JudgeResponseDTO;
   onEdit: () => void;
   onDelete: () => void;
 };

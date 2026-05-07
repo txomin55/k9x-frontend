@@ -1,6 +1,6 @@
 import { createEffect, createMemo, onCleanup, onMount } from "solid-js";
 import L from "leaflet";
-import { StageSummary } from "@/services/fetch-stages/fetchStages.types";
+import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/stages/stages-map/StageMapMarker";
 import { render } from "solid-js/web";
 import { isDark } from "@/stores/theme/theme";
@@ -11,7 +11,7 @@ import "leaflet/dist/leaflet.css";
 import "./styles.css";
 
 interface StagesMapProps {
-  stages: StageSummary[] | undefined;
+  stages: StageSummaryResponseDTO[] | undefined;
 }
 
 export default function StagesMap(_props: StagesMapProps) {
@@ -36,7 +36,7 @@ export default function StagesMap(_props: StagesMapProps) {
     map.invalidateSize(true);
   };
 
-  const getIconStyle = (stage: StageSummary) => {
+  const getIconStyle = (stage: StageSummaryResponseDTO) => {
     const container = document.createElement("div");
     const dispose = render(() => <StageMapMarker stage={stage} />, container);
 
@@ -277,7 +277,7 @@ export default function StagesMap(_props: StagesMapProps) {
           longitude: 37.6173,
         },
       },
-    ] as StageSummary[];
+    ] as StageSummaryResponseDTO[];
 
     return points.map((stage) => {
       const marker = L.marker(

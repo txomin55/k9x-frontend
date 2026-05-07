@@ -15,8 +15,8 @@ import CompetitionInfo from "@/components/routes/my/competitions/$id/competition
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
 import {
-  type CompetitionDetail,
-  type UpdateCompetitionRequest,
+  type CompetitionResponseDTO,
+  type UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   toApiStage,
@@ -31,9 +31,9 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
-  CreateStageRequest,
+  CreateStageRequestDTO,
   StageEditorModel,
-  UpdateStageRequest,
+  UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
@@ -101,11 +101,11 @@ function CompetitionDetailContent(props: { id: string }) {
 }
 
 function CompetitionDetailBody(props: {
-  competition: Accessor<CompetitionDetail | undefined>;
+  competition: Accessor<CompetitionResponseDTO | undefined>;
   onDelete: () => void;
   onUpdate: (
     competitionId: string,
-    competition: UpdateCompetitionRequest,
+    competition: UpdateCompetitionRequestDTO,
   ) => void;
 }) {
   const i18n = useI18n();
@@ -164,7 +164,7 @@ function CompetitionDetailBody(props: {
   });
 
   const openStageEditor = (
-    stage: NonNullable<CompetitionDetail["stages"]>[number],
+    stage: NonNullable<CompetitionResponseDTO["stages"]>[number],
   ) => {
     const competition = props.competition();
 
@@ -212,13 +212,13 @@ function CompetitionDetailBody(props: {
     if (!draft) return;
 
     if (isCreatingStage()) {
-      createApiStage(draft as CreateStageRequest);
+      createApiStage(draft as CreateStageRequestDTO);
     } else {
       updateApiStage(draft.competitionId, draft.id, {
         dateFrom: draft.dateFrom,
         dateTo: draft.dateTo,
         name: draft.name,
-      } satisfies UpdateStageRequest);
+      } satisfies UpdateStageRequestDTO);
     }
 
     closeStageEditor();
@@ -259,7 +259,7 @@ function CompetitionDetailBody(props: {
 
     if (!competition) return;
 
-    const nextCompetition: UpdateCompetitionRequest = {
+    const nextCompetition: UpdateCompetitionRequestDTO = {
       country: country(),
       description: description(),
       address: toUndefinedIfBlank(address()),

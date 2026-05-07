@@ -18,7 +18,7 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import type {
-  CompetitionDetail,
+  CompetitionResponseDTO,
   CompetitionRollbackPayload,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
@@ -30,27 +30,27 @@ import {
 } from "@/services/secured/competition-crud/competitionDraftStore";
 
 export const buildCompetitionsWithoutEntity = (
-  previousCompetitions: CompetitionDetail[],
+  previousCompetitions: CompetitionResponseDTO[],
   id: string,
 ) => previousCompetitions.filter((competition) => competition.id !== id);
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<CompetitionDetail[]>(getCompetitionsQueryKey()) ??
+  queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()) ??
   [];
 
 export const getVisibleCompetitions = () =>
   mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
 
 const syncCompetitionRemovalToCache = (id: string) => {
-  queryClient.setQueryData<CompetitionDetail[] | undefined>(
+  queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(
     getCompetitionsQueryKey(),
     (previousCompetitions) =>
       buildCompetitionsWithoutEntity(previousCompetitions ?? [], id),
   );
 };
 
-const syncCompetitionsToCache = (competitions: CompetitionDetail[]) => {
-  queryClient.setQueryData<CompetitionDetail[]>(
+const syncCompetitionsToCache = (competitions: CompetitionResponseDTO[]) => {
+  queryClient.setQueryData<CompetitionResponseDTO[]>(
     getCompetitionsQueryKey(),
     competitions,
   );
@@ -82,18 +82,18 @@ export const commitCompetitionMutationSuccess = async ({
 
 export const readCompetitionsSnapshot = () =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
-    getPersistedQuerySnapshot<CompetitionDetail[]>(COMPETITIONS_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<CompetitionResponseDTO[]>(COMPETITIONS_SNAPSHOT_ID),
   );
 
-export const saveCompetitionsSnapshot = (competitions: CompetitionDetail[]) =>
+export const saveCompetitionsSnapshot = (competitions: CompetitionResponseDTO[]) =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
     saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions),
   );
 
 export const createCompetitionRollbackPayload = async (
   entityId: string,
-  previousCompetition: CompetitionDetail | null,
-  previousCompetitionsFromCache?: CompetitionDetail[],
+  previousCompetition: CompetitionResponseDTO | null,
+  previousCompetitionsFromCache?: CompetitionResponseDTO[],
 ): Promise<CompetitionRollbackPayload> => ({
   entityId,
   previousCompetition,
@@ -173,7 +173,7 @@ const competitionPendingTaskHandler: PendingTaskHandler = {
 
 registerPendingTaskHandler("competition", competitionPendingTaskHandler);
 
-export const applyCompetitionUpsert = (competition: CompetitionDetail) => {
+export const applyCompetitionUpsert = (competition: CompetitionResponseDTO) => {
   upsertCompetitionDraft(competition);
   const visibleCompetitions = getVisibleCompetitions();
 

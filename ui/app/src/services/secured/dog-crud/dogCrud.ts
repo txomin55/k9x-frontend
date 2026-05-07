@@ -12,7 +12,7 @@ import {
   getVisibleDogs,
   saveDogsSnapshot
 } from "./dogCrudOfflineUtils";
-import type { CreateDogRequest, Dog, UpdateDogRequest } from "./dogCrud.types";
+import type { CreateDogRequestDTO, Dog, UpdateDogRequestDTO } from "./dogCrud.types";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 
@@ -73,7 +73,7 @@ export const useDogs = (options?: TanstackCreateQuery) => {
 };
 
 const mergeDogWithPayload = (
-  payload: CreateDogRequest,
+  payload: CreateDogRequestDTO,
   existingDog?: Dog,
 ): Dog => ({
   id: payload.id ?? existingDog?.id ?? globalThis.crypto.randomUUID(),
@@ -88,7 +88,7 @@ const mergeDogWithPayload = (
   creator: existingDog?.creator ?? "",
 });
 
-export const createDog = (payload: CreateDogRequest) => {
+export const createDog = (payload: CreateDogRequestDTO) => {
   const previousDogs = getVisibleDogs();
   const draftDog = mergeDogWithPayload(payload);
 
@@ -113,13 +113,13 @@ export const createDog = (payload: CreateDogRequest) => {
 
 const updateDogProjection = (
   existingDog: Dog,
-  payload: UpdateDogRequest,
+  payload: UpdateDogRequestDTO,
 ): Dog => ({
   ...existingDog,
   ...payload,
 });
 
-export const updateDog = (id: string, payload: UpdateDogRequest) => {
+export const updateDog = (id: string, payload: UpdateDogRequestDTO) => {
   const previousDogs = getVisibleDogs();
   const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
 

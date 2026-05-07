@@ -3,7 +3,7 @@ import {
   startGoogleInteractiveLogin,
 } from "@/utils/google-auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
-import type { LoginRequest } from "@/services/secured/do-login/doLogin.types";
+import type { LoginRequestDTO } from "@/services/secured/do-login/doLogin.types";
 import type {
   RequestOptions,
   SerializableRequest,
@@ -153,7 +153,7 @@ const rawRequest = async <TResponse>({
   return (await response.text()) as TResponse;
 };
 
-const loginWithToken = (payload: LoginRequest) =>
+const loginWithToken = (payload: LoginRequestDTO) =>
   rawRequest<string>({
     body: payload,
     method: "POST",

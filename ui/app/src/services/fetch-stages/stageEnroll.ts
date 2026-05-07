@@ -1,8 +1,8 @@
 import type {
-  EnrollStageEventRequest,
-  StageDetail,
+  EnrollStageEventRequestDTO,
+  StageDetailResponseDTO,
   StageEnrollRollbackPayload,
-  StageSummary
+  StageSummaryResponseDTO
 } from "@/services/fetch-stages/fetchStages.types";
 import { getStageByIdQueryKey, getStagesQueryKey } from "@/services/fetch-stages/fetchStages";
 import { rawRequest } from "@/utils/http/client";
@@ -28,9 +28,9 @@ const STAGES_SNAPSHOT_ID = "stages";
 const getStageSnapshotId = (stageId: string) => `stage:${stageId}`;
 
 const buildNextStage = (
-  stage: StageDetail,
-  payload: EnrollStageEventRequest,
-): StageDetail => ({
+  stage: StageDetailResponseDTO,
+  payload: EnrollStageEventRequestDTO,
+): StageDetailResponseDTO => ({
   ...stage,
   events: (stage.events ?? []).map((event) => {
     if (String(event.id) !== String(payload.eventId)) {
@@ -63,10 +63,10 @@ const buildNextStage = (
 
 const buildNextStagesSummary = (
   stageId: string,
-  stages: StageSummary[],
-  payload: EnrollStageEventRequest,
-  nextStage: StageDetail,
-): StageSummary[] =>
+  stages: StageSummaryResponseDTO[],
+  payload: EnrollStageEventRequestDTO,
+  nextStage: StageDetailResponseDTO,
+): StageSummaryResponseDTO[] =>
   stages.map((stage) => {
     if (String(stage.id) !== String(stageId)) {
       return stage;
@@ -93,9 +93,9 @@ const buildNextStagesSummary = (
 
 const applyOptimisticEnroll = async (
   stageId: string,
-  payload: EnrollStageEventRequest,
+  payload: EnrollStageEventRequestDTO,
 ) => {
-  const previousStage = queryClient.getQueryData<StageDetail>(
+  const previousStage = queryClient.getQueryData<StageDetailResponseDTO>(
     getStageByIdQueryKey(stageId),
   );
 
@@ -109,7 +109,7 @@ const applyOptimisticEnroll = async (
   await saveQuerySnapshot(getStageSnapshotId(stageId), nextStage);
 
   const previousStages =
-    queryClient.getQueryData<StageSummary[]>(getStagesQueryKey());
+    queryClient.getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey());
 
   if (previousStages) {
     const nextStages = buildNextStagesSummary(
@@ -180,21 +180,21 @@ const createRollbackPayload = async (
   stageId: string,
 ): Promise<StageEnrollRollbackPayload> => ({
   previousStage:
-    queryClient.getQueryData<StageDetail>(getStageByIdQueryKey(stageId)) ??
-    (await getPersistedQuerySnapshot<StageDetail>(
+    queryClient.getQueryData<StageDetailResponseDTO>(getStageByIdQueryKey(stageId)) ??
+    (await getPersistedQuerySnapshot<StageDetailResponseDTO>(
       getStageSnapshotId(stageId),
     )) ??
     null,
   previousStages:
-    queryClient.getQueryData<StageSummary[]>(getStagesQueryKey()) ??
-    (await getPersistedQuerySnapshot<StageSummary[]>(STAGES_SNAPSHOT_ID)) ??
+    queryClient.getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey()) ??
+    (await getPersistedQuerySnapshot<StageSummaryResponseDTO[]>(STAGES_SNAPSHOT_ID)) ??
     null,
   stageId,
 });
 
 export const enrollStageEvent = async (
   stageId: string,
-  payload: EnrollStageEventRequest,
+  payload: EnrollStageEventRequestDTO,
 ) => {
   const rollbackPayload = await createRollbackPayload(stageId);
 

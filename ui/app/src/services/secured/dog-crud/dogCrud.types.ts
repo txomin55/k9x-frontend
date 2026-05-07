@@ -11,7 +11,7 @@ export interface Dog {
   creator: string;
 }
 
-export interface CreateDogRequest {
+export interface CreateDogRequestDTO {
   id: string;
   name: string;
   image: string;
@@ -23,7 +23,7 @@ export interface CreateDogRequest {
   owned: boolean;
 }
 
-export interface UpdateDogRequest {
+export interface UpdateDogRequestDTO {
   name: string;
   image: string;
   breed: string;

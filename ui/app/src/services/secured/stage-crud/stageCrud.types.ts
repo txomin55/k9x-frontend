@@ -1,4 +1,4 @@
-import { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { EventDetail } from "@/services/secured/event-crud/eventCrud.types";
 
 export interface CompetitionStageDetail {
@@ -9,7 +9,7 @@ export interface CompetitionStageDetail {
   name: string;
 }
 
-export interface CreateStageRequest {
+export interface CreateStageRequestDTO {
   competitionId: string;
   dateFrom?: number;
   dateTo?: number;
@@ -17,7 +17,7 @@ export interface CreateStageRequest {
   name: string;
 }
 
-export interface UpdateStageRequest {
+export interface UpdateStageRequestDTO {
   dateFrom: number;
   dateTo: number;
   name: string;
@@ -35,7 +35,7 @@ export interface StageEditorModel {
 export interface ApiStageRollbackPayload {
   competitionId: string;
   entityId: string;
-  previousCompetition: CompetitionDetail | null;
-  previousCompetitions: CompetitionDetail[] | null;
+  previousCompetition: CompetitionResponseDTO | null;
+  previousCompetitions: CompetitionResponseDTO[] | null;
   previousStage: StageEditorModel | null;
 }

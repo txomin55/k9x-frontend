@@ -19,9 +19,9 @@ import {
   saveCollectionsSnapshot
 } from "@/services//secured/collection-crud/collectionCrudOfflineUtils";
 import {
-  CollectionRequest,
-  CollectionsRequest,
-  UpdateCollectionScoreRequest
+  CollectionResponseDTO,
+  CollectionsResponseDTO,
+  UpdateCollectionScoreRequestDTO
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import {
@@ -30,7 +30,7 @@ import {
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
-  const collections = await rawRequest<CollectionsRequest[]>({
+  const collections = await rawRequest<CollectionsResponseDTO[]>({
     path: "/secured/collections",
   });
 
@@ -44,7 +44,7 @@ const fetchCollections = () =>
   fetchWithOfflineSnapshot(COLLECTIONS_SNAPSHOT_ID, refreshCollectionsSnapshot);
 
 const refreshCollectionSnapshot = async (id: string) => {
-  const collection = await rawRequest<CollectionRequest>({
+  const collection = await rawRequest<CollectionResponseDTO>({
     path: `/secured/events/${id}/collections`,
   });
 
@@ -131,7 +131,7 @@ export const prefetchCollectionById = (
 
 export const getCachedCollections = () =>
   mergeCollectionsWithDrafts(
-    queryClient.getQueryData<CollectionsRequest[]>(getCollectionsQueryKey()),
+    queryClient.getQueryData<CollectionsResponseDTO[]>(getCollectionsQueryKey()),
   );
 
 export const useCollectionById = (
@@ -155,12 +155,12 @@ export const useCollectionById = (
 };
 
 export const getCachedCollectionById = (id: string) =>
-  queryClient.getQueryData<CollectionRequest>(getCollectionByIdQueryKey(id));
+  queryClient.getQueryData<CollectionResponseDTO>(getCollectionByIdQueryKey(id));
 
 const updateCollectionScoreProjection = (
-  previousCollection: CollectionRequest,
-  payload: UpdateCollectionScoreRequest,
-): CollectionRequest => ({
+  previousCollection: CollectionResponseDTO,
+  payload: UpdateCollectionScoreRequestDTO,
+): CollectionResponseDTO => ({
   ...previousCollection,
   competitors: previousCollection.competitors.map((competitorScores) =>
     competitorScores.competitor.dogId === payload.dogId
@@ -189,7 +189,7 @@ const updateCollectionScoreProjection = (
 
 export const updateCollectionScore = (
   eventId: string,
-  payload: UpdateCollectionScoreRequest,
+  payload: UpdateCollectionScoreRequestDTO,
 ) => {
   const previousCollection = getVisibleCollectionById(eventId);
 

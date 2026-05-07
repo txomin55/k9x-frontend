@@ -7,7 +7,7 @@ import {
   createApiEventRollbackPayload
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import {
-  CompetitionDetail,
+  CompetitionResponseDTO,
   getCachedCompetitions,
   useCompetition
 } from "@/services/secured/competition-crud/competitionCrud";
@@ -17,7 +17,7 @@ import {
   getConfigurationsQueryKey
 } from "@/services/secured/configurations/configurations";
 import type {
-  CreateEventRequest,
+  CreateEventRequestDTO,
   Discipline,
   EventCompetitor,
   EventCompetitorDetail,
@@ -26,7 +26,7 @@ import type {
   EventExercise,
   EventExerciseDetail,
   EventJudgeDetail,
-  UpdateEventRequest
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { DisciplineFederationConfigurations } from "@/services/secured/configurations/configurations.types";
@@ -124,7 +124,7 @@ const toApiCompetitor = (
 };
 
 const mergeApiEventWithPayload = (
-  payload: CreateEventRequest | UpdateEventRequest,
+  payload: CreateEventRequestDTO | UpdateEventRequestDTO,
   previousEvent?: EventDetail,
   context?: {
     eventId?: string;
@@ -200,7 +200,7 @@ const mergeApiEventWithPayload = (
   };
 };
 
-const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
+const createDefaultApiEvent = (stageId: string): CreateEventRequestDTO => ({
   disciplineId: "",
   id: createId(),
   name: "--Default event",
@@ -208,7 +208,7 @@ const createDefaultApiEvent = (stageId: string): CreateEventRequest => ({
 });
 
 const findEventContextInCompetition = (
-  competition: CompetitionDetail | undefined,
+  competition: CompetitionResponseDTO | undefined,
   stageId: string,
   eventId?: string,
 ) => {
@@ -231,7 +231,7 @@ const findEventContextInCompetition = (
 };
 
 const findEventContext = (
-  competitions: CompetitionDetail[] | undefined,
+  competitions: CompetitionResponseDTO[] | undefined,
   stageId: string,
   competitionId?: string,
   eventId?: string,
@@ -287,7 +287,7 @@ export const useApiEvent = () => {
   };
 
   const createApiEvent = (
-    payload: CreateEventRequest,
+    payload: CreateEventRequestDTO,
     options?: { competitionId?: string },
   ) => {
     if (!payload.stageId) {
@@ -341,7 +341,7 @@ export const useApiEvent = () => {
   const updateApiEvent = (
     stageId: string,
     id: string,
-    payload: UpdateEventRequest,
+    payload: UpdateEventRequestDTO,
     options?: { competitionId?: string },
   ) => {
     const previousCompetitionsFromCache = getVisibleCompetitions();

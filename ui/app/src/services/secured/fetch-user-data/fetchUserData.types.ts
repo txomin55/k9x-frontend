@@ -1,8 +1,8 @@
-export interface UserProfile {
+export interface UserProfileResponseDTO {
   email: string;
   image?: string;
   name: string;
   organizer: boolean;
 }
 
-export type UserModel = UserProfile;
+export type UserModel = UserProfileResponseDTO;

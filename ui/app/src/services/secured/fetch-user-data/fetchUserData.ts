@@ -3,10 +3,10 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import type { UserProfile } from "@/services/secured/fetch-user-data/fetchUserData.types";
+import type { UserProfileResponseDTO } from "@/services/secured/fetch-user-data/fetchUserData.types";
 
 export type {
-  UserProfile,
+  UserProfileResponseDTO,
   UserModel,
 } from "@/services/secured/fetch-user-data/fetchUserData.types";
 
@@ -16,7 +16,7 @@ export const getUserQueryKey = () => ["user", getCurrentLocale()] as const;
 
 const fetchUserData = async () =>
   await fetchWithOfflineSnapshot(USER_SNAPSHOT_ID, async () => {
-    return await rawRequest<UserProfile>({
+    return await rawRequest<UserProfileResponseDTO>({
       auth: true,
       path: "/secured/user",
     });

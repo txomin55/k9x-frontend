@@ -11,9 +11,9 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.t
 import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel";
 import CollectionExerciseScore from "@/components/routes/my/collections/$id/collection-exercise-scores/CollectionExerciseScores";
 import {
-  CollectionScore,
-  ExerciseScores,
-  UpdateCollectionScoreRequest,
+  CollectionScoreResponseDTO,
+  ExerciseScoresResponseDTO,
+  UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import "./styles.css";
 
@@ -38,7 +38,7 @@ const applyPendingScores = ({
   pendingScores,
 }: {
   dogId: string;
-  exercises: ExerciseScores[];
+  exercises: ExerciseScoresResponseDTO[];
   pendingScores: Record<string, number>;
 }) =>
   exercises.map((exerciseScores) => ({
@@ -182,7 +182,7 @@ function CollectionDetailPage() {
     });
   });
 
-  const filterByEligibleJudges = (score: CollectionScore) => {
+  const filterByEligibleJudges = (score: CollectionScoreResponseDTO) => {
     if (search().judgesIds.length) {
       return search().judgesIds.includes(score.judge.id);
     }
@@ -202,7 +202,7 @@ function CollectionDetailPage() {
     return `2fr repeat(${judgesCount}, 1.25fr)`;
   });
 
-  const handleCommitScore = (payload: UpdateCollectionScoreRequest) => {
+  const handleCommitScore = (payload: UpdateCollectionScoreRequestDTO) => {
     const scoreKey = getPendingScoreKey(payload);
 
     setPendingScores((currentScores) => ({

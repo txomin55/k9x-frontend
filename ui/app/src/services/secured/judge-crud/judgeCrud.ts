@@ -13,15 +13,15 @@ import {
   saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
 import type {
-  CreateJudgeRequest,
-  Judge,
-  UpdateJudgeRequest,
+  CreateJudgeRequestDTO,
+  JudgeResponseDTO,
+  UpdateJudgeRequestDTO,
 } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 
 const refreshJudgesSnapshot = async () => {
-  const judges = await rawRequest<Judge[]>({
+  const judges = await rawRequest<JudgeResponseDTO[]>({
     path: "/secured/judges",
   });
 
@@ -75,22 +75,22 @@ export const useJudges = (options?: TanstackCreateQuery) => {
 };
 
 const mergeJudgeWithPayload = (
-  payload: CreateJudgeRequest,
-  existingJudge?: Judge,
-): Judge => ({
+  payload: CreateJudgeRequestDTO,
+  existingJudge?: JudgeResponseDTO,
+): JudgeResponseDTO => ({
   id: payload.id ?? existingJudge?.id ?? globalThis.crypto.randomUUID(),
   name: payload.name ?? existingJudge?.name ?? "",
 });
 
 const updateJudgeProjection = (
-  existingJudge: Judge,
-  payload: UpdateJudgeRequest,
-): Judge => ({
+  existingJudge: JudgeResponseDTO,
+  payload: UpdateJudgeRequestDTO,
+): JudgeResponseDTO => ({
   ...existingJudge,
   name: payload.name,
 });
 
-export const createJudge = (payload: CreateJudgeRequest) => {
+export const createJudge = (payload: CreateJudgeRequestDTO) => {
   const previousJudges = getVisibleJudges();
   const draftJudge = mergeJudgeWithPayload(payload);
 
@@ -113,12 +113,12 @@ export const createJudge = (payload: CreateJudgeRequest) => {
   return draftJudge;
 };
 
-export const updateJudge = (id: string, payload: UpdateJudgeRequest) => {
+export const updateJudge = (id: string, payload: UpdateJudgeRequestDTO) => {
   const previousJudges = getVisibleJudges();
   const previousJudge = previousJudges.find((judge) => judge.id === id) ?? null;
 
   if (!previousJudge) {
-    throw new Error(`Judge ${id} not found`);
+    throw new Error(`JudgeResponseDTO ${id} not found`);
   }
 
   const draftJudge = updateJudgeProjection(previousJudge, payload);

@@ -1,14 +1,14 @@
 import { FederationConfiguration } from "@/services/secured/configurations/configurations.types";
-import { CompetitionDetail } from "@/services/secured/competition-crud/competitionCrud.types";
+import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
-export interface CreateEventRequest {
+export interface CreateEventRequestDTO {
   id: string;
   name: string;
   stageId: string;
   disciplineId: string;
 }
 
-export interface UpdateEventRequest {
+export interface UpdateEventRequestDTO {
   competitors?: EventCompetitor[];
   configurationId?: string;
   exercises?: EventExercise[];
@@ -92,8 +92,8 @@ export interface EventEditorDraft {
 export interface ApiEventRollbackPayload {
   competitionId: string;
   entityId: string;
-  previousCompetition: CompetitionDetail | null;
-  previousCompetitions: CompetitionDetail[] | null;
+  previousCompetition: CompetitionResponseDTO | null;
+  previousCompetitions: CompetitionResponseDTO[] | null;
   previousEvent: EventDetail | null;
   stageId: string;
 }

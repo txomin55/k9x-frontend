@@ -1,27 +1,27 @@
-import { Judge } from "@/services/secured/judge-crud/judgeCrud.types";
+import { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { EventCompetitor } from "@/services/secured/event-crud/eventCrud.types";
 
-export interface CollectionsRequest {
+export interface CollectionsResponseDTO {
   competitionName: string;
   stageName: string;
   eventName: string;
   eventId: string;
   status: string;
-  judges: Judge[];
+  judges: JudgeResponseDTO[];
 }
 
-interface ScoresConfiguration {
+interface ScoresConfigurationResponseDTO {
   allowedValues: number[];
   description: string;
 }
 
-export interface CollectionRequest {
-  competitors: CompetitorScores[];
-  configuration?: ScoresConfiguration;
+export interface CollectionResponseDTO {
+  competitors: CompetitorScoresResponseDTO[];
+  configuration?: ScoresConfigurationResponseDTO;
 }
 
-export interface CompetitorScores {
-  exercises: ExerciseScores[];
+export interface CompetitorScoresResponseDTO {
+  exercises: ExerciseScoresResponseDTO[];
   competitor: EventCompetitor;
 }
 
@@ -31,17 +31,17 @@ export interface Exercise {
   order: number;
 }
 
-export interface CollectionScore {
-  judge: Judge;
+export interface CollectionScoreResponseDTO {
+  judge: JudgeResponseDTO;
   score: number;
 }
 
-export interface ExerciseScores {
+export interface ExerciseScoresResponseDTO {
   exercise: Exercise;
-  collectionScores: CollectionScore[];
+  collectionScores: CollectionScoreResponseDTO[];
 }
 
-export interface UpdateCollectionScoreRequest {
+export interface UpdateCollectionScoreRequestDTO {
   dogId: string;
   exerciseId: string;
   judgeId: string;
@@ -51,5 +51,5 @@ export interface UpdateCollectionScoreRequest {
 
 export interface CollectionRollbackPayload {
   collectionId: string;
-  previousCollection: CollectionRequest | null;
+  previousCollection: CollectionResponseDTO | null;
 }
