@@ -42,7 +42,6 @@
     "@tanstack/solid-table": "^8.21.3",
     "@tanstack/solid-virtual": "^3.13.13",
     "@kobalte/core": "^0.13.11",
-    "@storybook/html": "^10.3.6",
     "solid-js": "catalog:"
   }
 }

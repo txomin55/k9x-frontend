@@ -5,7 +5,7 @@ import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import {
   StageDetail,
-  StageEventClassificationItem,
+  StageEventClassificationResponseDTO,
   StageSummary,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -47,7 +47,7 @@ export const fetchStageById = (id: string) =>
   );
 
 const fetchEventClassification = (stageId: string, eventId: string) =>
-  rawRequest<StageEventClassificationItem[]>({
+  rawRequest<StageEventClassificationResponseDTO>({
     path: `/stages/${stageId}/events/${eventId}/classification`,
   });
 

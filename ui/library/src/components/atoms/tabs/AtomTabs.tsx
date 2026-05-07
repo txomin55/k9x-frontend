@@ -2,18 +2,18 @@ import { createSignal, Index, type JSX } from "solid-js";
 import { Tabs } from "@kobalte/core/tabs";
 import "./styles.css";
 
-interface TabsOptionProps {
+export interface TabsOptionProps {
   value: string;
   content: JSX.Element;
   disabled?: boolean;
 }
 
-interface TabsContentProps {
+export interface TabsContentProps {
   value: string;
   content: JSX.Element;
 }
 
-interface TabsProps {
+export interface TabsProps {
   defaultValue: string;
   options: TabsOptionProps[];
   contents: TabsContentProps[];

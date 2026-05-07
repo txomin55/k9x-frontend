@@ -30,10 +30,10 @@ function EventClassificationPage() {
       >
         {(classification) => (
           <Show
-            when={classification().length > 0}
+            when={classification().competitors.length > 0}
             fallback={<span>No classification data available.</span>}
           >
-            <For each={classification()}>
+            <For each={classification().competitors}>
               {(item) => (
                 <article>
                   <h3>

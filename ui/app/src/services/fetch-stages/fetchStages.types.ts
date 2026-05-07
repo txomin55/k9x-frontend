@@ -49,39 +49,37 @@ export interface CompetitionNotificationDetail {
   text: string;
 }
 
-export interface StageEventClassificationJudge {
-  id: string;
-  name: string;
-}
-
 export interface StageEventClassificationScore {
-  judge: StageEventClassificationJudge;
+  judge: IdNameResponseDto;
   value: number;
-}
-
-export interface StageEventClassificationExercise {
-  id: string;
-  name: string;
+  scoreRating: number;
 }
 
 export interface StageEventClassificationExerciseScores {
-  exercise: StageEventClassificationExercise;
+  exercise: IdNameResponseDto;
   scores: StageEventClassificationScore[];
+  exerciseScore: number;
+  scoreRating: number;
+  totalScore: number;
 }
 
-export interface StageEventClassificationDog {
-  id: string;
-  name: string;
+export interface StageEventClassificationResponseDTO {
+  event: IdNameResponseDto;
+  discipline: IdNameResponseDto;
+  stage: IdNameResponseDto;
+  competitors: StageEventClassificationItem[];
 }
 
 export interface StageEventClassificationItem {
-  country: string;
-  dog: StageEventClassificationDog;
+  country?: string;
+  dog: IdNameResponseDto;
   exercises: StageEventClassificationExerciseScores[];
   owner: string;
-  team: string;
-  status: string;
   position: number;
+  scoreRating?: number;
+  status: string;
+  team: string;
+  totalScore?: number;
 }
 
 export type StageEnrollRollbackPayload = {
@@ -98,3 +96,8 @@ export type EnrollStageEventRequest = {
   owner: string;
   team: string;
 };
+
+export interface IdNameResponseDto {
+  id: string;
+  name: string;
+}

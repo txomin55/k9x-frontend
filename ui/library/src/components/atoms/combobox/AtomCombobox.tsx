@@ -27,7 +27,7 @@ const ITEM_HEIGHT = 36;
 const OVERSCAN = 5;
 
 export function AtomCombobox(props: AtomComboboxProps) {
-  let listboxRef: HTMLUListElement | undefined;
+  let listboxRef: HTMLUListElement | null = null;
   const [inputValue, setInputValue] = createSignal("");
 
   const visibleOptions = createMemo(() => {

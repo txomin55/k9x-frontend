@@ -4,7 +4,7 @@ import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import type {
   TabsContentProps,
   TabsOptionProps,
-} from "@lib/components/atoms/tabs/AtomTabs.types";
+} from "@lib/components/atoms/tabs/AtomTabs";
 
 const TAB_OPTIONS: TabsOptionProps[] = [
   { value: "dogs", content: <span>Dogs</span> },

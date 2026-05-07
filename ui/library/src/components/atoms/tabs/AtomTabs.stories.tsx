@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import type { TabsProps } from "@lib/components/atoms/tabs/AtomTabs.types";
+import type { TabsProps } from "@lib/components/atoms/tabs/AtomTabs";
 
 const TAB_OPTIONS = [
   { value: "dogs", content: <span>Dogs</span> },
