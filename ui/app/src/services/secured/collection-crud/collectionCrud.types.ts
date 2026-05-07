@@ -17,7 +17,7 @@ interface ScoresConfiguration {
 
 export interface CollectionRequest {
   competitors: CompetitorScores[];
-  configuration: ScoresConfiguration;
+  configuration?: ScoresConfiguration;
 }
 
 export interface CompetitorScores {

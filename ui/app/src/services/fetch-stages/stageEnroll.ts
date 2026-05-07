@@ -2,29 +2,26 @@ import type {
   EnrollStageEventRequest,
   StageDetail,
   StageEnrollRollbackPayload,
-  StageSummary,
+  StageSummary
 } from "@/services/fetch-stages/fetchStages.types";
-import {
-  getStageByIdQueryKey,
-  getStagesQueryKey,
-} from "@/services/fetch-stages/fetchStages";
+import { getStageByIdQueryKey, getStagesQueryKey } from "@/services/fetch-stages/fetchStages";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { shouldQueueOfflineMutation } from "@/utils/local-first/localFirstPolicy";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
-  saveQuerySnapshot,
+  saveQuerySnapshot
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import {
   createPendingTaskId,
   enqueuePendingTask,
-  type PendingTask,
+  type PendingTask
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
   processPendingTasks,
-  registerPendingTaskHandler,
+  registerPendingTaskHandler
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 
 const STAGES_SNAPSHOT_ID = "stages";
@@ -35,7 +32,7 @@ const buildNextStage = (
   payload: EnrollStageEventRequest,
 ): StageDetail => ({
   ...stage,
-  events: stage.events.map((event) => {
+  events: (stage.events ?? []).map((event) => {
     if (String(event.id) !== String(payload.eventId)) {
       return event;
     }
@@ -47,7 +44,8 @@ const buildNextStage = (
       owner: payload.owner,
       team: payload.team,
     };
-    const existingIndex = event.competitors.findIndex(
+    const eventCompetitors = event.competitors ?? [];
+    const existingIndex = eventCompetitors.findIndex(
       (competitor) => String(competitor?.dogId) === String(payload.dogId),
     );
 
@@ -55,8 +53,8 @@ const buildNextStage = (
       ...event,
       competitors:
         existingIndex === -1
-          ? [...event.competitors, nextCompetitor]
-          : event.competitors.map((competitor, index) =>
+          ? [...eventCompetitors, nextCompetitor]
+          : eventCompetitors.map((competitor, index) =>
               index === existingIndex ? nextCompetitor : competitor,
             ),
     };
@@ -76,18 +74,18 @@ const buildNextStagesSummary = (
 
     return {
       ...stage,
-      events: stage.events.map((event) => {
+      events: (stage.events ?? []).map((event) => {
         if (String(event.id) !== String(payload.eventId)) {
           return event;
         }
 
-        const nextEvent = nextStage.events.find(
+        const nextEvent = (nextStage.events ?? []).find(
           (stageEvent) => String(stageEvent.id) === String(payload.eventId),
         );
 
         return {
           ...event,
-          competitors: nextEvent?.competitors.length ?? event.competitors,
+          competitors: nextEvent?.competitors?.length ?? event.competitors ?? 0,
         };
       }),
     };
@@ -207,7 +205,7 @@ export const enrollStageEvent = async (
       await rawRequest({
         body: payload,
         method: "PUT",
-        path: `/stages/${stageId}/events/${payload.eventId}/enroll`,
+        path: `/secured/stages/${stageId}/events/${payload.eventId}/enroll`,
       });
       return;
     } catch (error) {
@@ -234,7 +232,7 @@ export const enrollStageEvent = async (
     status: "pending",
     timestamp,
     updatedAt: timestamp,
-    url: `/stages/${stageId}/events/${payload.eventId}/enroll`,
+    url: `/secured/stages/${stageId}/events/${payload.eventId}/enroll`,
   } satisfies PendingTask);
 
   void processPendingTasks();

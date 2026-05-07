@@ -43,7 +43,7 @@ const buildHeaders = (path: string, headers?: HeadersInit) => {
   const nextHeaders = new Headers(headers);
   nextHeaders.set("Accept-language", getCurrentLocale());
 
-  if (path.startsWith("/api/")) {
+  if (path.startsWith("/secured/")) {
     const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);
     if (token) {
       nextHeaders.set("Authorization", `Bearer ${token}`);

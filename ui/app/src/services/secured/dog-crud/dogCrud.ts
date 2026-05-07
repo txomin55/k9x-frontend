@@ -85,7 +85,7 @@ const mergeDogWithPayload = (
   team: payload.team ?? existingDog?.team,
   country: payload.country ?? existingDog?.country,
   owned: payload.owned ?? existingDog?.owned,
-  creator: payload.creator ?? existingDog?.creator,
+  creator: existingDog?.creator ?? "",
 });
 
 export const createDog = (payload: CreateDogRequest) => {
@@ -98,7 +98,7 @@ export const createDog = (payload: CreateDogRequest) => {
     await commitDogMutation({
       entityId: draftDog.id,
       method: "POST",
-      payload: draftDog,
+      payload,
       rollbackPayload: await createDogRollbackPayload(
         draftDog.id,
         null,

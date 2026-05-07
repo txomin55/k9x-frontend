@@ -34,7 +34,7 @@ function StagesIndexPage() {
 
   const sortedStages = createMemo(() =>
     fetchedStages.data?.toSorted(
-      (left, right) => left.dateFrom - right.dateFrom,
+      (left, right) => (left.dateFrom ?? 0) - (right.dateFrom ?? 0),
     ),
   );
 
@@ -47,14 +47,14 @@ function StagesIndexPage() {
           {(stage) => (
             <StageCard
               id={stage.id}
-              country={stage.country}
+              country={stage.country ?? ""}
               name={stage.name}
-              from={stage.dateFrom}
-              to={stage.dateTo}
-              description={stage.description}
+              from={stage.dateFrom ?? 0}
+              to={stage.dateTo ?? 0}
+              description={stage.description ?? ""}
               organizer={stage.organizer}
               address={stage?.location?.address}
-              events={stage.events}
+              events={stage.events ?? []}
             />
           )}
         </For>

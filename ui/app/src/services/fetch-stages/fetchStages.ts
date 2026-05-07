@@ -100,4 +100,4 @@ export const getCachedStageById = (id: string) =>
     ?.find((stage) => stage.id === id);
 
 export const getCachedEventById = (stageId: string, eventId: string) =>
-  getCachedStageById(stageId)?.events.find((event) => event.id === eventId);
+  getCachedStageById(stageId)?.events?.find((event) => event.id === eventId);

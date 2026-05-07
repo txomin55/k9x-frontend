@@ -145,13 +145,13 @@ function StageInfoPage() {
             topLeft={<span>{i18n.t("STAGES.INFO.EVENTS")}</span>}
             content={
               <div class="stage-info__events">
-                <Index each={stage.events}>
+                <Index each={stage.events ?? []}>
                   {(event) => (
                     <div class="stage-info__events--item">
                       <div>
                         <span>{event().discipline}</span>
                         <span>
-                          {event().name} ({event().competitors.length})
+                          {event().name} ({event().competitors?.length ?? 0})
                         </span>
                       </div>
                       <Show
@@ -199,7 +199,7 @@ function StageInfoPage() {
         {(stage) => (
           <>
             <h2>{stage().name}</h2>
-            <p class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom))} - ${formatDateLabel(toDateInputValue(stage().dateTo))}`}</p>
+            <p class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</p>
             <p class="text-caption-md">{stage().organizer}</p>
             <p class="text-body-md">{stage().address}</p>
 

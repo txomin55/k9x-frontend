@@ -18,7 +18,7 @@ export interface UpdateEventRequest {
 
 export interface EventCompetitor {
   order?: number;
-  dogId?: string;
+  dogId: string;
   team?: string;
   identity?: string;
   owner?: string;
@@ -67,6 +67,7 @@ export interface EventExerciseDetail extends EventExercise {
 
 export interface EventExercise {
   id: string;
+  name: string;
   order: number;
   tags: string[];
 }

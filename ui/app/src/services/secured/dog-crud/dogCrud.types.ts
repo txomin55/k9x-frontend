@@ -21,7 +21,6 @@ export interface CreateDogRequest {
   team?: string;
   country?: string;
   owned: boolean;
-  creator: string;
 }
 
 export interface UpdateDogRequest {

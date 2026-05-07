@@ -6,7 +6,7 @@ export interface ConfigurationExercise {
 export interface Configuration {
   id: string;
   name: string;
-  exercises: ConfigurationExercise[];
+  exercises?: ConfigurationExercise[];
 }
 
 export interface FederationConfiguration {

@@ -1,5 +1,5 @@
 export interface StageEventSummary {
-  competitors: number;
+  competitors?: number;
   discipline: string;
   id: string;
   name: string;
@@ -7,46 +7,46 @@ export interface StageEventSummary {
 }
 
 export interface StageSummary {
-  country: string;
-  dateFrom: number;
-  dateTo: number;
-  description: string;
-  events: StageEventSummary[];
+  country?: string;
+  dateFrom?: number;
+  dateTo?: number;
+  description?: string;
+  events?: StageEventSummary[];
   id: string;
-  location: CompetitionLocationDetail;
+  location?: CompetitionLocationDetail;
   name: string;
   status: string;
   organizer: string;
 }
 
 export interface CompetitionLocationDetail {
-  address: string;
-  latitude: number;
-  longitude: number;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface StageDetail {
-  dateFrom: number;
-  dateTo: number;
-  events: StageEventDetail[];
+  dateFrom?: number;
+  dateTo?: number;
+  events?: StageEventDetail[];
   id: string;
-  address: string;
+  address?: string;
   name: string;
-  notifications: CompetitionNotificationDetail[] | [];
+  notifications?: CompetitionNotificationDetail[] | [];
   organizer: string;
 }
 
 export interface StageEventDetail {
-  competitors: any[];
-  discipline: string;
+  competitors?: any[];
+  discipline?: string;
   id: string;
   name: string;
 }
 
 export interface CompetitionNotificationDetail {
-  date: number;
+  date?: number;
   id: string;
-  text: string;
+  text?: string;
 }
 
 export interface StageEventClassificationScore {
@@ -58,10 +58,10 @@ export interface StageEventClassificationScore {
 export interface StageEventClassificationExerciseScoresResponseDTO {
   exercise: IdNameResponseDto;
   scores: StageEventClassificationScore[];
-  exerciseScore: number;
-  scoreRating: number;
-  totalScore: number;
-  tags: string[];
+  exerciseScore?: number;
+  scoreRating?: number;
+  totalScore?: number;
+  tags?: string[];
 }
 
 export interface StageEventClassificationResponseDTO {
@@ -73,15 +73,15 @@ export interface StageEventClassificationResponseDTO {
 }
 
 export interface StageEventClassificationItem {
-  country: string;
+  country?: string;
   dog: IdNameResponseDto;
   exercises: StageEventClassificationExerciseScoresResponseDTO[];
   owner: string;
   position: number;
-  scoreRating: number;
+  scoreRating?: number;
   status: string;
   team: string;
-  totalScore: number;
+  totalScore?: number;
 }
 
 export type StageEnrollRollbackPayload = {

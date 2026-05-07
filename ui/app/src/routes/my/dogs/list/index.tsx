@@ -25,7 +25,9 @@ export const Route = createFileRoute("/my/dogs/list/")({
 function MyDogsListPage() {
   const user = useAuthUser();
   const i18n = useI18n();
-  const buildDogDraft = (isOrganizer: boolean): CreateDogRequest => ({
+  type DogDraft = CreateDogRequest & { creator: string };
+
+  const buildDogDraft = (isOrganizer: boolean): DogDraft => ({
     id:
       typeof globalThis !== "undefined" &&
       "crypto" in globalThis &&
@@ -55,7 +57,7 @@ function MyDogsListPage() {
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
   const [editingDogId, setEditingDogId] = createSignal<string | null>(null);
-  const [draftDog, setDraftDog] = createSignal<CreateDogRequest>(
+  const [draftDog, setDraftDog] = createSignal<DogDraft>(
     buildDogDraft(!!user()?.organizer),
   );
 
@@ -103,7 +105,8 @@ function MyDogsListPage() {
         owned: payload.owned,
       });
     } else {
-      createDog(payload);
+      const { creator: _creator, ...createPayload } = payload;
+      createDog(createPayload);
     }
 
     handleCloseDialog();
@@ -122,7 +125,10 @@ function MyDogsListPage() {
           <DogForm
             draft={draftDog}
             onDraftChange={(updater) =>
-              setDraftDog((current) => updater(current))
+              setDraftDog((current) => ({
+                ...updater(current),
+                creator: current.creator,
+              }))
             }
             onCancel={handleCloseDialog}
             onSave={handleSave}
