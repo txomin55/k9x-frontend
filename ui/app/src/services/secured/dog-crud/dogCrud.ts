@@ -16,28 +16,9 @@ import type { CreateDogRequest, Dog, UpdateDogRequest } from "./dogCrud.types";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 
-type DogsFilters = {
-  owned?: boolean;
-};
-
-type UseDogsOptions = {
-  filters?: DogsFilters;
-  query?: TanstackCreateQuery;
-};
-
-const buildDogsPath = (filters?: DogsFilters) => {
-  const params = new URLSearchParams();
-  if (filters?.owned !== undefined) {
-    params.set("owned", String(filters.owned));
-  }
-
-  const query = params.toString();
-  return query ? `/secured/dogs?${query}` : "/secured/dogs";
-};
-
-const refreshDogsSnapshot = async (filters?: DogsFilters) => {
+const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
-    path: buildDogsPath(filters),
+    path: "/secured/dogs",
   });
 
   await saveDogsSnapshot(dogs);
@@ -46,37 +27,37 @@ const refreshDogsSnapshot = async (filters?: DogsFilters) => {
   return dogs;
 };
 
-const fetchDogs = (filters?: DogsFilters) =>
-  fetchWithOfflineSnapshot(DOGS_SNAPSHOT_ID, () => refreshDogsSnapshot(filters));
+const fetchDogs = () =>
+  fetchWithOfflineSnapshot(DOGS_SNAPSHOT_ID, refreshDogsSnapshot);
 
-const createDogsQuery = (options?: UseDogsOptions) =>
+const createDogsQuery = (options?: TanstackCreateQuery) =>
   defineQuery({
-    fetcher: () => fetchDogs(options?.filters),
-    queryKey: ["dogs", options?.filters?.owned] as const,
+    fetcher: fetchDogs,
+    queryKey: ["dogs"] as const,
   }).useQuery({
-    staleTime: options?.query?.staleTime,
-    gcTime: options?.query?.gcTime,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
     networkMode: "always",
-    refetchOnMount: options?.query?.refetchOnMount,
+    refetchOnMount: options?.refetchOnMount,
   } as any);
 
-export const prefetchDogs = (options?: UseDogsOptions) => {
+export const prefetchDogs = (options?: TanstackCreateQuery) => {
   const dogsQuery = defineQuery({
-    fetcher: () => fetchDogs(options?.filters),
-    queryKey: ["dogs", options?.filters?.owned] as const,
+    fetcher: fetchDogs,
+    queryKey: ["dogs"] as const,
   });
   const { queryFn, queryKey } = dogsQuery.options();
 
   return queryClient.fetchQuery({
     queryKey,
     queryFn,
-    staleTime: options?.query?.staleTime,
-    gcTime: options?.query?.gcTime,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
     networkMode: "always",
   });
 };
 
-export const useDogs = (options?: UseDogsOptions) => {
+export const useDogs = (options?: TanstackCreateQuery) => {
   const dogs = createDogsQuery(options);
   const mergedData = createMemo(() => mergeDogsWithDrafts(dogs.data ?? []));
 

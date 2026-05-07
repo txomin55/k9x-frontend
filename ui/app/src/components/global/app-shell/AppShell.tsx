@@ -56,10 +56,8 @@ export default function AppShell() {
         staleTime: Number.POSITIVE_INFINITY,
       });
       void prefetchDogs({
-        query: {
-          refetchOnMount: false,
-          gcTime: 2 * 60 * 1000,
-        },
+        refetchOnMount: false,
+        gcTime: 2 * 60 * 1000,
       });
       void prefetchJudges({
         refetchOnMount: false,
@@ -79,7 +77,10 @@ export default function AppShell() {
   return (
     <MetaProvider>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <Show when={i18n.ready()} fallback={<p>{i18n.t("GLOBAL.LOADING_APP")}</p>}>
+      <Show
+        when={i18n.ready()}
+        fallback={<p>{i18n.t("GLOBAL.LOADING_APP")}</p>}
+      >
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">

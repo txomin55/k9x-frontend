@@ -42,10 +42,8 @@ export default function EventCompetitorsSection(
   });
 
   const dogsQuery = useDogs({
-    query: {
-      refetchOnMount: false,
-      gcTime: 5 * 60 * 1000,
-    },
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     (dogsQuery.data ?? []).map((dog) => ({

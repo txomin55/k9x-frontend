@@ -38,10 +38,8 @@ function MyDogsListPage() {
     owned: !isOrganizer,
   });
   const dogsQuery = useDogs({
-    query: {
-      refetchOnMount: false,
-      gcTime: 2 * 60 * 1000,
-    },
+    refetchOnMount: false,
+    gcTime: 2 * 60 * 1000,
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);

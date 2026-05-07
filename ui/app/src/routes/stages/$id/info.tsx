@@ -1,21 +1,27 @@
-import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
-import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
-import {useStageById} from "@/services/fetch-stages/fetchStages";
-import {useDogs} from "@/services/secured/dog-crud/dogCrud";
-import type {Dog} from "@/services/secured/dog-crud/dogCrud.types";
-import {createMemo, createSignal, Index, Show} from "solid-js";
-import {formatDateLabel, toDateInputValue} from "@/utils/date";
-import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
+import { useStageById } from "@/services/fetch-stages/fetchStages";
+import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
+import { createMemo, createSignal, Index, Show } from "solid-js";
+import { formatDateLabel, toDateInputValue } from "@/utils/date";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
-import {useAuthUser} from "@/stores/auth/auth";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
-import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
-import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
-import {useI18n} from "@/stores/i18n/i18n";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
+import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
+import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -50,11 +56,8 @@ function StageInfoPage() {
 
   const stageInfo = useStageById(params().id);
   const dogsQuery = useDogs({
-    filters: { owned: true },
-    query: {
-      refetchOnMount: false,
-      gcTime: 5 * 60 * 1000,
-    },
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     (dogsQuery.data ?? []).map((dog) => ({
