@@ -1,5 +1,6 @@
-import { Combobox } from "@kobalte/core/combobox";
-import type { JSX, ParentProps } from "solid-js";
+import {Combobox} from "@kobalte/core/combobox";
+import {createVirtualizer} from "@tanstack/solid-virtual";
+import {createMemo, createSignal, For, type JSX, type ParentProps,} from "solid-js";
 import "./styles.css";
 
 export type AtomComboboxOption = {
@@ -22,7 +23,40 @@ export type AtomComboboxProps = ParentProps<{
   validationState?: "valid" | "invalid";
 }>;
 
+const ITEM_HEIGHT = 36;
+const OVERSCAN = 5;
+
 export function AtomCombobox(props: AtomComboboxProps) {
+  let listboxRef: HTMLUListElement | undefined;
+  const [inputValue, setInputValue] = createSignal("");
+
+  const visibleOptions = createMemo(() => {
+    const query = inputValue().trim().toLocaleLowerCase();
+    if (!query) return props.options;
+
+    return props.options.filter((option) =>
+      option.label.toLocaleLowerCase().includes(query),
+    );
+  });
+
+  const virtualizer = createVirtualizer({
+    count: visibleOptions().length,
+    getScrollElement: () => listboxRef,
+    getItemKey: (index) => String(visibleOptions()[index]?.value ?? index),
+    estimateSize: () => ITEM_HEIGHT,
+    initialRect: { width: 0, height: ITEM_HEIGHT * 6 },
+    overscan: OVERSCAN,
+  });
+
+  const virtualRows = () => {
+    return visibleOptions().map((option, index) => ({
+      key: String(option.value ?? index),
+      index,
+      start: index * ITEM_HEIGHT,
+      size: ITEM_HEIGHT,
+    }));
+  };
+
   return (
     <Combobox
       class="atom-combobox"
@@ -32,27 +66,16 @@ export function AtomCombobox(props: AtomComboboxProps) {
       allowsEmptyCollection
       triggerMode="focus"
       validationState={props.validationState}
-      options={props.options}
+      options={visibleOptions()}
       optionDisabled="disabled"
       optionLabel="label"
       optionTextValue="label"
       optionValue="value"
       value={props.value}
       onChange={props.onChange}
+      onInputChange={setInputValue}
       placeholder={props.placeholder}
-      itemComponent={(itemProps) => (
-        <Combobox.Item item={itemProps.item} class="atom-combobox__item">
-          <div class="atom-combobox__item-option">
-            {itemProps.item.rawValue.preLabel}
-            <Combobox.ItemLabel class="atom-combobox__item-label">
-              {itemProps.item.rawValue.label}
-            </Combobox.ItemLabel>
-          </div>
-          <Combobox.ItemIndicator class="atom-combobox__item-indicator">
-            x
-          </Combobox.ItemIndicator>
-        </Combobox.Item>
-      )}
+      virtualized
     >
       {props.label ? (
         <Combobox.Label class="atom-combobox__label">
@@ -78,10 +101,64 @@ export function AtomCombobox(props: AtomComboboxProps) {
           {props.errorMessage}
         </Combobox.ErrorMessage>
       ) : null}
+      {props.children}
       <Combobox.Portal>
         <Combobox.Content class="atom-combobox__content">
-          {props.children}
-          <Combobox.Listbox class="atom-combobox__listbox" />
+          <Combobox.Listbox
+            ref={listboxRef}
+            class="atom-combobox__listbox"
+            style={{
+              height: `${visibleOptions().length * ITEM_HEIGHT + 8}px`,
+              "overflow-y": "auto",
+            }}
+            scrollToItem={(key) => {
+              virtualizer.scrollToIndex(
+                visibleOptions().findIndex((option) => option.value === key),
+              );
+            }}
+          >
+            {(items) => (
+              <div
+                style={{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                <For each={virtualRows()}>
+                  {(virtualRow) => {
+                    const item = items().getItem(String(virtualRow.key));
+                    if (!item) return null;
+
+                    return (
+                      <Combobox.Item
+                        item={item}
+                        class="atom-combobox__item"
+                        style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "0",
+                          right: "0",
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                      >
+                        <div class="atom-combobox__item-option">
+                          {item.rawValue.preLabel}
+                          <Combobox.ItemLabel class="atom-combobox__item-label">
+                            {item.rawValue.label}
+                          </Combobox.ItemLabel>
+                        </div>
+                        <Combobox.ItemIndicator class="atom-combobox__item-indicator">
+                          x
+                        </Combobox.ItemIndicator>
+                      </Combobox.Item>
+                    );
+                  }}
+                </For>
+              </div>
+            )}
+          </Combobox.Listbox>
         </Combobox.Content>
       </Combobox.Portal>
     </Combobox>

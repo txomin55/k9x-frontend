@@ -1,13 +1,35 @@
 import * as Select from "@kobalte/core/select";
-import type {
-  AtomSelectOption,
-  AtomSelectProps,
-} from "@lib/components/atoms/select/AtomSelect.types";
+import { createVirtualizer } from "@tanstack/solid-virtual";
+import type { AtomSelectOption, AtomSelectProps } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
-import { Show } from "solid-js";
+import { For, Show } from "solid-js";
+
+const ITEM_HEIGHT = 44;
+const OVERSCAN = 5;
 
 export default function AtomSelect(props: AtomSelectProps) {
-  const getItemPreLabel = (idx: number) => props.options[idx].preLabel;
+  let listboxRef: HTMLUListElement | undefined;
+
+  const virtualizer = createVirtualizer({
+    count: props.options.length,
+    getScrollElement: () => listboxRef,
+    getItemKey: (index) => String(props.options[index]?.value ?? index),
+    estimateSize: () => ITEM_HEIGHT,
+    initialRect: { width: 0, height: ITEM_HEIGHT * 6 },
+    overscan: OVERSCAN,
+  });
+
+  const getVirtualRows = () => {
+    return props.options.map((_, index) => ({
+      key: String(props.options[index]?.value ?? index),
+      index,
+      start: index * ITEM_HEIGHT,
+      size: ITEM_HEIGHT,
+    }));
+  };
+
+  const getItemPreLabel = (idx: number) => props.options[idx]?.preLabel;
+
   return (
     <Select.Root<AtomSelectOption>
       class="atom-select"
@@ -26,22 +48,7 @@ export default function AtomSelect(props: AtomSelectProps) {
       sameWidth
       validationState={props.validationState}
       value={props.value}
-      itemComponent={(itemProps) => (
-        <Select.Item class="atom-select__item" item={itemProps.item}>
-          <div class="atom-select__item-option">
-            <Show when={getItemPreLabel(itemProps.item.index)}>
-              {getItemPreLabel(itemProps.item.index)}
-            </Show>
-            <Select.ItemLabel class="atom-select__item-label">
-              {itemProps.item.rawValue.label}
-            </Select.ItemLabel>
-          </div>
-
-          <Select.ItemIndicator class="atom-select__item-indicator">
-            ✓
-          </Select.ItemIndicator>
-        </Select.Item>
-      )}
+      virtualized
     >
       <Select.HiddenSelect />
       {props.label ? (
@@ -65,7 +72,64 @@ export default function AtomSelect(props: AtomSelectProps) {
       ) : null}
       <Select.Portal>
         <Select.Content class="atom-select__content">
-          <Select.Listbox class="atom-select__listbox" />
+          <Select.Listbox
+            ref={listboxRef}
+            class="atom-select__listbox"
+            style={{
+              height: `${Math.min(virtualizer.getTotalSize() + 8, 256)}px`,
+              "overflow-y": "auto",
+            }}
+            scrollToItem={(key) => {
+              virtualizer.scrollToIndex(
+                props.options.findIndex((option) => option.value === key),
+              );
+            }}
+          >
+            {(items) => (
+              <div
+                style={{
+                  height: `${virtualizer.getTotalSize()}px`,
+                  width: "100%",
+                  position: "relative",
+                }}
+              >
+                <For each={getVirtualRows()}>
+                  {(virtualRow) => {
+                    const item = items().getItem(String(virtualRow.key));
+                    if (!item) return null;
+
+                    return (
+                      <Select.Item
+                        class="atom-select__item"
+                        item={item}
+                        style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "0",
+                          right: "0",
+                          height: `${virtualRow.size}px`,
+                          transform: `translateY(${virtualRow.start}px)`,
+                        }}
+                      >
+                        <div class="atom-select__item-option">
+                          <Show when={getItemPreLabel(item.index)}>
+                            {getItemPreLabel(item.index)}
+                          </Show>
+                          <Select.ItemLabel class="atom-select__item-label">
+                            {item.rawValue.label}
+                          </Select.ItemLabel>
+                        </div>
+
+                        <Select.ItemIndicator class="atom-select__item-indicator">
+                          ✓
+                        </Select.ItemIndicator>
+                      </Select.Item>
+                    );
+                  }}
+                </For>
+              </div>
+            )}
+          </Select.Listbox>
         </Select.Content>
       </Select.Portal>
     </Select.Root>

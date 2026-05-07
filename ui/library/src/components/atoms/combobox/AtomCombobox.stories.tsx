@@ -9,6 +9,14 @@ const OPTIONS: AtomComboboxOption[] = [
   { label: "Blueberry", value: "blueberry" },
   { label: "Grapes", value: "grapes" },
   { label: "Pineapple", value: "pineapple" },
+  ...Array.from({ length: 250 }, (_, index) => {
+    const itemNumber = index + 1;
+
+    return {
+      label: `Fruit option ${itemNumber}`,
+      value: `fruit-option-${itemNumber}`,
+    };
+  }),
 ];
 
 const meta = {
