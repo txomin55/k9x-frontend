@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createSignal, For, Show, Suspense } from "solid-js";
+import { createMemo, createSignal, For, Show, Suspense } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
@@ -36,10 +36,21 @@ function MyDogsListPage() {
     image: "",
     breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
     owned: !isOrganizer,
+    creator: user()?.email ?? "no-creator",
   });
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
+  });
+
+  const myDogs = createMemo(() => {
+    if (!dogsQuery.data) {
+      return [];
+    }
+
+    return dogsQuery.data.filter(
+      (dog) => dog.owned || user()?.email === dog.creator,
+    );
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
@@ -71,6 +82,7 @@ function MyDogsListPage() {
       team: dog.team,
       country: dog.country,
       owned: dog.owned,
+      creator: dog.creator,
     }));
     setDialogOpen(true);
   };
@@ -127,11 +139,11 @@ function MyDogsListPage() {
 
       <Suspense fallback={<span>{i18n.t("MY.DOGS.LIST.LOADING_DOGS")}</span>}>
         <Show
-          when={dogsQuery.data?.length}
+          when={myDogs().length}
           fallback={<p>{i18n.t("MY.DOGS.LIST.NO_DOGS_AVAILABLE_YET")}</p>}
         >
           <div class="dogs-list">
-            <For each={dogsQuery.data}>
+            <For each={myDogs()}>
               {(dog) => (
                 <DogCard
                   dog={dog}

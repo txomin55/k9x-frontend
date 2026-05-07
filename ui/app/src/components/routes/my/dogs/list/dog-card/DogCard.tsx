@@ -1,12 +1,16 @@
 import { Show } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
-import type { DogCardProps } from "@/components/routes/my/dogs/list/dog-card/DogCard.types";
-import "./styles.css";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
+import "./styles.css";
+
+type DogCardProps = {
+  dog: Dog;
+  onEdit: () => void;
+  onDelete: () => void;
+};
 
 export default function DogCard(props: DogCardProps) {
   const i18n = useI18n();
