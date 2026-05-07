@@ -20,16 +20,16 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import { CompetitionStageDetail } from "@/services/secured/stage-crud/stageCrud.types";
+import { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import {
   ApiEventRollbackPayload,
-  EventDetail,
+  EventDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 
 const buildNextStageDetail = (
-  stage: CompetitionStageDetail,
-  event: EventDetail,
-): CompetitionStageDetail => {
+  stage: CompetitionStageDetailResponseDTO,
+  event: EventDetailResponseDTO,
+): CompetitionStageDetailResponseDTO => {
   const previousEvents = stage.events ?? [];
   const existingIndex = previousEvents.findIndex(
     ({ id }) => String(id) === String(event.id),
@@ -49,9 +49,9 @@ const buildNextStageDetail = (
 };
 
 const buildStageDetailWithoutEvent = (
-  stage: CompetitionStageDetail,
+  stage: CompetitionStageDetailResponseDTO,
   eventId: string,
-): CompetitionStageDetail => ({
+): CompetitionStageDetailResponseDTO => ({
   ...stage,
   events: (stage.events ?? []).filter(
     ({ id }) => String(id) !== String(eventId),
@@ -61,7 +61,7 @@ const buildStageDetailWithoutEvent = (
 const buildNextCompetitionDetail = (
   competition: CompetitionResponseDTO,
   stageId: string,
-  event: EventDetail,
+  event: EventDetailResponseDTO,
 ): CompetitionResponseDTO => ({
   ...competition,
   stages: (competition.stages ?? []).map((stage) =>
@@ -88,7 +88,7 @@ const buildNextCompetitionsList = (
   competitions: CompetitionResponseDTO[],
   competitionId: string,
   stageId: string,
-  event: EventDetail,
+  event: EventDetailResponseDTO,
 ): CompetitionResponseDTO[] =>
   competitions.map((competition) =>
     String(competition.id) === String(competitionId)
@@ -115,7 +115,7 @@ const getBaseCompetitionsFromCache = () =>
 const persistApiEventCompetitionSnapshot = async (
   competitionId: string,
   stageId: string,
-  event: EventDetail,
+  event: EventDetailResponseDTO,
 ) => {
   const previousCompetitions = getVisibleCompetitions();
   const parentCompetition = previousCompetitions.find(
@@ -178,7 +178,7 @@ export const createApiEventRollbackPayload = async ({
   competitionId: string;
   entityId: string;
   previousCompetitionsFromCache?: CompetitionResponseDTO[];
-  previousEvent: EventDetail | null;
+  previousEvent: EventDetailResponseDTO | null;
   stageId: string;
 }): Promise<ApiEventRollbackPayload> => ({
   competitionId,
@@ -311,7 +311,7 @@ registerPendingTaskHandler("event", apiEventPendingTaskHandler);
 export const applyApiEventUpsert = (
   competitionId: string,
   stageId: string,
-  event: EventDetail,
+  event: EventDetailResponseDTO,
 ) => {
   void persistApiEventCompetitionSnapshot(competitionId, stageId, event);
 };

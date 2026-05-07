@@ -1,6 +1,6 @@
 import {
   CollectionScoreResponseDTO,
-  Exercise,
+  ExerciseResponseDTO,
   UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo, createSignal, For } from "solid-js";
@@ -13,7 +13,7 @@ const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
 interface CollectionExerciseScoresProps {
   competitorId: string;
   eventId: string;
-  exercise: Exercise;
+  exercise: ExerciseResponseDTO;
   scores: CollectionScoreResponseDTO[];
   allowedValues: number[];
   onCommitScore: (payload: UpdateCollectionScoreRequestDTO) => void;

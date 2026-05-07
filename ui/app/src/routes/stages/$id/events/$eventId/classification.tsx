@@ -1,6 +1,6 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
-import type { StageEventClassificationItem } from "@/services/fetch-stages/fetchStages.types";
+import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import Card from "@lib/components/molecules/card/Card";
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
@@ -30,7 +30,9 @@ function EventClassificationPage() {
   const OVERSCAN = 5;
   const MAX_VIEWPORT_ITEMS = 6;
   let listRef!: HTMLDivElement;
-  const [listHeight, setListHeight] = createSignal(ITEM_HEIGHT * MAX_VIEWPORT_ITEMS);
+  const [listHeight, setListHeight] = createSignal(
+    ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
+  );
   const competitors = createMemo(
     () => classificationQuery.data?.competitors ?? [],
   );
@@ -106,14 +108,17 @@ function EventClassificationPage() {
                     {(virtualRow) => {
                       const competitor = classification().competitors[
                         virtualRow.index
-                      ] as StageEventClassificationItem | undefined;
+                      ] as StageEventClassificationItemResponseDTO | undefined;
                       if (!competitor) return null;
 
                       return (
                         <article
                           data-index={virtualRow.index}
                           ref={(el) => {
-                            el.setAttribute("data-index", String(virtualRow.index));
+                            el.setAttribute(
+                              "data-index",
+                              String(virtualRow.index),
+                            );
                             virtualizer.measureElement(el);
                           }}
                           style={{
@@ -154,7 +159,7 @@ function EventClassificationPage() {
 }
 
 type ClassificationCardContentProps = {
-  competitor: StageEventClassificationItem;
+  competitor: StageEventClassificationItemResponseDTO;
 };
 
 function ClassificationCardContent(props: ClassificationCardContentProps) {

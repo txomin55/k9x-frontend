@@ -10,16 +10,16 @@ import {
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
-  getVisibleCompetitions,
+  getVisibleCompetitions
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionResponseDTO,
-  CreateCompetitionRequestDTO,
-  UpdateCompetitionRequestDTO,
+  UpdateCompetitionRequestDTO
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
+import { IdNameDTO } from "@/services/fetch-stages/fetchStages.types";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
@@ -90,7 +90,7 @@ export const useCompetitions = (options?: TanstackCreateQuery) => {
 };
 
 const mergeCompetitionWithPayload = (
-  payload: CreateCompetitionRequestDTO | UpdateCompetitionRequestDTO,
+  payload: IdNameDTO | UpdateCompetitionRequestDTO,
   previousCompetition?: CompetitionResponseDTO,
 ): CompetitionResponseDTO => {
   const payloadId = "id" in payload ? payload.id : undefined;
@@ -117,14 +117,16 @@ const mergeCompetitionWithPayload = (
   };
 };
 
-const createDefaultCompetition = (): CreateCompetitionRequestDTO => ({
+const createDefaultCompetition = (): IdNameDTO => ({
   id: globalThis.crypto.randomUUID(),
   name: "--Default competition",
 });
 
 export const getCachedCompetitions = () =>
   mergeCompetitionsWithDrafts(
-    queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()),
+    queryClient.getQueryData<CompetitionResponseDTO[]>(
+      getCompetitionsQueryKey(),
+    ),
   );
 
 export const useCompetition = () => {
@@ -148,7 +150,7 @@ export const useCompetition = () => {
     );
   };
 
-  const createCompetition = (payload: CreateCompetitionRequestDTO) => {
+  const createCompetition = (payload: IdNameDTO) => {
     const previousCompetitionsFromCache = getCachedCompetitions();
     const draftCompetition = mergeCompetitionWithPayload(payload);
 
@@ -175,7 +177,10 @@ export const useCompetition = () => {
     })();
   };
 
-  const updateCompetition = (id: string, payload: UpdateCompetitionRequestDTO) => {
+  const updateCompetition = (
+    id: string,
+    payload: UpdateCompetitionRequestDTO,
+  ) => {
     const previousCompetitionsFromCache = getVisibleCompetitions();
     const previousCompetition =
       previousCompetitionsFromCache.find(

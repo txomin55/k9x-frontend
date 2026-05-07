@@ -8,7 +8,7 @@ import {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -18,12 +18,12 @@ type OrderBounds = {
 };
 
 type ExerciseEditorFormProps = {
-  draft: () => EventExerciseDetail;
+  draft: () => EventExerciseDetailResponseDTO;
   onCommit: () => void;
   onDraftChange: (
     updater: (
-      current: EventExerciseDetail | null,
-    ) => EventExerciseDetail | null,
+      current: EventExerciseDetailResponseDTO | null,
+    ) => EventExerciseDetailResponseDTO | null,
   ) => void;
   onCancel: () => void;
   onCreate: () => void;

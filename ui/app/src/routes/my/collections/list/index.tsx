@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { useCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { For, Show, Suspense } from "solid-js";
 import CollectionCard from "@/components/routes/my/collections/list/collection-card/CollectionCard";
-import { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/collections/list/")({
@@ -18,7 +18,7 @@ function MyCollectionsListPage() {
     gcTime: 2 * 60 * 1000,
   });
 
-  const navigateToCollectScoresView = (eventId: string, judges: JudgeResponseDTO[]) => {
+  const navigateToCollectScoresView = (eventId: string, judges: IdNameDTO[]) => {
     void navigate({
       params: {
         id: eventId,

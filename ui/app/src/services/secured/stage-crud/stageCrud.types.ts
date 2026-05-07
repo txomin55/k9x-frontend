@@ -1,10 +1,10 @@
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-import { EventDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 
-export interface CompetitionStageDetail {
+export interface CompetitionStageDetailResponseDTO {
   dateFrom: number;
   dateTo: number;
-  events: EventDetail[];
+  events: EventDetailResponseDTO[];
   id: string;
   name: string;
 }
@@ -27,7 +27,7 @@ export interface StageEditorModel {
   competitionId: string;
   dateFrom: number;
   dateTo: number;
-  events: EventDetail[];
+  events: EventDetailResponseDTO[];
   id: string;
   name: string;
 }

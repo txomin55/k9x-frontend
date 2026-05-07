@@ -8,7 +8,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import { EventExerciseDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
@@ -16,8 +16,8 @@ import "./styles.css";
 type EventExercisesSectionProps = {
   onCommitExercise: () => void;
   editingExerciseId: string | null;
-  exerciseDialogDraft: EventExerciseDetail | null;
-  exercises: EventExerciseDetail[];
+  exerciseDialogDraft: EventExerciseDetailResponseDTO | null;
+  exercises: EventExerciseDetailResponseDTO[];
   exerciseCandidatesOptions: AtomSelectOption[];
   isCreatingExercise: boolean;
   isEditing: boolean;
@@ -25,10 +25,10 @@ type EventExercisesSectionProps = {
   onDeleteExercise: (exerciseId: string) => void;
   onExerciseDraftChange: (
     updater: (
-      current: EventExerciseDetail | null,
-    ) => EventExerciseDetail | null,
+      current: EventExerciseDetailResponseDTO | null,
+    ) => EventExerciseDetailResponseDTO | null,
   ) => void;
-  onOpenExerciseEditor: (exercise: EventExerciseDetail) => void;
+  onOpenExerciseEditor: (exercise: EventExerciseDetailResponseDTO) => void;
   onCreateExercise: () => void;
 };
 
@@ -36,8 +36,8 @@ export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
   const i18n = useI18n();
-  const getOrderValue = (exercise: EventExerciseDetail) => exercise.order;
-  const getExerciseName = (exercise: EventExerciseDetail) => {
+  const getOrderValue = (exercise: EventExerciseDetailResponseDTO) => exercise.order;
+  const getExerciseName = (exercise: EventExerciseDetailResponseDTO) => {
     if (exercise.name) {
       return exercise.name;
     }

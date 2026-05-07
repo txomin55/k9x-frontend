@@ -111,18 +111,18 @@ function CollectionDetailPage() {
     return collectionData.data.competitors
       .toSorted((a, b) => (a.competitor.order ?? 0) - (b.competitor.order ?? 0))
       .flatMap((c) => {
-        if (!c.competitor.owner || !c.competitor.dogId) {
+        if (!c.competitor.owner || !c.competitor.dog.id) {
           return [];
         }
 
         return [
           {
             label: c.competitor.owner,
-            value: c.competitor.dogId,
+            value: c.competitor.dog.id,
             preLabel: (
               <ScoresCompetitorPreLabel
                 competitor={c.competitor}
-                seen={seenCompetitors().includes(c.competitor.dogId)}
+                seen={seenCompetitors().includes(c.competitor.dog.id)}
               />
             ),
           },
@@ -140,7 +140,7 @@ function CollectionDetailPage() {
     if (collectionData.data?.competitors) {
       const seen: string[] = [];
       for (const c of collectionData.data.competitors) {
-        const dogId = c.competitor.dogId;
+        const dogId = c.competitor.dog.id;
 
         for (const e of c.exercises) {
           const touched = e.collectionScores.some((s) => s.score !== 0);
@@ -168,7 +168,7 @@ function CollectionDetailPage() {
     }
 
     const competitorScores = collectionData.data.competitors.find(
-      (c) => c.competitor.dogId === selectedCompetitor()?.value,
+      (c) => c.competitor.dog.id === selectedCompetitor()?.value,
     );
 
     if (!competitorScores) {
@@ -176,7 +176,7 @@ function CollectionDetailPage() {
     }
 
     return applyPendingScores({
-      dogId: competitorScores.competitor.dogId ?? "",
+      dogId: competitorScores.competitor.dog.id ?? "",
       exercises: competitorScores.exercises,
       pendingScores: pendingScores(),
     });
@@ -226,7 +226,7 @@ function CollectionDetailPage() {
       competitorScores.exercises.forEach((exerciseScores) => {
         exerciseScores.collectionScores.forEach((score) => {
           const scoreKey = getPendingScoreKey({
-            dogId: competitorScores.competitor.dogId ?? "",
+            dogId: competitorScores.competitor.dog.id ?? "",
             exerciseId: exerciseScores.exercise.id,
             judgeId: score.judge.id,
           });

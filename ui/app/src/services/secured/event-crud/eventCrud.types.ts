@@ -1,5 +1,10 @@
-import { FederationConfiguration } from "@/services/secured/configurations/configurations.types";
+import { FederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+
+export interface IdNameDTO {
+  id: string;
+  name: string;
+}
 
 export interface CreateEventRequestDTO {
   id: string;
@@ -9,14 +14,24 @@ export interface CreateEventRequestDTO {
 }
 
 export interface UpdateEventRequestDTO {
-  competitors?: EventCompetitor[];
+  competitors?: EventCompetitorRequestDTO[];
   configurationId?: string;
-  exercises?: EventExercise[];
-  judges?: EventJudgeDetail[];
+  exercises?: EventExerciseRequestDTO[];
+  judges?: EventJudgeDetailRequestDTO[];
   name: string;
 }
 
-export interface EventCompetitor {
+export interface EventCompetitorResponseDTO {
+  dog: IdNameDTO;
+  order?: number;
+  team?: string;
+  identity?: string;
+  owner?: string;
+  country?: string;
+  status?: string;
+}
+
+export interface EventCompetitorRequestDTO {
   order?: number;
   dogId: string;
   team?: string;
@@ -38,8 +53,8 @@ export interface EventCompetitorDetail {
   status: string;
 }
 
-export interface EventConfigurationDetail {
-  federation: FederationConfiguration;
+export interface EventConfigurationDetailResponseDTO {
+  federation: FederationConfigurationResponseDTO;
   id: string;
   name: string;
 }
@@ -49,41 +64,47 @@ export interface Discipline {
   name: string;
 }
 
-export interface EventDetail {
+export interface EventDetailResponseDTO {
   competitors: EventCompetitorDetail[];
-  configuration: EventConfigurationDetail;
+  configuration: EventConfigurationDetailResponseDTO;
   discipline: Discipline;
-  exercises: EventExerciseDetail[];
+  exercises: EventExerciseDetailResponseDTO[];
   id: string;
   stageId: string;
-  judges: EventJudgeDetail[];
+  judges: EventJudgeDetailResponseDTO[];
   name: string;
   status: string;
 }
 
-export interface EventExerciseDetail extends EventExercise {
+export interface EventExerciseDetailResponseDTO extends EventExerciseRequestDTO {
   name: string;
 }
 
-export interface EventExercise {
+export interface EventExerciseRequestDTO {
   id: string;
   name: string;
   order: number;
   tags: string[];
 }
 
-export interface EventJudgeDetail {
+export interface EventJudgeDetailResponseDTO {
+  collectorEmail: string;
+  id: string;
+  name?: string;
+}
+
+export interface EventJudgeDetailRequestDTO {
   collectorEmail: string;
   id: string;
 }
 
 export interface EventEditorDraft {
   competitors: EventCompetitorDetail[];
-  configuration: EventConfigurationDetail;
+  configuration: EventConfigurationDetailResponseDTO;
   discipline: Discipline;
-  exercises: EventExerciseDetail[];
+  exercises: EventExerciseDetailResponseDTO[];
   id: string;
-  judges: EventJudgeDetail[];
+  judges: EventJudgeDetailResponseDTO[];
   name: string;
   stageId: string;
   status: string;
@@ -94,6 +115,6 @@ export interface ApiEventRollbackPayload {
   entityId: string;
   previousCompetition: CompetitionResponseDTO | null;
   previousCompetitions: CompetitionResponseDTO[] | null;
-  previousEvent: EventDetail | null;
+  previousEvent: EventDetailResponseDTO | null;
   stageId: string;
 }

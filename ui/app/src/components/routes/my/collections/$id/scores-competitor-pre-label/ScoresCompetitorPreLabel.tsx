@@ -1,10 +1,10 @@
-import { EventCompetitor } from "@/services/secured/event-crud/eventCrud.types";
+import { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 interface ScoresCompetitorPreLabelProps {
-  competitor: EventCompetitor;
+  competitor: EventCompetitorResponseDTO;
   seen: boolean;
 }
 

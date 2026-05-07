@@ -14,7 +14,7 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import type { JudgeResponseDTO, JudgeRollbackPayload } from "./judgeCrud.types";
+import type { IdNameDTO, JudgeRollbackPayload } from "./judgeCrud.types";
 import {
   mergeJudgesWithDrafts,
   removeJudgeDraft,
@@ -26,14 +26,14 @@ import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 const JUDGE_SNAPSHOT_PREFIX = "judge:";
 
 export const toJudgeListItem = (
-  judge: JudgeResponseDTO,
-  previousJudge?: JudgeResponseDTO,
-): JudgeResponseDTO => ({
+  judge: IdNameDTO,
+  previousJudge?: IdNameDTO,
+): IdNameDTO => ({
   id: judge.id,
   name: judge.name ?? previousJudge?.name ?? "",
 });
 
-export const buildNextJudges = (previousJudges: JudgeResponseDTO[], judge: JudgeResponseDTO) => {
+export const buildNextJudges = (previousJudges: IdNameDTO[], judge: IdNameDTO) => {
   const nextJudge = toJudgeListItem(
     judge,
     previousJudges.find(({ id }) => id === judge.id),
@@ -47,24 +47,24 @@ export const buildNextJudges = (previousJudges: JudgeResponseDTO[], judge: Judge
       );
 };
 
-export const buildJudgesWithoutEntity = (previousJudges: JudgeResponseDTO[], id: string) =>
+export const buildJudgesWithoutEntity = (previousJudges: IdNameDTO[], id: string) =>
   previousJudges.filter((judge) => judge.id !== id);
 
 const getBaseJudgesFromCache = () =>
-  queryClient.getQueryData<JudgeResponseDTO[]>(getJudgesQueryKey()) ?? [];
+  queryClient.getQueryData<IdNameDTO[]>(getJudgesQueryKey()) ?? [];
 
 export const getVisibleJudges = () =>
   mergeJudgesWithDrafts(getBaseJudgesFromCache());
 
 const syncJudgeRemovalToCache = (id: string) => {
-  queryClient.setQueryData<JudgeResponseDTO[] | undefined>(
+  queryClient.setQueryData<IdNameDTO[] | undefined>(
     getJudgesQueryKey(),
     (previousJudges) => buildJudgesWithoutEntity(previousJudges ?? [], id),
   );
 };
 
-const syncJudgesToCache = (judges: JudgeResponseDTO[]) => {
-  queryClient.setQueryData<JudgeResponseDTO[]>(getJudgesQueryKey(), judges);
+const syncJudgesToCache = (judges: IdNameDTO[]) => {
+  queryClient.setQueryData<IdNameDTO[]>(getJudgesQueryKey(), judges);
 };
 
 export const commitJudgeMutationSuccess = async ({
@@ -93,18 +93,18 @@ export const commitJudgeMutationSuccess = async ({
 
 export const readJudgesSnapshot = () =>
   removeQuerySnapshotsByPrefix(JUDGE_SNAPSHOT_PREFIX).then(() =>
-    getPersistedQuerySnapshot<JudgeResponseDTO[]>(JUDGES_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<IdNameDTO[]>(JUDGES_SNAPSHOT_ID),
   );
 
-export const saveJudgesSnapshot = (judges: JudgeResponseDTO[]) =>
+export const saveJudgesSnapshot = (judges: IdNameDTO[]) =>
   removeQuerySnapshotsByPrefix(JUDGE_SNAPSHOT_PREFIX).then(() =>
     saveQuerySnapshot(JUDGES_SNAPSHOT_ID, judges),
   );
 
 export const createJudgeRollbackPayload = async (
   entityId: string,
-  previousJudge: JudgeResponseDTO | null,
-  previousJudgesFromCache?: JudgeResponseDTO[],
+  previousJudge: IdNameDTO | null,
+  previousJudgesFromCache?: IdNameDTO[],
 ): Promise<JudgeRollbackPayload> => ({
   entityId,
   previousJudge,
@@ -180,7 +180,7 @@ const judgePendingTaskHandler: PendingTaskHandler = {
 
 registerPendingTaskHandler("judge", judgePendingTaskHandler);
 
-export const applyJudgeUpsert = (judge: JudgeResponseDTO) => {
+export const applyJudgeUpsert = (judge: IdNameDTO) => {
   upsertJudgeDraft(judge);
   void saveJudgesSnapshot(buildNextJudges(getVisibleJudges(), judge));
 };

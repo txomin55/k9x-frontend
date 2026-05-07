@@ -8,7 +8,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
-import { EventJudgeDetail } from "@/services/secured/event-crud/eventCrud.types";
+import { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -17,14 +17,16 @@ type EventJudgesSectionProps = {
   onCommitJudge: () => void;
   isCreatingJudge: boolean;
   isEditing: boolean;
-  judgeDialogDraft: EventJudgeDetail | null;
-  judges: EventJudgeDetail[];
+  judgeDialogDraft: EventJudgeDetailResponseDTO | null;
+  judges: EventJudgeDetailResponseDTO[];
   onAddJudge: () => void;
   onDeleteJudge: (judgeId: string) => void;
   onJudgeDraftChange: (
-    updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
+    updater: (
+      current: EventJudgeDetailResponseDTO | null,
+    ) => EventJudgeDetailResponseDTO | null,
   ) => void;
-  onOpenJudgeEditor: (judge: EventJudgeDetail) => void;
+  onOpenJudgeEditor: (judge: EventJudgeDetailResponseDTO) => void;
   onCreateJudge: () => void;
 };
 
@@ -76,13 +78,18 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
           </CircleButton>
         </Show>
       </div>
-      <Show when={props.judges.length > 0} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.NO_JUDGES")}</p>}>
+      <Show
+        when={props.judges.length > 0}
+        fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.NO_JUDGES")}</p>}
+      >
         <div class="event-judges-section__judges">
           <Index each={props.judges}>
             {(judge) => (
               <Card
                 topLeft={getJudgeName(judge().id)}
-                description={<p>{`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EMAIL")}: ${judge().collectorEmail}`}</p>}
+                description={
+                  <p>{`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EMAIL")}: ${judge().collectorEmail}`}</p>
+                }
                 actions={
                   props.isEditing ? (
                     <div class="event-judges-section__judges--actions">

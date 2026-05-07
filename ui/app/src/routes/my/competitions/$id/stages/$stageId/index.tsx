@@ -15,7 +15,7 @@ import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequestDTO,
-  EventDetail,
+  EventDetailResponseDTO,
   EventEditorDraft,
   UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
@@ -212,7 +212,7 @@ function CompetitionStageDetailBody(props: {
     closeEventEditor();
   });
 
-  const openEventEditor = (event: EventDetail) => {
+  const openEventEditor = (event: EventDetailResponseDTO) => {
     setIsCreatingEvent(false);
     setEditingEventId(event.id);
     setEventDialogDraft(toEventEditorDraft(event));
@@ -273,7 +273,7 @@ function CompetitionStageDetailBody(props: {
       closeEventEditor();
     }
   };
-  const createNavigateToEvent = (event: Accessor<EventDetail>) => () =>
+  const createNavigateToEvent = (event: Accessor<EventDetailResponseDTO>) => () =>
     void navigate({
       params: {
         eventId: event().id,
@@ -283,7 +283,7 @@ function CompetitionStageDetailBody(props: {
       to: "/my/competitions/$id/stages/$stageId/events/$eventId",
     });
   const createEditDialogOpenChange =
-    (event: Accessor<EventDetail>) => (isOpen: boolean) => {
+    (event: Accessor<EventDetailResponseDTO>) => (isOpen: boolean) => {
       if (isOpen) {
         openEventEditor(event());
         return;
@@ -293,7 +293,7 @@ function CompetitionStageDetailBody(props: {
         closeEventEditor();
       }
     };
-  const deleteEventClick = (event: Accessor<EventDetail>) => () => {
+  const deleteEventClick = (event: Accessor<EventDetailResponseDTO>) => () => {
     if (editingEventId() === event().id) {
       closeEventEditor();
     }

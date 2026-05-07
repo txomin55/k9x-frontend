@@ -1,5 +1,5 @@
-import { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import { EventCompetitor } from "@/services/secured/event-crud/eventCrud.types";
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 
 export interface CollectionsResponseDTO {
   competitionName: string;
@@ -7,7 +7,7 @@ export interface CollectionsResponseDTO {
   eventName: string;
   eventId: string;
   status: string;
-  judges: JudgeResponseDTO[];
+  judges: IdNameDTO[];
 }
 
 interface ScoresConfigurationResponseDTO {
@@ -22,22 +22,22 @@ export interface CollectionResponseDTO {
 
 export interface CompetitorScoresResponseDTO {
   exercises: ExerciseScoresResponseDTO[];
-  competitor: EventCompetitor;
+  competitor: EventCompetitorResponseDTO;
 }
 
-export interface Exercise {
+export interface ExerciseResponseDTO {
   id: string;
   name: string;
   order: number;
 }
 
 export interface CollectionScoreResponseDTO {
-  judge: JudgeResponseDTO;
+  judge: IdNameDTO;
   score: number;
 }
 
 export interface ExerciseScoresResponseDTO {
-  exercise: Exercise;
+  exercise: ExerciseResponseDTO;
   collectionScores: CollectionScoreResponseDTO[];
 }
 

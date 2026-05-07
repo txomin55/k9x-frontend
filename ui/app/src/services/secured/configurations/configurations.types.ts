@@ -1,32 +1,32 @@
-export interface ConfigurationExercise {
+export interface ConfigurationExerciseResponseDTO {
   id: string;
   name: string;
 }
 
-export interface Configuration {
+export interface ConfigurationResponseDTO {
   id: string;
   name: string;
-  exercises?: ConfigurationExercise[];
+  exercises?: ConfigurationExerciseResponseDTO[];
 }
 
-export interface FederationConfiguration {
+export interface FederationConfigurationResponseDTO {
   id: string;
   name: string;
   country: string;
 }
 
-export const EMPTY_FEDERATION_CONFIGURATION: FederationConfiguration = {
+export const EMPTY_FEDERATION_CONFIGURATION: FederationConfigurationResponseDTO = {
   country: "",
   id: "",
   name: "",
 };
 
-export interface FederationConfigurations {
-  info: FederationConfiguration;
-  configurations: Configuration[];
+export interface FederationConfigurationsResponseDTO {
+  info: FederationConfigurationResponseDTO;
+  configurations: ConfigurationResponseDTO[];
 }
 
-export interface DisciplineFederationConfigurations {
-  federations: FederationConfigurations[];
+export interface DisciplineFederationConfigurationResponseDTO {
+  federations: FederationConfigurationsResponseDTO[];
   disciplineId: string;
 }

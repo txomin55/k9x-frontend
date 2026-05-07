@@ -1,9 +1,9 @@
 import type {
-  EventDetail,
+  EventDetailResponseDTO,
   EventEditorDraft,
 } from "@/services/secured/event-crud/eventCrud.types";
 
-export const toEventEditorDraft = (event: EventDetail): EventEditorDraft => ({
+export const toEventEditorDraft = (event: EventDetailResponseDTO): EventEditorDraft => ({
   competitors: event.competitors.map((competitor) => ({ ...competitor })),
   configuration: {
     federation: event.configuration.federation,

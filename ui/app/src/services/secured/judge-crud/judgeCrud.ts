@@ -13,15 +13,14 @@ import {
   saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
 import type {
-  CreateJudgeRequestDTO,
-  JudgeResponseDTO,
+  IdNameDTO,
   UpdateJudgeRequestDTO,
 } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 
 const refreshJudgesSnapshot = async () => {
-  const judges = await rawRequest<JudgeResponseDTO[]>({
+  const judges = await rawRequest<IdNameDTO[]>({
     path: "/secured/judges",
   });
 
@@ -75,22 +74,22 @@ export const useJudges = (options?: TanstackCreateQuery) => {
 };
 
 const mergeJudgeWithPayload = (
-  payload: CreateJudgeRequestDTO,
-  existingJudge?: JudgeResponseDTO,
-): JudgeResponseDTO => ({
+  payload: IdNameDTO,
+  existingJudge?: IdNameDTO,
+): IdNameDTO => ({
   id: payload.id ?? existingJudge?.id ?? globalThis.crypto.randomUUID(),
   name: payload.name ?? existingJudge?.name ?? "",
 });
 
 const updateJudgeProjection = (
-  existingJudge: JudgeResponseDTO,
+  existingJudge: IdNameDTO,
   payload: UpdateJudgeRequestDTO,
-): JudgeResponseDTO => ({
+): IdNameDTO => ({
   ...existingJudge,
   name: payload.name,
 });
 
-export const createJudge = (payload: CreateJudgeRequestDTO) => {
+export const createJudge = (payload: IdNameDTO) => {
   const previousJudges = getVisibleJudges();
   const draftJudge = mergeJudgeWithPayload(payload);
 
@@ -118,7 +117,7 @@ export const updateJudge = (id: string, payload: UpdateJudgeRequestDTO) => {
   const previousJudge = previousJudges.find((judge) => judge.id === id) ?? null;
 
   if (!previousJudge) {
-    throw new Error(`JudgeResponseDTO ${id} not found`);
+    throw new Error(`IdNameDTO ${id} not found`);
   }
 
   const draftJudge = updateJudgeProjection(previousJudge, payload);

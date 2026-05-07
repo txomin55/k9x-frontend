@@ -70,7 +70,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
   competitors: [
     {
       competitor: {
-        dogId: "dog-1",
+        dog: { id: "dog-1", name: "Dog 1" },
         owner: "Owner",
         order: 1,
       } as CollectionResponseDTO["competitors"][number]["competitor"],
@@ -78,14 +78,14 @@ const createCollection = (score: number): CollectionResponseDTO => ({
         {
           exercise: {
             id: "exercise-1",
-            name: "Exercise 1",
+            name: "ExerciseResponseDTO 1",
             order: 1,
           },
           collectionScores: [
             {
               judge: {
                 id: "judge-1",
-                name: "JudgeResponseDTO 1",
+                name: "IdNameDTO 1",
               } as CollectionResponseDTO["competitors"][number]["exercises"][number]["collectionScores"][number]["judge"],
               score,
             },

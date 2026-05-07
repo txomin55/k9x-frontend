@@ -1,4 +1,4 @@
-import type { EventJudgeDetail } from "@/services/secured/event-crud/eventCrud.types";
+import type { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -13,10 +13,10 @@ import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 
 type JudgeEditorFormProps = {
-  draft: () => EventJudgeDetail;
+  draft: () => EventJudgeDetailResponseDTO;
   onCommit: () => void;
   onDraftChange: (
-    updater: (current: EventJudgeDetail | null) => EventJudgeDetail | null,
+    updater: (current: EventJudgeDetailResponseDTO | null) => EventJudgeDetailResponseDTO | null,
   ) => void;
   onCancel: () => void;
   onCreate: () => void;

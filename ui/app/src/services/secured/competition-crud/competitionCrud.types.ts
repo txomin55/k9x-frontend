@@ -1,6 +1,6 @@
-import { CompetitionStageDetail } from "@/services/secured/stage-crud/stageCrud.types";
+import { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
 
-export interface CompetitionNotificationDetail {
+export interface CompetitionNotificationDetailResponseDTO {
   date: number;
   id: string;
   text: string;
@@ -12,14 +12,9 @@ export interface CompetitionResponseDTO {
   id: string;
   address?: string;
   name: string;
-  notifications?: CompetitionNotificationDetail[];
-  stages?: CompetitionStageDetail[];
+  notifications?: CompetitionNotificationDetailResponseDTO[];
+  stages?: CompetitionStageDetailResponseDTO[];
   status: string;
-}
-
-export interface CreateCompetitionRequestDTO {
-  id: string;
-  name: string;
 }
 
 export interface UpdateCompetitionRequestDTO {

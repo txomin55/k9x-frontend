@@ -22,13 +22,13 @@ import {
 } from "@/services/secured/competition-crud/competitionDraftStore";
 import {
   ApiStageRollbackPayload,
-  CompetitionStageDetail,
+  CompetitionStageDetailResponseDTO,
   StageEditorModel,
 } from "@/services/secured/stage-crud/stageCrud.types";
 
 const toCompetitionDetailStage = (
   stage: StageEditorModel,
-): CompetitionStageDetail => ({
+): CompetitionStageDetailResponseDTO => ({
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,
   events: stage.events,

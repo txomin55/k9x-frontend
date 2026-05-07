@@ -21,9 +21,9 @@
 ### MVP
 
 - cerrar formularios y poner un success
-- Ver como simplificar el modelo oas
-    - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put,
-      usar
+- ~~Ver como simplificar el modelo oas~~
+    - ~~Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put,
+      usar~~
 - ~~Borrar endpoints fuera de mvp, (perros publicos)~~
 - ~~Endpoint de hacer enroll solo tiene que devolver los perros owned~~
 - ~~Modificar URLs de colección para que cuelgue de events/id/classification~~

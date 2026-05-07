@@ -1,4 +1,4 @@
-import type { CreateJudgeRequestDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -7,9 +7,9 @@ import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type JudgeFormProps = {
-  draft: () => CreateJudgeRequestDTO;
+  draft: () => IdNameDTO;
   onDraftChange: (
-    updater: (current: CreateJudgeRequestDTO) => CreateJudgeRequestDTO,
+    updater: (current: IdNameDTO) => IdNameDTO,
   ) => void;
   onCancel: () => void;
   onSave: () => void;
@@ -17,7 +17,7 @@ type JudgeFormProps = {
 
 export default function JudgeForm(props: JudgeFormProps) {
   const i18n = useI18n();
-  const updateField = (field: keyof CreateJudgeRequestDTO) => (value: string) => {
+  const updateField = (field: keyof IdNameDTO) => (value: string) => {
     props.onDraftChange((current) => ({
       ...current,
       [field]: value,

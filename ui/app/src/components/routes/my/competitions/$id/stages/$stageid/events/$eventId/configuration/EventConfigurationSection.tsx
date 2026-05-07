@@ -1,5 +1,5 @@
 import type {
-  EventDetail,
+  EventDetailResponseDTO,
   EventEditorDraft,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { Show } from "solid-js";
@@ -10,7 +10,7 @@ import "./styles.css";
 
 export default function (props: {
   draft: EventEditorDraft;
-  event: EventDetail;
+  event: EventDetailResponseDTO;
   isEditing: boolean;
   onDraftChange: (
     updater: (current: EventEditorDraft) => EventEditorDraft,

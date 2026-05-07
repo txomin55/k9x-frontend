@@ -1,13 +1,13 @@
 import { createSignal } from "solid-js";
-import type { JudgeResponseDTO } from "./judgeCrud.types";
+import type { IdNameDTO } from "./judgeCrud.types";
 
-const [judgeDrafts, setJudgeDrafts] = createSignal<Record<string, JudgeResponseDTO>>({});
+const [judgeDrafts, setJudgeDrafts] = createSignal<Record<string, IdNameDTO>>({});
 const [removedJudgeIds, setRemovedJudgeIds] = createSignal<string[]>([]);
 
 const removeId = (ids: string[], id: string) =>
   ids.filter((entry) => entry !== id);
 
-export const mergeJudgesWithDrafts = (baseJudges?: JudgeResponseDTO[]) => {
+export const mergeJudgesWithDrafts = (baseJudges?: IdNameDTO[]) => {
   const drafts = judgeDrafts();
   const removedIds = new Set(removedJudgeIds());
   const judges = baseJudges ?? [];
@@ -22,7 +22,7 @@ export const mergeJudgesWithDrafts = (baseJudges?: JudgeResponseDTO[]) => {
   return [...appendedDrafts, ...nextJudges];
 };
 
-export const upsertJudgeDraft = (judge: JudgeResponseDTO) => {
+export const upsertJudgeDraft = (judge: IdNameDTO) => {
   setJudgeDrafts((current) => ({
     ...current,
     [judge.id]: judge,
@@ -44,14 +44,14 @@ export const removeJudgeDraft = (judgeId: string) => {
 };
 
 export const replaceJudgeDrafts = (
-  visibleJudges: JudgeResponseDTO[] | null,
-  baseJudges?: JudgeResponseDTO[],
+  visibleJudges: IdNameDTO[] | null,
+  baseJudges?: IdNameDTO[],
 ) => {
   const baseById = new Map(
     (baseJudges ?? []).map((judge) => [judge.id, judge]),
   );
   const visibleIds = new Set((visibleJudges ?? []).map((judge) => judge.id));
-  const nextDrafts: Record<string, JudgeResponseDTO> = {};
+  const nextDrafts: Record<string, IdNameDTO> = {};
   const nextRemovedIds: string[] = [];
 
   for (const judge of visibleJudges ?? []) {

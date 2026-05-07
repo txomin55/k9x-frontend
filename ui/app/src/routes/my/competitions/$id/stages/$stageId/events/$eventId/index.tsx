@@ -16,12 +16,12 @@ import EventExercisesSection from "@/components/routes/my/competitions/$id/stage
 import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
-  EventCompetitor,
+  EventCompetitorRequestDTO,
   EventCompetitorDetail,
-  EventDetail,
+  EventDetailResponseDTO,
   EventEditorDraft,
-  EventExerciseDetail,
-  EventJudgeDetail,
+  EventExerciseDetailResponseDTO,
+  EventJudgeDetailResponseDTO,
   UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
@@ -123,7 +123,7 @@ function CompetitionEventDetailPage() {
 
 function CompetitionEventDetailContentContainer(props: {
   competitionId: string;
-  event: Accessor<EventDetail | undefined>;
+  event: Accessor<EventDetailResponseDTO | undefined>;
   eventId: string;
   onDeleteEvent: (eventId: string) => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
@@ -132,7 +132,7 @@ function CompetitionEventDetailContentContainer(props: {
   const i18n = useI18n();
   const navigate = useNavigate();
   const [resolvedEvent, setResolvedEvent] = createSignal<
-    EventDetail | undefined
+    EventDetailResponseDTO | undefined
   >(props.event());
 
   createEffect(() => {
@@ -180,7 +180,7 @@ function CompetitionEventDetailContentContainer(props: {
 }
 
 function CompetitionEventDetailBody(props: {
-  event: Accessor<EventDetail>;
+  event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
 }) {
@@ -199,13 +199,13 @@ function CompetitionEventDetailBody(props: {
   const [isCreatingJudge, setIsCreatingJudge] = createSignal(false);
   const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(null);
   const [judgeDialogDraft, setJudgeDialogDraft] =
-    createSignal<EventJudgeDetail | null>(null);
+    createSignal<EventJudgeDetailResponseDTO | null>(null);
   const [isCreatingExercise, setIsCreatingExercise] = createSignal(false);
   const [editingExerciseId, setEditingExerciseId] = createSignal<string | null>(
     null,
   );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
-    createSignal<EventExerciseDetail | null>(null);
+    createSignal<EventExerciseDetailResponseDTO | null>(null);
   const configurations = useConfigurations({
     staleTime: Number.POSITIVE_INFINITY,
   });
@@ -246,7 +246,7 @@ function CompetitionEventDetailBody(props: {
     setExerciseDialogDraft(null);
   };
 
-  const getEventDraftKey = (event: EventEditorDraft | EventDetail) => {
+  const getEventDraftKey = (event: EventEditorDraft | EventDetailResponseDTO) => {
     return JSON.stringify({
       competitors: event.competitors,
       configuration: event.configuration,
@@ -319,10 +319,10 @@ function CompetitionEventDetailBody(props: {
   };
 
   const reorderExercises = (
-    exercises: EventExerciseDetail[],
+    exercises: EventExerciseDetailResponseDTO[],
     order: number,
-    updatedExercise: EventExerciseDetail,
-  ): EventExerciseDetail[] => {
+    updatedExercise: EventExerciseDetailResponseDTO,
+  ): EventExerciseDetailResponseDTO[] => {
     return reorderItems(
       exercises,
       updatedExercise,
@@ -337,7 +337,7 @@ function CompetitionEventDetailBody(props: {
 
   const mapCompetitorForUpdate = (
     competitor: EventCompetitorDetail,
-  ): EventCompetitor => {
+  ): EventCompetitorRequestDTO => {
     return {
       dogId: competitor.dogId,
       identity: competitor.identity,
@@ -348,12 +348,12 @@ function CompetitionEventDetailBody(props: {
     };
   };
 
-  const createDefaultJudge = (): EventJudgeDetail => ({
+  const createDefaultJudge = (): EventJudgeDetailResponseDTO => ({
     collectorEmail: "",
     id: globalThis.crypto.randomUUID(),
   });
 
-  const createDefaultExercise = (order: number): EventExerciseDetail => {
+  const createDefaultExercise = (order: number): EventExerciseDetailResponseDTO => {
     return {
       id: globalThis.crypto.randomUUID(),
       order,
@@ -653,7 +653,7 @@ function CompetitionEventDetailBody(props: {
     );
   };
 
-  const handleOpenJudgeEditor = (judge: EventJudgeDetail) => {
+  const handleOpenJudgeEditor = (judge: EventJudgeDetailResponseDTO) => {
     setIsCreatingJudge(false);
     setEditingJudgeId(judge.id);
     setJudgeDialogDraft({ ...judge });
@@ -683,7 +683,7 @@ function CompetitionEventDetailBody(props: {
     );
   };
 
-  const handleOpenExerciseEditor = (exercise: EventExerciseDetail) => {
+  const handleOpenExerciseEditor = (exercise: EventExerciseDetailResponseDTO) => {
     setIsCreatingExercise(false);
     setEditingExerciseId(exercise.id);
     setExerciseDialogDraft({ ...exercise });

@@ -3,8 +3,8 @@ import { useConfigurations } from "@/services/secured/configurations/configurati
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import {
-  FederationConfiguration,
-  FederationConfigurations,
+  FederationConfigurationResponseDTO,
+  FederationConfigurationsResponseDTO,
 } from "@/services/secured/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
@@ -18,7 +18,7 @@ type ConfigurationEditorFormProps = {
 };
 
 const getFederationOption = (
-  federation: FederationConfigurations,
+  federation: FederationConfigurationsResponseDTO,
 ): AtomSelectOption => ({
   label: federation.info.name,
   value: federation.info.id,
@@ -101,7 +101,7 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as FederationConfiguration,
+                federation: federation.info as FederationConfigurationResponseDTO,
                 id: "",
                 name: "",
               },
@@ -129,7 +129,7 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as FederationConfiguration,
+                federation: federation.info as FederationConfigurationResponseDTO,
                 id: configuration.id,
                 name: configuration.name,
               },

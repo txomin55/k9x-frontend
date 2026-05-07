@@ -2,12 +2,12 @@ import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { queryClient } from "@/utils/http/query-client";
-import type { DisciplineFederationConfigurations } from "./configurations.types";
+import type { DisciplineFederationConfigurationResponseDTO } from "./configurations.types";
 
 export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 
 const fetchConfigurations = () =>
-  rawRequest<DisciplineFederationConfigurations[]>({
+  rawRequest<DisciplineFederationConfigurationResponseDTO[]>({
     path: "/secured/disciplines/configurations",
   });
 

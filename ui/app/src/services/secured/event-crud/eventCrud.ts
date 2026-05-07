@@ -19,24 +19,25 @@ import {
 import type {
   CreateEventRequestDTO,
   Discipline,
-  EventCompetitor,
+  EventCompetitorRequestDTO,
   EventCompetitorDetail,
-  EventConfigurationDetail,
-  EventDetail,
-  EventExercise,
-  EventExerciseDetail,
-  EventJudgeDetail,
+  EventConfigurationDetailResponseDTO,
+  EventDetailResponseDTO,
+  EventExerciseRequestDTO,
+  EventExerciseDetailResponseDTO,
+  EventJudgeDetailRequestDTO,
+  EventJudgeDetailResponseDTO,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
-import { DisciplineFederationConfigurations } from "@/services/secured/configurations/configurations.types";
+import { DisciplineFederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
 const toApiExercise = (
-  exercise: EventExercise,
-  previousExercise?: EventExerciseDetail,
-): EventExerciseDetail => ({
+  exercise: EventExerciseRequestDTO,
+  previousExercise?: EventExerciseDetailResponseDTO,
+): EventExerciseDetailResponseDTO => ({
   id: exercise.id ?? previousExercise?.id,
   order: exercise.order ?? previousExercise?.order ?? 0,
   name: previousExercise?.name ?? "",
@@ -44,9 +45,9 @@ const toApiExercise = (
 });
 
 const toApiEventConfiguration = (
-  configuration?: EventConfigurationDetail,
-  previousConfiguration?: EventConfigurationDetail,
-): EventConfigurationDetail => ({
+  configuration?: EventConfigurationDetailResponseDTO,
+  previousConfiguration?: EventConfigurationDetailResponseDTO,
+): EventConfigurationDetailResponseDTO => ({
   federation:
     configuration?.federation ??
     previousConfiguration?.federation ??
@@ -69,13 +70,13 @@ const toApiDiscipline = (
 const findConfigurationDetail = (
   discipline: string | undefined,
   configurationId: string | undefined,
-): EventConfigurationDetail | undefined => {
+): EventConfigurationDetailResponseDTO | undefined => {
   if (!discipline || !configurationId) {
     return undefined;
   }
 
   const configurations = queryClient.getQueryData<
-    DisciplineFederationConfigurations[]
+    DisciplineFederationConfigurationResponseDTO[]
   >(getConfigurationsQueryKey());
   const disciplineConfigurations = configurations?.find(
     (entry) => entry.disciplineId === discipline,
@@ -99,15 +100,15 @@ const findConfigurationDetail = (
 };
 
 const toApiJudge = (
-  judge: EventJudgeDetail,
-  previousJudge?: EventJudgeDetail,
-): EventJudgeDetail => ({
+  judge: EventJudgeDetailRequestDTO,
+  previousJudge?: EventJudgeDetailResponseDTO,
+): EventJudgeDetailResponseDTO => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   id: judge.id ?? previousJudge?.id ?? "",
 });
 
 const toApiCompetitor = (
-  competitor: EventCompetitor,
+  competitor: EventCompetitorRequestDTO,
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
   return {
@@ -125,12 +126,12 @@ const toApiCompetitor = (
 
 const mergeApiEventWithPayload = (
   payload: CreateEventRequestDTO | UpdateEventRequestDTO,
-  previousEvent?: EventDetail,
+  previousEvent?: EventDetailResponseDTO,
   context?: {
     eventId?: string;
     stageId?: string;
   },
-): EventDetail => {
+): EventDetailResponseDTO => {
   const isCreatePayload = "id" in payload && "stageId" in payload;
   const updatePayload = "configurationId" in payload ? payload : null;
   const createPayload = isCreatePayload ? payload : null;

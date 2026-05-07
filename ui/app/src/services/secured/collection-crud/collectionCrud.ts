@@ -163,7 +163,7 @@ const updateCollectionScoreProjection = (
 ): CollectionResponseDTO => ({
   ...previousCollection,
   competitors: previousCollection.competitors.map((competitorScores) =>
-    competitorScores.competitor.dogId === payload.dogId
+    competitorScores.competitor.dog.id === payload.dogId
       ? {
           ...competitorScores,
           exercises: competitorScores.exercises.map((exerciseScores) =>

@@ -13,7 +13,7 @@ import {
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
-  CompetitionStageDetail,
+  CompetitionStageDetailResponseDTO,
   CreateStageRequestDTO,
   StageEditorModel,
   UpdateStageRequestDTO,
@@ -47,7 +47,7 @@ const createDefaultApiStage = (competitionId: string): CreateStageRequestDTO => 
 });
 
 export const toApiStage = (
-  stage: CompetitionStageDetail,
+  stage: CompetitionStageDetailResponseDTO,
   competitionId: string,
 ): StageEditorModel => ({
   competitionId,
