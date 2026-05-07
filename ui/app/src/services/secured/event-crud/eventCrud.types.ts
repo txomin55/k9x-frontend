@@ -70,7 +70,7 @@ export interface EventDetailResponseDTO {
   discipline: Discipline;
   exercises: EventExerciseDetailResponseDTO[];
   id: string;
-  stageId: string;
+  stge: IdNameDTO;
   judges: EventJudgeDetailResponseDTO[];
   name: string;
   status: string;

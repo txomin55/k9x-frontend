@@ -141,7 +141,7 @@ const mergeApiEventWithPayload = (
     createId();
   const nextStageId =
     (isCreatePayload ? payload.stageId : context?.stageId) ??
-    previousEvent?.stageId ??
+    previousEvent?.stge.id ??
     "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
@@ -196,7 +196,10 @@ const mergeApiEventWithPayload = (
       previousEvent?.judges ??
       [],
     name: payload.name ?? previousEvent?.name ?? "",
-    stageId: nextStageId,
+    stge: {
+      id: nextStageId,
+      name: previousEvent?.stge.name ?? "",
+    },
     status: previousEvent?.status ?? "",
   };
 };
@@ -318,21 +321,21 @@ export const useApiEvent = () => {
           disciplineId: payload.disciplineId,
           id: draftApiEvent.id,
           name: draftApiEvent.name,
-          stageId: draftApiEvent.stageId,
+          stageId: draftApiEvent.stge.id,
         },
         onCommitted: () =>
           commitApiEventMutationSuccess({
             competitionId: context.competitionId,
             eventId: draftApiEvent.id,
             method: "POST",
-            stageId: draftApiEvent.stageId,
+            stageId: draftApiEvent.stge.id,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
           competitionId: context.competitionId,
           entityId: draftApiEvent.id,
           previousCompetitionsFromCache,
           previousEvent: null,
-          stageId: draftApiEvent.stageId,
+          stageId: draftApiEvent.stge.id,
         }),
         url: "/secured/events",
       });
@@ -375,7 +378,7 @@ export const useApiEvent = () => {
             competitionId: context.competitionId,
             eventId: nextApiEvent.id,
             method: "PUT",
-            stageId: nextApiEvent.stageId,
+            stageId: nextApiEvent.stge.id,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
           competitionId: context.competitionId,

@@ -90,7 +90,10 @@ export const toApiStage = (
           id: judge.id ?? "",
         })) ?? [],
       name: event.name ?? "",
-      stageId: event.stageId ?? stage.id,
+      stge: {
+        id: event.stge?.id ?? stage.id,
+        name: event.stge?.name ?? stage.name ?? "",
+      },
       status: event.status ?? "",
     })) ?? [],
   id: stage.id ?? "",

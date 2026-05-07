@@ -371,7 +371,10 @@ function CompetitionEventDetailBody(props: {
     ),
     configurationId: event.configuration.id,
     exercises: event.exercises,
-    judges: event.judges,
+    judges: event.judges.map((judge) => ({
+      collectorEmail: judge.collectorEmail,
+      id: judge.id,
+    })),
     name: eventName,
   });
 
