@@ -77,6 +77,8 @@ function StageInfoPage() {
   const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
     createEmptyEnrollDraft(),
   );
+  const getDisciplineLabel = (discipline?: string | { name?: string }) =>
+    typeof discipline === "string" ? discipline : (discipline?.name ?? "");
 
   const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
     setEnrollDraft((current) => updater(current));
@@ -149,7 +151,7 @@ function StageInfoPage() {
                   {(event) => (
                     <div class="stage-info__events--item">
                       <div>
-                        <span>{event().discipline}</span>
+                        <span>{getDisciplineLabel(event().discipline)}</span>
                         <span>
                           {event().name} ({event().competitors?.length ?? 0})
                         </span>
