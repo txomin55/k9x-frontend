@@ -130,6 +130,9 @@ importers:
       '@tanstack/solid-store':
         specifier: ^0.9.2
         version: 0.9.2(solid-js@1.9.11)
+      '@tanstack/solid-virtual':
+        specifier: ^3.13.24
+        version: 3.13.24(solid-js@1.9.11)
       '@tanstack/store':
         specifier: ^0.9.2
         version: 0.9.2

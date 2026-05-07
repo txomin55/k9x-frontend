@@ -16,14 +16,15 @@
 
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
+- hacer que la app a 720 cambie de lista de cards a modo tabla
 
 ### MVP
 
-- Ver como simplificar el modelo oas
-- Borrar endpoints fuera de mvp, (perros publicos)
-- hacer que la app a 720 cambie de lista de cards a modo tabla
 - cerrar formularios y poner un success
-- Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put, usar
+- Ver como simplificar el modelo oas
+    - Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put,
+      usar
+- ~~Borrar endpoints fuera de mvp, (perros publicos)~~
 - ~~Endpoint de hacer enroll solo tiene que devolver los perros owned~~
 - ~~Modificar URLs de colección para que cuelgue de events/id/classification~~
 - ~~añadir boton de crear perros para competidor en caso de no tener ninguno~~
