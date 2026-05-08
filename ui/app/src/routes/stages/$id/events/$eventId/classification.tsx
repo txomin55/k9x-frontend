@@ -3,7 +3,15 @@ import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import Card from "@lib/components/molecules/card/Card";
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
 export const Route = createFileRoute(
@@ -83,6 +91,7 @@ function EventClassificationPage() {
         {(classification) => (
           <div>
             <p>--Event {classification().event.name}</p>
+            <p>--LastUpdated {classification().lastUpdated}</p>
             <p>--Stage {classification().stage.name}</p>
             <p>--Discipline {classification().discipline.name}</p>
             <p>--Classification</p>

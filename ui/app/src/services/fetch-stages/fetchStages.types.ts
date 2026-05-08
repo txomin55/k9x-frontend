@@ -69,6 +69,7 @@ export interface StageEventClassificationResponseDTO {
   discipline: IdNameDTO;
   stage: IdNameDTO;
   configuration: IdNameDTO;
+  lastUpdated: number;
   competitors: StageEventClassificationItemResponseDTO[];
 }
 
