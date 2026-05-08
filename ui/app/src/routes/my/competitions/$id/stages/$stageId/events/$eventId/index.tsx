@@ -1,40 +1,33 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/judges/EventJudgesSection";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
-  EventCompetitorRequestDTO,
   EventCompetitorDetail,
+  EventCompetitorRequestDTO,
   EventDetailResponseDTO,
   EventEditorDraft,
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/configuration/EventConfigurationSection";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
+import ObdxCompetitionEventDetailBody
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBody";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -110,72 +103,22 @@ function CompetitionEventDetailPage() {
   return params().eventId === "new" ? (
     <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CREATING_EVENT")}</span>
   ) : (
-    <CompetitionEventDetailContentContainer
+    <ObdxCompetitionEventDetailBody
       competitionId={params().id}
       event={getEvent(params().id, params().stageId, params().eventId)}
       eventId={params().eventId}
       onDeleteEvent={handleDeleteEvent}
       onUpdate={handleUpdateEvent}
       stageId={params().stageId}
-    />
-  );
-}
-
-function CompetitionEventDetailContentContainer(props: {
-  competitionId: string;
-  event: Accessor<EventDetailResponseDTO | undefined>;
-  eventId: string;
-  onDeleteEvent: (eventId: string) => void;
-  onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
-  stageId: string;
-}) {
-  const i18n = useI18n();
-  const navigate = useNavigate();
-  const [resolvedEvent, setResolvedEvent] = createSignal<
-    EventDetailResponseDTO | undefined
-  >(props.event());
-
-  createEffect(() => {
-    const currentEvent = props.event();
-
-    if (!currentEvent) return;
-
-    setResolvedEvent(currentEvent);
-  });
-
-  const eventAccessor = () => resolvedEvent()!;
-
-  const handleDelete = () => {
-    props.onDeleteEvent(props.eventId);
-    void navigate({
-      params: { id: props.competitionId, stageId: props.stageId },
-      to: "/my/competitions/$id/stages/$stageId",
-    });
-  };
-
-  return (
-    <div class="competition-event-detail">
-      <Suspense
-        fallback={
-          <span>
-            {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.LOADING_EVENT_DETAIL")}
-          </span>
-        }
-      >
-        <Show
-          when={resolvedEvent()}
-          fallback={
-            <p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_NOT_FOUND")}</p>
-          }
-        >
-          <CompetitionEventDetailBody
-            event={eventAccessor}
-            onDelete={handleDelete}
-            onUpdate={props.onUpdate}
-          />
-        </Show>
-      </Suspense>
-    </div>
+    >
+      {({ event, onDelete, onUpdate }) => (
+        <CompetitionEventDetailBody
+          event={event}
+          onDelete={onDelete}
+          onUpdate={onUpdate}
+        />
+      )}
+    </ObdxCompetitionEventDetailBody>
   );
 }
 
@@ -246,7 +189,9 @@ function CompetitionEventDetailBody(props: {
     setExerciseDialogDraft(null);
   };
 
-  const getEventDraftKey = (event: EventEditorDraft | EventDetailResponseDTO) => {
+  const getEventDraftKey = (
+    event: EventEditorDraft | EventDetailResponseDTO,
+  ) => {
     return JSON.stringify({
       competitors: event.competitors,
       configuration: event.configuration,
@@ -353,7 +298,9 @@ function CompetitionEventDetailBody(props: {
     id: globalThis.crypto.randomUUID(),
   });
 
-  const createDefaultExercise = (order: number): EventExerciseDetailResponseDTO => {
+  const createDefaultExercise = (
+    order: number,
+  ): EventExerciseDetailResponseDTO => {
     return {
       id: globalThis.crypto.randomUUID(),
       order,
@@ -686,7 +633,9 @@ function CompetitionEventDetailBody(props: {
     );
   };
 
-  const handleOpenExerciseEditor = (exercise: EventExerciseDetailResponseDTO) => {
+  const handleOpenExerciseEditor = (
+    exercise: EventExerciseDetailResponseDTO,
+  ) => {
     setIsCreatingExercise(false);
     setEditingExerciseId(exercise.id);
     setExerciseDialogDraft({ ...exercise });

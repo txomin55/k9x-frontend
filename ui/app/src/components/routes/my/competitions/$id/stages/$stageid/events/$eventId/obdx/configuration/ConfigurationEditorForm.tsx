@@ -1,7 +1,7 @@
 import { createMemo } from "solid-js";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect from "library/src/components/atoms/select/AtomSelect";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import {
   FederationConfigurationResponseDTO,
   FederationConfigurationsResponseDTO,
@@ -101,7 +101,8 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as FederationConfigurationResponseDTO,
+                federation:
+                  federation.info as FederationConfigurationResponseDTO,
                 id: "",
                 name: "",
               },
@@ -129,7 +130,8 @@ export default function ConfigurationEditorForm(
           : {
               ...current,
               configuration: {
-                federation: federation.info as FederationConfigurationResponseDTO,
+                federation:
+                  federation.info as FederationConfigurationResponseDTO,
                 id: configuration.id,
                 name: configuration.name,
               },
@@ -145,7 +147,9 @@ export default function ConfigurationEditorForm(
         options={federationOptions()}
         value={selectedFederationOption()}
         onChange={handleFederationChange}
-        placeholder={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_FEDERATION")}
+        placeholder={i18n.t(
+          "MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_FEDERATION",
+        )}
         disabled={federationOptions().length === 0}
       />
       <AtomSelect
@@ -153,7 +157,9 @@ export default function ConfigurationEditorForm(
         options={configurationOptions()}
         value={selectedConfigurationOption()}
         onChange={handleConfigurationChange}
-        placeholder={i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_CONFIGURATION")}
+        placeholder={i18n.t(
+          "MY.COMPETITIONS.EVENT_CONFIGURATION.SELECT_CONFIGURATION",
+        )}
         disabled={!selectedFederation() || configurationOptions().length === 0}
       />
     </>

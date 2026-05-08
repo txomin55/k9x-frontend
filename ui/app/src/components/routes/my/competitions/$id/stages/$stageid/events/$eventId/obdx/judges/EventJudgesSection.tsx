@@ -1,10 +1,10 @@
 import { createMemo, createSignal, Index, Show } from "solid-js";
-import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
-import Card from "@lib/components/molecules/card/Card";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+} from "library/src/components/atoms/button/AtomButton";
+import Card from "library/src/components/molecules/card/Card";
+import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";

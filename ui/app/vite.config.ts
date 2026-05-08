@@ -29,18 +29,7 @@ export default defineConfig(({ mode }) => {
       nitro({
         preset: "github-pages",
         prerender: {
-          routes: [
-            AppRoutePath.HOME,
-            AppRoutePath.MY_COMPETITIONS,
-            AppRoutePath.COMPETITION_DETAIL,
-            AppRoutePath.COMPETITION_STAGE_DETAIL,
-            AppRoutePath.COMPETITION_EVENT_DETAIL,
-            AppRoutePath.MY_JUDGES,
-            AppRoutePath.MY_COLLECTIONS,
-            AppRoutePath.COLLECTION_DETAIL,
-            AppRoutePath.AUTH_CALLBACK,
-            AppRoutePath.NOT_FOUND,
-          ],
+          routes: [...Object.values(AppRoutePath)],
           crawlLinks: false,
         },
       }),

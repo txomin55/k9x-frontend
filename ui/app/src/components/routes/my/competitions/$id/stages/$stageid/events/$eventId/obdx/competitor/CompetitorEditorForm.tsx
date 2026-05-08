@@ -1,8 +1,13 @@
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "library/src/components/atoms/button/AtomButton";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "library/src/components/atoms/combobox/AtomCombobox";
+import AtomInput from "library/src/components/atoms/input/AtomInput";
+import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
@@ -152,7 +157,8 @@ export default function CompetitorEditorForm(
             onChange={setOwner}
           />
           <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")} {draft().name} ({draft().breed})
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")} {draft().name} (
+            {draft().breed})
           </p>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}

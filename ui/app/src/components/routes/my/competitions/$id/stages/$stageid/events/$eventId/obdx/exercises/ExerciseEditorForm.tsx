@@ -1,13 +1,13 @@
 import AtomButton, {
   BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+} from "library/src/components/atoms/button/AtomButton";
 import {
   AtomCombobox,
   type AtomComboboxOption,
-} from "@lib/components/atoms/combobox/AtomCombobox";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+} from "library/src/components/atoms/combobox/AtomCombobox";
+import AtomInput from "library/src/components/atoms/input/AtomInput";
+import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -120,7 +120,9 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         disabled={exerciseOptions().length === 0}
         description={
           exerciseOptions().length === 0
-            ? i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST")
+            ? i18n.t(
+                "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST",
+              )
             : undefined
         }
         placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE")}
@@ -130,14 +132,18 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         value={props.draft().tags.join(", ")}
         onBlur={props.onCommit}
         onChange={setTags}
-        description={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.COMMA_SEPARATED_TEXT")}
+        description={i18n.t(
+          "MY.COMPETITIONS.EXERCISE_EDITOR.COMMA_SEPARATED_TEXT",
+        )}
       />
       <div class="exercise-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CLOSE")}
         </AtomButton>
         <Show when={props.displaySave}>
-          <AtomButton onClick={props.onCreate}>{i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CREATE")}</AtomButton>
+          <AtomButton onClick={props.onCreate}>
+            {i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CREATE")}
+          </AtomButton>
         </Show>
       </div>
     </div>

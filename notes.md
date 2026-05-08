@@ -17,6 +17,8 @@
 - Crear my rankings. Donde puedes hacer sumas de eventos seleccionados. Y hacer análisis propios y poder compartirlos
 - Añadir justificación de porque se cobra al añadir perros a una competición, por mensualidad de heroku, postgres...
 - hacer que la app a 720 cambie de lista de cards a modo tabla
+- puedo hacer que el usuario no logueado tenga un renderizado mas rapido con otro layout que no cargue todo? google
+  performance
 
 ### MVP
 

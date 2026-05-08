@@ -1,15 +1,15 @@
 import { createMemo, createSignal, Index, Show } from "solid-js";
-import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import Card from "@lib/components/molecules/card/Card";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
+import Card from "library/src/components/molecules/card/Card";
+import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import ExerciseEditorForm from "./ExerciseEditorForm";
 import AtomButton, {
   BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+} from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
+import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
 import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -36,7 +36,8 @@ export default function EventExercisesSection(
   props: EventExercisesSectionProps,
 ) {
   const i18n = useI18n();
-  const getOrderValue = (exercise: EventExerciseDetailResponseDTO) => exercise.order;
+  const getOrderValue = (exercise: EventExerciseDetailResponseDTO) =>
+    exercise.order;
   const getExerciseName = (exercise: EventExerciseDetailResponseDTO) => {
     if (exercise.name) {
       return exercise.name;
@@ -86,7 +87,12 @@ export default function EventExercisesSection(
           </CircleButton>
         </Show>
       </div>
-      <Show when={props.exercises.length > 0} fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.NO_EXERCISES")}</p>}>
+      <Show
+        when={props.exercises.length > 0}
+        fallback={
+          <p>{i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.NO_EXERCISES")}</p>
+        }
+      >
         <div class="event-exercises-section__exercises">
           <Index each={sortedExercises()}>
             {(exercise) => (

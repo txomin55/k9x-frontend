@@ -1,13 +1,13 @@
 import type { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+} from "library/src/components/atoms/button/AtomButton";
 import {
   AtomCombobox,
   type AtomComboboxOption,
-} from "@lib/components/atoms/combobox/AtomCombobox";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+} from "library/src/components/atoms/combobox/AtomCombobox";
+import AtomInput from "library/src/components/atoms/input/AtomInput";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -16,7 +16,9 @@ type JudgeEditorFormProps = {
   draft: () => EventJudgeDetailResponseDTO;
   onCommit: () => void;
   onDraftChange: (
-    updater: (current: EventJudgeDetailResponseDTO | null) => EventJudgeDetailResponseDTO | null,
+    updater: (
+      current: EventJudgeDetailResponseDTO | null,
+    ) => EventJudgeDetailResponseDTO | null,
   ) => void;
   onCancel: () => void;
   onCreate: () => void;
@@ -89,7 +91,9 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
           {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CLOSE")}
         </AtomButton>
         <Show when={props.displaySave}>
-          <AtomButton onClick={props.onCreate}>{i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CREATE")}</AtomButton>
+          <AtomButton onClick={props.onCreate}>
+            {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CREATE")}
+          </AtomButton>
         </Show>
       </div>
     </div>

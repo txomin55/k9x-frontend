@@ -1,8 +1,16 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
-import ObdxClassificationCard from "../../../../../components/routes/stages/$id/events/$eventId/ObdxClassificationCard";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
+import ObdxClassificationCard from "../../../../../components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
 export const Route = createFileRoute(

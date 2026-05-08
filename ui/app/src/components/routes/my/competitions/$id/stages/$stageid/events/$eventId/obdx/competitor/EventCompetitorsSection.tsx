@@ -1,15 +1,15 @@
 import { createMemo, createSignal, Index, Show } from "solid-js";
-import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import Card from "@lib/components/molecules/card/Card";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
+import Card from "library/src/components/molecules/card/Card";
+import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton, {
   BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+} from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
