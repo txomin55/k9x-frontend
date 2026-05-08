@@ -67,6 +67,10 @@ const createCollection = (score: number): CollectionResponseDTO => ({
     allowedValues: [1, 2, 3],
     description: "allowed values",
   },
+  discipline: {
+    id: "123",
+    name: "discipline",
+  },
   competitors: [
     {
       competitor: {

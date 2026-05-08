@@ -1,3 +1,5 @@
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+
 export interface StageEventSummaryResponseDTO {
   competitors?: number;
   discipline: string | IdNameDTO;
@@ -99,8 +101,3 @@ export type EnrollStageEventRequestDTO = {
   owner: string;
   team: string;
 };
-
-export interface IdNameDTO {
-  id: string;
-  name: string;
-}

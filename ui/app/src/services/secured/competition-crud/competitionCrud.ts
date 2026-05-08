@@ -19,7 +19,7 @@ import type {
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
-import { IdNameDTO } from "@/services/fetch-stages/fetchStages.types";
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 

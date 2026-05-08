@@ -17,7 +17,8 @@ interface ScoresConfigurationResponseDTO {
 
 export interface CollectionResponseDTO {
   competitors: CompetitorScoresResponseDTO[];
-  configuration?: ScoresConfigurationResponseDTO;
+  configuration: ScoresConfigurationResponseDTO;
+  discipline: IdNameDTO;
 }
 
 export interface CompetitorScoresResponseDTO {

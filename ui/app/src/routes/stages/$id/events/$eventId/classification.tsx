@@ -1,17 +1,8 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
-import Card from "@lib/components/molecules/card/Card";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import ObdxClassificationCard from "../../../../../components/routes/stages/$id/events/$eventId/ObdxClassificationCard";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
 export const Route = createFileRoute(
@@ -138,21 +129,7 @@ function EventClassificationPage() {
                             transform: `translateY(${virtualRow.start}px)`,
                           }}
                         >
-                          <Card
-                            topLeft={
-                              <div>
-                                {competitor.position}.{" "}
-                                {competitor.country || "-"} -{" "}
-                                {competitor.dog.name}
-                              </div>
-                            }
-                            topRight={<div>{competitor.totalScore ?? "-"}</div>}
-                            content={
-                              <ClassificationCardContent
-                                competitor={competitor}
-                              />
-                            }
-                          />
+                          <ObdxClassificationCard competitor={competitor} />
                         </article>
                       );
                     }}
@@ -163,53 +140,6 @@ function EventClassificationPage() {
           </div>
         )}
       </Show>
-    </div>
-  );
-}
-
-type ClassificationCardContentProps = {
-  competitor: StageEventClassificationItemResponseDTO;
-};
-
-function ClassificationCardContent(props: ClassificationCardContentProps) {
-  return (
-    <div>
-      <p>
-        --Team: {props.competitor.team || "-"} | --Owner:{" "}
-        {props.competitor.owner || "-"}
-      </p>
-      <AtomCollapsible
-        trigger={<span>--Exercises</span>}
-        content={
-          <div>
-            <For each={props.competitor.exercises}>
-              {(exercise) => (
-                <div style={{ "margin-bottom": "0.5rem" }}>
-                  <div>
-                    <strong>{exercise.exercise.name}</strong>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      "flex-wrap": "wrap",
-                      "column-gap": "1rem",
-                      "row-gap": "0.25rem",
-                    }}
-                  >
-                    <For each={exercise.scores}>
-                      {(score) => (
-                        <span>
-                          {score.value} ({score.judge.name})
-                        </span>
-                      )}
-                    </For>
-                  </div>
-                </div>
-              )}
-            </For>
-          </div>
-        }
-      />
     </div>
   );
 }

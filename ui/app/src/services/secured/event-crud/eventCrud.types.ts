@@ -1,10 +1,6 @@
 import { FederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-
-export interface IdNameDTO {
-  id: string;
-  name: string;
-}
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export interface CreateEventRequestDTO {
   id: string;
