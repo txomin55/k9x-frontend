@@ -29,7 +29,6 @@ function MyCompetitionsIndexPage() {
               name={competition.name}
               description={competition.description}
               country={competition.country}
-              stages={competition.stages}
               address={competition?.address}
             />
           )}

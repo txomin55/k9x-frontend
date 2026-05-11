@@ -1,7 +1,6 @@
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
-import { For } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type {
   CompetitionCardProps
@@ -46,18 +45,9 @@ export default function CompetitionCard(props: CompetitionCardProps) {
         </span>
       }
       content={
-        <For each={props.stages}>
-          {(stage) => (
-            <div class="competition-card__stages">
-              <div class="competition-card__stages--info">
-                <span>{stage.name}</span>
-                <span class="text-caption-sm">
-                  {`${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`}
-                </span>
-              </div>
-            </div>
-          )}
-        </For>
+        <div class="competition-card__stages-hint text-caption-sm">
+          {i18n.t("MY.COMPETITIONS.COMPETITION_CARD.STAGES_ON_DETAIL")}
+        </div>
       }
       actions={
         <AtomButton

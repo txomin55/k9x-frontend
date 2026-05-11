@@ -30,13 +30,6 @@
     justify-content: center;
 }
 
-.competition-card__stages {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.competition-card__stages--info {
-    display: flex;
-    gap: var(--unit-1);
+.competition-card__stages-hint {
+    color: var(--font-color-soft);
 }
