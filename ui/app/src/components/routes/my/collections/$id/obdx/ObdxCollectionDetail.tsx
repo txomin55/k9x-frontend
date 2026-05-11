@@ -68,11 +68,11 @@ export default function ObdxCollectionDetail() {
   const [seenCompetitors, setSeenCompetitors] = createSignal<string[]>([]);
 
   const collectionCompetitors = createMemo<AtomSelectOption[]>(() => {
-    if (!collectionData.data?.competitors) {
+    if (!collectionData.data?.obdx.competitors) {
       return [];
     }
 
-    return collectionData.data.competitors
+    return collectionData.data.obdx.competitors
       .toSorted((a, b) => (a.competitor.order ?? 0) - (b.competitor.order ?? 0))
       .flatMap((c) => {
         if (!c.competitor.owner || !c.competitor.dog.id) {
@@ -106,9 +106,9 @@ export default function ObdxCollectionDetail() {
   };
 
   createEffect(() => {
-    if (collectionData.data?.competitors) {
+    if (collectionData.data?.obdx.competitors) {
       const seen: string[] = [];
-      for (const c of collectionData.data.competitors) {
+      for (const c of collectionData.data.obdx.competitors) {
         const dogId = c.competitor.dog.id;
 
         for (const e of c.exercises) {
@@ -126,11 +126,11 @@ export default function ObdxCollectionDetail() {
   });
 
   const collectionExercises = createMemo(() => {
-    if (!selectedCompetitor() || !collectionData.data?.competitors) {
+    if (!selectedCompetitor() || !collectionData.data?.obdx.competitors) {
       return [];
     }
 
-    const competitorScores = collectionData.data.competitors.find(
+    const competitorScores = collectionData.data.obdx.competitors.find(
       (c) => c.competitor.dog.id === selectedCompetitor()?.value,
     );
 
@@ -185,7 +185,7 @@ export default function ObdxCollectionDetail() {
 
     const committedScoreKeys = new Set<string>();
 
-    currentCollection.competitors.forEach((competitorScores) => {
+    currentCollection.obdx.competitors.forEach((competitorScores) => {
       competitorScores.exercises.forEach((exerciseScores) => {
         exerciseScores.collectionScores.forEach((score) => {
           const scoreKey = getPendingScoreKey({

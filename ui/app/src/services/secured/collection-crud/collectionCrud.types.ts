@@ -15,8 +15,12 @@ interface ScoresConfigurationResponseDTO {
   description: string;
 }
 
-export interface CollectionResponseDTO {
+interface ObdxCompetitorsScoresResponseDTO {
   competitors: CompetitorScoresResponseDTO[];
+}
+
+export interface CollectionResponseDTO {
+  obdx: ObdxCompetitorsScoresResponseDTO;
   configuration: ScoresConfigurationResponseDTO;
   discipline: IdNameDTO;
 }

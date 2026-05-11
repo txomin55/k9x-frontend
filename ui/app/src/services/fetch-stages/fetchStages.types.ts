@@ -66,13 +66,16 @@ export interface StageEventClassificationExerciseScoresResponseDTO {
   tags?: string[];
 }
 
+interface ObdxStageEventClassificationResponseDTO {
+  competitors: StageEventClassificationItemResponseDTO[];
+}
 export interface StageEventClassificationResponseDTO {
   event: IdNameDTO;
   discipline: IdNameDTO;
   stage: IdNameDTO;
   configuration: IdNameDTO;
   lastUpdated: number;
-  competitors: StageEventClassificationItemResponseDTO[];
+  obdx: ObdxStageEventClassificationResponseDTO;
 }
 
 export interface StageEventClassificationItemResponseDTO {

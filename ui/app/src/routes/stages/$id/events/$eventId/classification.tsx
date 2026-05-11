@@ -41,7 +41,7 @@ function EventClassificationPage() {
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
   const competitors = createMemo(
-    () => classificationQuery.data?.competitors ?? [],
+    () => classificationQuery.data?.obdx.competitors ?? [],
   );
 
   const updateListHeight = () => {
@@ -95,7 +95,7 @@ function EventClassificationPage() {
             <p>--Discipline {classification().discipline.name}</p>
             <p>--Classification</p>
             <Show
-              when={classification().competitors.length > 0}
+              when={classification().obdx.competitors.length > 0}
               fallback={<span>--No classification data available.</span>}
             >
               <div
@@ -114,7 +114,7 @@ function EventClassificationPage() {
                 >
                   <For each={virtualizer.getVirtualItems()}>
                     {(virtualRow) => {
-                      const competitor = classification().competitors[
+                      const competitor = classification().obdx.competitors[
                         virtualRow.index
                       ] as StageEventClassificationItemResponseDTO | undefined;
                       if (!competitor) return null;

@@ -4,30 +4,30 @@ import {
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload
+  createApiEventRollbackPayload,
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import {
   CompetitionResponseDTO,
   getCachedCompetitions,
-  useCompetition
+  useCompetition,
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  getConfigurationsQueryKey
+  getConfigurationsQueryKey,
 } from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequestDTO,
   Discipline,
-  EventCompetitorRequestDTO,
   EventCompetitorDetail,
+  EventCompetitorRequestDTO,
   EventConfigurationDetailResponseDTO,
   EventDetailResponseDTO,
-  EventExerciseRequestDTO,
   EventExerciseDetailResponseDTO,
+  EventExerciseRequestDTO,
   EventJudgeDetailRequestDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { DisciplineFederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
@@ -387,7 +387,7 @@ export const useApiEvent = () => {
           previousEvent: context.event ?? null,
           stageId,
         }),
-        url: `/secured/events/${nextApiEvent.id}`,
+        url: `/secured/obdx/events/${nextApiEvent.id}`,
       });
     })();
   };

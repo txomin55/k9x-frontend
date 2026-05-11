@@ -6,7 +6,7 @@ import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
   getCollectionSnapshotId,
-  getCollectionsQueryKey
+  getCollectionsQueryKey,
 } from "@/services/secured/collection-crud/collectionCrudConstants";
 import { rawRequest } from "@/utils/http/client";
 import {
@@ -16,17 +16,17 @@ import {
   createCollectionRollbackPayload,
   getVisibleCollectionById,
   saveCollectionSnapshot,
-  saveCollectionsSnapshot
+  saveCollectionsSnapshot,
 } from "@/services//secured/collection-crud/collectionCrudOfflineUtils";
 import {
   CollectionResponseDTO,
   CollectionsResponseDTO,
-  UpdateCollectionScoreRequestDTO
+  UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { createMemo } from "solid-js";
 import {
   mergeCollectionByIdWithDraft,
-  mergeCollectionsWithDrafts
+  mergeCollectionsWithDrafts,
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 
 const refreshCollectionsSnapshot = async () => {
@@ -131,7 +131,9 @@ export const prefetchCollectionById = (
 
 export const getCachedCollections = () =>
   mergeCollectionsWithDrafts(
-    queryClient.getQueryData<CollectionsResponseDTO[]>(getCollectionsQueryKey()),
+    queryClient.getQueryData<CollectionsResponseDTO[]>(
+      getCollectionsQueryKey(),
+    ),
   );
 
 export const useCollectionById = (
@@ -155,36 +157,40 @@ export const useCollectionById = (
 };
 
 export const getCachedCollectionById = (id: string) =>
-  queryClient.getQueryData<CollectionResponseDTO>(getCollectionByIdQueryKey(id));
+  queryClient.getQueryData<CollectionResponseDTO>(
+    getCollectionByIdQueryKey(id),
+  );
 
 const updateCollectionScoreProjection = (
   previousCollection: CollectionResponseDTO,
   payload: UpdateCollectionScoreRequestDTO,
 ): CollectionResponseDTO => ({
   ...previousCollection,
-  competitors: previousCollection.competitors.map((competitorScores) =>
-    competitorScores.competitor.dog.id === payload.dogId
-      ? {
-          ...competitorScores,
-          exercises: competitorScores.exercises.map((exerciseScores) =>
-            exerciseScores.exercise.id === payload.exerciseId
-              ? {
-                  ...exerciseScores,
-                  collectionScores: exerciseScores.collectionScores.map(
-                    (scoreEntry) =>
-                      scoreEntry.judge.id === payload.judgeId
-                        ? {
-                            ...scoreEntry,
-                            score: payload.score,
-                          }
-                        : scoreEntry,
-                  ),
-                }
-              : exerciseScores,
-          ),
-        }
-      : competitorScores,
-  ),
+  obdx: {
+    competitors: previousCollection.obdx.competitors.map((competitorScores) =>
+      competitorScores.competitor.dog.id === payload.dogId
+        ? {
+            ...competitorScores,
+            exercises: competitorScores.exercises.map((exerciseScores) =>
+              exerciseScores.exercise.id === payload.exerciseId
+                ? {
+                    ...exerciseScores,
+                    collectionScores: exerciseScores.collectionScores.map(
+                      (scoreEntry) =>
+                        scoreEntry.judge.id === payload.judgeId
+                          ? {
+                              ...scoreEntry,
+                              score: payload.score,
+                            }
+                          : scoreEntry,
+                    ),
+                  }
+                : exerciseScores,
+            ),
+          }
+        : competitorScores,
+    ),
+  },
 });
 
 export const updateCollectionScore = (
@@ -224,7 +230,7 @@ export const updateCollectionScore = (
         eventId,
         previousCollection,
       ),
-      url: `/secured/events/${eventId}/score`,
+      url: `/secured/obdx/events/${eventId}/score`,
     });
   })();
 
