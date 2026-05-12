@@ -18,6 +18,6 @@ export const toEventEditorDraft = (event: EventDetailResponseDTO): EventEditorDr
   id: event.id,
   judges: event.judges.map((judge) => ({ ...judge })),
   name: event.name,
-  stageId: event.stge.id,
+  stageId: event.stage.id,
   status: event.status,
 });

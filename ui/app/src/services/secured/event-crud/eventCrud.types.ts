@@ -60,16 +60,20 @@ export interface Discipline {
   name: string;
 }
 
-export interface EventDetailResponseDTO {
+export interface ObdxEventDetailResponseDTO {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetailResponseDTO;
   discipline: Discipline;
   exercises: EventExerciseDetailResponseDTO[];
   id: string;
-  stge: IdNameDTO;
+  stage: IdNameDTO;
   judges: EventJudgeDetailResponseDTO[];
   name: string;
   status: string;
+}
+
+export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
+  obdx: ObdxEventDetailResponseDTO;
 }
 
 export interface EventExerciseDetailResponseDTO extends EventExerciseRequestDTO {
@@ -114,3 +118,14 @@ export interface ApiEventRollbackPayload {
   previousEvent: EventDetailResponseDTO | null;
   stageId: string;
 }
+
+export const normalizeEventDetailResponse = (
+  event: EventDetailResponseDTO | { obdx: ObdxEventDetailResponseDTO },
+): EventDetailResponseDTO => {
+  const obdx = "obdx" in event ? event.obdx : (event as EventDetailResponseDTO);
+
+  return {
+    ...obdx,
+    obdx,
+  };
+};

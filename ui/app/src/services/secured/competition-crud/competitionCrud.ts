@@ -17,6 +17,10 @@ import type {
   UpdateCompetitionRequestDTO
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import type { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import {
+  normalizeEventDetailResponse,
+  type EventDetailResponseDTO,
+} from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
@@ -25,6 +29,7 @@ import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
 const DRAFT_COMPETITION_STATUS = "draft";
+const hydratedCompetitionEventsIds = new Set<string>();
 
 export const COMPETITIONS_SNAPSHOT_ID = "competitions";
 
@@ -154,6 +159,69 @@ export const hydrateCompetitionStages = async (competitionId: string) => {
 
   return stages;
 };
+
+export const hydrateCompetitionEvents = async (
+  competitionId: string,
+  stageIds: string[],
+) => {
+  if (stageIds.length === 0) {
+    hydratedCompetitionEventsIds.add(competitionId);
+    return [] as EventDetailResponseDTO[];
+  }
+
+  const normalizedStageIds = stageIds.map((id) => String(id));
+  const normalizedStageIdsSet = new Set(normalizedStageIds);
+  const query = new URLSearchParams();
+  normalizedStageIds.forEach((id) => query.append("ids", id));
+  const rawEvents = await rawRequest<EventDetailResponseDTO[]>({
+    path: `/secured/competitions/${competitionId}/stages/events?${query.toString()}`,
+  });
+  const events = rawEvents.map((event) => normalizeEventDetailResponse(event));
+
+  const eventsByStageId = new Map<string, EventDetailResponseDTO[]>();
+  events.forEach((event) => {
+    const stageId = event.stage?.id ? String(event.stage.id) : "";
+
+    if (!stageId) return;
+    const current = eventsByStageId.get(stageId) ?? [];
+    current.push(event);
+    eventsByStageId.set(stageId, current);
+  });
+
+  let nextCompetitions: CompetitionResponseDTO[] = [];
+
+  queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(
+    getCompetitionsQueryKey(),
+    (previousCompetitions) => {
+      const competitions = previousCompetitions ?? [];
+
+      nextCompetitions = competitions.map((competition) => {
+        if (competition.id !== competitionId || !competition.stages) {
+          return competition;
+        }
+
+        return {
+          ...competition,
+          stages: competition.stages.map((stage) =>
+            normalizedStageIdsSet.has(String(stage.id))
+              ? { ...stage, events: eventsByStageId.get(String(stage.id)) ?? [] }
+              : stage,
+          ),
+        };
+      });
+
+      return nextCompetitions;
+    },
+  );
+
+  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
+  hydratedCompetitionEventsIds.add(competitionId);
+
+  return events;
+};
+
+export const hasHydratedCompetitionEvents = (competitionId: string) =>
+  hydratedCompetitionEventsIds.has(competitionId);
 
 export const useCompetition = () => {
   const getCompetitions = (options?: TanstackCreateQuery) =>

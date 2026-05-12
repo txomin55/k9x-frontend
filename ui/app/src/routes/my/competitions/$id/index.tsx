@@ -14,7 +14,8 @@ import {
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import {
-  hydrateCompetitionStages,
+  hasHydratedCompetitionEvents,
+  hydrateCompetitionEvents,
   useCompetition,
 } from "@/services/secured/competition-crud/competitionCrud";
 import {
@@ -134,10 +135,7 @@ function CompetitionDetailBody(props: {
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
   const [stageDialogDraft, setStageDialogDraft] =
     createSignal<StageEditorModel | null>(null);
-  const [isHydratingStages, setIsHydratingStages] = createSignal(false);
-  const [hydratedCompetitionId, setHydratedCompetitionId] = createSignal<
-    string | null
-  >(null);
+  const [isHydratingEvents, setIsHydratingEvents] = createSignal(false);
   const sortedStages = createMemo(() => {
     const stages = props.competition()?.stages;
     if (!stages) {
@@ -173,19 +171,16 @@ function CompetitionDetailBody(props: {
   createEffect(() => {
     const competition = props.competition();
 
-    if (!competition) return;
-    if (competition.stages !== undefined) {
-      setHydratedCompetitionId(competition.id);
-      return;
-    }
-    if (isHydratingStages()) return;
-    if (hydratedCompetitionId() === competition.id) return;
+    if (!competition?.stages?.length) return;
+    if (isHydratingEvents()) return;
+    if (hasHydratedCompetitionEvents(competition.id)) return;
 
-    setIsHydratingStages(true);
-    setHydratedCompetitionId(competition.id);
+    const stageIds = competition.stages.map((stage) => stage.id);
 
-    void hydrateCompetitionStages(competition.id).finally(() => {
-      setIsHydratingStages(false);
+    setIsHydratingEvents(true);
+
+    void hydrateCompetitionEvents(competition.id, stageIds).finally(() => {
+      setIsHydratingEvents(false);
     });
   });
 
@@ -333,9 +328,6 @@ function CompetitionDetailBody(props: {
         onUpdateStageDialogDraft={updateStageDialogDraft}
         stages={sortedStages()}
       />
-      <Show when={isHydratingStages() && sortedStages() === undefined}>
-        <span>{i18n.t("STAGES.INDEX.LOADING_STAGES")}</span>
-      </Show>
       <FloatingToggleCircle
         onClick={() => setIsEditing((current) => !current)}
         toggled={isEditing()}

@@ -141,7 +141,7 @@ const mergeApiEventWithPayload = (
     createId();
   const nextStageId =
     (isCreatePayload ? payload.stageId : context?.stageId) ??
-    previousEvent?.stge.id ??
+    previousEvent?.stage.id ??
     "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
@@ -158,8 +158,9 @@ const mergeApiEventWithPayload = (
         updatePayload.configurationId,
       )
     : undefined;
-
-  return {
+  const nextStageName = previousEvent?.stage.name ?? "";
+  const nextStatus = previousEvent?.status ?? "";
+  const nextCore = {
     competitors:
       updatePayload?.competitors?.map((competitor) =>
         toApiCompetitor(
@@ -196,11 +197,16 @@ const mergeApiEventWithPayload = (
       previousEvent?.judges ??
       [],
     name: payload.name ?? previousEvent?.name ?? "",
-    stge: {
+    stage: {
       id: nextStageId,
-      name: previousEvent?.stge.name ?? "",
+      name: nextStageName,
     },
-    status: previousEvent?.status ?? "",
+    status: nextStatus,
+  };
+
+  return {
+    ...nextCore,
+    obdx: nextCore,
   };
 };
 
@@ -321,21 +327,21 @@ export const useApiEvent = () => {
           disciplineId: payload.disciplineId,
           id: draftApiEvent.id,
           name: draftApiEvent.name,
-          stageId: draftApiEvent.stge.id,
+          stageId: draftApiEvent.stage.id,
         },
         onCommitted: () =>
           commitApiEventMutationSuccess({
             competitionId: context.competitionId,
             eventId: draftApiEvent.id,
             method: "POST",
-            stageId: draftApiEvent.stge.id,
+            stageId: draftApiEvent.stage.id,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
           competitionId: context.competitionId,
           entityId: draftApiEvent.id,
           previousCompetitionsFromCache,
           previousEvent: null,
-          stageId: draftApiEvent.stge.id,
+          stageId: draftApiEvent.stage.id,
         }),
         url: "/secured/events",
       });
@@ -378,7 +384,7 @@ export const useApiEvent = () => {
             competitionId: context.competitionId,
             eventId: nextApiEvent.id,
             method: "PUT",
-            stageId: nextApiEvent.stge.id,
+            stageId: nextApiEvent.stage.id,
           }),
         rollbackPayload: await createApiEventRollbackPayload({
           competitionId: context.competitionId,
