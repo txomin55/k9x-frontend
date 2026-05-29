@@ -69,14 +69,11 @@
 #### UNA VEZ ESTÉ EL BACKEND
 
 - meter newrelic
-- Postgresql https://supabase.com/dashboard/org/jdtxnyedrfjutiaadkwi
-- Search - Nominatim Manual https://share.google/UqKWMxkAICjfdBM5t para recuperar coordenadas a partir de direccion
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
 - Hacer campos obligatorios para edición y creación
 - Terminar push manager
-  dogid o eventid a secas. Hay que modificar contratos
 - Formularios de contacto para
     - own de perro
         - En caso de intentar dar de alta un perro que exista, mostrar diálogo con formulario para hacer el own del
@@ -86,5 +83,5 @@
 # Funcionalidades premium
 
 - Al estar loged, offline
-- Filtros avanzados en busquedas
+- Filtros avanzados en busquedas (PENDIENTE)
 - funcionalidad own a dog
