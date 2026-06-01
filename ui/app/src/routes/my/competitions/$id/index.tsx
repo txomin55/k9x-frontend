@@ -14,8 +14,6 @@ import {
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import {
-  hasHydratedCompetitionEvents,
-  hydrateCompetitionEvents,
   useCompetition,
 } from "@/services/secured/competition-crud/competitionCrud";
 import {
@@ -135,7 +133,6 @@ function CompetitionDetailBody(props: {
   const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
   const [stageDialogDraft, setStageDialogDraft] =
     createSignal<StageEditorModel | null>(null);
-  const [isHydratingEvents, setIsHydratingEvents] = createSignal(false);
   const sortedStages = createMemo(() => {
     const stages = props.competition()?.stages;
     if (!stages) {
@@ -168,21 +165,6 @@ function CompetitionDetailBody(props: {
     closeStageEditor();
   });
 
-  createEffect(() => {
-    const competition = props.competition();
-
-    if (!competition?.stages?.length) return;
-    if (isHydratingEvents()) return;
-    if (hasHydratedCompetitionEvents(competition.id)) return;
-
-    const stageIds = competition.stages.map((stage) => stage.id);
-
-    setIsHydratingEvents(true);
-
-    void hydrateCompetitionEvents(competition.id, stageIds).finally(() => {
-      setIsHydratingEvents(false);
-    });
-  });
 
   const openStageEditor = (
     stage: NonNullable<CompetitionResponseDTO["stages"]>[number],

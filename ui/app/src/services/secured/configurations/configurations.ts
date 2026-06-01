@@ -26,7 +26,7 @@ export const useConfigurations = (disciplineId: string, options?: TanstackCreate
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
     enabled: !!disciplineId,
-  } as any);
+  });
 
 export const getConfigurationsFromCache = (disciplineId: string) =>
   queryClient.getQueryData<DisciplineFederationConfigurationResponseDTO[]>(

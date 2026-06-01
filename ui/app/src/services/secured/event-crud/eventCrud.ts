@@ -1,20 +1,23 @@
 import { createMemo, getOwner } from "solid-js";
+import { rawRequest } from "@/utils/http/client";
+import { defineQuery } from "@/utils/http/query-factory";
+import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import {
   applyApiEventRemoval,
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload,
+  createApiEventRollbackPayload
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import {
   CompetitionResponseDTO,
   getCachedCompetitions,
-  useCompetition,
+  useCompetition
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  getConfigurationsFromCache,
+  getConfigurationsFromCache
 } from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequestDTO,
@@ -27,9 +30,33 @@ import type {
   EventExerciseRequestDTO,
   EventJudgeDetailRequestDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
+import { normalizeEventDetailResponse } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
+
+const fetchEventById = (id: string) =>
+  rawRequest<EventDetailResponseDTO>({
+    path: `/secured/events/${id}`,
+  }).then(normalizeEventDetailResponse);
+
+const eventByIdQuery = defineQuery({
+  fetcher: fetchEventById,
+  queryKey: (id: string) => ["event", id] as const,
+});
+
+export const getEventByIdQueryKey = (id: string) =>
+  eventByIdQuery.options(id).queryKey;
+
+export const getCachedEventById = (id: string) =>
+  queryClient.getQueryData<EventDetailResponseDTO>(getEventByIdQueryKey(id));
+
+export const useEventById = (id: string, options?: TanstackCreateQuery) =>
+  eventByIdQuery.useQuery([id], {
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    enabled: !!id && id !== "new",
+  });
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -231,8 +258,9 @@ const findEventContextInCompetition = (
   return {
     competitionId: competition.id,
     event: eventId
-      ? ((stage.events.find((entry) => String(entry.id) === String(eventId)) as EventDetailResponseDTO) ??
-        null)
+      ? ((stage.events.find(
+          (entry) => String(entry.id) === String(eventId),
+        ) as EventDetailResponseDTO) ?? null)
       : null,
     stage,
   };
@@ -274,24 +302,14 @@ const findEventContext = (
 export const useApiEvent = () => {
   const { getCompetition } = useCompetition();
 
-  const getEvent = (competitionId: string, stageId: string, id: string) => {
+  const getEvent = (_competitionId: string, _stageId: string, id: string) => {
     if (!getOwner()) {
-      return () =>
-        findEventContext(getCachedCompetitions(), stageId, competitionId, id)
-          ?.event ?? undefined;
+      return () => getCachedEventById(id);
     }
 
-    const competition = getCompetition(competitionId);
+    const eventQuery = useEventById(id, { staleTime: Number.POSITIVE_INFINITY });
 
-    return createMemo(() => {
-      const stage = competition()?.stages?.find(
-        (entry) => entry.id === stageId,
-      );
-
-      if (!stage) return undefined;
-
-      return (stage.events.find((entry) => entry.id === id) as EventDetailResponseDTO) ?? undefined;
-    });
+    return createMemo(() => eventQuery.data);
   };
 
   const createApiEvent = (
@@ -388,7 +406,7 @@ export const useApiEvent = () => {
           competitionId: context.competitionId,
           entityId: nextApiEvent.id,
           previousCompetitionsFromCache,
-          previousEvent: context.event ?? null,
+          previousEvent: getCachedEventById(nextApiEvent.id) ?? null,
           stageId,
         }),
         url: `/secured/obdx/events/${nextApiEvent.id}`,
@@ -430,7 +448,7 @@ export const useApiEvent = () => {
           competitionId: context.competitionId,
           entityId: id,
           previousCompetitionsFromCache,
-          previousEvent: context.event ?? null,
+          previousEvent: getCachedEventById(id) ?? null,
           stageId,
         }),
         url: `/secured/events/${id}`,

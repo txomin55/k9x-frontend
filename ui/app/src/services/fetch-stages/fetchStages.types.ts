@@ -40,7 +40,7 @@ export interface StageDetailResponseDTO {
 
 export interface StageEventDetailResponseDTO {
   competitors?: any[];
-  discipline?: string | IdNameDTO;
+  discipline: IdNameDTO;
   id: string;
   name: string;
 }

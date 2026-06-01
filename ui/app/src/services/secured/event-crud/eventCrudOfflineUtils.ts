@@ -20,17 +20,26 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import {
+  CompetitionStageDetailResponseDTO,
+  CompetitionStageEventDetailResponseDTO,
+} from "@/services/secured/stage-crud/stageCrud.types";
 import {
   ApiEventRollbackPayload,
   EventDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
+import { getCurrentLocale } from "@/stores/i18n/i18n";
 
 const buildNextStageDetail = (
   stage: CompetitionStageDetailResponseDTO,
   event: EventDetailResponseDTO,
 ): CompetitionStageDetailResponseDTO => {
-  const previousEvents = stage.events ?? [];
+  const lightweightEvent: CompetitionStageEventDetailResponseDTO = {
+    id: event.id,
+    name: event.name,
+    discipline: event.discipline,
+  };
+  const previousEvents = stage.events;
   const existingIndex = previousEvents.findIndex(
     ({ id }) => String(id) === String(event.id),
   );
@@ -39,10 +48,10 @@ const buildNextStageDetail = (
     ...stage,
     events:
       existingIndex === -1
-        ? [...previousEvents, event]
+        ? [...previousEvents, lightweightEvent]
         : previousEvents.map((previousEvent) =>
             String(previousEvent.id) === String(event.id)
-              ? event
+              ? lightweightEvent
               : previousEvent,
           ),
   };
@@ -107,6 +116,9 @@ const buildCompetitionsListWithoutEvent = (
       ? buildCompetitionDetailWithoutEvent(competition, stageId, eventId)
       : competition,
   );
+
+const getEventByIdQueryKey = (id: string) =>
+  ["event", id, getCurrentLocale()] as const;
 
 const getBaseCompetitionsFromCache = () =>
   queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()) ??
@@ -236,6 +248,17 @@ const rollbackApiEventTask = async (task: PendingTask) => {
 const rollbackApiEventPayload = async (
   rollbackPayload: ApiEventRollbackPayload,
 ) => {
+  if (rollbackPayload.previousEvent) {
+    queryClient.setQueryData(
+      getEventByIdQueryKey(rollbackPayload.entityId),
+      rollbackPayload.previousEvent,
+    );
+  } else {
+    queryClient.removeQueries({
+      queryKey: getEventByIdQueryKey(rollbackPayload.entityId),
+    });
+  }
+
   if (rollbackPayload.previousCompetitions) {
     await saveCompetitionsSnapshot(rollbackPayload.previousCompetitions);
     replaceCompetitionDrafts(
@@ -313,6 +336,7 @@ export const applyApiEventUpsert = (
   stageId: string,
   event: EventDetailResponseDTO,
 ) => {
+  queryClient.setQueryData(getEventByIdQueryKey(event.id), event);
   void persistApiEventCompetitionSnapshot(competitionId, stageId, event);
 };
 
@@ -321,5 +345,6 @@ export const applyApiEventRemoval = (
   stageId: string,
   eventId: string,
 ) => {
+  queryClient.removeQueries({ queryKey: getEventByIdQueryKey(eventId) });
   void removeApiEventFromCompetitionSnapshot(competitionId, stageId, eventId);
 };

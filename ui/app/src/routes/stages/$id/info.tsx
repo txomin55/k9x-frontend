@@ -60,8 +60,7 @@ const [dialogOpen, setDialogOpen] = createSignal(false);
   const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
     createEmptyEnrollDraft(),
   );
-  const getDisciplineLabel = (discipline?: string | { name?: string }) =>
-    typeof discipline === "string" ? discipline : (discipline?.name ?? "");
+  const getDisciplineLabel = (discipline: { name: string }) => discipline.name;
 
   const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
     setEnrollDraft((current) => updater(current));
