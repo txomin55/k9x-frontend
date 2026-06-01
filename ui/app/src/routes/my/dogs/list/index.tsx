@@ -25,9 +25,8 @@ export const Route = createFileRoute("/my/dogs/list/")({
 function MyDogsListPage() {
   const user = useAuthUser();
   const i18n = useI18n();
-  type DogDraft = CreateDogRequestDTO & { creator: string };
 
-  const buildDogDraft = (isOrganizer: boolean): DogDraft => ({
+  const buildDogDraft = (isOrganizer: boolean): CreateDogRequestDTO => ({
     id:
       typeof globalThis !== "undefined" &&
       "crypto" in globalThis &&
@@ -35,10 +34,13 @@ function MyDogsListPage() {
         ? globalThis.crypto.randomUUID()
         : `${Date.now()}-${Math.random()}`,
     name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
-    image: "",
     breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
     owned: !isOrganizer,
-    creator: user()?.email ?? "no-creator",
+    identifier: "",
+    image: "",
+    owner: !isOrganizer ? (user()?.email ?? "") : "",
+    team: "",
+    country: "",
   });
   const dogsQuery = useDogs({
     refetchOnMount: false,
@@ -50,14 +52,12 @@ function MyDogsListPage() {
       return [];
     }
 
-    return dogsQuery.data.filter(
-      (dog) => dog.owned || user()?.email === dog.creator,
-    );
+    return dogsQuery.data;
   });
 
   const [isDialogOpen, setDialogOpen] = createSignal(false);
   const [editingDogId, setEditingDogId] = createSignal<string | null>(null);
-  const [draftDog, setDraftDog] = createSignal<DogDraft>(
+  const [draftDog, setDraftDog] = createSignal<CreateDogRequestDTO>(
     buildDogDraft(!!user()?.organizer),
   );
 
@@ -84,7 +84,6 @@ function MyDogsListPage() {
       team: dog.team,
       country: dog.country,
       owned: dog.owned,
-      creator: dog.creator,
     }));
     setDialogOpen(true);
   };
@@ -105,8 +104,7 @@ function MyDogsListPage() {
         owned: payload.owned,
       });
     } else {
-      const { creator: _creator, ...createPayload } = payload;
-      createDog(createPayload);
+      createDog(payload);
     }
 
     handleCloseDialog();
@@ -127,7 +125,6 @@ function MyDogsListPage() {
             onDraftChange={(updater) =>
               setDraftDog((current) => ({
                 ...updater(current),
-                creator: current.creator,
               }))
             }
             onCancel={handleCloseDialog}

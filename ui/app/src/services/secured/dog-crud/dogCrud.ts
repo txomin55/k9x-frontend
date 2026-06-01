@@ -72,20 +72,16 @@ export const useDogs = (options?: TanstackCreateQuery) => {
   });
 };
 
-const mergeDogWithPayload = (
-  payload: CreateDogRequestDTO,
-  existingDog?: Dog,
-): Dog => ({
-  id: payload.id ?? existingDog?.id ?? globalThis.crypto.randomUUID(),
-  name: payload.name ?? existingDog?.name ?? "",
-  image: payload.image ?? existingDog?.image ?? "",
-  breed: payload.breed ?? existingDog?.breed ?? "",
-  identifier: payload.identifier ?? existingDog?.identifier,
-  owner: payload.owner ?? existingDog?.owner,
-  team: payload.team ?? existingDog?.team,
-  country: payload.country ?? existingDog?.country,
-  owned: payload.owned ?? existingDog?.owned,
-  creator: existingDog?.creator ?? "",
+const mergeDogWithPayload = (payload: CreateDogRequestDTO): Dog => ({
+  id: payload.id,
+  name: payload.name,
+  image: payload.image,
+  breed: payload.breed,
+  identifier: payload.identifier,
+  owner: payload.owner,
+  team: payload.team,
+  country: payload.country,
+  owned: payload.owned,
 });
 
 export const createDog = (payload: CreateDogRequestDTO) => {

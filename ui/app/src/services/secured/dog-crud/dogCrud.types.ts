@@ -3,12 +3,11 @@ export interface Dog {
   name: string;
   image: string;
   breed: string;
-  identifier?: string;
-  owner?: string;
-  team?: string;
-  country?: string;
+  identifier: string;
+  owner: string;
+  team: string;
+  country: string;
   owned: boolean;
-  creator: string;
 }
 
 export interface CreateDogRequestDTO {
@@ -16,10 +15,10 @@ export interface CreateDogRequestDTO {
   name: string;
   image: string;
   breed: string;
-  identifier?: string;
-  owner?: string;
-  team?: string;
-  country?: string;
+  identifier: string;
+  owner: string;
+  team: string;
+  country: string;
   owned: boolean;
 }
 

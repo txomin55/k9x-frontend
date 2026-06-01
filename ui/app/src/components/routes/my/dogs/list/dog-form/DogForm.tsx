@@ -1,5 +1,7 @@
 import type { CreateDogRequestDTO } from "@/services/secured/dog-crud/dogCrud.types";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -23,9 +25,18 @@ export default function DogForm(props: DogFormProps) {
   const BREED_SELECT_OPTIONS: AtomSelectOption[] = [
     { label: i18n.t("MY.DOGS.DOG_FORM.BORDER_COLLIE"), value: "border-collie" },
     { label: i18n.t("MY.DOGS.DOG_FORM.SPANISH_WATERDOG"), value: "swd" },
-    { label: i18n.t("MY.DOGS.DOG_FORM.BELGIAN_SHEPHERD_MALINOIS"), value: "belgian-malinois" },
-    { label: i18n.t("MY.DOGS.DOG_FORM.LABRADOR_RETRIEVER"), value: "labrador-retriever" },
-    { label: i18n.t("MY.DOGS.DOG_FORM.GOLDEN_RETRIEVER"), value: "golden-retriever" },
+    {
+      label: i18n.t("MY.DOGS.DOG_FORM.BELGIAN_SHEPHERD_MALINOIS"),
+      value: "belgian-malinois",
+    },
+    {
+      label: i18n.t("MY.DOGS.DOG_FORM.LABRADOR_RETRIEVER"),
+      value: "labrador-retriever",
+    },
+    {
+      label: i18n.t("MY.DOGS.DOG_FORM.GOLDEN_RETRIEVER"),
+      value: "golden-retriever",
+    },
   ];
 
   const user = useAuthUser();
@@ -90,7 +101,11 @@ export default function DogForm(props: DogFormProps) {
           setChecked={updateOwned}
         />
       </Show>
-      <AtomInput label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")} value={props.draft().image} disabled />
+      <AtomInput
+        label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")}
+        value={props.draft().image}
+        disabled
+      />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
         onChange={(option) => updateBreed(option.value)}
@@ -102,11 +117,13 @@ export default function DogForm(props: DogFormProps) {
         value={props.draft().identifier}
         onChange={updateIdentifier}
       />
-      <AtomInput
-        label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
-        value={props.draft().owner}
-        onChange={updateOwner}
-      />
+      <Show when={!!user()?.organizer}>
+        <AtomInput
+          label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
+          value={props.draft().owner}
+          onChange={updateOwner}
+        />
+      </Show>
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.TEAM")}
         value={props.draft().team}
@@ -121,7 +138,9 @@ export default function DogForm(props: DogFormProps) {
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.DOGS.DOG_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>{i18n.t("MY.DOGS.DOG_FORM.SAVE")}</AtomButton>
+        <AtomButton onClick={props.onSave}>
+          {i18n.t("MY.DOGS.DOG_FORM.SAVE")}
+        </AtomButton>
       </div>
     </div>
   );

@@ -1,26 +1,18 @@
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler,
+  registerPendingTaskHandler
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import type {
-  PendingTask,
-  PendingTaskMethod,
-} from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import type { PendingTask, PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
-  saveQuerySnapshot,
+  saveQuerySnapshot
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import type { Dog, DogRollbackPayload } from "./dogCrud.types";
-import {
-  mergeDogsWithDrafts,
-  removeDogDraft,
-  replaceDogDrafts,
-  upsertDogDraft,
-} from "./dogDraftStore";
+import { mergeDogsWithDrafts, removeDogDraft, replaceDogDrafts, upsertDogDraft } from "./dogDraftStore";
 import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
 
 const DOG_SNAPSHOT_PREFIX = "dog:";
@@ -35,7 +27,6 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   team: dog.team ?? previousDog?.team,
   country: dog.country ?? previousDog?.country,
   owned: dog.owned ?? previousDog?.owned,
-  creator: dog.creator ?? previousDog?.creator,
 });
 
 export const buildNextDogs = (previousDogs: Dog[], dog: Dog) => {

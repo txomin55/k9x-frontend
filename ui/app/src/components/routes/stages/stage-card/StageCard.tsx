@@ -63,7 +63,7 @@ export default function StageCard(props: StageCardProps) {
             <div class="stage-card__events-content">
               <div class="stage-card__events-content--info">
                 <span>{event().name}</span>
-                <span>({event().competitors}(</span>
+                <span>({event().competitors})</span>
               </div>
               <AtomButton
                 type={BUTTON_TYPES.PRIMARY}
