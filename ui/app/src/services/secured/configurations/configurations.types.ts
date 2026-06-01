@@ -1,14 +1,9 @@
-import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-
-export interface ConfigurationExerciseResponseDTO {
-  id: string;
-  name: string;
-}
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export interface ConfigurationResponseDTO {
   id: string;
   name: string;
-  exercises?: ConfigurationExerciseResponseDTO[];
+  exercises: IdNameDTO[];
 }
 
 export interface FederationConfigurationResponseDTO {
@@ -17,18 +12,22 @@ export interface FederationConfigurationResponseDTO {
   country: string;
 }
 
-export const EMPTY_FEDERATION_CONFIGURATION: FederationConfigurationResponseDTO = {
-  country: "",
-  id: "",
-  name: "",
-};
+export const EMPTY_FEDERATION_CONFIGURATION: FederationConfigurationResponseDTO =
+  {
+    country: "",
+    id: "",
+    name: "",
+  };
 
 export interface FederationConfigurationsResponseDTO {
   info: FederationConfigurationResponseDTO;
   configurations: ConfigurationResponseDTO[];
 }
 
-export interface DisciplineFederationConfigurationResponseDTO {
+export interface ObdxFederationConfigurationResponseDTO {
   federations: FederationConfigurationsResponseDTO[];
-  discipline: IdNameDTO;
+}
+
+export interface DisciplineFederationConfigurationResponseDTO {
+  obdx: ObdxFederationConfigurationResponseDTO;
 }

@@ -99,11 +99,8 @@ const findConfigurationDetail = (
   }
 
   const configurations = getConfigurationsFromCache(discipline);
-  const disciplineConfigurations = configurations?.find(
-    (entry) => entry.discipline.id === discipline,
-  );
 
-  for (const federation of disciplineConfigurations?.federations ?? []) {
+  for (const federation of configurations?.obdx?.federations ?? []) {
     const configuration = federation.configurations.find(
       (entry) => entry.id === configurationId,
     );
@@ -380,7 +377,9 @@ export const useApiEvent = () => {
 
     const nextApiEvent = mergeApiEventWithPayload(
       payload,
-      getCachedEventById(id) ?? (context.event as unknown as EventDetailResponseDTO) ?? undefined,
+      getCachedEventById(id) ??
+        (context.event as unknown as EventDetailResponseDTO) ??
+        undefined,
       { eventId: id, stageId },
     );
 

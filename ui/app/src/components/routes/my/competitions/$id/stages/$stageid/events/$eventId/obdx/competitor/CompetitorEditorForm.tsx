@@ -1,10 +1,5 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "library/src/components/atoms/button/AtomButton";
-import {
-  AtomCombobox,
-  type AtomComboboxOption,
-} from "library/src/components/atoms/combobox/AtomCombobox";
+import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
+import { AtomCombobox, type AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
@@ -13,6 +8,7 @@ import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
+import CountryField from "@/components/common/country-field/CountryField";
 
 type OrderBounds = {
   minValue: number;
@@ -133,10 +129,8 @@ export default function CompetitorEditorForm(
             value={selectedDog(draft().dogId)?.team ?? draft().team}
             disabled
           />
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
+          <CountryField
             value={selectedDog(draft().dogId)?.country ?? draft().country}
-            disabled
           />
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}

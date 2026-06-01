@@ -28,7 +28,7 @@ export const getCountryOption = (
 
 type CountryFieldProps = {
   disabled?: boolean;
-  onChange: (value: AtomSelectOption) => void;
+  onChange?: (value: AtomSelectOption) => void;
   value: string;
 };
 

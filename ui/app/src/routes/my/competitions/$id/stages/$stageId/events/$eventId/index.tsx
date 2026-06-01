@@ -1,18 +1,11 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitorDetail,
@@ -21,20 +14,20 @@ import type {
   EventEditorDraft,
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
-import ObdxCompetitionEventDetailBody from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBody";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
+import ObdxCompetitionEventDetailBodyWrapper
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -110,7 +103,7 @@ function CompetitionEventDetailPage() {
   return params().eventId === "new" ? (
     <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CREATING_EVENT")}</span>
   ) : (
-    <ObdxCompetitionEventDetailBody
+    <ObdxCompetitionEventDetailBodyWrapper
       competitionId={params().id}
       event={getEvent(params().id, params().stageId, params().eventId)}
       eventId={params().eventId}
@@ -119,17 +112,17 @@ function CompetitionEventDetailPage() {
       stageId={params().stageId}
     >
       {({ event, onDelete, onUpdate }) => (
-        <CompetitionEventDetailBody
+        <CompetitionObdxEventDetailBody
           event={event}
           onDelete={onDelete}
           onUpdate={onUpdate}
         />
       )}
-    </ObdxCompetitionEventDetailBody>
+    </ObdxCompetitionEventDetailBodyWrapper>
   );
 }
 
-function CompetitionEventDetailBody(props: {
+function CompetitionObdxEventDetailBody(props: {
   event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
@@ -168,9 +161,8 @@ function CompetitionEventDetailBody(props: {
 
   const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
     const configurationExercises =
-      configurations.data
-        ?.find((entry) => entry.discipline.id === draftEvent().discipline.id)
-        ?.federations.find(
+      configurations.data?.obdx?.federations
+        ?.find(
           (entry) =>
             entry.info.id === draftEvent().configuration.federation?.id,
         )
@@ -659,7 +651,10 @@ function CompetitionEventDetailBody(props: {
   };
 
   const handleAddCompetitor = () => {
-    const draft = createDefaultCompetitor(draftEvent().competitors.length + 1, "");
+    const draft = createDefaultCompetitor(
+      draftEvent().competitors.length + 1,
+      "",
+    );
 
     setIsCreatingCompetitor(true);
     setEditingCompetitorId(draft.dogId);

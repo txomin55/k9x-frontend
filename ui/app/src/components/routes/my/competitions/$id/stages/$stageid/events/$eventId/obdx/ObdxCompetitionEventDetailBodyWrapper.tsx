@@ -1,5 +1,12 @@
 import { useNavigate } from "@tanstack/solid-router";
-import { type Accessor, type JSX, createEffect, createSignal, Show, Suspense } from "solid-js";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  type JSX,
+  Show,
+  Suspense,
+} from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 import type {
   EventDetailResponseDTO,
@@ -20,7 +27,7 @@ type ObdxCompetitionEventDetailBodyProps = {
   }) => JSX.Element;
 };
 
-export default function ObdxCompetitionEventDetailBody(
+export default function ObdxCompetitionEventDetailBodyWrapper(
   props: ObdxCompetitionEventDetailBodyProps,
 ) {
   const i18n = useI18n();

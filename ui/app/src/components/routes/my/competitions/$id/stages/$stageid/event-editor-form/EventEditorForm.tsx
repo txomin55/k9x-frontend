@@ -67,7 +67,12 @@ export default function EventEditorForm(props: EventEditorFormProps) {
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>{i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.SAVE")}</AtomButton>
+        <AtomButton
+          onClick={props.onSave}
+          disabled={!props.draft.discipline.id}
+        >
+          {i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.SAVE")}
+        </AtomButton>
       </div>
     </div>
   );

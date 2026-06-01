@@ -5,14 +5,13 @@ import i18n from "i18next";
 export const EVENT_DISCIPLINE_OPTIONS: AtomSelectOption[] = [
   {
     label: i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.FCI_OBEDIENCE"),
-    value: "fci_ob",
+    value: "obdx",
   },
 ];
 
 export const getEventDisciplineOption = (discipline: string) =>
   EVENT_DISCIPLINE_OPTIONS.find(
-    (option) =>
-      option.value === discipline || option.label === discipline,
+    (option) => option.value === discipline || option.label === discipline,
   ) ?? null;
 
 export const getEventDisciplineLabel = (discipline: string) =>
@@ -24,9 +23,7 @@ type EventDisciplineFieldProps = {
   value: string;
 };
 
-export default function EventDisciplineField(
-  props: EventDisciplineFieldProps,
-) {
+export default function EventDisciplineField(props: EventDisciplineFieldProps) {
   return (
     <AtomSelect
       label={i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.DISCIPLINE")}

@@ -7,7 +7,7 @@ import type { DisciplineFederationConfigurationResponseDTO } from "./configurati
 export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 
 const fetchConfigurations = (disciplineId: string) =>
-  rawRequest<DisciplineFederationConfigurationResponseDTO[]>({
+  rawRequest<DisciplineFederationConfigurationResponseDTO>({
     path: `/secured/disciplines/${disciplineId}/configurations`,
   });
 
@@ -19,7 +19,10 @@ const configurationsQuery = defineQuery({
 export const getConfigurationsQueryKey = (disciplineId: string) =>
   configurationsQuery.options(disciplineId).queryKey;
 
-export const useConfigurations = (disciplineId: string, options?: TanstackCreateQuery) =>
+export const useConfigurations = (
+  disciplineId: string,
+  options?: TanstackCreateQuery,
+) =>
   configurationsQuery.useQuery([disciplineId], {
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
@@ -29,6 +32,6 @@ export const useConfigurations = (disciplineId: string, options?: TanstackCreate
   });
 
 export const getConfigurationsFromCache = (disciplineId: string) =>
-  queryClient.getQueryData<DisciplineFederationConfigurationResponseDTO[]>(
+  queryClient.getQueryData<DisciplineFederationConfigurationResponseDTO>(
     getConfigurationsQueryKey(disciplineId),
   );
