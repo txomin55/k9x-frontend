@@ -1,10 +1,17 @@
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+
+export interface CompetitionStageEventDetailResponseDTO {
+  id: string;
+  name: string;
+  discipline: IdNameDTO;
+}
 
 export interface CompetitionStageDetailResponseDTO {
   dateFrom: number;
   dateTo: number;
-  events: EventDetailResponseDTO[];
+  events: CompetitionStageEventDetailResponseDTO[];
   id: string;
   name: string;
 }

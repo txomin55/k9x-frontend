@@ -113,11 +113,11 @@ const mergeCompetitionWithPayload = (
 
   return {
     country,
-    description,
+    description: description ?? "",
     id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
     address: address ?? previousCompetition?.address ?? "",
     name: payload.name ?? previousCompetition?.name ?? "",
-    notifications: previousCompetition?.notifications,
+    notifications: previousCompetition?.notifications ?? [],
     stages: previousCompetition?.stages,
     status: previousCompetition?.status ?? DRAFT_COMPETITION_STATUS,
   };

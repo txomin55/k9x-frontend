@@ -19,7 +19,7 @@ export interface UpdateEventRequestDTO {
 
 export interface EventCompetitorResponseDTO {
   dog: IdNameDTO;
-  order?: number;
+  position?: number;
   team?: string;
   identity?: string;
   owner?: string;
@@ -28,13 +28,9 @@ export interface EventCompetitorResponseDTO {
 }
 
 export interface EventCompetitorRequestDTO {
-  order?: number;
   dogId: string;
-  team?: string;
-  identity?: string;
-  owner?: string;
-  country?: string;
-  status?: string;
+  position: number;
+  accepted: boolean;
 }
 
 export interface EventCompetitorDetail {
@@ -45,7 +41,8 @@ export interface EventCompetitorDetail {
   team: string;
   country: string;
   breed: string;
-  order: number;
+  position: number;
+  accepted: boolean;
   status: string;
 }
 
@@ -83,7 +80,7 @@ export interface EventExerciseDetailResponseDTO extends EventExerciseRequestDTO 
 export interface EventExerciseRequestDTO {
   id: string;
   name: string;
-  order: number;
+  position: number;
   tags: string[];
 }
 

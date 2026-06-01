@@ -8,11 +8,11 @@ export interface CompetitionNotificationDetailResponseDTO {
 
 export interface CompetitionResponseDTO {
   country: string;
-  description?: string;
+  description: string;
   id: string;
-  address?: string;
+  address: string;
   name: string;
-  notifications?: CompetitionNotificationDetailResponseDTO[];
+  notifications: CompetitionNotificationDetailResponseDTO[];
   stages?: CompetitionStageDetailResponseDTO[];
   status: string;
 }

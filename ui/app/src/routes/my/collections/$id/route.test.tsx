@@ -84,7 +84,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
             exercise: {
               id: "exercise-1",
               name: "ExerciseResponseDTO 1",
-              order: 1,
+              position: 1,
             },
             collectionScores: [
               {

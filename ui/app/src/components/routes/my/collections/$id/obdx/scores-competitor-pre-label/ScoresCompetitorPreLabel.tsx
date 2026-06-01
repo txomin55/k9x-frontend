@@ -15,7 +15,7 @@ export default (props: ScoresCompetitorPreLabelProps) => {
       <Show when={props.seen}>
         <span>{i18n.t("MY.COLLECTIONS.DETAIL.READY")}</span>
       </Show>
-      <span>{props.competitor.order}.-</span>
+      <span>{props.competitor.position}.-</span>
       <div>
         <span>{props.competitor.country}</span>
         <span>{props.competitor.owner}</span>

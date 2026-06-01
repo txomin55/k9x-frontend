@@ -14,7 +14,7 @@ import {
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  getConfigurationsQueryKey,
+  getConfigurationsFromCache,
 } from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequestDTO,
@@ -30,7 +30,6 @@ import type {
   UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
-import { DisciplineFederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -39,7 +38,7 @@ const toApiExercise = (
   previousExercise?: EventExerciseDetailResponseDTO,
 ): EventExerciseDetailResponseDTO => ({
   id: exercise.id ?? previousExercise?.id,
-  order: exercise.order ?? previousExercise?.order ?? 0,
+  position: exercise.position ?? previousExercise?.position ?? 0,
   name: previousExercise?.name ?? "",
   tags: exercise.tags ?? previousExercise?.tags ?? [],
 });
@@ -75,9 +74,7 @@ const findConfigurationDetail = (
     return undefined;
   }
 
-  const configurations = queryClient.getQueryData<
-    DisciplineFederationConfigurationResponseDTO[]
-  >(getConfigurationsQueryKey());
+  const configurations = getConfigurationsFromCache(discipline);
   const disciplineConfigurations = configurations?.find(
     (entry) => entry.discipline.id === discipline,
   );
@@ -113,14 +110,15 @@ const toApiCompetitor = (
 ): EventCompetitorDetail => {
   return {
     dogId: competitor.dogId ?? previousCompetitor?.dogId ?? "",
-    identity: competitor.identity ?? previousCompetitor?.identity ?? "",
+    identity: previousCompetitor?.identity ?? "",
     name: previousCompetitor?.name ?? "",
-    owner: competitor.owner ?? previousCompetitor?.owner ?? "",
-    team: competitor.team ?? previousCompetitor?.team ?? "",
-    country: competitor.country ?? previousCompetitor?.country ?? "",
+    owner: previousCompetitor?.owner ?? "",
+    team: previousCompetitor?.team ?? "",
+    country: previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",
-    order: competitor.order ?? previousCompetitor?.order ?? 0,
-    status: competitor.status ?? previousCompetitor?.status ?? "",
+    position: competitor.position ?? previousCompetitor?.position ?? 0,
+    accepted: competitor.accepted ?? previousCompetitor?.accepted ?? false,
+    status: previousCompetitor?.status ?? "",
   };
 };
 
@@ -233,7 +231,7 @@ const findEventContextInCompetition = (
   return {
     competitionId: competition.id,
     event: eventId
-      ? (stage.events.find((entry) => String(entry.id) === String(eventId)) ??
+      ? ((stage.events.find((entry) => String(entry.id) === String(eventId)) as EventDetailResponseDTO) ??
         null)
       : null,
     stage,
@@ -292,7 +290,7 @@ export const useApiEvent = () => {
 
       if (!stage) return undefined;
 
-      return stage.events.find((entry) => entry.id === id) ?? undefined;
+      return (stage.events.find((entry) => entry.id === id) as EventDetailResponseDTO) ?? undefined;
     });
   };
 

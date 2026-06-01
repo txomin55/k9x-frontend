@@ -47,7 +47,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
       current
         ? {
             ...current,
-            order: normalizedOrder,
+            position: normalizedOrder,
           }
         : current,
     );
@@ -106,7 +106,7 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
     <div class="exercise-editor-form">
       <AtomNumberInput
         label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
-        value={props.draft().order}
+        value={props.draft().position}
         onBlur={props.onCommit}
         onChange={setOrder}
         minValue={minOrder}

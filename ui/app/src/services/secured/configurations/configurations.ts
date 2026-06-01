@@ -6,38 +6,29 @@ import type { DisciplineFederationConfigurationResponseDTO } from "./configurati
 
 export { EMPTY_FEDERATION_CONFIGURATION } from "./configurations.types";
 
-const fetchConfigurations = () =>
+const fetchConfigurations = (disciplineId: string) =>
   rawRequest<DisciplineFederationConfigurationResponseDTO[]>({
-    path: "/secured/disciplines/configurations",
+    path: `/secured/disciplines/${disciplineId}/configurations`,
   });
 
 const configurationsQuery = defineQuery({
   fetcher: fetchConfigurations,
-  queryKey: ["configurations"] as const,
+  queryKey: (disciplineId: string) => ["configurations", disciplineId] as const,
 });
 
-export const getConfigurationsQueryKey = () =>
-  configurationsQuery.options().queryKey;
+export const getConfigurationsQueryKey = (disciplineId: string) =>
+  configurationsQuery.options(disciplineId).queryKey;
 
-const createConfigurationsQuery = (options?: TanstackCreateQuery) =>
-  configurationsQuery.useQuery({
+export const useConfigurations = (disciplineId: string, options?: TanstackCreateQuery) =>
+  configurationsQuery.useQuery([disciplineId], {
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
+    enabled: !!disciplineId,
   } as any);
 
-export const useConfigurations = (options?: TanstackCreateQuery) =>
-  createConfigurationsQuery(options);
-
-export const prefetchConfigurations = (options?: TanstackCreateQuery) => {
-  const { queryFn, queryKey } = configurationsQuery.options();
-
-  return queryClient.fetchQuery({
-    queryKey,
-    queryFn,
-    staleTime: options?.staleTime,
-    gcTime: options?.gcTime,
-    networkMode: "always",
-  });
-};
+export const getConfigurationsFromCache = (disciplineId: string) =>
+  queryClient.getQueryData<DisciplineFederationConfigurationResponseDTO[]>(
+    getConfigurationsQueryKey(disciplineId),
+  );

@@ -8,7 +8,6 @@ import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { prefetchConfigurations } from "@/services/secured/configurations/configurations";
 import { prefetchDogs } from "@/services/secured/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/secured/collection-crud/collectionCrud";
@@ -50,10 +49,6 @@ export default function AppShell() {
       void prefetchCompetitions({
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
-      });
-      void prefetchConfigurations({
-        refetchOnMount: false,
-        staleTime: Number.POSITIVE_INFINITY,
       });
       void prefetchDogs({
         refetchOnMount: false,

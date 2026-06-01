@@ -92,7 +92,7 @@ export default function CompetitorEditorForm(
       current
         ? {
             ...current,
-            order: normalizedOrder,
+            position: normalizedOrder,
           }
         : current,
     );
@@ -180,7 +180,7 @@ export default function CompetitorEditorForm(
           />
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
-            value={draft().order}
+            value={draft().position}
             onBlur={props.onCommitCompetitor}
             onChange={setOrder}
             minValue={minOrder}

@@ -149,9 +149,10 @@ function CompetitionEventDetailBody(props: {
   );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
     createSignal<EventExerciseDetailResponseDTO | null>(null);
-  const configurations = useConfigurations({
-    staleTime: Number.POSITIVE_INFINITY,
-  });
+  const configurations = useConfigurations(
+    draftEvent().discipline.id,
+    { staleTime: Number.POSITIVE_INFINITY },
+  );
 
   const TABS = {
     JUDGES: "JUDGES",
@@ -205,7 +206,8 @@ function CompetitionEventDetailBody(props: {
 
   const createDefaultCompetitor = (order: number): EventCompetitorDetail => {
     return {
-      order,
+      position: order,
+      accepted: false,
       dogId: globalThis.crypto.randomUUID(),
       identity: "",
       name: "",
@@ -257,7 +259,7 @@ function CompetitionEventDetailBody(props: {
       (entry) => entry.dogId,
       (entry, nextOrder) => ({
         ...entry,
-        order: nextOrder,
+        position: nextOrder,
       }),
       order,
     );
@@ -274,7 +276,7 @@ function CompetitionEventDetailBody(props: {
       (entry) => entry.id,
       (entry, nextOrder) => ({
         ...entry,
-        order: nextOrder,
+        position: nextOrder,
       }),
       order,
     );
@@ -285,11 +287,8 @@ function CompetitionEventDetailBody(props: {
   ): EventCompetitorRequestDTO => {
     return {
       dogId: competitor.dogId,
-      identity: competitor.identity,
-      owner: competitor.owner,
-      team: competitor.team,
-      country: competitor.country,
-      order: competitor.order,
+      position: competitor.position,
+      accepted: competitor.accepted,
     };
   };
 
@@ -303,7 +302,7 @@ function CompetitionEventDetailBody(props: {
   ): EventExerciseDetailResponseDTO => {
     return {
       id: globalThis.crypto.randomUUID(),
-      order,
+      position: order,
       name: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EXERCISE"),
       tags: [],
     };
@@ -415,8 +414,8 @@ function CompetitionEventDetailBody(props: {
 
     const normalizedDraft = {
       ...draft,
-      order: clampOrder(
-        draft.order,
+      position: clampOrder(
+        draft.position,
         draftEvent().exercises.length + (isCreatingExercise() ? 1 : 0),
       ),
     };
@@ -426,7 +425,7 @@ function CompetitionEventDetailBody(props: {
         ...current,
         exercises: reorderExercises(
           current.exercises,
-          normalizedDraft.order,
+          normalizedDraft.position,
           normalizedDraft,
         ),
       }),
@@ -447,8 +446,8 @@ function CompetitionEventDetailBody(props: {
 
     const normalizedDraft = {
       ...draft,
-      order: clampOrder(
-        draft.order,
+      position: clampOrder(
+        draft.position,
         draftEvent().exercises.length + (isCreatingExercise() ? 1 : 0),
       ),
     };
@@ -463,19 +462,19 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.id === currentEditingExerciseId,
         );
         const orderChanged =
-          previousExercise && previousExercise.order !== normalizedDraft.order;
+          previousExercise && previousExercise.position !== normalizedDraft.position;
 
         const hasConflict = current.exercises.some(
           (entry) =>
             entry.id !== currentEditingExerciseId &&
-            entry.order === normalizedDraft.order,
+            entry.position === normalizedDraft.position,
         );
         const shouldReorder = orderChanged || hasConflict;
 
         const nextExercises = shouldReorder
           ? reorderExercises(
               current.exercises,
-              normalizedDraft.order,
+              normalizedDraft.position,
               normalizedDraft,
             )
           : current.exercises.map((entry) =>
@@ -500,8 +499,8 @@ function CompetitionEventDetailBody(props: {
 
     const normalizedDraft = {
       ...draft,
-      order: clampOrder(
-        draft.order,
+      position: clampOrder(
+        draft.position,
         draftEvent().competitors.length + (isCreatingCompetitor() ? 1 : 0),
       ),
     };
@@ -511,7 +510,7 @@ function CompetitionEventDetailBody(props: {
         ...current,
         competitors: reorderCompetitors(
           current.competitors,
-          normalizedDraft.order,
+          normalizedDraft.position,
           normalizedDraft,
         ),
       }),
@@ -528,8 +527,8 @@ function CompetitionEventDetailBody(props: {
 
       const normalizedDraft = {
         ...draft,
-        order: clampOrder(
-          draft.order,
+        position: clampOrder(
+          draft.position,
           draftEvent().competitors.length + (isCreatingCompetitor() ? 1 : 0),
         ),
       };
@@ -547,18 +546,18 @@ function CompetitionEventDetailBody(props: {
           );
           const orderChanged =
             previousCompetitor &&
-            previousCompetitor.order !== normalizedDraft.order;
+            previousCompetitor.position !== normalizedDraft.position;
           const hasConflict = current.competitors.some(
             (entry) =>
               entry.dogId !== currentEditingCompetitorId &&
-              entry.order === normalizedDraft.order,
+              entry.position === normalizedDraft.position,
           );
           const shouldReorder = orderChanged || hasConflict;
 
           const nextCompetitors = shouldReorder
             ? reorderCompetitors(
                 current.competitors,
-                normalizedDraft.order,
+                normalizedDraft.position,
                 normalizedDraft,
               )
             : current.competitors.map((entry) =>

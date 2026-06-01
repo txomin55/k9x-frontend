@@ -18,7 +18,7 @@ import {
   StageEditorModel,
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
-import { normalizeEventDetailResponse } from "@/services/secured/event-crud/eventCrud.types";
+import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations.types";
 
 const createId = () => globalThis.crypto.randomUUID();
 
@@ -52,59 +52,27 @@ export const toApiStage = (
   competitionId: string,
 ): StageEditorModel => ({
   competitionId,
-  dateFrom: stage.dateFrom ?? 0,
-  dateTo: stage.dateTo ?? 0,
+  dateFrom: stage.dateFrom,
+  dateTo: stage.dateTo,
   events:
-    stage.events?.map((rawEvent) => {
-      const event = normalizeEventDetailResponse(rawEvent);
-      const nextCore = {
-        competitors:
-          event.competitors?.map((competitor) => ({
-            dogId: competitor.dogId ?? "",
-            identity: competitor.identity ?? "",
-            name: competitor.name ?? "",
-            owner: competitor.owner ?? "",
-            team: competitor.team ?? "",
-            country: competitor.country ?? "",
-            breed: competitor.breed ?? "",
-            order: competitor.order ?? 0,
-            status: competitor.status ?? "",
-          })) ?? [],
+    stage.events.map((rawEvent) => {
+      const core = {
+        competitors: [],
         configuration: {
-          federation: event.configuration?.federation,
-          id: event.configuration?.id ?? "",
-          name: event.configuration?.name ?? "",
-        },
-        discipline: event.discipline ?? {
+          federation: EMPTY_FEDERATION_CONFIGURATION,
           id: "",
           name: "",
         },
-        exercises:
-          event.exercises?.map((exercise) => ({
-            id: exercise.id ?? "",
-            order: exercise.order ?? 0,
-            name: exercise.name ?? "",
-            tags: exercise.tags ?? [],
-          })) ?? [],
-        id: event.id ?? "",
-        judges:
-          event.judges?.map((judge) => ({
-            collectorEmail: judge.collectorEmail ?? "",
-            id: judge.id ?? "",
-          })) ?? [],
-        name: event.name ?? "",
-        stage: {
-          id: event.stage?.id ?? stage.id,
-          name: event.stage?.name ?? stage.name ?? "",
-        },
-        status: event.status ?? "",
+        discipline: rawEvent.discipline,
+        exercises: [],
+        id: rawEvent.id,
+        judges: [],
+        name: rawEvent.name,
+        stage: { id: stage.id, name: stage.name },
+        status: "",
       };
-
-      return {
-        ...nextCore,
-        obdx: nextCore,
-    };
-    }) ?? [],
+      return { ...core, obdx: core };
+    }),
   id: stage.id ?? "",
   name: stage.name ?? "",
 });

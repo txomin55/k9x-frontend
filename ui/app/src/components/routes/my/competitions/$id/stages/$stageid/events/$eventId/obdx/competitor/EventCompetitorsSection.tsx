@@ -60,7 +60,7 @@ export default function EventCompetitorsSection(
   });
   const getDogName = (dogId: string) => dogsById().get(dogId)?.name;
 
-  const getOrderValue = (competitor: EventCompetitorDetail) => competitor.order;
+  const getOrderValue = (competitor: EventCompetitorDetail) => competitor.position;
 
   const sortedCompetitors = createMemo(() =>
     [...props.competitors].toSorted(

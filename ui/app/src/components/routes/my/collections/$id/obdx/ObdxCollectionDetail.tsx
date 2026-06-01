@@ -73,7 +73,7 @@ export default function ObdxCollectionDetail() {
     }
 
     return collectionData.data.obdx.competitors
-      .toSorted((a, b) => (a.competitor.order ?? 0) - (b.competitor.order ?? 0))
+      .toSorted((a, b) => (a.competitor.position ?? 0) - (b.competitor.position ?? 0))
       .flatMap((c) => {
         if (!c.competitor.owner || !c.competitor.dog.id) {
           return [];

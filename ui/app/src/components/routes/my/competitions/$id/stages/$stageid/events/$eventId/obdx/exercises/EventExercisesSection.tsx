@@ -37,7 +37,7 @@ export default function EventExercisesSection(
 ) {
   const i18n = useI18n();
   const getOrderValue = (exercise: EventExerciseDetailResponseDTO) =>
-    exercise.order;
+    exercise.position;
   const getExerciseName = (exercise: EventExerciseDetailResponseDTO) => {
     if (exercise.name) {
       return exercise.name;
@@ -97,7 +97,7 @@ export default function EventExercisesSection(
           <Index each={sortedExercises()}>
             {(exercise) => (
               <Card
-                topLeft={`#${exercise().order}`}
+                topLeft={`#${exercise().position}`}
                 description={
                   <div>
                     <p>{getExerciseName(exercise())}</p>
