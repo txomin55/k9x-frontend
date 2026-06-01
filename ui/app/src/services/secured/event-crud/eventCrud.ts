@@ -79,7 +79,7 @@ const findConfigurationDetail = (
     DisciplineFederationConfigurationResponseDTO[]
   >(getConfigurationsQueryKey());
   const disciplineConfigurations = configurations?.find(
-    (entry) => entry.disciplineId === discipline,
+    (entry) => entry.discipline.id === discipline,
   );
 
   for (const federation of disciplineConfigurations?.federations ?? []) {

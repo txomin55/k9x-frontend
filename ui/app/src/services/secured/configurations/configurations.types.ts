@@ -1,3 +1,5 @@
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+
 export interface ConfigurationExerciseResponseDTO {
   id: string;
   name: string;
@@ -28,5 +30,5 @@ export interface FederationConfigurationsResponseDTO {
 
 export interface DisciplineFederationConfigurationResponseDTO {
   federations: FederationConfigurationsResponseDTO[];
-  disciplineId: string;
+  discipline: IdNameDTO;
 }

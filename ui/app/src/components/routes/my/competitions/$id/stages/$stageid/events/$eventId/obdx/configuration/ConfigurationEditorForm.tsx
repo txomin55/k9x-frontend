@@ -49,7 +49,7 @@ export default function ConfigurationEditorForm(
   const disciplineConfigurations = createMemo(
     () =>
       configurations.data?.find(
-        (entry) => entry.disciplineId === props.draft.discipline.id,
+        (entry) => entry.discipline.id === props.draft.discipline.id,
       ) ?? null,
   );
   const federationOptions = createMemo<AtomSelectOption[]>(

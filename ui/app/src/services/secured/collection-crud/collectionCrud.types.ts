@@ -33,7 +33,7 @@ export interface CompetitorScoresResponseDTO {
 export interface ExerciseResponseDTO {
   id: string;
   name: string;
-  order: number;
+  position: number;
 }
 
 export interface CollectionScoreResponseDTO {

@@ -162,7 +162,7 @@ function CompetitionEventDetailBody(props: {
   const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
     const configurationExercises =
       configurations.data
-        ?.find((entry) => entry.disciplineId === draftEvent().discipline.id)
+        ?.find((entry) => entry.discipline.id === draftEvent().discipline.id)
         ?.federations.find(
           (entry) =>
             entry.info.id === draftEvent().configuration.federation?.id,
