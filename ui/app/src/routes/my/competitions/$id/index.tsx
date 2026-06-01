@@ -1,42 +1,20 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
-import {
-  useCompetition,
-} from "@/services/secured/competition-crud/competitionCrud";
+import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
 import {
   type CompetitionResponseDTO,
-  type UpdateCompetitionRequestDTO,
+  type UpdateCompetitionRequestDTO
 } from "@/services/secured/competition-crud/competitionCrud.types";
-import {
-  toApiStage,
-  useApiStage,
-} from "@/services/secured/stage-crud/stageCrud";
+import { toApiStage, useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import { toUndefinedIfBlank } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
-import {
-  CreateStageRequestDTO,
-  StageEditorModel,
-  UpdateStageRequestDTO,
-} from "@/services/secured/stage-crud/stageCrud.types";
+import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
   component: CompetitionDetailPage,
@@ -80,8 +58,17 @@ function CompetitionDetailContent(props: { id: string }) {
 
   return (
     <div class="competition-detail">
-      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.DETAIL.LOADING_COMPETITION")}</span>}>
-        <Show when={competition()} fallback={<p>{i18n.t("MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND")}</p>}>
+      <Suspense
+        fallback={
+          <span>{i18n.t("MY.COMPETITIONS.DETAIL.LOADING_COMPETITION")}</span>
+        }
+      >
+        <Show
+          when={competition()}
+          fallback={
+            <p>{i18n.t("MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND")}</p>
+          }
+        >
           <CompetitionDetailBody
             competition={competition}
             onDelete={() => {
@@ -165,7 +152,6 @@ function CompetitionDetailBody(props: {
     closeStageEditor();
   });
 
-
   const openStageEditor = (
     stage: NonNullable<CompetitionResponseDTO["stages"]>[number],
   ) => {
@@ -215,7 +201,7 @@ function CompetitionDetailBody(props: {
     if (!draft) return;
 
     if (isCreatingStage()) {
-      createApiStage(draft as CreateStageRequestDTO);
+      createApiStage(draft);
     } else {
       updateApiStage(draft.competitionId, draft.id, {
         dateFrom: draft.dateFrom,

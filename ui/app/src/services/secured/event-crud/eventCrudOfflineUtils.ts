@@ -73,7 +73,7 @@ const buildNextCompetitionDetail = (
   event: EventDetailResponseDTO,
 ): CompetitionResponseDTO => ({
   ...competition,
-  stages: (competition.stages ?? []).map((stage) =>
+  stages: competition.stages?.map((stage) =>
     String(stage.id) === String(stageId)
       ? buildNextStageDetail(stage, event)
       : stage,

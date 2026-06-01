@@ -9,11 +9,7 @@ import {
   commitApiEventMutationSuccess,
   createApiEventRollbackPayload
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
-import {
-  CompetitionResponseDTO,
-  getCachedCompetitions,
-  useCompetition
-} from "@/services/secured/competition-crud/competitionCrud";
+import { CompetitionResponseDTO, getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
@@ -25,6 +21,7 @@ import type {
   EventCompetitorDetail,
   EventCompetitorRequestDTO,
   EventConfigurationDetailResponseDTO,
+  EventDetailRawResponseDTO,
   EventDetailResponseDTO,
   EventExerciseDetailResponseDTO,
   EventExerciseRequestDTO,
@@ -36,7 +33,7 @@ import { normalizeEventDetailResponse } from "@/services/secured/event-crud/even
 import { queryClient } from "@/utils/http/query-client";
 
 const fetchEventById = (id: string) =>
-  rawRequest<EventDetailResponseDTO>({
+  rawRequest<EventDetailRawResponseDTO>({
     path: `/secured/events/${id}`,
   }).then(normalizeEventDetailResponse);
 
@@ -166,7 +163,7 @@ const mergeApiEventWithPayload = (
     createId();
   const nextStageId =
     (isCreatePayload ? payload.stageId : context?.stageId) ??
-    previousEvent?.stage.id ??
+    previousEvent?.stage?.id ??
     "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
@@ -179,11 +176,11 @@ const mergeApiEventWithPayload = (
   );
   const resolvedConfiguration = updatePayload?.configurationId
     ? findConfigurationDetail(
-        previousEvent?.discipline.id,
+        previousEvent?.discipline?.id,
         updatePayload.configurationId,
       )
     : undefined;
-  const nextStageName = previousEvent?.stage.name ?? "";
+  const nextStageName = previousEvent?.stage?.name ?? "";
   const nextStatus = previousEvent?.status ?? "";
   const nextCore = {
     competitors:
@@ -258,9 +255,8 @@ const findEventContextInCompetition = (
   return {
     competitionId: competition.id,
     event: eventId
-      ? ((stage.events.find(
-          (entry) => String(entry.id) === String(eventId),
-        ) as EventDetailResponseDTO) ?? null)
+      ? (stage.events.find((entry) => String(entry.id) === String(eventId)) ??
+        null)
       : null,
     stage,
   };
@@ -300,14 +296,14 @@ const findEventContext = (
 };
 
 export const useApiEvent = () => {
-  const { getCompetition } = useCompetition();
-
   const getEvent = (_competitionId: string, _stageId: string, id: string) => {
     if (!getOwner()) {
       return () => getCachedEventById(id);
     }
 
-    const eventQuery = useEventById(id, { staleTime: Number.POSITIVE_INFINITY });
+    const eventQuery = useEventById(id, {
+      staleTime: Number.POSITIVE_INFINITY,
+    });
 
     return createMemo(() => eventQuery.data);
   };
@@ -384,7 +380,7 @@ export const useApiEvent = () => {
 
     const nextApiEvent = mergeApiEventWithPayload(
       payload,
-      context.event ?? undefined,
+      getCachedEventById(id) ?? (context.event as unknown as EventDetailResponseDTO) ?? undefined,
       { eventId: id, stageId },
     );
 

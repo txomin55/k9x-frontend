@@ -58,7 +58,18 @@ export default function EventCompetitorsSection(
     }
     return map;
   });
-  const getDogName = (dogId: string) => dogsById().get(dogId)?.name;
+  const getCompetitorDetails = (competitor: EventCompetitorDetail) => {
+    const dog = dogsById().get(competitor.dogId);
+
+    return {
+      name: dog?.name ?? competitor.name,
+      breed: dog?.breed ?? competitor.breed,
+      owner: dog?.owner ?? competitor.owner,
+      identity: dog?.identifier ?? competitor.identity,
+      team: dog?.team ?? competitor.team,
+      country: dog?.country ?? competitor.country,
+    };
+  };
 
   const getOrderValue = (competitor: EventCompetitorDetail) => competitor.position;
 
@@ -128,22 +139,25 @@ export default function EventCompetitorsSection(
       >
         <div class="event-competitors-section__competitors">
           <Index each={sortedCompetitors()}>
-            {(competitor) => (
+            {(competitor) => {
+              const details = () => getCompetitorDetails(competitor());
+
+              return (
               <Card
-                topLeft={competitor().owner}
+                topLeft={details().owner}
                 content={
                   <div class="event-competitors-section__competitors--competitor">
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${getDogName(competitor().dogId)}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${competitor().identity}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${competitor().team}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${competitor().country}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
+                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
                   </div>
                 }
                 actions={
                   props.isEditing ? (
                     <div class="event-competitors-section__competitors--actions">
                       <ConfirmActionButton
-                        text={competitor().owner}
+                        text={details().owner}
                         onConfirm={() =>
                           props.onDeleteCompetitor(competitor().dogId)
                         }
@@ -184,7 +198,8 @@ export default function EventCompetitorsSection(
                   )
                 }
               />
-            )}
+              );
+            }}
           </Index>
         </div>
       </Show>

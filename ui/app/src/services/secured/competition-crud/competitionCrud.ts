@@ -10,11 +10,11 @@ import {
   commitCompetitionMutation,
   commitCompetitionMutationSuccess,
   createCompetitionRollbackPayload,
-  getVisibleCompetitions
+  getVisibleCompetitions,
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionResponseDTO,
-  UpdateCompetitionRequestDTO
+  UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import type { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { queryClient } from "@/utils/http/query-client";
@@ -143,7 +143,9 @@ export const hydrateCompetitionStages = async (competitionId: string) => {
       const competitions = previousCompetitions ?? [];
 
       nextCompetitions = competitions.map((competition) =>
-        competition.id === competitionId ? { ...competition, stages } : competition,
+        competition.id === competitionId
+          ? { ...competition, stages }
+          : competition,
       );
 
       return nextCompetitions;
@@ -154,7 +156,6 @@ export const hydrateCompetitionStages = async (competitionId: string) => {
 
   return stages;
 };
-
 
 export const useCompetition = () => {
   const getCompetitions = (options?: TanstackCreateQuery) =>

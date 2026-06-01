@@ -1,11 +1,18 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitorDetail,
@@ -14,20 +21,20 @@ import type {
   EventEditorDraft,
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import EventConfigurationSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
-import ObdxCompetitionEventDetailBody
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBody";
+import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
+import ObdxCompetitionEventDetailBody from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBody";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -149,10 +156,9 @@ function CompetitionEventDetailBody(props: {
   );
   const [exerciseDialogDraft, setExerciseDialogDraft] =
     createSignal<EventExerciseDetailResponseDTO | null>(null);
-  const configurations = useConfigurations(
-    draftEvent().discipline.id,
-    { staleTime: Number.POSITIVE_INFINITY },
-  );
+  const configurations = useConfigurations(draftEvent().discipline.id, {
+    gcTime: 2 * 60 * 1000,
+  });
 
   const TABS = {
     JUDGES: "JUDGES",
@@ -194,7 +200,15 @@ function CompetitionEventDetailBody(props: {
     event: EventEditorDraft | EventDetailResponseDTO,
   ) => {
     return JSON.stringify({
-      competitors: event.competitors,
+      // Only the fields the PUT actually sends matter for "did it change?".
+      // Descriptive competitor fields are derived from the dogs cache, so they
+      // differ between the draft and the optimistic server projection and would
+      // otherwise produce false positives/negatives.
+      competitors: event.competitors.map((competitor) => ({
+        dogId: competitor.dogId,
+        position: competitor.position,
+        accepted: competitor.accepted,
+      })),
       configuration: event.configuration,
       discipline: event.discipline,
       exercises: event.exercises,
@@ -204,11 +218,14 @@ function CompetitionEventDetailBody(props: {
     });
   };
 
-  const createDefaultCompetitor = (order: number): EventCompetitorDetail => {
+  const createDefaultCompetitor = (
+    order: number,
+    dogId: string,
+  ): EventCompetitorDetail => {
     return {
       position: order,
       accepted: false,
-      dogId: globalThis.crypto.randomUUID(),
+      dogId,
       identity: "",
       name: "",
       owner: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_COMPETITOR"),
@@ -462,7 +479,8 @@ function CompetitionEventDetailBody(props: {
           (entry) => entry.id === currentEditingExerciseId,
         );
         const orderChanged =
-          previousExercise && previousExercise.position !== normalizedDraft.position;
+          previousExercise &&
+          previousExercise.position !== normalizedDraft.position;
 
         const hasConflict = current.exercises.some(
           (entry) =>
@@ -495,7 +513,7 @@ function CompetitionEventDetailBody(props: {
   const createCompetitor = () => {
     const draft = competitorDialogDraft();
 
-    if (!draft) return;
+    if (!draft || !draft.dogId) return;
 
     const normalizedDraft = {
       ...draft,
@@ -523,7 +541,7 @@ function CompetitionEventDetailBody(props: {
     if (!isCreatingCompetitor()) {
       const draft = competitorDialogDraft();
 
-      if (!draft) return;
+      if (!draft || !draft.dogId) return;
 
       const normalizedDraft = {
         ...draft,
@@ -641,7 +659,7 @@ function CompetitionEventDetailBody(props: {
   };
 
   const handleAddCompetitor = () => {
-    const draft = createDefaultCompetitor(draftEvent().competitors.length + 1);
+    const draft = createDefaultCompetitor(draftEvent().competitors.length + 1, "");
 
     setIsCreatingCompetitor(true);
     setEditingCompetitorId(draft.dogId);

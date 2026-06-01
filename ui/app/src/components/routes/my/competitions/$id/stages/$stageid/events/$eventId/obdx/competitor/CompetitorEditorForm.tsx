@@ -43,45 +43,6 @@ export default function CompetitorEditorForm(
   const minOrder = Math.max(props.orderBounds.minValue, 1);
   const maxOrder = Math.max(minOrder, props.orderBounds.maxValue);
 
-  const setIdentity = (value: string) =>
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            identity: value,
-          }
-        : current,
-    );
-
-  const setTeam = (value: string) =>
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            team: value,
-          }
-        : current,
-    );
-
-  const setOwner = (value: string) =>
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            owner: value,
-          }
-        : current,
-    );
-
-  const setCountry = (value: string) =>
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            country: value,
-          }
-        : current,
-    );
   const setOrder = (value: string) => {
     const parsedOrder = Number(value);
     const normalizedOrder = Number.isFinite(parsedOrder)
@@ -130,6 +91,8 @@ export default function CompetitorEditorForm(
       to: "/my/dogs",
     });
 
+  const selectedDog = (dogId: string) => props.dogsById.get(dogId);
+
   return (
     <Show when={props.competitorDialogDraft}>
       {(draft) => (
@@ -152,31 +115,28 @@ export default function CompetitorEditorForm(
           </AtomCombobox>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.OWNER")}
-            value={draft().owner}
-            onBlur={props.onCommitCompetitor}
-            onChange={setOwner}
+            value={selectedDog(draft().dogId)?.owner ?? draft().owner}
+            disabled
           />
           <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")} {draft().name} (
-            {draft().breed})
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")}{" "}
+            {selectedDog(draft().dogId)?.name ?? draft().name} (
+            {selectedDog(draft().dogId)?.breed ?? draft().breed})
           </p>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
-            value={draft().identity}
-            onBlur={props.onCommitCompetitor}
-            onChange={setIdentity}
+            value={selectedDog(draft().dogId)?.identifier ?? draft().identity}
+            disabled
           />
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
-            value={draft().team}
-            onBlur={props.onCommitCompetitor}
-            onChange={setTeam}
+            value={selectedDog(draft().dogId)?.team ?? draft().team}
+            disabled
           />
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
-            value={draft().country}
-            onBlur={props.onCommitCompetitor}
-            onChange={setCountry}
+            value={selectedDog(draft().dogId)?.country ?? draft().country}
+            disabled
           />
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}

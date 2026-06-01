@@ -19,12 +19,13 @@ export interface UpdateEventRequestDTO {
 
 export interface EventCompetitorResponseDTO {
   dog: IdNameDTO;
-  position?: number;
-  team?: string;
-  identity?: string;
-  owner?: string;
-  country?: string;
-  status?: string;
+  position: number;
+  team: string;
+  identity: string;
+  owner: string;
+  country: string;
+  status: string;
+  breed: string;
 }
 
 export interface EventCompetitorRequestDTO {
@@ -73,6 +74,22 @@ export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
   obdx: ObdxEventDetailResponseDTO;
 }
 
+/**
+ * Raw server payload: competitors arrive as {@link EventCompetitorResponseDTO}
+ * (nested `dog`, no flat `dogId`). {@link normalizeEventDetailResponse}
+ * flattens them into the internal {@link EventCompetitorDetail} shape.
+ */
+export interface ObdxEventDetailRawResponseDTO extends Omit<
+  ObdxEventDetailResponseDTO,
+  "competitors"
+> {
+  competitors: EventCompetitorResponseDTO[];
+}
+
+export interface EventDetailRawResponseDTO {
+  obdx: ObdxEventDetailRawResponseDTO;
+}
+
 export interface EventExerciseDetailResponseDTO extends EventExerciseRequestDTO {
   name: string;
 }
@@ -116,10 +133,30 @@ export interface ApiEventRollbackPayload {
   stageId: string;
 }
 
+const normalizeCompetitor = (
+  competitor: EventCompetitorResponseDTO,
+): EventCompetitorDetail => ({
+  dogId: competitor.dog.id,
+  name: competitor.dog.name,
+  owner: competitor.owner ?? "",
+  identity: competitor.identity ?? "",
+  team: competitor.team ?? "",
+  country: competitor.country ?? "",
+  breed: competitor.breed ?? "",
+  position: competitor.position ?? 0,
+  accepted: competitor.status === "accepted",
+  status: competitor.status ?? "",
+});
+
 export const normalizeEventDetailResponse = (
-  event: EventDetailResponseDTO | { obdx: ObdxEventDetailResponseDTO },
+  event: EventDetailRawResponseDTO | ObdxEventDetailRawResponseDTO,
 ): EventDetailResponseDTO => {
-  const obdx = "obdx" in event ? event.obdx : (event as EventDetailResponseDTO);
+  const rawObdx =
+    "obdx" in event ? event.obdx : (event as ObdxEventDetailRawResponseDTO);
+  const obdx: ObdxEventDetailResponseDTO = {
+    ...rawObdx,
+    competitors: rawObdx.competitors.map(normalizeCompetitor),
+  };
 
   return {
     ...obdx,
