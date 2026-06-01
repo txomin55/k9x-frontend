@@ -48,7 +48,7 @@ export const fetchStageById = (id: string) =>
 
 const fetchEventClassification = (stageId: string, eventId: string) =>
   rawRequest<StageEventClassificationResponseDTO>({
-    path: `/stages/${stageId}/events/${eventId}/classification`,
+    path: `/events/${eventId}/classification`,
   });
 
 const stagesQuery = defineQuery({

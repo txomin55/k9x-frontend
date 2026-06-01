@@ -97,10 +97,6 @@ export type StageEnrollRollbackPayload = {
 };
 
 export type EnrollStageEventRequestDTO = {
-  country: string;
   dogId: string;
   eventId: string;
-  identifier: string;
-  owner: string;
-  team: string;
 };

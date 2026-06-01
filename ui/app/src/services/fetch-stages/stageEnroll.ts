@@ -38,11 +38,7 @@ const buildNextStage = (
     }
 
     const nextCompetitor = {
-      country: payload.country,
       dogId: payload.dogId,
-      identity: payload.identifier,
-      owner: payload.owner,
-      team: payload.team,
     };
     const eventCompetitors = event.competitors ?? [];
     const existingIndex = eventCompetitors.findIndex(
@@ -205,7 +201,7 @@ export const enrollStageEvent = async (
       await rawRequest({
         body: payload,
         method: "PUT",
-        path: `/secured/stages/${stageId}/events/${payload.eventId}/enroll`,
+        path: `/secured/events/${payload.eventId}/enroll`,
       });
       return;
     } catch (error) {
@@ -232,7 +228,7 @@ export const enrollStageEvent = async (
     status: "pending",
     timestamp,
     updatedAt: timestamp,
-    url: `/secured/stages/${stageId}/events/${payload.eventId}/enroll`,
+    url: `/secured/events/${payload.eventId}/enroll`,
   } satisfies PendingTask);
 
   void processPendingTasks();

@@ -6,7 +6,6 @@ import {
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
-import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { createMemo, createSignal, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
 import AtomButton, {
@@ -15,7 +14,6 @@ import AtomButton, {
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomInput from "@lib/components/atoms/input/AtomInput";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
@@ -29,18 +27,10 @@ export const Route = createFileRoute("/stages/$id/info")({
 
 type EnrollDraft = {
   dogId: string;
-  identifier: string;
-  owner: string;
-  country: string;
-  team: string;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
   dogId: "",
-  identifier: "",
-  owner: "",
-  country: "",
-  team: "",
 });
 
 const TABS = {
@@ -65,14 +55,7 @@ function StageInfoPage() {
       value: dog.id,
     })),
   );
-  const dogsById = createMemo(() => {
-    const map = new Map<string, Dog>();
-    for (const dog of dogsQuery.data ?? []) {
-      map.set(dog.id, dog);
-    }
-    return map;
-  });
-  const [dialogOpen, setDialogOpen] = createSignal(false);
+const [dialogOpen, setDialogOpen] = createSignal(false);
   const [selectedEventId, setSelectedEventId] = createSignal("");
   const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
     createEmptyEnrollDraft(),
@@ -84,15 +67,9 @@ function StageInfoPage() {
     setEnrollDraft((current) => updater(current));
 
   const handleDogChange = (option: AtomSelectOption | null) => {
-    const dog = option ? dogsById().get(option.value) : undefined;
-
     updateEnrollDraft((current) => ({
       ...current,
       dogId: option?.value ?? "",
-      identifier: dog?.identifier ?? "",
-      owner: dog?.owner ?? "",
-      country: dog?.country ?? "",
-      team: dog?.team ?? "",
     }));
   };
 
@@ -234,47 +211,6 @@ function StageInfoPage() {
                       </AtomButton>
                     </Show>
                   </AtomCombobox>
-
-                  <AtomInput
-                    label={i18n.t("STAGES.INFO.IDENTIFIER")}
-                    value={enrollDraft().identifier}
-                    onChange={(identifier) =>
-                      updateEnrollDraft((current) => ({
-                        ...current,
-                        identifier,
-                      }))
-                    }
-                  />
-                  <AtomInput
-                    label={i18n.t("STAGES.INFO.OWNER")}
-                    value={enrollDraft().owner}
-                    onChange={(owner) =>
-                      updateEnrollDraft((current) => ({
-                        ...current,
-                        owner,
-                      }))
-                    }
-                  />
-                  <AtomInput
-                    label={i18n.t("STAGES.INFO.COUNTRY")}
-                    value={enrollDraft().country}
-                    onChange={(country) =>
-                      updateEnrollDraft((current) => ({
-                        ...current,
-                        country,
-                      }))
-                    }
-                  />
-                  <AtomInput
-                    label={i18n.t("STAGES.INFO.TEAM")}
-                    value={enrollDraft().team}
-                    onChange={(team) =>
-                      updateEnrollDraft((current) => ({
-                        ...current,
-                        team,
-                      }))
-                    }
-                  />
 
                   <div class="stage-info__enroll-form-actions">
                     <AtomButton
