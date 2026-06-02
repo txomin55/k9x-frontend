@@ -9,6 +9,7 @@ import { Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
+import CountryField from "@/components/common/country-field/CountryField";
 import "./styles.css";
 
 type DogFormProps = {
@@ -45,6 +46,12 @@ export default function DogForm(props: DogFormProps) {
     BREED_SELECT_OPTIONS.find(
       (breedOption) => breedOption.value === props.draft().breed,
     ) ?? null;
+
+  const updateId = (id: string) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      id,
+    }));
 
   const updateName = (name: string) =>
     props.onDraftChange((current) => ({
@@ -90,6 +97,11 @@ export default function DogForm(props: DogFormProps) {
   return (
     <div class="dog-form">
       <AtomInput
+        label={i18n.t("MY.DOGS.DOG_FORM.CHIP")}
+        value={props.draft().id}
+        onChange={updateId}
+      />
+      <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.NAME")}
         value={props.draft().name}
         onChange={updateName}
@@ -129,10 +141,11 @@ export default function DogForm(props: DogFormProps) {
         value={props.draft().team}
         onChange={updateTeam}
       />
-      <AtomInput
-        label={i18n.t("MY.DOGS.DOG_FORM.COUNTRY")}
+      <CountryField
+        onChange={(value) => {
+          updateCountry(value.value);
+        }}
         value={props.draft().country}
-        onChange={updateCountry}
       />
       <div class="dog-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>

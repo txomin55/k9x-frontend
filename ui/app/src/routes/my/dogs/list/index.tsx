@@ -4,16 +4,8 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import {
-  createDog,
-  deleteDog,
-  updateDog,
-  useDogs,
-} from "@/services/secured/dog-crud/dogCrud";
-import type {
-  CreateDogRequestDTO,
-  Dog,
-} from "@/services/secured/dog-crud/dogCrud.types";
+import { createDog, deleteDog, updateDog, useDogs } from "@/services/secured/dog-crud/dogCrud";
+import type { CreateDogRequestDTO, Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -27,12 +19,7 @@ function MyDogsListPage() {
   const i18n = useI18n();
 
   const buildDogDraft = (isOrganizer: boolean): CreateDogRequestDTO => ({
-    id:
-      typeof globalThis !== "undefined" &&
-      "crypto" in globalThis &&
-      typeof globalThis.crypto.randomUUID === "function"
-        ? globalThis.crypto.randomUUID()
-        : `${Date.now()}-${Math.random()}`,
+    id: "",
     name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
     breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
     owned: !isOrganizer,

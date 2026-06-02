@@ -12,7 +12,7 @@ import { stripBasePath } from "@/utils/paths/app-paths";
 
 const { getState, setState, useAppStore } = createAppStore<AuthState>({
   user: null,
-  loading: false,
+  loading: true,
   error: null,
 });
 
@@ -28,10 +28,7 @@ const setUser = (user: UserProfileResponseDTO | null) => {
   }));
 };
 
-const fetchUserIfAuthenticated = async (
-  pathname: string,
-  navigate: (path: string) => void,
-) => {
+const fetchUserIfAuthenticated = async (pathname: string) => {
   const appPath = stripBasePath(pathname);
 
   if (appPath === AppRoutePath.AUTH_CALLBACK) return;
@@ -44,9 +41,10 @@ const fetchUserIfAuthenticated = async (
     typeof globalThis !== "undefined" &&
     Boolean(globalThis.localStorage.getItem("k9x_access_token"));
 
-  if (!hasToken && appPath !== AppRoutePath.AUTH_CALLBACK) {
+  if (!hasToken) {
     setAuthState((currentState) => ({
       ...currentState,
+      user: null,
       loading: false,
       error: null,
     }));
@@ -59,8 +57,20 @@ const fetchUserIfAuthenticated = async (
     error: null,
   }));
 
-  setUser(await fetchCachedUserData());
-  navigate(appPath);
+  const result = await fetchCachedUserData().then(
+    (user) => ({ user, error: null }),
+    (error: unknown) => ({
+      user: null,
+      error: error instanceof Error ? error : new Error(String(error)),
+    }),
+  );
+
+  setAuthState((currentState) => ({
+    ...currentState,
+    user: result.user,
+    loading: false,
+    error: result.error,
+  }));
 };
 
 const clearAuth = () => {

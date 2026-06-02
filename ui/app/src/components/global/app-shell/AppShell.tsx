@@ -1,5 +1,5 @@
 import { Link, MetaProvider } from "@solidjs/meta";
-import { Outlet, useLocation, useNavigate } from "@tanstack/solid-router";
+import { Outlet, useLocation } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
@@ -22,7 +22,6 @@ export default function AppShell() {
   let cancelAnimalIconWarmup: () => void;
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   onMount(async () => {
     initNetworkStore();
@@ -34,9 +33,7 @@ export default function AppShell() {
     }
 
     await i18n.init();
-    await fetchUserIfAuthenticated(location().pathname, (path) =>
-      navigate({ to: path }),
-    );
+    await fetchUserIfAuthenticated(location().pathname);
 
     if (user()) {
       warmOfflineBundleInBackground();
