@@ -4,7 +4,7 @@ import AtomSelect from "library/src/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import {
   FederationConfigurationResponseDTO,
-  FederationConfigurationsResponseDTO,
+  FederationConfigurationsResponseDTO
 } from "@/services/secured/configurations/configurations.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
@@ -47,8 +47,7 @@ export default function ConfigurationEditorForm(
   });
 
   const disciplineConfigurations = createMemo(
-    () =>
-      configurations.data?.obdx ?? { federations: [] },
+    () => configurations.data?.obdx ?? { federations: [] },
   );
   const federationOptions = createMemo<AtomSelectOption[]>(
     () =>
@@ -92,9 +91,7 @@ export default function ConfigurationEditorForm(
 
     props.onChange((current) =>
       current && federation
-        ? current.configuration.federation?.id === federation.info.id &&
-          current.configuration.id === "" &&
-          current.configuration.name === ""
+        ? current.configuration.federation?.id === federation.info.id
           ? current
           : {
               ...current,
