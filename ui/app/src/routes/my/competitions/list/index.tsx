@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
-import { For, Suspense } from "solid-js";
+import { For, Show, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my/competitions/list/competition-card/CompetitionCard";
 import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
@@ -21,19 +21,24 @@ function MyCompetitionsIndexPage() {
     <div class="my-competitions">
       <h1>{i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}</h1>
       <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>}>
-        <For each={fetchedCompetitions.data}>
-          {(competition) => (
-            <CompetitionCard
-              id={competition.id}
-              status={competition.status}
-              name={competition.name}
-              description={competition.description}
-              country={competition.country}
-              stages={competition.stages}
-              address={competition?.address}
-            />
-          )}
-        </For>
+        <Show
+          when={fetchedCompetitions.data?.length}
+          fallback={<span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>}
+        >
+          <For each={fetchedCompetitions.data}>
+            {(competition) => (
+              <CompetitionCard
+                id={competition.id}
+                status={competition.status}
+                name={competition.name}
+                description={competition.description}
+                country={competition.country}
+                stages={competition.stages}
+                address={competition?.address}
+              />
+            )}
+          </For>
+        </Show>
       </Suspense>
       <FloatingToggleCircle
         onClick={() =>
