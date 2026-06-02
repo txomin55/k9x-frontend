@@ -76,9 +76,12 @@ const useAuth = <TSelected>(selector: (state: AuthState) => TSelected) =>
 const useAuthUser = () => useAuth((state) => state.user);
 const useAuthLoading = () => useAuth((state) => state.loading);
 
+const isOrganizer = () => Boolean(getState().user?.organizer);
+
 export {
   clearAuth,
   fetchUserIfAuthenticated,
+  isOrganizer,
   setUser,
   useAuthLoading,
   useAuthUser,

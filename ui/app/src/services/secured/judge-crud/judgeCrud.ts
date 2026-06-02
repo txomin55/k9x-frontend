@@ -18,8 +18,13 @@ import type {
 } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
+import { isOrganizer } from "@/stores/auth/auth";
 
 const refreshJudgesSnapshot = async () => {
+  if (!isOrganizer()) {
+    return queryClient.getQueryData<IdNameDTO[]>(getJudgesQueryKey()) ?? [];
+  }
+
   const judges = await rawRequest<IdNameDTO[]>({
     path: "/secured/judges",
   });

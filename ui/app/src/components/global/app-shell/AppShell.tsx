@@ -46,15 +46,17 @@ export default function AppShell() {
 
   createEffect(() => {
     if (user()) {
-      void prefetchCompetitions({
-        refetchOnMount: false,
-        gcTime: 2 * 60 * 1000,
-      });
+      if (user()?.organizer) {
+        void prefetchCompetitions({
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        });
+        void prefetchJudges({
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        });
+      }
       void prefetchDogs({
-        refetchOnMount: false,
-        gcTime: 2 * 60 * 1000,
-      });
-      void prefetchJudges({
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
       });

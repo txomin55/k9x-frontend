@@ -21,6 +21,7 @@ import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { isOrganizer } from "@/stores/auth/auth";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
@@ -32,6 +33,12 @@ export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
 const refreshCompetitionsSnapshot = async () => {
+  if (!isOrganizer()) {
+    return queryClient.getQueryData<CompetitionResponseDTO[]>(
+      getCompetitionsQueryKey(),
+    ) ?? [];
+  }
+
   const competitions = await rawRequest<CompetitionResponseDTO[]>({
     path: "/secured/competitions",
   });
