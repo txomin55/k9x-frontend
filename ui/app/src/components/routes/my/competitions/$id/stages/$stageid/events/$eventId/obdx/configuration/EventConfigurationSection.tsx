@@ -1,9 +1,7 @@
-import type {
-  EventDetailResponseDTO,
-  EventEditorDraft,
-} from "@/services/secured/event-crud/eventCrud.types";
+import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import { Show } from "solid-js";
-import ConfigurationEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/ConfigurationEditorForm";
+import ConfigurationEditorForm
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/ConfigurationEditorForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
@@ -25,7 +23,6 @@ export default function (props: {
           when={props.isEditing}
           fallback={
             <>
-              <span>{`${i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.ID")}: ${props.event.configuration.id}`}</span>
               <span>{`${i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.NAME")}: ${props.event.configuration.name}`}</span>
               <div class="event-configuration-section__content--federation">
                 <span>
