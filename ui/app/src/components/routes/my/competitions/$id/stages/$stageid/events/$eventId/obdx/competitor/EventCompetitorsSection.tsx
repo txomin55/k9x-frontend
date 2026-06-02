@@ -7,7 +7,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
@@ -41,7 +41,7 @@ export default function EventCompetitorsSection(
     from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
   });
 
-  const dogsQuery = useDogs({
+  const dogsQuery = useAllDogs({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
   });

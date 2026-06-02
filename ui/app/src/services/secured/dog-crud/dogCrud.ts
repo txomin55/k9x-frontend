@@ -13,12 +13,17 @@ import {
   saveDogsSnapshot
 } from "./dogCrudOfflineUtils";
 import type { CreateDogRequestDTO, Dog, UpdateDogRequestDTO } from "./dogCrud.types";
-import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
+import {
+  ALL_DOGS_SNAPSHOT_ID,
+  DOGS_SNAPSHOT_ID,
+  getAllDogsQueryKey,
+  getDogsQueryKey,
+} from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 
 const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
-    path: "/secured/dogs",
+    path: "/secured/dogs?onlyOwned=true",
   });
 
   await saveDogsSnapshot(dogs);
@@ -29,6 +34,19 @@ const refreshDogsSnapshot = async () => {
 
 const fetchDogs = () =>
   fetchWithOfflineSnapshot(DOGS_SNAPSHOT_ID, refreshDogsSnapshot);
+
+const refreshAllDogsSnapshot = async () => {
+  const dogs = await rawRequest<Dog[]>({
+    path: "/secured/dogs",
+  });
+
+  queryClient.setQueryData(getAllDogsQueryKey(), dogs);
+
+  return dogs;
+};
+
+const fetchAllDogs = () =>
+  fetchWithOfflineSnapshot(ALL_DOGS_SNAPSHOT_ID, refreshAllDogsSnapshot);
 
 const createDogsQuery = (options?: TanstackCreateQuery) =>
   defineQuery({
@@ -71,6 +89,33 @@ export const useDogs = (options?: TanstackCreateQuery) => {
     },
   });
 };
+
+export const prefetchAllDogs = (options?: TanstackCreateQuery) => {
+  const allDogsQuery = defineQuery({
+    fetcher: fetchAllDogs,
+    queryKey: ["dogs", "all"] as const,
+  });
+  const { queryFn, queryKey } = allDogsQuery.options();
+
+  return queryClient.fetchQuery({
+    queryKey,
+    queryFn,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+  });
+};
+
+export const useAllDogs = (options?: TanstackCreateQuery) =>
+  defineQuery({
+    fetcher: fetchAllDogs,
+    queryKey: ["dogs", "all"] as const,
+  }).useQuery({
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+    refetchOnMount: options?.refetchOnMount,
+  } as any);
 
 const mergeDogWithPayload = (payload: CreateDogRequestDTO): Dog => ({
   id: payload.id,
