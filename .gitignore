@@ -43,3 +43,6 @@ dev-dist
 /ui/app/static/manifest.webmanifest
 /ui/app/test-results/
 *.codex
+
+# local auth token for the k9x-browser-test skill
+.k9x-token
