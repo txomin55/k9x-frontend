@@ -45,12 +45,20 @@ export default function EventCompetitorsSection(
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
   });
-  const dogOptions = createMemo<AtomSelectOption[]>(() =>
-    (dogsQuery.data ?? []).map((dog) => ({
-      label: dog.owner ? `${dog.name} (${dog.owner})` : dog.name,
-      value: dog.id,
-    })),
-  );
+  const dogOptions = createMemo<AtomSelectOption[]>(() => {
+    const addedDogIds = new Set(
+      props.competitors
+        .filter((competitor) => competitor.dogId !== props.editingCompetitorId)
+        .map((competitor) => competitor.dogId),
+    );
+
+    return (dogsQuery.data ?? [])
+      .filter((dog) => !addedDogIds.has(dog.id))
+      .map((dog) => ({
+        label: dog.owner ? `${dog.name} (${dog.owner})` : dog.name,
+        value: dog.id,
+      }));
+  });
   const dogsById = createMemo(() => {
     const map = new Map<string, Dog>();
     for (const dog of dogsQuery.data ?? []) {

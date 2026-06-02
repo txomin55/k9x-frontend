@@ -170,10 +170,18 @@ function CompetitionObdxEventDetailBody(props: {
           (entry) => entry.id === draftEvent().configuration.id,
         )?.exercises ?? [];
 
-    return configurationExercises.map((exercise) => ({
-      label: exercise.name,
-      value: exercise.id,
-    }));
+    const addedExerciseIds = new Set(
+      draftEvent()
+        .exercises.filter((exercise) => exercise.id !== editingExerciseId())
+        .map((exercise) => exercise.id),
+    );
+
+    return configurationExercises
+      .filter((exercise) => !addedExerciseIds.has(exercise.id))
+      .map((exercise) => ({
+        label: exercise.name,
+        value: exercise.id,
+      }));
   });
 
   const closeJudgeEditor = () => {

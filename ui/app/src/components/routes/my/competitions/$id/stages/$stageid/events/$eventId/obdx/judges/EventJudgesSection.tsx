@@ -44,12 +44,20 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
     return map;
   });
 
-  const judgeOptions = createMemo(() =>
-    (judgesQuery.data ?? []).map((judge) => ({
-      label: judge.name,
-      value: judge.id,
-    })),
-  );
+  const judgeOptions = createMemo(() => {
+    const addedJudgeIds = new Set(
+      props.judges
+        .filter((judge) => judge.id !== props.editingJudgeId)
+        .map((judge) => judge.id),
+    );
+
+    return (judgesQuery.data ?? [])
+      .filter((judge) => !addedJudgeIds.has(judge.id))
+      .map((judge) => ({
+        label: judge.name,
+        value: judge.id,
+      }));
+  });
 
   const getJudgeName = (judgeId: string) =>
     judgeNameById().get(judgeId) ?? judgeId;
