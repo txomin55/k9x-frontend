@@ -8,7 +8,7 @@ import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import CountryField from "@/components/common/country-field/CountryField";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 type OrderBounds = {
   minValue: number;
@@ -129,9 +129,7 @@ export default function CompetitorEditorForm(
             value={selectedDog(draft().dogId)?.team ?? draft().team}
             disabled
           />
-          <CountryField
-            value={selectedDog(draft().dogId)?.country ?? draft().country}
-          />
+          <CountryFlag country={selectedDog(draft().dogId)?.country} />
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
             value={draft().position}
