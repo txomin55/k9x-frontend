@@ -112,7 +112,9 @@ export default function ObdxCollectionDetail() {
         const dogId = c.competitor.dog.id;
 
         for (const e of c.exercises) {
-          const touched = e.collectionScores.some((s) => s.score !== 0);
+          const touched = e.collectionScores.some(
+            (s) => s.score != null && s.score !== 0,
+          );
 
           if (touched && dogId) {
             seen.push(dogId);

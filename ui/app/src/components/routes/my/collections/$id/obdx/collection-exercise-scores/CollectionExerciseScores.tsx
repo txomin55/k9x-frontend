@@ -29,6 +29,8 @@ function CollectionExerciseScoreInput(props: {
 }) {
   const [rawValue, setRawValue] = createSignal(props.score.score);
 
+  const hasValue = () => Number.isFinite(rawValue());
+
   const sortedAllowedValues = createMemo(() =>
     [...props.allowedValues]
       .map(roundToTwoDecimals)
@@ -36,8 +38,9 @@ function CollectionExerciseScoreInput(props: {
   );
   const isValidValue = createMemo(
     () =>
+      !hasValue() ||
       sortedAllowedValues().length === 0 ||
-      sortedAllowedValues().includes(roundToTwoDecimals(rawValue())),
+      sortedAllowedValues().includes(roundToTwoDecimals(rawValue() as number)),
   );
 
   const handleBlur = () => {
@@ -57,7 +60,7 @@ function CollectionExerciseScoreInput(props: {
       eventId: props.eventId,
       exerciseId: props.exerciseId,
       judgeId: props.score.judge.id,
-      score: roundToTwoDecimals(nextScore),
+      score: roundToTwoDecimals(nextScore as number),
     });
   };
 
@@ -65,7 +68,7 @@ function CollectionExerciseScoreInput(props: {
   const maxValue = () => sortedAllowedValues().at(-1);
   return (
     <AtomNumberInput
-      rawValue={rawValue()}
+      rawValue={rawValue() ?? NaN}
       onRawValueChange={setRawValue}
       onBlur={handleBlur}
       minValue={minValue()}
