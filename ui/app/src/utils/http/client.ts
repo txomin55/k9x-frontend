@@ -168,10 +168,10 @@ const getSilentAuthToken = async () => {
 
 const shouldAttemptSilentLogin = (path: string) => {
   const hasToken = Boolean(globalThis.localStorage.getItem(ACCESS_TOKEN_KEY));
-  const isApiRequest = path.startsWith("/api/");
+  const isSecuredRequest = path.startsWith("/secured/");
   const isLoginRequest = path === LOGIN_ENDPOINT_PATH;
 
-  return hasToken && isApiRequest && !isLoginRequest;
+  return hasToken && isSecuredRequest && !isLoginRequest;
 };
 
 export { HttpRequestError, loginWithToken, NetworkRequestError, rawRequest };
