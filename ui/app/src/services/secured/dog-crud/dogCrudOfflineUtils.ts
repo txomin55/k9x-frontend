@@ -13,7 +13,11 @@ import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import type { Dog, DogRollbackPayload } from "./dogCrud.types";
 import { mergeDogsWithDrafts, removeDogDraft, replaceDogDrafts, upsertDogDraft } from "./dogDraftStore";
-import { DOGS_SNAPSHOT_ID, getDogsQueryKey } from "./dogCrudConstants";
+import {
+  DOGS_SNAPSHOT_ID,
+  getAllDogsQueryKey,
+  getDogsQueryKey,
+} from "./dogCrudConstants";
 
 const DOG_SNAPSHOT_PREFIX = "dog:";
 
@@ -62,6 +66,23 @@ const syncDogsToCache = (dogs: Dog[]) => {
   queryClient.setQueryData<Dog[]>(getDogsQueryKey(), dogs);
 };
 
+// The "all dogs" cache (used by the add-competitor flow) is separate from the
+// owned-dogs cache. We only touch it when it already exists, so we never seed a
+// partial list that would shadow the real fetch.
+const syncAllDogsUpsert = (dog: Dog) => {
+  if (!queryClient.getQueryData<Dog[]>(getAllDogsQueryKey())) return;
+  queryClient.setQueryData<Dog[]>(getAllDogsQueryKey(), (previousDogs) =>
+    buildNextDogs(previousDogs ?? [], dog),
+  );
+};
+
+const syncAllDogsRemoval = (id: string) => {
+  if (!queryClient.getQueryData<Dog[]>(getAllDogsQueryKey())) return;
+  queryClient.setQueryData<Dog[]>(getAllDogsQueryKey(), (previousDogs) =>
+    buildDogsWithoutEntity(previousDogs ?? [], id),
+  );
+};
+
 export const commitDogMutationSuccess = async ({
   entityId,
   method,
@@ -74,8 +95,11 @@ export const commitDogMutationSuccess = async ({
 
   if (method === "DELETE") {
     syncDogRemovalToCache(entityId);
+    syncAllDogsRemoval(entityId);
   } else if (method === "POST" || method === "PUT") {
     syncDogsToCache(visibleDogs);
+    const committedDog = visibleDogs.find((dog) => dog.id === entityId);
+    if (committedDog) syncAllDogsUpsert(committedDog);
   } else {
     return;
   }

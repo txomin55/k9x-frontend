@@ -106,7 +106,7 @@ export const prefetchAllDogs = (options?: TanstackCreateQuery) => {
   });
 };
 
-export const useAllDogs = (options?: TanstackCreateQuery) =>
+const createAllDogsQuery = (options?: TanstackCreateQuery) =>
   defineQuery({
     fetcher: fetchAllDogs,
     queryKey: ["dogs", "all"] as const,
@@ -116,6 +116,23 @@ export const useAllDogs = (options?: TanstackCreateQuery) =>
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
   } as any);
+
+export const useAllDogs = (options?: TanstackCreateQuery) => {
+  const dogs = createAllDogsQuery(options);
+  // Merge in optimistic drafts so a dog created from the CRUD shows up here
+  // (e.g. the add-competitor flow) before the mutation commits.
+  const mergedData = createMemo(() => mergeDogsWithDrafts(dogs.data ?? []));
+
+  return new Proxy(dogs, {
+    get(target, property, receiver) {
+      if (property === "data") {
+        return mergedData();
+      }
+
+      return Reflect.get(target, property, receiver);
+    },
+  });
+};
 
 const mergeDogWithPayload = (payload: CreateDogRequestDTO): Dog => ({
   id: payload.id,
