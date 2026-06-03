@@ -10,7 +10,7 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import ObdxClassificationCard from "../../../../../components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
+import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
 export const Route = createFileRoute(
@@ -36,19 +36,26 @@ function EventClassificationPage() {
   const ITEM_HEIGHT = 220;
   const OVERSCAN = 5;
   const MAX_VIEWPORT_ITEMS = 6;
-  let listRef!: HTMLDivElement;
+  // Reactive ref: the scroll element mounts inside <Show> only after the data
+  // arrives, so it must be a signal — otherwise the virtualizer never picks it
+  // up and renders every row at translateY(0) (all stacked on first paint).
+  const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
   const [listHeight, setListHeight] = createSignal(
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
   const competitors = createMemo(
     () => classificationQuery.data?.obdx.competitors ?? [],
   );
+  // Currently rendered rows, so we can force a re-measure on data refetches
+  // (which otherwise reset the virtualizer's sizes back to the estimate).
+  const rowEls = new Map<number, HTMLDivElement>();
 
   const updateListHeight = () => {
-    if (!listRef) return;
+    const el = scrollEl();
+    if (!el) return;
     const height = Math.max(
       120,
-      Math.floor(window.innerHeight - listRef.getBoundingClientRect().top - 16),
+      Math.floor(window.innerHeight - el.getBoundingClientRect().top - 16),
     );
     setListHeight(height);
   };
@@ -62,22 +69,28 @@ function EventClassificationPage() {
     });
   });
 
-  createEffect(() => {
-    if (classificationQuery.data) {
-      queueMicrotask(updateListHeight);
-    }
-  });
-
   const virtualizer = createVirtualizer({
     get count() {
       return competitors().length;
     },
-    getScrollElement: () => listRef,
+    getScrollElement: () => scrollEl() ?? null,
     getItemKey: (index) =>
       `classification_${params().id}_${params().eventId}_${index}`,
     estimateSize: () => ITEM_HEIGHT,
     initialRect: { width: 0, height: ITEM_HEIGHT * MAX_VIEWPORT_ITEMS },
     overscan: OVERSCAN,
+  });
+
+  createEffect(() => {
+    if (classificationQuery.data) {
+      queueMicrotask(() => {
+        updateListHeight();
+        // A refetch resets the virtualizer's measured sizes to the estimate;
+        // re-measure the live rows so an expanded card keeps pushing the rows
+        // below it down instead of overlapping them.
+        rowEls.forEach((el) => virtualizer.measureElement(el));
+      });
+    }
   });
 
   return (
@@ -99,7 +112,7 @@ function EventClassificationPage() {
               fallback={<span>--No classification data available.</span>}
             >
               <div
-                ref={listRef}
+                ref={setScrollEl}
                 style={{
                   height: `${listHeight()}px`,
                   "overflow-y": "auto",
@@ -120,14 +133,34 @@ function EventClassificationPage() {
                       if (!competitor) return null;
 
                       return (
-                        <article
+                        <div
                           data-index={virtualRow.index}
                           ref={(el) => {
-                            el.setAttribute(
-                              "data-index",
-                              String(virtualRow.index),
-                            );
+                            // Re-measure whenever the row's height changes (the
+                            // accordion expanding/collapsing), so the rows below
+                            // get the real height instead of the estimate and
+                            // don't end up overlapped behind it.
+                            const index = virtualRow.index;
+                            rowEls.set(index, el);
                             virtualizer.measureElement(el);
+                            // Defer re-measuring to the next frame: measuring
+                            // synchronously inside the observer reflows the
+                            // other rows and re-triggers the observer in the
+                            // same frame ("ResizeObserver loop ... undelivered
+                            // notifications").
+                            let raf = 0;
+                            const ro = new ResizeObserver(() => {
+                              cancelAnimationFrame(raf);
+                              raf = requestAnimationFrame(() =>
+                                virtualizer.measureElement(el),
+                              );
+                            });
+                            ro.observe(el);
+                            onCleanup(() => {
+                              cancelAnimationFrame(raf);
+                              ro.disconnect();
+                              if (rowEls.get(index) === el) rowEls.delete(index);
+                            });
                           }}
                           style={{
                             position: "absolute",
@@ -138,7 +171,7 @@ function EventClassificationPage() {
                           }}
                         >
                           <ObdxClassificationCard competitor={competitor} />
-                        </article>
+                        </div>
                       );
                     }}
                   </For>

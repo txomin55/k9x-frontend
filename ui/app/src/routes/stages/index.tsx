@@ -64,7 +64,7 @@ function StagesIndexPage() {
       value: CONTROLS_KEYS.MAP,
       text: i18n.t("STAGES.INDEX.MAP"),
       disabled: isOffline(),
-      content: <StagesMap stages={fetchedStages.data} />,
+      content: <StagesMap stages={fetchedStages.data ?? []} />,
     },
   ]);
 
