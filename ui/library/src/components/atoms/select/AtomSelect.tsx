@@ -11,7 +11,9 @@ export default function AtomSelect(props: AtomSelectProps) {
   let listboxRef: HTMLUListElement | null = null;
 
   const virtualizer = createVirtualizer({
-    count: props.options.length,
+    get count() {
+      return props.options.length;
+    },
     getScrollElement: () => listboxRef,
     getItemKey: (index) => String(props.options[index]?.value ?? index),
     estimateSize: () => ITEM_HEIGHT,

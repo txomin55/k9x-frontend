@@ -40,7 +40,9 @@ export function AtomCombobox(props: AtomComboboxProps) {
   });
 
   const virtualizer = createVirtualizer({
-    count: visibleOptions().length,
+    get count() {
+      return visibleOptions().length;
+    },
     getScrollElement: () => listboxRef,
     getItemKey: (index) => String(visibleOptions()[index]?.value ?? index),
     estimateSize: () => ITEM_HEIGHT,
@@ -107,10 +109,6 @@ export function AtomCombobox(props: AtomComboboxProps) {
           <Combobox.Listbox
             ref={listboxRef}
             class="atom-combobox__listbox"
-            style={{
-              height: `${visibleOptions().length * ITEM_HEIGHT + 8}px`,
-              "overflow-y": "auto",
-            }}
             scrollToItem={(key) => {
               virtualizer.scrollToIndex(
                 visibleOptions().findIndex((option) => option.value === key),
