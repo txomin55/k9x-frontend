@@ -106,6 +106,17 @@ export default function ObdxCollectionDetail() {
   };
 
   createEffect(() => {
+    if (!selectedCompetitor() && search().competitorId) {
+      const match = collectionCompetitors().find(
+        (option) => option.value === search().competitorId,
+      );
+      if (match) {
+        setSelectedCompetitor(match);
+      }
+    }
+  });
+
+  createEffect(() => {
     if (collectionData.data?.obdx.competitors) {
       const seen: string[] = [];
       for (const c of collectionData.data.obdx.competitors) {
