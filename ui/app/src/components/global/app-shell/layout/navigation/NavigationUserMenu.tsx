@@ -5,6 +5,7 @@ import { useNavigate } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { createSignal, For, Show } from "solid-js";
 import { clearAuth, useAuthUser } from "@/stores/auth/auth";
+import { logout } from "@/services/secured/do-logout/doLogout";
 import { useI18n } from "@/stores/i18n/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import { displayNotification } from "@/utils/notifications/notifications";
@@ -22,6 +23,11 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
     createSignal(false);
 
   const handleLogout = async () => {
+    try {
+      await logout();
+    } catch {
+      // Best-effort: clear the client session even if the server call fails.
+    }
     queryClient.clear();
     clearAuth();
     globalThis.localStorage.removeItem("k9x_access_token");

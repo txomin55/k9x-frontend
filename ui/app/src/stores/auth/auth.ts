@@ -1,14 +1,15 @@
-import { AppRoutePath } from "@/components/global/app-shell/paths";
+import {AppRoutePath} from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
   UserProfileResponseDTO,
 } from "@/services/secured/fetch-user-data/fetchUserData";
-import type { AuthState } from "@/stores/auth/auth.types";
-import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
-import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
-import { createAppStore } from "@/utils/store/createAppStore";
-import { stripBasePath } from "@/utils/paths/app-paths";
+import type {AuthState} from "@/stores/auth/auth.types";
+import {ACCESS_TOKEN_KEY, refreshAccessToken} from "@/utils/http/client";
+import {clearLocalFirstQueryCache} from "@/utils/local-first/query_snapshots/localFirstQueryCache";
+import {clearLocalFirstData} from "@/utils/local-first/storage/localFirstDatabase";
+import {createAppStore} from "@/utils/store/createAppStore";
+import {stripBasePath} from "@/utils/paths/app-paths";
 
 const { getState, setState, useAppStore } = createAppStore<AuthState>({
   user: null,
@@ -28,6 +29,24 @@ const setUser = (user: UserProfileResponseDTO | null) => {
   }));
 };
 
+const recoverSessionFromRefresh = async () => {
+  if (typeof globalThis === "undefined" || !globalThis.localStorage) {
+    return false;
+  }
+
+  if (typeof navigator !== "undefined" && !navigator.onLine) {
+    return false;
+  }
+
+  try {
+    const token = await refreshAccessToken();
+    globalThis.localStorage.setItem(ACCESS_TOKEN_KEY, token);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const fetchUserIfAuthenticated = async (pathname: string) => {
   const appPath = stripBasePath(pathname);
 
@@ -39,9 +58,9 @@ const fetchUserIfAuthenticated = async (pathname: string) => {
 
   const hasToken =
     typeof globalThis !== "undefined" &&
-    Boolean(globalThis.localStorage.getItem("k9x_access_token"));
+    Boolean(globalThis.localStorage.getItem(ACCESS_TOKEN_KEY));
 
-  if (!hasToken) {
+  if (!hasToken && !(await recoverSessionFromRefresh())) {
     setAuthState((currentState) => ({
       ...currentState,
       user: null,

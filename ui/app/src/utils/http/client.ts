@@ -1,7 +1,4 @@
-import {
-  getSilentGoogleAuthCode,
-  startGoogleInteractiveLogin,
-} from "@/utils/google-auth/googleAuth";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import type { LoginRequestDTO } from "@/services/secured/do-login/doLogin.types";
 import type {
@@ -11,6 +8,7 @@ import type {
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 const LOGIN_ENDPOINT_PATH = "/login";
+const REFRESH_ENDPOINT_PATH = "/refresh";
 
 class HttpRequestError extends Error {
   kind = "http" as const;
@@ -65,11 +63,13 @@ const serializeBody = (body: unknown) =>
 
 const createSerializableRequest = ({
   body,
+  credentials,
   headers,
   method = "GET",
   path,
 }: RequestOptions): SerializableRequest => ({
   body: serializeBody(body),
+  credentials,
   headers: serializeHeaders(buildHeaders(path, headers)),
   method,
   url: `${getApiBaseUrl()}${path}`,
@@ -78,16 +78,18 @@ const createSerializableRequest = ({
 const rawRequest = async <TResponse>({
   auth = false,
   body,
+  credentials,
   headers,
   method = "GET",
   path,
-  retryOnUnauthorized = auth,
+  retryOnUnauthorized = auth || path.startsWith("/secured/"),
 }: RequestOptions): Promise<TResponse> => {
   let response: Response;
 
   try {
     const request = createSerializableRequest({
       body,
+      credentials,
       headers,
       method,
       path,
@@ -95,6 +97,7 @@ const rawRequest = async <TResponse>({
 
     response = await fetch(request.url, {
       body: request.body,
+      credentials: request.credentials,
       headers: request.headers,
       method: request.method,
     });
@@ -108,7 +111,7 @@ const rawRequest = async <TResponse>({
     shouldAttemptSilentLogin(path)
   ) {
     try {
-      const token = await getSilentAuthToken();
+      const token = await refreshAccessToken();
       globalThis.localStorage.setItem(ACCESS_TOKEN_KEY, token);
 
       return rawRequest<TResponse>({
@@ -123,6 +126,7 @@ const rawRequest = async <TResponse>({
         retryOnUnauthorized: false,
       });
     } catch (error) {
+      globalThis.localStorage.removeItem(ACCESS_TOKEN_KEY);
       startGoogleInteractiveLogin();
       throw error;
     }
@@ -156,14 +160,27 @@ const rawRequest = async <TResponse>({
 const loginWithToken = (payload: LoginRequestDTO) =>
   rawRequest<string>({
     body: payload,
+    credentials: "include",
     method: "POST",
     path: LOGIN_ENDPOINT_PATH,
     retryOnUnauthorized: false,
   });
 
-const getSilentAuthToken = async () => {
-  const code = await getSilentGoogleAuthCode();
-  return loginWithToken({ code });
+let refreshPromise: Promise<string> | null = null;
+
+const refreshAccessToken = () => {
+  if (!refreshPromise) {
+    refreshPromise = rawRequest<string>({
+      credentials: "include",
+      method: "POST",
+      path: REFRESH_ENDPOINT_PATH,
+      retryOnUnauthorized: false,
+    }).finally(() => {
+      refreshPromise = null;
+    });
+  }
+
+  return refreshPromise;
 };
 
 const shouldAttemptSilentLogin = (path: string) => {
@@ -174,5 +191,11 @@ const shouldAttemptSilentLogin = (path: string) => {
   return hasToken && isSecuredRequest && !isLoginRequest;
 };
 
-export { HttpRequestError, loginWithToken, NetworkRequestError, rawRequest };
+export {
+  HttpRequestError,
+  loginWithToken,
+  NetworkRequestError,
+  rawRequest,
+  refreshAccessToken,
+};
 export { ACCESS_TOKEN_KEY, createSerializableRequest };

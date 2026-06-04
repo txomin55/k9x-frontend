@@ -6,10 +6,7 @@ import {
   clearCachedUserData,
   fetchCachedUserData,
 } from "@/services/secured/fetch-user-data/fetchUserData";
-import {
-  GOOGLE_OAUTH_STATE_KEY,
-  GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
-} from "@/utils/google-auth/googleAuth";
+import { GOOGLE_OAUTH_STATE_KEY } from "@/utils/google-auth/googleAuth";
 import { useLogin } from "@/services/secured/do-login/doLogin";
 import { setUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -43,20 +40,6 @@ function AuthCallbackPage() {
 
   onMount(async () => {
     const runCallback = async () => {
-      const isIframe =
-        globalThis.self && globalThis.top && globalThis.self !== globalThis.top;
-
-      if (isIframe) {
-        globalThis.parent.postMessage(
-          {
-            type: GOOGLE_SILENT_OAUTH_MESSAGE_TYPE,
-            search: globalThis.location.search,
-          },
-          globalThis.location.origin,
-        );
-        return;
-      }
-
       const params = new URLSearchParams(readCallbackParams());
       const code = params.get("code");
 
