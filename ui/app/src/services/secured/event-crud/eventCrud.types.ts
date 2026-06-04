@@ -11,7 +11,7 @@ export interface CreateEventRequestDTO {
 
 export interface UpdateEventRequestDTO {
   competitors?: EventCompetitorRequestDTO[];
-  configurationId?: string;
+  configurationId: string;
   exercises?: EventExerciseRequestDTO[];
   judges?: EventJudgeDetailRequestDTO[];
   name: string;
@@ -104,7 +104,7 @@ export interface EventExerciseRequestDTO {
 export interface EventJudgeDetailResponseDTO {
   collectorEmail: string;
   id: string;
-  name?: string;
+  name: string;
 }
 
 export interface EventJudgeDetailRequestDTO {

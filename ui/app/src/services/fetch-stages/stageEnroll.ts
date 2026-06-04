@@ -2,47 +2,69 @@ import type {
   EnrollStageEventRequestDTO,
   StageDetailResponseDTO,
   StageEnrollRollbackPayload,
-  StageSummaryResponseDTO
+  StageEventDetailCompetitorResponseDTO,
+  StageSummaryResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
-import { getStageByIdQueryKey, getStagesQueryKey } from "@/services/fetch-stages/fetchStages";
+import {
+  getStageByIdQueryKey,
+  getStagesQueryKey,
+} from "@/services/fetch-stages/fetchStages";
+import { getVisibleDogs } from "@/services/secured/dog-crud/dogCrudOfflineUtils";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { shouldQueueOfflineMutation } from "@/utils/local-first/localFirstPolicy";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
-  saveQuerySnapshot
+  saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import {
   createPendingTaskId,
   enqueuePendingTask,
-  type PendingTask
+  type PendingTask,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
   processPendingTasks,
-  registerPendingTaskHandler
+  registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 
 const STAGES_SNAPSHOT_ID = "stages";
 const getStageSnapshotId = (stageId: string) => `stage:${stageId}`;
+
+const buildOptimisticCompetitor = (
+  dog: Dog,
+): StageEventDetailCompetitorResponseDTO => ({
+  dog: { id: dog.id, name: dog.name },
+  owner: dog.owner,
+  team: dog.team,
+  country: dog.country,
+  breed: dog.breed,
+});
 
 const buildNextStage = (
   stage: StageDetailResponseDTO,
   payload: EnrollStageEventRequestDTO,
 ): StageDetailResponseDTO => ({
   ...stage,
-  events: (stage.events ?? []).map((event) => {
+  events: stage.events.map((event) => {
     if (String(event.id) !== String(payload.eventId)) {
       return event;
     }
 
-    const nextCompetitor = {
-      dogId: payload.dogId,
-    };
+    const ownedDog = getVisibleDogs().find(
+      (dog) => String(dog.id) === String(payload.dogId),
+    );
+
+    if (!ownedDog) {
+      return event;
+    }
+
+    const nextCompetitor = buildOptimisticCompetitor(ownedDog);
     const eventCompetitors = event.competitors ?? [];
     const existingIndex = eventCompetitors.findIndex(
-      (competitor) => String(competitor?.dogId) === String(payload.dogId),
+      (competitor) => String(competitor?.dog?.id) === String(payload.dogId),
     );
 
     return {
@@ -176,14 +198,18 @@ const createRollbackPayload = async (
   stageId: string,
 ): Promise<StageEnrollRollbackPayload> => ({
   previousStage:
-    queryClient.getQueryData<StageDetailResponseDTO>(getStageByIdQueryKey(stageId)) ??
+    queryClient.getQueryData<StageDetailResponseDTO>(
+      getStageByIdQueryKey(stageId),
+    ) ??
     (await getPersistedQuerySnapshot<StageDetailResponseDTO>(
       getStageSnapshotId(stageId),
     )) ??
     null,
   previousStages:
     queryClient.getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey()) ??
-    (await getPersistedQuerySnapshot<StageSummaryResponseDTO[]>(STAGES_SNAPSHOT_ID)) ??
+    (await getPersistedQuerySnapshot<StageSummaryResponseDTO[]>(
+      STAGES_SNAPSHOT_ID,
+    )) ??
     null,
   stageId,
 });

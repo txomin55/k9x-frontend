@@ -1,15 +1,7 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
@@ -44,7 +36,7 @@ function EventClassificationPage() {
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
   const competitors = createMemo(
-    () => classificationQuery.data?.obdx.competitors ?? [],
+    () => classificationQuery.data?.obdx?.competitors ?? [],
   );
   // Currently rendered rows, so we can force a re-measure on data refetches
   // (which otherwise reset the virtualizer's sizes back to the estimate).
@@ -108,7 +100,7 @@ function EventClassificationPage() {
             <p>--Discipline {classification().discipline.name}</p>
             <p>--Classification</p>
             <Show
-              when={classification().obdx.competitors.length > 0}
+              when={classification()?.obdx?.competitors?.length}
               fallback={<span>--No classification data available.</span>}
             >
               <div
@@ -127,7 +119,7 @@ function EventClassificationPage() {
                 >
                   <For each={virtualizer.getVirtualItems()}>
                     {(virtualRow) => {
-                      const competitor = classification().obdx.competitors[
+                      const competitor = classification().obdx?.competitors[
                         virtualRow.index
                       ] as StageEventClassificationItemResponseDTO | undefined;
                       if (!competitor) return null;
@@ -136,18 +128,9 @@ function EventClassificationPage() {
                         <div
                           data-index={virtualRow.index}
                           ref={(el) => {
-                            // Re-measure whenever the row's height changes (the
-                            // accordion expanding/collapsing), so the rows below
-                            // get the real height instead of the estimate and
-                            // don't end up overlapped behind it.
                             const index = virtualRow.index;
                             rowEls.set(index, el);
                             virtualizer.measureElement(el);
-                            // Defer re-measuring to the next frame: measuring
-                            // synchronously inside the observer reflows the
-                            // other rows and re-triggers the observer in the
-                            // same frame ("ResizeObserver loop ... undelivered
-                            // notifications").
                             let raf = 0;
                             const ro = new ResizeObserver(() => {
                               cancelAnimationFrame(raf);
@@ -159,7 +142,8 @@ function EventClassificationPage() {
                             onCleanup(() => {
                               cancelAnimationFrame(raf);
                               ro.disconnect();
-                              if (rowEls.get(index) === el) rowEls.delete(index);
+                              if (rowEls.get(index) === el)
+                                rowEls.delete(index);
                             });
                           }}
                           style={{

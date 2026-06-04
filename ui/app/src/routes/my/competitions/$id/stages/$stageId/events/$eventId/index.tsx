@@ -311,6 +311,7 @@ function CompetitionObdxEventDetailBody(props: {
 
   const createDefaultJudge = (): EventJudgeDetailResponseDTO => ({
     collectorEmail: "",
+    name: "",
     id: globalThis.crypto.randomUUID(),
   });
 

@@ -251,7 +251,7 @@ function CompetitionDetailBody(props: {
     const nextCompetition: UpdateCompetitionRequestDTO = {
       country: country(),
       description: description(),
-      address: toUndefinedIfBlank(address()),
+      address: toUndefinedIfBlank(address()) ?? "",
       name: title(),
     };
     const hasChanges =

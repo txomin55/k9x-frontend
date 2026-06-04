@@ -138,6 +138,8 @@
   "STAGES.INFO.TEAM": "Team",
   "STAGES.INFO.CANCEL": "Cancel",
   "STAGES.INFO.ENROLL_IN": "Enroll in",
+  "STAGES.INFO.COMPETITORS_ENROLLED": "Competitors enrolled",
+  "STAGES.INFO.NO_COMPETITORS": "No competitors enrolled yet",
   "MY.COMPETITIONS.DETAIL.CREATING_COMPETITION": "Creating competition",
   "MY.COMPETITIONS.DETAIL.LOADING_COMPETITION": "Loading competition",
   "MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND": "Competition not found.",

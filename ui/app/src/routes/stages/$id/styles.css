@@ -4,10 +4,34 @@
     gap: var(--unit-1);
 }
 
-.stage-info__events--item {
+.stage-info__event--item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: var(--unit-1);
+}
+
+.stage-info__event--header {
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: baseline;
+    gap: var(--unit-1);
+}
+
+.stage-info__competitors {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.stage-info__competitor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-1);
     align-items: baseline;
 }
 

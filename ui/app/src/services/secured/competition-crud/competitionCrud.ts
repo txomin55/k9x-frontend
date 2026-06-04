@@ -120,7 +120,7 @@ const mergeCompetitionWithPayload = (
     address: address ?? previousCompetition?.address ?? "",
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications ?? [],
-    stages: previousCompetition?.stages,
+    stages: previousCompetition?.stages ?? [],
     status: previousCompetition?.status ?? DRAFT_COMPETITION_STATUS,
   };
 };

@@ -123,6 +123,7 @@ const toApiJudge = (
 ): EventJudgeDetailResponseDTO => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   id: judge.id ?? previousJudge?.id ?? "",
+  name: previousJudge?.name ?? "",
 });
 
 const toApiCompetitor = (

@@ -1,6 +1,6 @@
 export interface UserProfileResponseDTO {
   email: string;
-  image?: string;
+  image: string;
   name: string;
   organizer: boolean;
 }

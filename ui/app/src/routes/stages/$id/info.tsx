@@ -1,25 +1,21 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
-import { createMemo, createSignal, Index, Show } from "solid-js";
+import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -55,12 +51,17 @@ function StageInfoPage() {
       value: dog.id,
     })),
   );
-const [dialogOpen, setDialogOpen] = createSignal(false);
+  const [dialogOpen, setDialogOpen] = createSignal(false);
   const [selectedEventId, setSelectedEventId] = createSignal("");
+  const selectedEventName = createMemo(
+    () =>
+      (stageInfo.data?.events ?? []).find(
+        (event) => String(event.id) === String(selectedEventId()),
+      )?.name ?? "",
+  );
   const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
     createEmptyEnrollDraft(),
   );
-  const getDisciplineLabel = (discipline: { name: string }) => discipline.name;
 
   const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
     setEnrollDraft((current) => updater(current));
@@ -119,42 +120,82 @@ const [dialogOpen, setDialogOpen] = createSignal(false);
       {
         value: TABS.EVENTS,
         content: (
-          <Card
-            topLeft={<span>{i18n.t("STAGES.INFO.EVENTS")}</span>}
-            content={
-              <div class="stage-info__events">
-                <Index each={stage.events ?? []}>
-                  {(event) => (
-                    <div class="stage-info__events--item">
-                      <div>
-                        <span>{getDisciplineLabel(event().discipline)}</span>
+          <div class="stage-info__events">
+            <Index each={stage.events}>
+              {(event) => (
+                <Card
+                  topLeft={
+                    <span>
+                      {event().name} ({event().discipline.name})
+                    </span>
+                  }
+                  content={
+                    <div class="stage-info__event--item">
+                      <div class="stage-info__event--header">
                         <span>
-                          {event().name} ({event().competitors?.length ?? 0})
+                          <b>{event().configuration.name}</b>
                         </span>
-                      </div>
-                      <Show
-                        when={user()}
-                        fallback={
-                          <AtomButton
-                            type={BUTTON_TYPES.GHOST}
-                            onClick={startGoogleInteractiveLogin}
-                          >
-                            {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-                          </AtomButton>
-                        }
-                      >
-                        <AtomButton
-                          onClick={() => openEnrollDialog(event().id)}
+                        <Show
+                          when={user()}
+                          fallback={
+                            <AtomButton
+                              type={BUTTON_TYPES.GHOST}
+                              onClick={startGoogleInteractiveLogin}
+                            >
+                              {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                            </AtomButton>
+                          }
                         >
-                          {i18n.t("STAGES.INFO.ENROLL")}
-                        </AtomButton>
-                      </Show>
+                          <AtomButton
+                            onClick={() => openEnrollDialog(event().id)}
+                          >
+                            {i18n.t("STAGES.INFO.ENROLL")}
+                          </AtomButton>
+                        </Show>
+                      </div>
+                      <AtomCollapsible
+                        trigger={
+                          <span>
+                            {i18n.t("STAGES.INFO.COMPETITORS_ENROLLED")} (
+                            {event().competitors.length})
+                          </span>
+                        }
+                        content={
+                          <Show
+                            when={event().competitors.length > 0}
+                            fallback={
+                              <span>
+                                {i18n.t("STAGES.INFO.NO_COMPETITORS")}
+                              </span>
+                            }
+                          >
+                            <ul class="stage-info__competitors">
+                              <For each={event().competitors}>
+                                {(competitor) => (
+                                  <li class="stage-info__competitor">
+                                    <CountryFlag country={competitor.country} />
+                                    <span>
+                                      <b>
+                                        {competitor.dog.name} (
+                                        {competitor.breed})
+                                      </b>
+                                    </span>
+                                    <span>
+                                      {competitor.owner} ({competitor.team})
+                                    </span>
+                                  </li>
+                                )}
+                              </For>
+                            </ul>
+                          </Show>
+                        }
+                      />
                     </div>
-                  )}
-                </Index>
-              </div>
-            }
-          />
+                  }
+                />
+              )}
+            </Index>
+          </div>
         ),
       },
       {
@@ -233,7 +274,7 @@ const [dialogOpen, setDialogOpen] = createSignal(false);
                 setDialogOpen(true);
               }}
               open={dialogOpen()}
-              title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${stage().name}`}
+              title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${selectedEventName()}`}
             />
           </>
         )}

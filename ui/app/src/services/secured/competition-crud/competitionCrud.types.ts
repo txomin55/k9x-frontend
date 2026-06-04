@@ -13,14 +13,14 @@ export interface CompetitionResponseDTO {
   address: string;
   name: string;
   notifications: CompetitionNotificationDetailResponseDTO[];
-  stages?: CompetitionStageDetailResponseDTO[];
+  stages: CompetitionStageDetailResponseDTO[];
   status: string;
 }
 
 export interface UpdateCompetitionRequestDTO {
   country: string;
-  description?: string;
-  address?: string;
+  description: string;
+  address: string;
   name: string;
 }
 
