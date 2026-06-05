@@ -14,6 +14,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
 import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
@@ -116,10 +117,45 @@ function CompetitionDetailBody(props: {
   const [address, setAddress] = createSignal(
     props.competition()?.address ?? "",
   );
-  const [isCreatingStage, setIsCreatingStage] = createSignal(false);
-  const [editingStageId, setEditingStageId] = createSignal<string | null>(null);
+  const [stageDialogParam, setStageDialogParam] = useSearchParam(
+    "stageDialog",
+    "",
+    "push",
+  );
+  const isCreatingStage = () => stageDialogParam() === "new";
+  const editingStageId = () =>
+    stageDialogParam() && stageDialogParam() !== "new"
+      ? stageDialogParam()
+      : null;
   const [stageDialogDraft, setStageDialogDraft] =
     createSignal<StageEditorModel | null>(null);
+
+  createEffect(() => {
+    if (stageDialogParam()) setIsEditing(true);
+  });
+
+  createEffect(() => {
+    const competition = props.competition();
+    const param = stageDialogParam();
+    if (!competition || !param || stageDialogDraft()) return;
+
+    if (param === "new") {
+      setStageDialogDraft({
+        competitionId: competition.id,
+        dateFrom: Date.now(),
+        dateTo: Date.now(),
+        events: [],
+        id: globalThis.crypto.randomUUID(),
+        name: "",
+      });
+      return;
+    }
+
+    const stage = competition.stages?.find((entry) => entry.id === param);
+    if (stage) {
+      setStageDialogDraft(toApiStage(stage, competition.id));
+    }
+  });
   const sortedStages = createMemo(() => {
     const stages = props.competition()?.stages;
     if (!stages) {
@@ -159,9 +195,8 @@ function CompetitionDetailBody(props: {
 
     if (!competition) return;
 
-    setIsCreatingStage(false);
-    setEditingStageId(stage.id);
     setStageDialogDraft(toApiStage(stage, competition.id));
+    setStageDialogParam(stage.id);
   };
 
   const openNewStageEditor = () => {
@@ -171,8 +206,6 @@ function CompetitionDetailBody(props: {
 
     const draft = createDefaultApiStage(competition.id);
 
-    setIsCreatingStage(true);
-    setEditingStageId(draft.id ?? null);
     setStageDialogDraft({
       competitionId: draft.competitionId ?? competition.id,
       dateFrom: Date.now(),
@@ -181,12 +214,12 @@ function CompetitionDetailBody(props: {
       id: draft.id ?? globalThis.crypto.randomUUID(),
       name: draft.name ?? "",
     });
+    setStageDialogParam("new");
   };
 
   const closeStageEditor = () => {
-    setIsCreatingStage(false);
-    setEditingStageId(null);
     setStageDialogDraft(null);
+    setStageDialogParam("");
   };
 
   const updateStageDialogDraft = (

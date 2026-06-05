@@ -22,6 +22,10 @@ import AtomTable from "@lib/components/atoms/table/AtomTable";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useI18n } from "@/stores/i18n/i18n";
+import {
+  useSearchParam,
+  useSearchParamList,
+} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -94,18 +98,17 @@ function EventClassificationPage() {
     return ids;
   });
 
-  const [pinnedIds, setPinnedIds] = createSignal<Set<string>>(new Set());
+  const [pinnedList, setPinnedList] = useSearchParamList("pinned");
+  const pinnedIds = createMemo(() => new Set(pinnedList()));
 
   const isPinned = (id: string) => liveIds().has(id) || pinnedIds().has(id);
 
   const togglePin = (id: string) => {
     if (liveIds().has(id)) return;
-    setPinnedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    const next = new Set(pinnedIds());
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setPinnedList([...next]);
   };
 
   const pinnedCompetitors = createMemo(() =>
@@ -294,7 +297,10 @@ function EventClassificationPage() {
     </div>
   );
 
-  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+  const [controlValue, setControlValue] = useSearchParam(
+    "view",
+    CONTROLS_KEYS.LIST,
+  );
 
   return (
     <div>

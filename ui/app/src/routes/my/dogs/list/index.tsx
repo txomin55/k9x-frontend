@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createMemo, createSignal, For, Show, Suspense } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Show,
+  Suspense,
+} from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
@@ -9,6 +16,7 @@ import type { CreateDogRequestDTO, Dog } from "@/services/secured/dog-crud/dogCr
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
 export const Route = createFileRoute("/my/dogs/list/")({
   component: MyDogsListPage,
@@ -42,38 +50,49 @@ function MyDogsListPage() {
     return dogsQuery.data;
   });
 
-  const [isDialogOpen, setDialogOpen] = createSignal(false);
-  const [editingDogId, setEditingDogId] = createSignal<string | null>(null);
+  const [dogParam, setDogParam] = useSearchParam("dog", "", "push");
   const [draftDog, setDraftDog] = createSignal<CreateDogRequestDTO>(
     buildDogDraft(!!user()?.organizer),
   );
 
+  const isDialogOpen = () => !!dogParam();
+  const editingDogId = () =>
+    dogParam() && dogParam() !== "new" ? dogParam() : null;
+
+  const dogToDraft = (dog: Dog): CreateDogRequestDTO => ({
+    id: dog.id,
+    name: dog.name,
+    image: dog.image,
+    breed: dog.breed,
+    identifier: dog.identifier,
+    owner: dog.owner,
+    team: dog.team,
+    country: dog.country,
+    owned: dog.owned,
+  });
+
   const openCreateDialog = () => {
-    setEditingDogId(null);
     setDraftDog(buildDogDraft(!!user()?.organizer));
-    setDialogOpen(true);
+    setDogParam("new");
   };
 
   const handleCloseDialog = () => {
-    setDialogOpen(false);
-    setEditingDogId(null);
+    setDogParam("");
   };
 
   const openEditDialog = (dog: Dog) => {
-    setEditingDogId(dog.id);
-    setDraftDog(() => ({
-      id: dog.id,
-      name: dog.name,
-      image: dog.image,
-      breed: dog.breed,
-      identifier: dog.identifier,
-      owner: dog.owner,
-      team: dog.team,
-      country: dog.country,
-      owned: dog.owned,
-    }));
-    setDialogOpen(true);
+    setDraftDog(() => dogToDraft(dog));
+    setDogParam(dog.id);
   };
+
+  createEffect(() => {
+    const id = editingDogId();
+    if (!id) return;
+    const dog = dogsQuery.data?.find((entry) => entry.id === id);
+    if (dog && draftDog().id !== dog.id) {
+      setDraftDog(() => dogToDraft(dog));
+    }
+  });
 
   const handleSave = () => {
     const payload = draftDog();

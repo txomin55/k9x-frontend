@@ -43,6 +43,7 @@ import {
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -192,10 +193,29 @@ function CompetitionStageDetailBody(props: {
   const [dateTo, setDateTo] = createSignal(
     toDateInputValue(props.stage().dateTo),
   );
-  const [isCreatingEvent, setIsCreatingEvent] = createSignal(false);
-  const [editingEventId, setEditingEventId] = createSignal<string | null>(null);
+  const [eventParam, setEventParam] = useSearchParam("event", "", "push");
+  const isCreatingEvent = () => eventParam() === "new";
+  const editingEventId = () =>
+    eventParam() && eventParam() !== "new" ? eventParam() : null;
   const [eventDialogDraft, setEventDialogDraft] =
     createSignal<EventEditorDraft | null>(null);
+
+  createEffect(() => {
+    if (eventParam()) setIsEditing(true);
+  });
+
+  createEffect(() => {
+    const param = eventParam();
+    if (!param || eventDialogDraft()) return;
+
+    if (param === "new") {
+      openNewEventEditor();
+      return;
+    }
+
+    const event = props.stage().events.find((entry) => entry.id === param);
+    if (event) openEventEditor(event);
+  });
 
   createEffect(() => {
     if (isEditing()) return;
@@ -213,16 +233,13 @@ function CompetitionStageDetailBody(props: {
   });
 
   const openEventEditor = (event: EventDetailResponseDTO) => {
-    setIsCreatingEvent(false);
-    setEditingEventId(event.id);
     setEventDialogDraft(toEventEditorDraft(event));
+    setEventParam(event.id);
   };
 
   const openNewEventEditor = () => {
     const draft = props.createDefaultEvent(props.stage().id);
 
-    setIsCreatingEvent(true);
-    setEditingEventId(draft.id ?? null);
     setEventDialogDraft({
       competitors: [],
       configuration: {
@@ -241,12 +258,12 @@ function CompetitionStageDetailBody(props: {
       stageId: draft.stageId,
       status: "",
     });
+    setEventParam("new");
   };
 
   const closeEventEditor = () => {
-    setIsCreatingEvent(false);
-    setEditingEventId(null);
     setEventDialogDraft(null);
+    setEventParam("");
   };
   const commitStageEdits = () => {
     if (!isEditing()) return;

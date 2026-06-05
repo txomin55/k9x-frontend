@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createSignal, For, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, For, Show, Suspense } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
@@ -15,6 +15,7 @@ import type {
 } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
 export const Route = createFileRoute("/my/judges/list/")({
   component: MyJudgesListPage,
@@ -31,29 +32,38 @@ function MyJudgesListPage() {
     gcTime: 2 * 60 * 1000,
   });
 
-  const [isDialogOpen, setDialogOpen] = createSignal(false);
-  const [editingJudgeId, setEditingJudgeId] = createSignal<string | null>(null);
+  const [judgeParam, setJudgeParam] = useSearchParam("judge", "", "push");
   const [draftJudge, setDraftJudge] =
     createSignal<IdNameDTO>(buildJudgeDraft());
 
+  const isDialogOpen = () => !!judgeParam();
+  const editingJudgeId = () =>
+    judgeParam() && judgeParam() !== "new" ? judgeParam() : null;
+
   const openCreateDialog = () => {
-    setEditingJudgeId(null);
     setDraftJudge(buildJudgeDraft());
-    setDialogOpen(true);
+    setJudgeParam("new");
   };
   const handleCloseDialog = () => {
-    setDialogOpen(false);
-    setEditingJudgeId(null);
+    setJudgeParam("");
   };
 
   const openEditDialog = (judge: IdNameDTO) => {
-    setEditingJudgeId(judge.id);
     setDraftJudge(() => ({
       id: judge.id,
       name: judge.name,
     }));
-    setDialogOpen(true);
+    setJudgeParam(judge.id);
   };
+
+  createEffect(() => {
+    const id = editingJudgeId();
+    if (!id) return;
+    const judge = judgesQuery.data?.find((entry) => entry.id === id);
+    if (judge && draftJudge().id !== judge.id) {
+      setDraftJudge(() => ({ id: judge.id, name: judge.name }));
+    }
+  });
 
   const handleSave = () => {
     const payload = draftJudge();

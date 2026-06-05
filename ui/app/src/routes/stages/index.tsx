@@ -1,11 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  Suspense,
-} from "solid-js";
+import { createEffect, createMemo, For, Suspense } from "solid-js";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
@@ -16,6 +10,7 @@ import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 export const Route = createFileRoute("/stages/")({
@@ -133,11 +128,21 @@ function StagesIndexPage() {
     },
   ]);
 
-  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+  const [controlValue, setControlValue] = useSearchParam(
+    "view",
+    CONTROLS_KEYS.LIST,
+  );
+  const [stageParam] = useSearchParam("stage", "");
 
   createEffect(() => {
     if (isOffline()) {
       setControlValue(CONTROLS_KEYS.LIST);
+    }
+  });
+
+  createEffect(() => {
+    if (stageParam() && controlValue() !== CONTROLS_KEYS.MAP && !isOffline()) {
+      setControlValue(CONTROLS_KEYS.MAP);
     }
   });
 

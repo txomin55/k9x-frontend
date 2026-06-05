@@ -1,9 +1,16 @@
-import { createEffect, createMemo, onCleanup, onMount } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+} from "solid-js";
 import L from "leaflet";
 import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/stages/stages-map/StageMapMarker";
 import { render } from "solid-js/web";
 import { isDark } from "@/stores/theme/theme";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "leaflet.markercluster";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
@@ -20,6 +27,9 @@ export default function StagesMap(props: StagesMapProps) {
   let resizeObserver: ResizeObserver | undefined;
   let tileLayer: L.TileLayer | undefined;
   const disposers: Array<() => void> = [];
+  const markerByStage = new Map<string, L.Marker>();
+  const [mapReady, setMapReady] = createSignal(false);
+  const [stageParam, setStageParam] = useSearchParam("stage", "");
 
   const clusterGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
@@ -49,6 +59,7 @@ export default function StagesMap(props: StagesMapProps) {
   };
 
   const markers = createMemo(() => {
+    markerByStage.clear();
     return props.stages.map((stage) => {
       const marker = L.marker(
         [stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
@@ -64,8 +75,27 @@ export default function StagesMap(props: StagesMapProps) {
       disposers.push(dispose);
       marker.bindPopup(container);
 
+      marker.on("popupopen", () => {
+        if (stageParam() !== stage.id) setStageParam(stage.id);
+      });
+      marker.on("popupclose", () => {
+        if (stageParam() === stage.id) setStageParam("");
+      });
+
+      markerByStage.set(stage.id, marker);
+
       return marker;
     });
+  });
+
+  createEffect(() => {
+    const id = stageParam();
+    if (!mapReady() || !map || !id) return;
+
+    const marker = markerByStage.get(id);
+    if (!marker || marker.isPopupOpen()) return;
+
+    clusterGroup.zoomToShowLayer(marker, () => marker.openPopup());
   });
 
   const getTileLayerUrl = (isDark: boolean) =>
@@ -109,6 +139,8 @@ export default function StagesMap(props: StagesMapProps) {
       paddingBottomRight: [80, 160],
       maxZoom: 4,
     });
+
+    setMapReady(true);
 
     resizeObserver = new ResizeObserver(() => {
       requestAnimationFrame(() => {

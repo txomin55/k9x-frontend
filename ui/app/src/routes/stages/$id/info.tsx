@@ -16,6 +16,7 @@ import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -51,8 +52,12 @@ function StageInfoPage() {
       value: dog.id,
     })),
   );
-  const [dialogOpen, setDialogOpen] = createSignal(false);
-  const [selectedEventId, setSelectedEventId] = createSignal("");
+  const [selectedEventId, setSelectedEventId] = useSearchParam(
+    "enroll",
+    "",
+    "push",
+  );
+  const dialogOpen = () => !!selectedEventId();
   const selectedEventName = createMemo(
     () =>
       (stageInfo.data?.events ?? []).find(
@@ -74,13 +79,11 @@ function StageInfoPage() {
   };
 
   const openEnrollDialog = (eventId: string) => {
-    setSelectedEventId(eventId);
     setEnrollDraft(createEmptyEnrollDraft());
-    setDialogOpen(true);
+    setSelectedEventId(eventId);
   };
 
   const closeEnrollDialog = () => {
-    setDialogOpen(false);
     setSelectedEventId("");
     setEnrollDraft(createEmptyEnrollDraft());
   };
@@ -268,10 +271,7 @@ function StageInfoPage() {
               onOpenChange={(open) => {
                 if (!open) {
                   closeEnrollDialog();
-                  return;
                 }
-
-                setDialogOpen(true);
               }}
               open={dialogOpen()}
               title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${selectedEventName()}`}
