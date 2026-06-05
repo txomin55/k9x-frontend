@@ -1,3 +1,39 @@
 .stages {
-    height: 100%;
+  height: 100%;
+}
+
+.stages-table {
+  max-height: calc(100dvh - 12rem);
+  overflow: auto;
+}
+
+/* The table sizes to its content; the wrapper above handles scrolling so a
+   short list does not leave a tall empty box. */
+.stages-table .atom-table,
+.stages-table .atom-table__scroller {
+  height: auto;
+  overflow: visible;
+}
+
+.stages-table__expander {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--text-secondary);
+
+  font: inherit;
+  cursor: pointer;
+
+  transition: color 120ms ease;
+}
+
+.stages-table__expander:hover {
+  color: var(--text-primary);
 }
