@@ -4,8 +4,10 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/solid-router";
-import { onMount } from "solid-js";
+import { createMemo, For, onMount, Show } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -19,6 +21,18 @@ function EntryRoutePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const i18n = useI18n();
+
+  const fetchedStages = useStages({
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
+  });
+
+  const latestStages = createMemo(
+    () =>
+      fetchedStages.data
+        ?.toSorted((left, right) => (right.dateFrom ?? 0) - (left.dateFrom ?? 0))
+        .slice(0, 3) ?? [],
+  );
 
   onMount(async () => {
     const search = location().searchStr;
@@ -55,6 +69,42 @@ function EntryRoutePage() {
           </Link>
         </div>
       </div>
+
+      <Show when={latestStages().length > 0}>
+        <div class="landing-page__latest">
+          <div class="landing-page__latest-header">
+            <h2>{i18n.t("HOME.LATEST_STAGES")}</h2>
+            <Link
+              class="landing-page__latest-link"
+              to={AppRoutePath.STAGES as "/stages"}
+            >
+              {i18n.t("HOME.BROWSE_STAGES")}
+            </Link>
+          </div>
+          <ul class="landing-page__latest-list">
+            <For each={latestStages()}>
+              {(stage) => (
+                <li class="landing-page__latest-item">
+                  <Link
+                    class="landing-page__latest-item-link"
+                    params={{ id: stage.id }}
+                    to="/stages/$id/info"
+                  >
+                    <CountryFlag
+                      country={stage.country ?? ""}
+                      alt={`${stage.name} flag`}
+                    />
+                    <span class="landing-page__latest-name">{stage.name}</span>
+                    <span class="landing-page__latest-date">
+                      {new Date(stage.dateFrom ?? 0).toLocaleDateString()}
+                    </span>
+                  </Link>
+                </li>
+              )}
+            </For>
+          </ul>
+        </div>
+      </Show>
 
       <div class="landing-page__grid">
         <article class="landing-page__card">

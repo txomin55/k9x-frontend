@@ -81,7 +81,8 @@ export default function AppLayout(props: ParentProps) {
   });
 
   createEffect(() => {
-    if (!isDesktop() || location().pathname === "/") {
+    const pathname = location().pathname;
+    if (!isDesktop() || pathname === "/") {
       setIsNavOpen(false);
     }
   });
