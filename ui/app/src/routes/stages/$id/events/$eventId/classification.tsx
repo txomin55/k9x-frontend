@@ -3,6 +3,10 @@ import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
+import {
+  positionTrend,
+  type TrendDirection
+} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
 export const Route = createFileRoute(
@@ -28,9 +32,7 @@ function EventClassificationPage() {
   const ITEM_HEIGHT = 220;
   const OVERSCAN = 5;
   const MAX_VIEWPORT_ITEMS = 6;
-  // Reactive ref: the scroll element mounts inside <Show> only after the data
-  // arrives, so it must be a signal — otherwise the virtualizer never picks it
-  // up and renders every row at translateY(0) (all stacked on first paint).
+
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
   const [listHeight, setListHeight] = createSignal(
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
@@ -38,9 +40,30 @@ function EventClassificationPage() {
   const competitors = createMemo(
     () => classificationQuery.data?.obdx?.competitors ?? [],
   );
-  // Currently rendered rows, so we can force a re-measure on data refetches
-  // (which otherwise reset the virtualizer's sizes back to the estimate).
+
   const rowEls = new Map<number, HTMLDivElement>();
+
+  let previousPositions = new Map<string, number>();
+  const [trends, setTrends] = createSignal<Map<string, TrendDirection>>(
+    new Map(),
+  );
+
+  createEffect(() => {
+    const list = competitors();
+    if (!list.length) return;
+    const nextTrends = new Map<string, TrendDirection>();
+    const nextPositions = new Map<string, number>();
+    for (const competitor of list) {
+      const id = competitor.dog.id;
+      nextTrends.set(
+        id,
+        positionTrend(previousPositions.get(id), competitor.position),
+      );
+      nextPositions.set(id, competitor.position);
+    }
+    setTrends(nextTrends);
+    previousPositions = nextPositions;
+  });
 
   const updateListHeight = () => {
     const el = scrollEl();
@@ -77,9 +100,6 @@ function EventClassificationPage() {
     if (classificationQuery.data) {
       queueMicrotask(() => {
         updateListHeight();
-        // A refetch resets the virtualizer's measured sizes to the estimate;
-        // re-measure the live rows so an expanded card keeps pushing the rows
-        // below it down instead of overlapping them.
         rowEls.forEach((el) => virtualizer.measureElement(el));
       });
     }
@@ -154,7 +174,10 @@ function EventClassificationPage() {
                             transform: `translateY(${virtualRow.start}px)`,
                           }}
                         >
-                          <ObdxClassificationCard competitor={competitor} />
+                          <ObdxClassificationCard
+                            competitor={competitor}
+                            trend={trends().get(competitor.dog.id)}
+                          />
                         </div>
                       );
                     }}

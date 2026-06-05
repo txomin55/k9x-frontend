@@ -42,6 +42,21 @@
     line-height: var(--text-heading-line-height);
 }
 
+.obdx-clf__trend {
+    font-size: var(--text-caption-md);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    margin-top: var(--unit-05);
+}
+
+.obdx-clf__trend.is-up {
+    color: var(--success);
+}
+
+.obdx-clf__trend.is-down {
+    color: var(--error);
+}
+
 .obdx-clf__tied {
     font-size: var(--text-caption-md);
     font-weight: var(--font-weight-semibold);
@@ -115,9 +130,10 @@
     flex-shrink: 0;
 }
 
-.obdx-clf__pin-icon {
+.obdx-clf__pin img {
     width: var(--unit-2);
     height: var(--unit-2);
+    display: block;
 }
 
 .obdx-clf__pin:hover {

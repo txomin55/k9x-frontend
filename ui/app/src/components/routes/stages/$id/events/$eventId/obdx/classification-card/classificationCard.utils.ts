@@ -6,6 +6,16 @@ import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export type RatingColor = "green" | "yellow" | "red" | "grey";
 
+export type TrendDirection = "up" | "down" | "same";
+
+export function positionTrend(
+  previous: number | undefined,
+  current: number,
+): TrendDirection {
+  if (previous === undefined || previous === current) return "same";
+  return previous > current ? "up" : "down";
+}
+
 export function formatScore(value: number): string {
   return Number.isInteger(value) ? String(value) : value.toFixed(1);
 }

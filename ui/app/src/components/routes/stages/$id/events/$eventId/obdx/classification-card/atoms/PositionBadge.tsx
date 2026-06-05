@@ -14,6 +14,18 @@ export default function PositionBadge(props: PositionBadgeProps) {
           <span class="obdx-clf__tied">=</span>
         </Show>
       </span>
+      <Show when={props.trend && props.trend !== "same"}>
+        <span
+          class="obdx-clf__trend"
+          classList={{
+            "is-up": props.trend === "up",
+            "is-down": props.trend === "down",
+          }}
+          aria-hidden="true"
+        >
+          {props.trend === "up" ? "↑" : "↓"}
+        </span>
+      </Show>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import type { TrendDirection } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import { useI18n } from "@/stores/i18n/i18n";
 import ObdxCompetitorHeader from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader";
 import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
@@ -12,6 +13,7 @@ import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/
 
 type ObdxClassificationProps = {
   competitor: StageEventClassificationItemResponseDTO;
+  trend?: TrendDirection;
 };
 
 export default function ObdxClassificationCard(props: ObdxClassificationProps) {
@@ -20,7 +22,12 @@ export default function ObdxClassificationCard(props: ObdxClassificationProps) {
 
   return (
     <Card
-      topLeft={<ObdxCompetitorHeader competitor={props.competitor} />}
+      topLeft={
+        <ObdxCompetitorHeader
+          competitor={props.competitor}
+          trend={props.trend}
+        />
+      }
       topRight={<PinButton />}
       content={
         <div class="obdx-clf__body">

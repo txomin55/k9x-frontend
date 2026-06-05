@@ -12,6 +12,7 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
         position={props.competitor.position}
         tied={props.competitor.tied}
         live={isLive(props.competitor.status)}
+        trend={props.trend}
       />
       <div class="obdx-clf__info">
         <span class="obdx-clf__dog text-heading-xs">
