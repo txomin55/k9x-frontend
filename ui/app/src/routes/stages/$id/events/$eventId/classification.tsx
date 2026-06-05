@@ -12,6 +12,7 @@ import {
 } from "solid-js";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import {
+  isLive,
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
@@ -84,6 +85,32 @@ function EventClassificationPage() {
     setTrends(nextTrends);
     previousPositions = nextPositions;
   });
+
+  const liveIds = createMemo(() => {
+    const ids = new Set<string>();
+    for (const competitor of competitors()) {
+      if (isLive(competitor.status)) ids.add(competitor.dog.id);
+    }
+    return ids;
+  });
+
+  const [pinnedIds, setPinnedIds] = createSignal<Set<string>>(new Set());
+
+  const isPinned = (id: string) => liveIds().has(id) || pinnedIds().has(id);
+
+  const togglePin = (id: string) => {
+    if (liveIds().has(id)) return;
+    setPinnedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const pinnedCompetitors = createMemo(() =>
+    competitors().filter((competitor) => isPinned(competitor.dog.id)),
+  );
 
   const updateListHeight = () => {
     const el = scrollEl();
@@ -206,6 +233,7 @@ function EventClassificationPage() {
                 data-index={virtualRow.index}
                 ref={(el) => {
                   const index = virtualRow.index;
+                  el.setAttribute("data-index", String(index));
                   rowEls.set(index, el);
                   virtualizer.measureElement(el);
                   let raf = 0;
@@ -233,6 +261,9 @@ function EventClassificationPage() {
                 <ObdxClassificationCard
                   competitor={competitor}
                   trend={trends().get(competitor.dog.id)}
+                  pinned={isPinned(competitor.dog.id)}
+                  pinDisabled={liveIds().has(competitor.dog.id)}
+                  onTogglePin={() => togglePin(competitor.dog.id)}
                 />
               </div>
             );
@@ -254,6 +285,9 @@ function EventClassificationPage() {
           <ObdxClassificationCard
             competitor={row.original}
             trend={trends().get(row.original.dog.id)}
+            pinned={isPinned(row.original.dog.id)}
+            pinDisabled={liveIds().has(row.original.dog.id)}
+            onTogglePin={() => togglePin(row.original.dog.id)}
           />
         )}
       />
@@ -276,6 +310,21 @@ function EventClassificationPage() {
             <p>--Stage {classification().stage.name}</p>
             <p>--Discipline {classification().discipline.name}</p>
             <p>--Classification</p>
+            <Show when={pinnedCompetitors().length}>
+              <div class="obdx-clf__pinned">
+                <For each={pinnedCompetitors()}>
+                  {(competitor) => (
+                    <ObdxClassificationCard
+                      competitor={competitor}
+                      trend={trends().get(competitor.dog.id)}
+                      pinned
+                      pinDisabled={liveIds().has(competitor.dog.id)}
+                      onTogglePin={() => togglePin(competitor.dog.id)}
+                    />
+                  )}
+                </For>
+              </div>
+            </Show>
             <Show
               when={classification()?.obdx?.competitors?.length}
               fallback={<span>--No classification data available.</span>}

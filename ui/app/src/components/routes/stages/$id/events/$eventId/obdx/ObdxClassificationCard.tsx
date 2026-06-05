@@ -14,6 +14,9 @@ import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/
 type ObdxClassificationProps = {
   competitor: StageEventClassificationItemResponseDTO;
   trend?: TrendDirection;
+  pinned: boolean;
+  pinDisabled: boolean;
+  onTogglePin: () => void;
 };
 
 export default function ObdxClassificationCard(props: ObdxClassificationProps) {
@@ -28,7 +31,13 @@ export default function ObdxClassificationCard(props: ObdxClassificationProps) {
           trend={props.trend}
         />
       }
-      topRight={<PinButton />}
+      topRight={
+        <PinButton
+          pinned={props.pinned}
+          disabled={props.pinDisabled}
+          onToggle={props.onTogglePin}
+        />
+      }
       content={
         <div class="obdx-clf__body">
           <div class="obdx-clf__squares-total">

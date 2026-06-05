@@ -20,3 +20,13 @@
 .obdx-clf-table__expander:hover {
   color: var(--text-primary);
 }
+
+.obdx-clf__pinned {
+  display: grid;
+  gap: var(--unit-1);
+
+  margin-bottom: var(--unit-2);
+  padding-bottom: var(--unit-1);
+
+  border-bottom: 1px solid var(--border);
+}

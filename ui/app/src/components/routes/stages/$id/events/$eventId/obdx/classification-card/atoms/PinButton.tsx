@@ -18,7 +18,11 @@ export default function PinButton(props: PinButtonProps) {
       classList={{ "obdx-clf__pin--pinned": props.pinned }}
       title={label()}
       aria-pressed={props.pinned ? "true" : "false"}
-      onClick={() => props.onToggle?.()}
+      disabled={props.disabled}
+      onClick={() => {
+        if (props.disabled) return;
+        props.onToggle?.();
+      }}
     >
       <AtomSvgIcon src={pinIcon} alt={label()} />
     </button>
