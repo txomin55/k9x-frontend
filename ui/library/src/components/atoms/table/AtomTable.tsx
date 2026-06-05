@@ -2,7 +2,9 @@ import {
   createSolidTable,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   getSortedRowModel,
+  type ExpandedState,
   type SortingState,
 } from "@tanstack/solid-table";
 import type { AtomTableProps } from "@lib/components/atoms/table/AtomTable.types";
@@ -11,6 +13,7 @@ import "./styles.css";
 
 export default function AtomTable<TData>(props: AtomTableProps<TData>) {
   const [sorting, setSorting] = createSignal<SortingState>([]);
+  const [expanded, setExpanded] = createSignal<ExpandedState>({});
   let scrollerRef: HTMLDivElement | undefined;
   let sentinelRef: HTMLDivElement | undefined;
 
@@ -25,13 +28,19 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
       get sorting() {
         return sorting();
       },
+      get expanded() {
+        return expanded();
+      },
     },
     onSortingChange: (updater) => {
       setSorting(updater);
       props.onSortingChange?.(updater);
     },
+    onExpandedChange: setExpanded,
+    getRowCanExpand: (row) => props.getRowCanExpand?.(row) ?? false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
   });
 
   createEffect(() => {
@@ -60,10 +69,7 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
 
   return (
     <div class={`atom-table ${props.class ?? ""}`.trim()}>
-      <div
-        class="atom-table__scroller"
-        ref={scrollerRef}
-      >
+      <div class="atom-table__scroller" ref={scrollerRef}>
         <table class="atom-table__table">
           <thead class="atom-table__head">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -87,7 +93,10 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
                               header.getContext(),
                             )}
                           </span>
-                          <span class="atom-table__sort-indicator" aria-hidden="true">
+                          <span
+                            class="atom-table__sort-indicator"
+                            aria-hidden="true"
+                          >
                             {sortState === "asc"
                               ? "▲"
                               : sortState === "desc"
@@ -112,13 +121,28 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr class="atom-table__row">
-                  {row.getVisibleCells().map((cell) => (
-                    <td class="atom-table__cell">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
+                <>
+                  <tr class="atom-table__row">
+                    {row.getVisibleCells().map((cell) => (
+                      <td class="atom-table__cell">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                  {row.getIsExpanded() && props.renderSubComponent ? (
+                    <tr class="atom-table__row atom-table__row--expanded">
+                      <td
+                        class="atom-table__cell atom-table__expanded-cell"
+                        colSpan={row.getVisibleCells().length}
+                      >
+                        {props.renderSubComponent(row)}
+                      </td>
+                    </tr>
+                  ) : null}
+                </>
               ))
             )}
           </tbody>

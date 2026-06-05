@@ -1,13 +1,27 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import {
   positionTrend,
-  type TrendDirection
+  type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import { createVirtualizer } from "@tanstack/solid-virtual";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable from "@lib/components/atoms/table/AtomTable";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useI18n } from "@/stores/i18n/i18n";
+import "./styles.css";
 
 export const Route = createFileRoute(
   "/stages/$id/events/$eventId/classification",
@@ -15,7 +29,13 @@ export const Route = createFileRoute(
   component: EventClassificationPage,
 });
 
+const CONTROLS_KEYS = {
+  LIST: "LIST",
+  TABLE: "TABLE",
+};
+
 function EventClassificationPage() {
+  const { t } = useI18n();
   const params = useParams({
     from: "/stages/$id/events/$eventId/classification",
   });
@@ -105,6 +125,143 @@ function EventClassificationPage() {
     }
   });
 
+  const columns = createMemo<
+    ColumnDef<StageEventClassificationItemResponseDTO>[]
+  >(() => [
+    {
+      accessorKey: "position",
+      header: t("STAGES.CLASSIFICATION.POSITION"),
+      cell: (info) => info.getValue<number>(),
+    },
+    {
+      accessorKey: "country",
+      header: t("STAGES.CLASSIFICATION.COUNTRY"),
+      enableSorting: false,
+      cell: (info) => (
+        <CountryFlag country={info.getValue<string>()} width={20} height={20} />
+      ),
+    },
+    {
+      id: "dog",
+      accessorFn: (row) => row.dog.name,
+      header: t("STAGES.CLASSIFICATION.DOG"),
+      cell: (info) => info.getValue<string>(),
+    },
+    {
+      accessorKey: "owner",
+      header: t("STAGES.CLASSIFICATION.GUIDE"),
+      cell: (info) => info.getValue<string>(),
+    },
+    {
+      accessorKey: "totalScore",
+      header: t("STAGES.CLASSIFICATION.TOTAL"),
+      cell: (info) => info.getValue<number>() ?? "-",
+    },
+    {
+      id: "expander",
+      header: () => null,
+      enableSorting: false,
+      cell: (info) => (
+        <button
+          type="button"
+          class="obdx-clf-table__expander"
+          aria-label={
+            info.row.getIsExpanded()
+              ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
+              : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
+          }
+          aria-expanded={info.row.getIsExpanded()}
+          onClick={info.row.getToggleExpandedHandler()}
+        >
+          {info.row.getIsExpanded() ? "▾" : "▸"}
+        </button>
+      ),
+    },
+  ]);
+
+  const listContent = (
+    classification: StageEventClassificationItemResponseDTO[],
+  ) => (
+    <div
+      ref={setScrollEl}
+      style={{
+        height: `${listHeight()}px`,
+        "overflow-y": "auto",
+      }}
+    >
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          position: "relative",
+          width: "100%",
+        }}
+      >
+        <For each={virtualizer.getVirtualItems()}>
+          {(virtualRow) => {
+            const competitor = classification[virtualRow.index];
+            if (!competitor) return null;
+
+            return (
+              <div
+                data-index={virtualRow.index}
+                ref={(el) => {
+                  const index = virtualRow.index;
+                  rowEls.set(index, el);
+                  virtualizer.measureElement(el);
+                  let raf = 0;
+                  const ro = new ResizeObserver(() => {
+                    cancelAnimationFrame(raf);
+                    raf = requestAnimationFrame(() =>
+                      virtualizer.measureElement(el),
+                    );
+                  });
+                  ro.observe(el);
+                  onCleanup(() => {
+                    cancelAnimationFrame(raf);
+                    ro.disconnect();
+                    if (rowEls.get(index) === el) rowEls.delete(index);
+                  });
+                }}
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  right: "0",
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
+                <ObdxClassificationCard
+                  competitor={competitor}
+                  trend={trends().get(competitor.dog.id)}
+                />
+              </div>
+            );
+          }}
+        </For>
+      </div>
+    </div>
+  );
+
+  const tableContent = (
+    classification: StageEventClassificationItemResponseDTO[],
+  ) => (
+    <div style={{ height: `${listHeight()}px` }}>
+      <AtomTable<StageEventClassificationItemResponseDTO>
+        data={classification}
+        columns={columns()}
+        getRowCanExpand={() => true}
+        renderSubComponent={(row) => (
+          <ObdxClassificationCard
+            competitor={row.original}
+            trend={trends().get(row.original.dog.id)}
+          />
+        )}
+      />
+    </div>
+  );
+
+  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+
   return (
     <div>
       <h2>--Event classification</h2>
@@ -123,67 +280,27 @@ function EventClassificationPage() {
               when={classification()?.obdx?.competitors?.length}
               fallback={<span>--No classification data available.</span>}
             >
-              <div
-                ref={setScrollEl}
-                style={{
-                  height: `${listHeight()}px`,
-                  "overflow-y": "auto",
-                }}
-              >
-                <div
-                  style={{
-                    height: `${virtualizer.getTotalSize()}px`,
-                    position: "relative",
-                    width: "100%",
-                  }}
-                >
-                  <For each={virtualizer.getVirtualItems()}>
-                    {(virtualRow) => {
-                      const competitor = classification().obdx?.competitors[
-                        virtualRow.index
-                      ] as StageEventClassificationItemResponseDTO | undefined;
-                      if (!competitor) return null;
-
-                      return (
-                        <div
-                          data-index={virtualRow.index}
-                          ref={(el) => {
-                            const index = virtualRow.index;
-                            rowEls.set(index, el);
-                            virtualizer.measureElement(el);
-                            let raf = 0;
-                            const ro = new ResizeObserver(() => {
-                              cancelAnimationFrame(raf);
-                              raf = requestAnimationFrame(() =>
-                                virtualizer.measureElement(el),
-                              );
-                            });
-                            ro.observe(el);
-                            onCleanup(() => {
-                              cancelAnimationFrame(raf);
-                              ro.disconnect();
-                              if (rowEls.get(index) === el)
-                                rowEls.delete(index);
-                            });
-                          }}
-                          style={{
-                            position: "absolute",
-                            top: "0",
-                            left: "0",
-                            right: "0",
-                            transform: `translateY(${virtualRow.start}px)`,
-                          }}
-                        >
-                          <ObdxClassificationCard
-                            competitor={competitor}
-                            trend={trends().get(competitor.dog.id)}
-                          />
-                        </div>
-                      );
-                    }}
-                  </For>
-                </div>
-              </div>
+              <AtomSegmentedControl
+                title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
+                control={controlValue()}
+                onControlChange={setControlValue}
+                controls={[
+                  {
+                    value: CONTROLS_KEYS.LIST,
+                    text: t("STAGES.CLASSIFICATION.LIST"),
+                    content: listContent(
+                      classification().obdx?.competitors ?? [],
+                    ),
+                  },
+                  {
+                    value: CONTROLS_KEYS.TABLE,
+                    text: t("STAGES.CLASSIFICATION.TABLE"),
+                    content: tableContent(
+                      classification().obdx?.competitors ?? [],
+                    ),
+                  },
+                ]}
+              />
             </Show>
           </div>
         )}
