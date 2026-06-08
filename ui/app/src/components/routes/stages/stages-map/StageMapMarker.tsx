@@ -1,20 +1,17 @@
 import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { createSignal, Index } from "solid-js";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import { useI18n } from "@/stores/i18n/i18n";
+import { getMarkerColorByStatus, isStageLive } from "@/utils/stage";
 
 interface StageMapMarker {
   stage: StageSummaryResponseDTO;
 }
-
-const STAGE_STATUS = {
-  PENDING: "pending",
-  STARTED: "started",
-  COMPLETED: "completed",
-};
 
 export function StageMapMarkerPopup(props: StageMapMarker) {
   const navigate = useNavigate();
@@ -71,9 +68,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                 {event().name} {getDisciplineLabel(event().discipline)}
               </span>
             </div>
-            <AtomButton
-              onClick={() => navigateToClassification(event().id)}
-            >
+            <AtomButton onClick={() => navigateToClassification(event().id)}>
               {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
             </AtomButton>
           </div>
@@ -84,21 +79,11 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
 }
 
 export function StageMapMarker(props: StageMapMarker) {
-  const getMarkerColorByStatus = (status: string) => {
-    switch (status) {
-      case STAGE_STATUS.PENDING:
-        return "var(-warning-border)";
-      case STAGE_STATUS.STARTED:
-        return "var(--success-border)";
-      case STAGE_STATUS.COMPLETED:
-        return "var(--error-border)";
-    }
-  };
   return (
     <div
       classList={{
         "stages-map-marker": true,
-        "stages-map-marker--live": props.stage.status === STAGE_STATUS.STARTED,
+        "stages-map-marker--live": isStageLive(props.stage.status),
       }}
       style={{
         background: getMarkerColorByStatus(props.stage.status),

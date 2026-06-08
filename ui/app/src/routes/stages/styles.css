@@ -29,6 +29,8 @@
   color: var(--text-secondary);
 
   font: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
 
   transition: color 120ms ease;
