@@ -84,6 +84,7 @@ export interface StageEventClassificationResponseDTO {
   stage: IdNameDTO;
   configuration: IdNameDTO;
   lastUpdated: number;
+  status: string;
   obdx?: ObdxStageEventClassificationResponseDTO;
 }
 

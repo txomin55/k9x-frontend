@@ -1,6 +1,7 @@
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { defineQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
+import { EVENT_STATUS } from "@/utils/event";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import {
@@ -90,7 +91,8 @@ export const useEventClassification = (
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
-    refetchInterval: 5_000,
+    refetchInterval: (query: { state: { data?: StageEventClassificationResponseDTO } }) =>
+      query.state.data?.status === EVENT_STATUS.STARTED ? 5_000 : false,
   });
 
 export const getCachedStageById = (id: string) =>
