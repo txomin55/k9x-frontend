@@ -5,20 +5,28 @@ import { useAuthUser } from "@/stores/auth/auth";
 import postGoogleForm from "@/utils/google-forms/postGoogleForm";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { useI18n } from "@/stores/i18n/i18n";
+import { showToast } from "@/stores/toast/toast";
 
-export default function OrganizerForm() {
+interface OrganizerFormProps {
+  onClose: () => void;
+}
+
+export default function OrganizerForm(props: OrganizerFormProps) {
   const user = useAuthUser();
   const i18n = useI18n();
 
   const [description, setDescription] = createSignal("");
   const [organizerName, setOrganizerName] = createSignal("");
 
-  const sendOrganizerForm = () =>
-    postGoogleForm("1FAIpQLScUMXJO8wACFCg4qpcAP5IsfWG5BjeJ5MvhomrgVs-Fh9czUA", {
+  const sendOrganizerForm = async () => {
+    await postGoogleForm("1FAIpQLScUMXJO8wACFCg4qpcAP5IsfWG5BjeJ5MvhomrgVs-Fh9czUA", {
       "entry.1603237692": organizerName(),
       "entry.1931094736": user()?.email,
       "entry.897265685": description(),
     });
+    props.onClose();
+    showToast(i18n.t("GLOBAL.FORM.SENT"));
+  };
 
   return (
     <div class="organizer-form">

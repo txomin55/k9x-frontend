@@ -43,7 +43,12 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       <span class="text-body-sm">{props.stage.description}</span>
       <AtomDialog
         closeButtonText={i18n.t("STAGES.STAGES_MAP.MARKER.CLOSE_DIALOG")}
-        content={<WrongLocationForm stageId={props.stage.id} />}
+        content={
+          <WrongLocationForm
+            stageId={props.stage.id}
+            onClose={() => setOpenWrongLocationForm(false)}
+          />
+        }
         onOpenChange={setOpenWrongLocationForm}
         open={openWrongLocationForm()}
         title={i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION")}

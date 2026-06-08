@@ -1,15 +1,13 @@
-import {
-  createFileRoute,
-  Link,
-  useLocation,
-  useNavigate,
-} from "@tanstack/solid-router";
-import { createMemo, For, onMount, Show } from "solid-js";
-import { AppRoutePath } from "@/components/global/app-shell/paths";
+import {createFileRoute, Link, useLocation, useNavigate,} from "@tanstack/solid-router";
+import {createMemo, createSignal, For, onMount, Show} from "solid-js";
+import {AppRoutePath} from "@/components/global/app-shell/paths";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import { useStages } from "@/services/fetch-stages/fetchStages";
-import { useI18n } from "@/stores/i18n/i18n";
+import {useStages} from "@/services/fetch-stages/fetchStages";
+import {useI18n} from "@/stores/i18n/i18n";
 import "./styles.css";
+import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -30,9 +28,14 @@ function EntryRoutePage() {
   const latestStages = createMemo(
     () =>
       fetchedStages.data
-        ?.toSorted((left, right) => (right.dateFrom ?? 0) - (left.dateFrom ?? 0))
+        ?.toSorted(
+          (left, right) => (right.dateFrom ?? 0) - (left.dateFrom ?? 0),
+        )
         .slice(0, 3) ?? [],
   );
+
+  const [openGenericContactForm, setOpenGenericContactForm] =
+    createSignal(false);
 
   onMount(async () => {
     const search = location().searchStr;
@@ -108,29 +111,44 @@ function EntryRoutePage() {
 
       <div class="landing-page__grid">
         <article class="landing-page__card">
-          <span class="landing-page__card-kicker">{i18n.t("HOME.DISCOVER")}</span>
+          <span class="landing-page__card-kicker">
+            {i18n.t("HOME.DISCOVER")}
+          </span>
           <h2>{i18n.t("HOME.PUBLIC_STAGES_TITLE")}</h2>
-          <p>
-            {i18n.t("HOME.PUBLIC_STAGES_DESCRIPTION")}
-          </p>
+          <p>{i18n.t("HOME.PUBLIC_STAGES_DESCRIPTION")}</p>
         </article>
 
         <article class="landing-page__card">
-          <span class="landing-page__card-kicker">{i18n.t("HOME.OPERATE")}</span>
+          <span class="landing-page__card-kicker">
+            {i18n.t("HOME.OPERATE")}
+          </span>
           <h2>{i18n.t("HOME.COMPETITION_TOOLING_TITLE")}</h2>
-          <p>
-            {i18n.t("HOME.COMPETITION_TOOLING_DESCRIPTION")}
-          </p>
+          <p>{i18n.t("HOME.COMPETITION_TOOLING_DESCRIPTION")}</p>
         </article>
 
         <article class="landing-page__card">
-          <span class="landing-page__card-kicker">{i18n.t("HOME.OFFLINE_READY")}</span>
+          <span class="landing-page__card-kicker">
+            {i18n.t("HOME.OFFLINE_READY")}
+          </span>
           <h2>{i18n.t("HOME.CONNECTIVITY_TITLE")}</h2>
-          <p>
-            {i18n.t("HOME.CONNECTIVITY_DESCRIPTION")}
-          </p>
+          <p>{i18n.t("HOME.CONNECTIVITY_DESCRIPTION")}</p>
         </article>
       </div>
+
+      <AtomDialog
+        closeButtonText={i18n.t("GLOBAL.NAVIGATION.CLOSE_DIALOG")}
+        content={
+          <ContactForm onClose={() => setOpenGenericContactForm(false)} />
+        }
+        onOpenChange={setOpenGenericContactForm}
+        open={openGenericContactForm()}
+        title={i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
+        trigger={
+          <AtomButton type={BUTTON_TYPES.GHOST}>
+            {i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
+          </AtomButton>
+        }
+      />
     </section>
   );
 }

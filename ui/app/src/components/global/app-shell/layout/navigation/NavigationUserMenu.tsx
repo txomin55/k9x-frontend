@@ -61,7 +61,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
 
         <AtomDialog
           closeButtonText={i18n.t("GLOBAL.NAVIGATION.CLOSE_DIALOG")}
-          content={<ContactForm />}
+          content={<ContactForm onClose={() => setOpenGenericContactForm(false)} />}
           onOpenChange={setOpenGenericContactForm}
           open={openGenericContactForm()}
           title={i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}

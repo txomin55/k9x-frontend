@@ -116,7 +116,7 @@ export default function AppLayout(props: ParentProps) {
               <Show when={!currentUser().organizer}>
                 <AtomDialog
                   closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
-                  content={<OrganizerForm />}
+                  content={<OrganizerForm onClose={() => setOpenOrganizerForm(false)} />}
                   onOpenChange={setOpenOrganizerForm}
                   open={openOrganizerForm()}
                   title={i18n.t("GLOBAL.APP_LAYOUT.ORGANIZER_REQUEST")}
