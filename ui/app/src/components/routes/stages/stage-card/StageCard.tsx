@@ -1,10 +1,13 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import { Index } from "solid-js";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
+import { Index, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
+import { canSeeClassification } from "@/utils/event";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
@@ -65,12 +68,14 @@ export default function StageCard(props: StageCardProps) {
                 <span>{event().name}</span>
                 <span>({event().competitors})</span>
               </div>
-              <AtomButton
-                type={BUTTON_TYPES.PRIMARY}
-                onClick={() => navigateToClassification(event().id)}
-              >
-                {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
-              </AtomButton>
+              <Show when={canSeeClassification(event().status)}>
+                <AtomButton
+                  type={BUTTON_TYPES.PRIMARY}
+                  onClick={() => navigateToClassification(event().id)}
+                >
+                  {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
+                </AtomButton>
+              </Show>
             </div>
           )}
         </Index>

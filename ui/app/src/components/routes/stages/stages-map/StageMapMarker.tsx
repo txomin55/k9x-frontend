@@ -1,5 +1,5 @@
 import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { createSignal, Index } from "solid-js";
+import { createSignal, Index, Show } from "solid-js";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -8,6 +8,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import { useI18n } from "@/stores/i18n/i18n";
 import { getMarkerColorByStatus, isStageLive } from "@/utils/stage";
+import { canSeeClassification } from "@/utils/event";
 
 interface StageMapMarker {
   stage: StageSummaryResponseDTO;
@@ -68,9 +69,11 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                 {event().name} {getDisciplineLabel(event().discipline)}
               </span>
             </div>
-            <AtomButton onClick={() => navigateToClassification(event().id)}>
-              {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
-            </AtomButton>
+            <Show when={canSeeClassification(event().status)}>
+              <AtomButton onClick={() => navigateToClassification(event().id)}>
+                {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
+              </AtomButton>
+            </Show>
           </div>
         )}
       </Index>
