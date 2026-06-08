@@ -53,6 +53,7 @@ export interface StageEventDetailResponseDTO {
   id: string;
   name: string;
   status: string;
+  enrollmentOpened: boolean;
 }
 
 export interface CompetitionNotificationDetailResponseDTO {

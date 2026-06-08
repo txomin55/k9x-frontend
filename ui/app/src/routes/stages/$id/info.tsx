@@ -17,7 +17,6 @@ import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
-import { EVENT_STATUS } from "@/utils/event";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -150,9 +149,7 @@ function StageInfoPage() {
                             </AtomButton>
                           }
                         >
-                          <Show
-                            when={event().status === EVENT_STATUS.CREATED}
-                          >
+                          <Show when={event().enrollmentOpened}>
                             <AtomButton
                               onClick={() => openEnrollDialog(event().id)}
                             >
