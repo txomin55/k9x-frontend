@@ -1,0 +1,11 @@
+.floating-share-button {
+    position: fixed;
+    right: var(--unit-2);
+    bottom: var(--unit-2);
+    z-index: 10;
+}
+
+.floating-share-button__icon {
+    width: var(--icon-size-lg);
+    height: var(--icon-size-lg);
+}

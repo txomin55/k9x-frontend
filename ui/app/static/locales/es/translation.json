@@ -278,5 +278,7 @@
   "HOME.COMPETITION_TOOLING_DESCRIPTION": "Gestiona competiciones, stages, jueces, colecciones y datos de eventos desde el espacio autenticado.",
   "HOME.OFFLINE_READY": "Listo sin conexión",
   "HOME.CONNECTIVITY_TITLE": "Sigue trabajando cuando falla la conectividad",
-  "HOME.CONNECTIVITY_DESCRIPTION": "La app está diseñada con flujos local-first para que el trabajo de campo no se detenga cuando no hay red."
+  "HOME.CONNECTIVITY_DESCRIPTION": "La app está diseñada con flujos local-first para que el trabajo de campo no se detenga cuando no hay red.",
+  "GLOBAL.SHARE.SHARE": "Compartir",
+  "GLOBAL.SHARE.LINK_COPIED": "Enlace copiado"
 }

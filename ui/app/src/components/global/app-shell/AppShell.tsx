@@ -2,6 +2,8 @@ import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation } from "@tanstack/solid-router";
 import { createEffect, onCleanup, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
+import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
+import Toast from "@/components/global/toast/Toast";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 
 import { resolveAppPath } from "@/utils/paths/app-paths";
@@ -84,6 +86,8 @@ export default function AppShell() {
             <div class="app-shell">
               <Outlet />
             </div>
+            <FloatingShareButton />
+            <Toast />
           </AppLayout>
         </NotificationGuard>
       </Show>

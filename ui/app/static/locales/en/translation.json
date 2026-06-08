@@ -278,5 +278,7 @@
   "HOME.COMPETITION_TOOLING_DESCRIPTION": "Manage competitions, stages, judges, collections, and event data from the authenticated workspace.",
   "HOME.OFFLINE_READY": "Offline ready",
   "HOME.CONNECTIVITY_TITLE": "Keep working when connectivity drops",
-  "HOME.CONNECTIVITY_DESCRIPTION": "The app is built around local-first flows so field work does not stop when the network does."
+  "HOME.CONNECTIVITY_DESCRIPTION": "The app is built around local-first flows so field work does not stop when the network does.",
+  "GLOBAL.SHARE.SHARE": "Share",
+  "GLOBAL.SHARE.LINK_COPIED": "Link copied"
 }
