@@ -1,7 +1,4 @@
-import {
-  formatScore,
-  ratingColorClass,
-} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
+import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import type { ScoreFractionProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreFraction.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
@@ -18,8 +15,8 @@ export default function ScoreFraction(props: ScoreFractionProps) {
         "is-grey": color() === "grey",
       }}
     >
-      {formatScore(props.score)}
-      <span class="obdx-clf__fraction-max">/{formatScore(props.max)}</span>
+      {props.score}
+      <span class="obdx-clf__fraction-max">/{props.max}</span>
     </span>
   );
 }

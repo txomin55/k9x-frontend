@@ -8,8 +8,6 @@ import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput"
 import i18n from "i18next";
 import "./styles.css";
 
-const roundToTwoDecimals = (value: number) => Number(value.toFixed(2));
-
 interface CollectionExerciseScoresProps {
   competitorId: string;
   eventId: string;
@@ -32,15 +30,13 @@ function CollectionExerciseScoreInput(props: {
   const hasValue = () => Number.isFinite(rawValue());
 
   const sortedAllowedValues = createMemo(() =>
-    [...props.allowedValues]
-      .map(roundToTwoDecimals)
-      .sort((left, right) => left - right),
+    [...props.allowedValues].sort((left, right) => left - right),
   );
   const isValidValue = createMemo(
     () =>
       !hasValue() ||
       sortedAllowedValues().length === 0 ||
-      sortedAllowedValues().includes(roundToTwoDecimals(rawValue() as number)),
+      sortedAllowedValues().includes(rawValue() as number),
   );
 
   const handleBlur = () => {
@@ -60,7 +56,7 @@ function CollectionExerciseScoreInput(props: {
       eventId: props.eventId,
       exerciseId: props.exerciseId,
       judgeId: props.score.judge.id,
-      score: roundToTwoDecimals(nextScore as number),
+      score: nextScore as number,
     });
   };
 

@@ -16,10 +16,6 @@ export function positionTrend(
   return previous > current ? "up" : "down";
 }
 
-export function formatScore(value: number): string {
-  return Number.isInteger(value) ? String(value) : value.toFixed(1);
-}
-
 export function ratingColorClass(
   rating: number | null | undefined,
 ): RatingColor {
