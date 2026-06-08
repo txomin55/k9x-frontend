@@ -9,6 +9,10 @@ import {
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { toApiStage, useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import { toUndefinedIfBlank } from "@/utils/date";
+import {
+  validateRequiredSelection,
+  validateRequiredText,
+} from "@/utils/validation/textField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -280,6 +284,10 @@ function CompetitionDetailBody(props: {
     const competition = props.competition();
 
     if (!competition) return;
+
+    if (validateRequiredText(title()) || validateRequiredSelection(country())) {
+      return;
+    }
 
     const nextCompetition: UpdateCompetitionRequestDTO = {
       country: country(),

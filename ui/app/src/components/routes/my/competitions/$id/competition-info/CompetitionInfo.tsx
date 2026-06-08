@@ -1,9 +1,15 @@
-import { Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import CountryField from "@/components/common/country-field/CountryField";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import { useI18n } from "@/stores/i18n/i18n";
+import {
+  MIN_TEXT_LENGTH,
+  type TextFieldError,
+  validateRequiredSelection,
+  validateRequiredText,
+} from "@/utils/validation/textField";
 import "./styles.css";
 
 type CompetitionInfoProps = {
@@ -24,6 +30,20 @@ type CompetitionInfoProps = {
 
 export default function CompetitionInfo(props: CompetitionInfoProps) {
   const i18n = useI18n();
+
+  const [titleTouched, setTitleTouched] = createSignal(false);
+  const [countryTouched, setCountryTouched] = createSignal(false);
+
+  const titleError = () => validateRequiredText(props.title);
+  const countryError = () => validateRequiredSelection(props.country);
+
+  const errorMessage = (error: TextFieldError) => {
+    if (error === "REQUIRED") return i18n.t("COMMON.VALIDATION.REQUIRED");
+    if (error === "MIN_LENGTH")
+      return i18n.t("COMMON.VALIDATION.MIN_LENGTH", { min: MIN_TEXT_LENGTH });
+    return undefined;
+  };
+
   return (
     <div class="competition-info">
       <Show when={props.isEditing}>
@@ -32,15 +52,31 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.TITLE")}
             name="name"
             value={props.title}
-            onBlur={props.onCommit}
+            onBlur={() => {
+              setTitleTouched(true);
+              props.onCommit();
+            }}
             onChange={props.onTitleChange}
+            validationState={
+              titleTouched() && titleError() ? "invalid" : undefined
+            }
+            errorMessage={
+              titleTouched() ? errorMessage(titleError()) : undefined
+            }
           />
           <CountryField
             onChange={(value) => {
+              setCountryTouched(true);
               props.onCountryChange(value?.value ?? "");
               props.onCommit();
             }}
             value={props.country}
+            validationState={
+              countryTouched() && countryError() ? "invalid" : undefined
+            }
+            errorMessage={
+              countryTouched() ? errorMessage(countryError()) : undefined
+            }
           />
           <AtomTextArea
             label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")}

@@ -5,11 +5,17 @@ import AtomButton, {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryField from "@/components/common/country-field/CountryField";
+import {
+  MIN_TEXT_LENGTH,
+  type TextFieldError,
+  validateRequiredSelection,
+  validateRequiredText,
+} from "@/utils/validation/textField";
 import "./styles.css";
 
 type DogFormProps = {
@@ -41,6 +47,33 @@ export default function DogForm(props: DogFormProps) {
   ];
 
   const user = useAuthUser();
+
+  const [touched, setTouched] = createSignal<Record<string, boolean>>({});
+  const markTouched = (field: string) =>
+    setTouched((current) => ({ ...current, [field]: true }));
+
+  const errorMessage = (error: TextFieldError) => {
+    if (error === "REQUIRED") return i18n.t("COMMON.VALIDATION.REQUIRED");
+    if (error === "MIN_LENGTH")
+      return i18n.t("COMMON.VALIDATION.MIN_LENGTH", { min: MIN_TEXT_LENGTH });
+    return undefined;
+  };
+
+  const idError = () => validateRequiredText(props.draft().id);
+  const nameError = () => validateRequiredText(props.draft().name);
+  const ownerError = () => validateRequiredText(props.draft().owner);
+  const countryError = () => validateRequiredSelection(props.draft().country);
+
+  const isValid = () =>
+    !idError() && !nameError() && !ownerError() && !countryError();
+
+  const fieldProps = (field: string, error: () => TextFieldError) => ({
+    onBlur: () => markTouched(field),
+    validationState: (touched()[field] && error()
+      ? "invalid"
+      : undefined) as "invalid" | undefined,
+    errorMessage: touched()[field] ? errorMessage(error()) : undefined,
+  });
 
   const selectedBreedOption = () =>
     BREED_SELECT_OPTIONS.find(
@@ -100,11 +133,13 @@ export default function DogForm(props: DogFormProps) {
         label={i18n.t("MY.DOGS.DOG_FORM.CHIP")}
         value={props.draft().id}
         onChange={updateId}
+        {...fieldProps("id", idError)}
       />
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.NAME")}
         value={props.draft().name}
         onChange={updateName}
+        {...fieldProps("name", nameError)}
       />
       <Show when={!!user()?.organizer}>
         <AtomCheckbox
@@ -134,6 +169,7 @@ export default function DogForm(props: DogFormProps) {
           label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
           value={props.draft().owner}
           onChange={updateOwner}
+          {...fieldProps("owner", ownerError)}
         />
       </Show>
       <AtomInput
@@ -143,15 +179,22 @@ export default function DogForm(props: DogFormProps) {
       />
       <CountryField
         onChange={(value) => {
+          markTouched("country");
           updateCountry(value.value);
         }}
         value={props.draft().country}
+        validationState={
+          touched().country && countryError() ? "invalid" : undefined
+        }
+        errorMessage={
+          touched().country ? errorMessage(countryError()) : undefined
+        }
       />
       <div class="dog-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.DOGS.DOG_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave}>
+        <AtomButton onClick={props.onSave} disabled={!isValid()}>
           {i18n.t("MY.DOGS.DOG_FORM.SAVE")}
         </AtomButton>
       </div>

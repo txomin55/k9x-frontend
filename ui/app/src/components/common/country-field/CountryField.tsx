@@ -2,6 +2,7 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import i18n from "i18next";
+import type { JSX } from "solid-js";
 
 export const COUNTRY_OPTIONS = [
   { label: "COMMON.COUNTRY_FIELD.PORTUGAL", value: "pt" },
@@ -30,6 +31,8 @@ type CountryFieldProps = {
   disabled?: boolean;
   onChange?: (value: AtomSelectOption) => void;
   value: string;
+  errorMessage?: JSX.Element;
+  validationState?: "valid" | "invalid";
 };
 
 export default function CountryField(props: CountryFieldProps) {
@@ -42,6 +45,8 @@ export default function CountryField(props: CountryFieldProps) {
       options={options}
       value={getCountryOption(props.value, options)}
       disabled={props.disabled}
+      errorMessage={props.errorMessage}
+      validationState={props.validationState}
     />
   );
 }

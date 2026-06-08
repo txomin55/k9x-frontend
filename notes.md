@@ -72,7 +72,7 @@
 - enroll no aparece cuando event ha empezado o terminado
 - classification no aparece cuando event es pending
 - Estado inicial de competicion será draft, añadir boton de ready para enviar notificaciones a colectores en cada cambio
-- Hacer campos obligatorios para edición y creación
+- ~~Hacer campos obligatorios para edición y creación~~
 - Terminar push manager
 - Formularios de contacto para
     - own de perro
