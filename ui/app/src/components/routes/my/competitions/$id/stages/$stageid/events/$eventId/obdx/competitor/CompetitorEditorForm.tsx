@@ -1,6 +1,5 @@
 import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
 import { AtomCombobox, type AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
-import AtomInput from "library/src/components/atoms/input/AtomInput";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -109,26 +108,22 @@ export default function CompetitorEditorForm(
               </AtomButton>
             </Show>
           </AtomCombobox>
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.OWNER")}
-            value={selectedDog(draft().dogId)?.owner ?? draft().owner}
-            disabled
-          />
           <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.NAME")}{" "}
-            {selectedDog(draft().dogId)?.name ?? draft().name} (
-            {selectedDog(draft().dogId)?.breed ?? draft().breed})
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}{" "}
+            {selectedDog(draft().dogId)?.breed ?? draft().breed}
           </p>
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
-            value={selectedDog(draft().dogId)?.identifier ?? draft().identity}
-            disabled
-          />
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
-            value={selectedDog(draft().dogId)?.team ?? draft().team}
-            disabled
-          />
+          <p>
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.OWNER")}{" "}
+            {selectedDog(draft().dogId)?.owner ?? draft().owner}
+          </p>
+          <p>
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}{" "}
+            {selectedDog(draft().dogId)?.identifier ?? draft().identity}
+          </p>
+          <p>
+            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}{" "}
+            {selectedDog(draft().dogId)?.identifier ?? draft().team}
+          </p>
           <CountryFlag country={selectedDog(draft().dogId)?.country} />
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
