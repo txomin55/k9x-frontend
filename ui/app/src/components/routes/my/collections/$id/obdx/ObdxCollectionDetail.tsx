@@ -1,14 +1,13 @@
-import { useParams, useSearch } from "@tanstack/solid-router";
-import {
-  updateCollectionScore,
-  useCollectionById,
-} from "@/services/secured/collection-crud/collectionCrud";
+import {useParams, useSearch} from "@tanstack/solid-router";
+import {updateCollectionScore, useCollectionById,} from "@/services/secured/collection-crud/collectionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import { useI18n } from "@/stores/i18n/i18n";
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
+import {useI18n} from "@/stores/i18n/i18n";
+import {createEffect, createMemo, createSignal, For, Show} from "solid-js";
+import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
+import ScoresCompetitorPreLabel
+  from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore
+  from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
 import type {
   CollectionScoreResponseDTO,
   ExerciseScoresResponseDTO,
@@ -73,12 +72,10 @@ export default function ObdxCollectionDetail() {
     }
 
     return collectionData.data.obdx.competitors
-      .toSorted((a, b) => (a.competitor.position ?? 0) - (b.competitor.position ?? 0))
+      .toSorted(
+        (a, b) => (a.competitor.position ?? 0) - (b.competitor.position ?? 0),
+      )
       .flatMap((c) => {
-        if (!c.competitor.owner || !c.competitor.dog.id) {
-          return [];
-        }
-
         return [
           {
             label: c.competitor.owner,

@@ -29,14 +29,20 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
         return sorting();
       },
       get expanded() {
-        return expanded();
+        return props.expanded ?? expanded();
       },
+    },
+    get getRowId() {
+      return props.getRowId;
     },
     onSortingChange: (updater) => {
       setSorting(updater);
       props.onSortingChange?.(updater);
     },
-    onExpandedChange: setExpanded,
+    onExpandedChange: (updater) => {
+      if (props.onExpandedChange) props.onExpandedChange(updater);
+      else setExpanded(updater);
+    },
     getRowCanExpand: (row) => props.getRowCanExpand?.(row) ?? false,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

@@ -1,4 +1,3 @@
-import { createSignal } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
@@ -17,11 +16,12 @@ type ObdxClassificationProps = {
   pinned: boolean;
   pinDisabled: boolean;
   onTogglePin: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 };
 
 export default function ObdxClassificationCard(props: ObdxClassificationProps) {
   const { t } = useI18n();
-  const [open, setOpen] = createSignal(false);
 
   return (
     <Card
@@ -48,10 +48,10 @@ export default function ObdxClassificationCard(props: ObdxClassificationProps) {
             />
           </div>
           <AtomCollapsible
-            open={open()}
-            onOpenChange={setOpen}
+            open={props.open}
+            onOpenChange={props.onOpenChange}
             trigger={
-              open()
+              props.open
                 ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
                 : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
             }

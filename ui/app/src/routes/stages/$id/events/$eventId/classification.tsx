@@ -115,6 +115,37 @@ function EventClassificationPage() {
     competitors().filter((competitor) => isPinned(competitor.dog.id)),
   );
 
+  const [openIds, setOpenIds] = createSignal<Set<string>>(new Set());
+
+  const isOpen = (id: string) => openIds().has(id);
+
+  const setOpen = (id: string, open: boolean) => {
+    const next = new Set(openIds());
+    if (open) next.add(id);
+    else next.delete(id);
+    setOpenIds(next);
+  };
+
+  const expandedState = createMemo<Record<string, boolean>>(() => {
+    const record: Record<string, boolean> = {};
+    for (const id of openIds()) record[id] = true;
+    return record;
+  });
+
+  const handleExpandedChange = (
+    updater: Record<string, boolean> | ((old: any) => any) | boolean,
+  ) => {
+    const next =
+      typeof updater === "function" ? updater(expandedState()) : updater;
+    const ids = new Set<string>();
+    if (next && typeof next === "object") {
+      for (const [id, value] of Object.entries(next)) {
+        if (value) ids.add(id);
+      }
+    }
+    setOpenIds(ids);
+  };
+
   const updateListHeight = () => {
     const el = scrollEl();
     if (!el) return;
@@ -267,6 +298,8 @@ function EventClassificationPage() {
                   pinned={isPinned(competitor.dog.id)}
                   pinDisabled={liveIds().has(competitor.dog.id)}
                   onTogglePin={() => togglePin(competitor.dog.id)}
+                  open={isOpen(competitor.dog.id)}
+                  onOpenChange={(open) => setOpen(competitor.dog.id, open)}
                 />
               </div>
             );
@@ -284,6 +317,9 @@ function EventClassificationPage() {
         data={classification}
         columns={columns()}
         getRowCanExpand={() => true}
+        getRowId={(row) => row.dog.id}
+        expanded={expandedState()}
+        onExpandedChange={handleExpandedChange}
         renderSubComponent={(row) => (
           <ObdxClassificationCard
             competitor={row.original}
@@ -291,6 +327,8 @@ function EventClassificationPage() {
             pinned={isPinned(row.original.dog.id)}
             pinDisabled={liveIds().has(row.original.dog.id)}
             onTogglePin={() => togglePin(row.original.dog.id)}
+            open={isOpen(row.original.dog.id)}
+            onOpenChange={(open) => setOpen(row.original.dog.id, open)}
           />
         )}
       />
@@ -326,6 +364,8 @@ function EventClassificationPage() {
                       pinned
                       pinDisabled={liveIds().has(competitor.dog.id)}
                       onTogglePin={() => togglePin(competitor.dog.id)}
+                      open={isOpen(competitor.dog.id)}
+                      onOpenChange={(open) => setOpen(competitor.dog.id, open)}
                     />
                   )}
                 </For>

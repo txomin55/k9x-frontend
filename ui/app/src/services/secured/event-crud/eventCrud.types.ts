@@ -1,4 +1,7 @@
-import { FederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
+import {
+  EMPTY_FEDERATION_CONFIGURATION,
+  FederationConfigurationResponseDTO,
+} from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
@@ -81,10 +84,17 @@ export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
  */
 export interface ObdxEventDetailRawResponseDTO extends Omit<
   ObdxEventDetailResponseDTO,
-  "competitors"
+  "competitors" | "configuration"
 > {
   competitors: EventCompetitorResponseDTO[];
+  configuration: EventConfigurationDetailResponseDTO | null;
 }
+
+export const EMPTY_EVENT_CONFIGURATION: EventConfigurationDetailResponseDTO = {
+  federation: EMPTY_FEDERATION_CONFIGURATION,
+  id: "",
+  name: "",
+};
 
 export interface EventDetailRawResponseDTO {
   obdx: ObdxEventDetailRawResponseDTO;
@@ -156,6 +166,7 @@ export const normalizeEventDetailResponse = (
   const obdx: ObdxEventDetailResponseDTO = {
     ...rawObdx,
     competitors: rawObdx.competitors.map(normalizeCompetitor),
+    configuration: rawObdx.configuration ?? EMPTY_EVENT_CONFIGURATION,
   };
 
   return {

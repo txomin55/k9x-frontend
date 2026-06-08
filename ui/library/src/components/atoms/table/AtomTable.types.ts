@@ -1,5 +1,6 @@
 import type {
   ColumnDef,
+  ExpandedState,
   OnChangeFn,
   Row,
   SortingState,
@@ -20,4 +21,7 @@ export type AtomTableProps<TData> = {
   class?: string;
   getRowCanExpand?: (row: Row<TData>) => boolean;
   renderSubComponent?: (row: Row<TData>) => JSX.Element;
+  getRowId?: (row: TData, index: number) => string;
+  expanded?: ExpandedState;
+  onExpandedChange?: OnChangeFn<ExpandedState>;
 };
