@@ -52,6 +52,7 @@ export interface StageEventDetailResponseDTO {
   configuration: IdNameDTO;
   id: string;
   name: string;
+  status: string;
 }
 
 export interface CompetitionNotificationDetailResponseDTO {

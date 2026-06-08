@@ -13,6 +13,7 @@ export const toEventEditorDraft = (
     id: event.discipline.id,
     name: event.discipline.name,
   },
+  enrollmentDeadline: event.enrollmentDeadline,
   exercises: event.exercises.map((exercise) => ({ ...exercise })),
   id: event.id,
   judges: event.judges.map((judge) => ({ ...judge })),

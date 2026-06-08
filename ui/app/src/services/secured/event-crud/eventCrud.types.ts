@@ -1,6 +1,6 @@
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  FederationConfigurationResponseDTO,
+  FederationConfigurationResponseDTO
 } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
@@ -18,6 +18,7 @@ export interface UpdateEventRequestDTO {
   exercises?: EventExerciseRequestDTO[];
   judges?: EventJudgeDetailRequestDTO[];
   name: string;
+  enrollmentDeadline: number;
 }
 
 export interface EventCompetitorResponseDTO {
@@ -65,6 +66,7 @@ export interface ObdxEventDetailResponseDTO {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetailResponseDTO;
   discipline: Discipline;
+  enrollmentDeadline: number;
   exercises: EventExerciseDetailResponseDTO[];
   id: string;
   stage: IdNameDTO;
@@ -126,6 +128,7 @@ export interface EventEditorDraft {
   competitors: EventCompetitorDetail[];
   configuration: EventConfigurationDetailResponseDTO;
   discipline: Discipline;
+  enrollmentDeadline: number;
   exercises: EventExerciseDetailResponseDTO[];
   id: string;
   judges: EventJudgeDetailResponseDTO[];

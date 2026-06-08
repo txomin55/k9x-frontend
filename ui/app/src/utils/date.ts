@@ -18,12 +18,22 @@ export function parseOptionalNumber(value: string) {
 }
 
 export function toDateInputValue(timestamp: number) {
-  return new Date(timestamp).toISOString().slice(0, 10);
+  const date = new Date(timestamp);
+
+  if (Number.isNaN(date.getTime())) return "";
+
+  return date.toISOString().slice(0, 10);
 }
 
 export function parseDateInputValue(value: string, fallback: number) {
   if (!value) return fallback;
   return new Date(`${value}T00:00:00`).getTime();
+}
+
+export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+export function dayBefore(timestamp: number) {
+  return timestamp - ONE_DAY_IN_MS;
 }
 
 export function formatDateLabel(value: string) {

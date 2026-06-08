@@ -64,6 +64,7 @@ export const toApiStage = (
           name: "",
         },
         discipline: rawEvent.discipline,
+        enrollmentDeadline: 0,
         exercises: [],
         id: rawEvent.id,
         judges: [],

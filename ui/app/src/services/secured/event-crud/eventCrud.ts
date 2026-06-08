@@ -200,6 +200,10 @@ const mergeApiEventWithPayload = (
       createPayload?.disciplineId,
       previousEvent?.discipline,
     ),
+    enrollmentDeadline:
+      updatePayload?.enrollmentDeadline ??
+      previousEvent?.enrollmentDeadline ??
+      0,
     exercises:
       updatePayload?.exercises?.map((exercise) =>
         toApiExercise(

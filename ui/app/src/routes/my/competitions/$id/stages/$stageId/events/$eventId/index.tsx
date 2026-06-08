@@ -18,6 +18,7 @@ import type {
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { toEventEditorDraft } from "@/utils/event";
+import { parseDateInputValue, toDateInputValue } from "@/utils/date";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -334,6 +335,7 @@ function CompetitionObdxEventDetailBody(props: {
       mapCompetitorForUpdate(competitor),
     ),
     configurationId: event.configuration.id,
+    enrollmentDeadline: event.enrollmentDeadline,
     exercises: event.exercises,
     judges: event.judges.map((judge) => ({
       collectorEmail: judge.collectorEmail,
@@ -815,6 +817,25 @@ function CompetitionObdxEventDetailBody(props: {
           </div>
         </Show>
       </header>
+
+      <AtomInput
+        label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
+        type="date"
+        disabled={!isEditing()}
+        value={toDateInputValue(draftEvent().enrollmentDeadline)}
+        onChange={(value) =>
+          updateDraftEvent(
+            (current) => ({
+              ...current,
+              enrollmentDeadline: parseDateInputValue(
+                value,
+                current.enrollmentDeadline,
+              ),
+            }),
+            { persist: true },
+          )
+        }
+      />
 
       <EventConfigurationSection
         draft={draftEvent()}

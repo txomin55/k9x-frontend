@@ -22,6 +22,7 @@ import type {
 import { toEventEditorDraft } from "@/utils/event";
 import {
   formatDateLabel,
+  dayBefore,
   parseDateInputValue,
   toDateInputValue,
 } from "@/utils/date";
@@ -251,6 +252,7 @@ function CompetitionStageDetailBody(props: {
         id: draft.disciplineId,
         name: "",
       },
+      enrollmentDeadline: dayBefore(props.stage().dateFrom),
       exercises: [],
       id: draft.id ?? globalThis.crypto.randomUUID(),
       judges: [],
@@ -341,6 +343,7 @@ function CompetitionStageDetailBody(props: {
         accepted: competitor.accepted,
       })),
       configurationId: draft.configuration.id,
+      enrollmentDeadline: draft.enrollmentDeadline,
       exercises: draft.exercises,
       judges: draft.judges,
       name: draft.name,
