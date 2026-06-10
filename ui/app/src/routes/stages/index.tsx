@@ -68,20 +68,9 @@ function StagesIndexPage() {
       cell: (info) => info.getValue<string>(),
     },
     {
-      accessorKey: "organizer",
-      header: i18n.t("STAGES.INDEX.ORGANIZER"),
-      cell: (info) => info.getValue<string>(),
-    },
-    {
       id: "dateFrom",
       accessorFn: (stage) => stage.dateFrom ?? 0,
       header: i18n.t("STAGES.INDEX.DATE_FROM"),
-      cell: (info) => new Date(info.getValue<number>()).toLocaleDateString(),
-    },
-    {
-      id: "dateTo",
-      accessorFn: (stage) => stage.dateTo ?? 0,
-      header: i18n.t("STAGES.INDEX.DATE_TO"),
       cell: (info) => new Date(info.getValue<number>()).toLocaleDateString(),
     },
     {

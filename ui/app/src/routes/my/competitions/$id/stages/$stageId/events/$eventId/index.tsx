@@ -23,7 +23,10 @@ import { getEventDisciplineLabel } from "@/components/common/event-discipline-fi
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
+import pencilIcon from "@/assets/pencil.svg";
+import eyeIcon from "@/assets/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import EventConfigurationSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
@@ -813,7 +816,7 @@ function CompetitionObdxEventDetailBody(props: {
           fallback={
             <>
               <h1>{props.event().name}</h1>
-              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.STATUS")}: ${props.event().status}`}</p>
+              <StatusBadge status={props.event().status} />
               <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
               <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</p>
             </>
@@ -873,6 +876,8 @@ function CompetitionObdxEventDetailBody(props: {
         toggled={isEditing()}
         nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
+        nonToggledIcon={pencilIcon}
+        toggledIcon={eyeIcon}
       />
       <Show when={isEditing() && props.event().status !== EVENT_STATUS.CREATED}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>

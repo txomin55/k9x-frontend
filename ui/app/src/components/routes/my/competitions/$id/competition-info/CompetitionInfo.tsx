@@ -1,6 +1,7 @@
 import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import CountryField from "@/components/common/country-field/CountryField";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -8,7 +9,7 @@ import {
   MIN_TEXT_LENGTH,
   type TextFieldError,
   validateRequiredSelection,
-  validateRequiredText,
+  validateRequiredText
 } from "@/utils/validation/textField";
 import "./styles.css";
 
@@ -96,12 +97,24 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
       </Show>
       <Show when={!props.isEditing}>
         <div class="competition-info__view">
-          <h1>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.TITLE")} {props.title}</h1>
-          <CountryFlag country={props.country} alt={`${props.title} flag`} />
-          <span>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.STATUS")}: {props.status}</span>
-          <p>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")} {props.description}</p>
+          <span class="text-heading-lg">{props.title}</span>
 
-          <p>{i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")} {props.displayAddress}</p>
+          <div class="competition-info__view--status">
+            <CountryFlag country={props.country} alt={`${props.title} flag`} />
+            <Show when={props.status}>
+              {(status) => <StatusBadge status={status()} />}
+            </Show>
+          </div>
+
+          <span>
+            {i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")}{" "}
+            {props.description}
+          </span>
+
+          <span class="text-caption-lg">
+            {i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")}{" "}
+            {props.displayAddress}
+          </span>
         </div>
       </Show>
     </div>

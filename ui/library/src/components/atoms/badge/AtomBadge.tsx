@@ -13,6 +13,7 @@ export default function (props: AtomBadgeProps) {
   return (
     <Badge
       class="atom-badge"
+      classList={{ "atom-badge--pulse": props.pulse }}
       data-variant={props.type}
       textValue={props.textValue}
     >

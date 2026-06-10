@@ -3,3 +3,9 @@
     right: var(--unit-2);
     bottom: var(--unit-2);
 }
+
+.floating-toggle-circle img {
+    width: var(--icon-size-lg);
+    height: var(--icon-size-lg);
+    display: block;
+}

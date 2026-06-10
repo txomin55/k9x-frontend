@@ -1,30 +1,19 @@
-import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
 import { useI18n } from "@/stores/i18n/i18n";
 import pinIcon from "@/assets/pin.svg";
 import type { PinButtonProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/PinButton.types";
-import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function PinButton(props: PinButtonProps) {
   const { t } = useI18n();
-  const label = () =>
-    props.pinned
-      ? t("STAGES.CLASSIFICATION_CARD.UNPIN")
-      : t("STAGES.CLASSIFICATION_CARD.PIN");
 
   return (
-    <button
-      type="button"
-      class="obdx-clf__pin"
-      classList={{ "obdx-clf__pin--pinned": props.pinned }}
-      title={label()}
-      aria-pressed={props.pinned ? "true" : "false"}
+    <IconToggleButton
+      src={pinIcon}
+      active={props.pinned}
+      activeLabel={t("STAGES.CLASSIFICATION_CARD.UNPIN")}
+      inactiveLabel={t("STAGES.CLASSIFICATION_CARD.PIN")}
       disabled={props.disabled}
-      onClick={() => {
-        if (props.disabled) return;
-        props.onToggle?.();
-      }}
-    >
-      <AtomSvgIcon src={pinIcon} alt={label()} />
-    </button>
+      onToggle={props.onToggle}
+    />
   );
 }

@@ -1,0 +1,38 @@
+.icon-toggle {
+  width: var(--unit-4);
+  height: var(--unit-4);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.icon-toggle img {
+  width: var(--unit-2);
+  height: var(--unit-2);
+  display: block;
+}
+
+.icon-toggle:hover {
+  color: var(--text-secondary);
+}
+
+.icon-toggle:disabled {
+  cursor: default;
+}
+
+.icon-toggle--active {
+  border-radius: var(--radius-full);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+}

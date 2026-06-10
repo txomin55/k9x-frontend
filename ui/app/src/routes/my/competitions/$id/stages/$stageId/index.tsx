@@ -1,49 +1,31 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequestDTO,
   EventDetailResponseDTO,
   EventEditorDraft,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
-import {
-  formatDateLabel,
-  dayBefore,
-  parseDateInputValue,
-  toDateInputValue,
-} from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
+import pencilIcon from "@/assets/pencil.svg";
+import eyeIcon from "@/assets/eye.svg";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import Card from "@lib/components/molecules/card/Card";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import "./styles.css";
-import {
-  StageEditorModel,
-  UpdateStageRequestDTO,
-} from "@/services/secured/stage-crud/stageCrud.types";
+import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
@@ -151,8 +133,19 @@ function CompetitionStageDetailContentContainer(props: {
 
   return (
     <div class="stage-detail">
-      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LOADING_STAGE_DETAIL")}</span>}>
-        <Show when={props.stage()} fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STAGE_NOT_FOUND")}</p>}>
+      <Suspense
+        fallback={
+          <span>
+            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LOADING_STAGE_DETAIL")}
+          </span>
+        }
+      >
+        <Show
+          when={props.stage()}
+          fallback={
+            <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STAGE_NOT_FOUND")}</p>
+          }
+        >
           <CompetitionStageDetailBody
             createDefaultEvent={props.createDefaultEvent}
             onCreateEvent={props.onCreateEvent}
@@ -293,15 +286,16 @@ function CompetitionStageDetailBody(props: {
       closeEventEditor();
     }
   };
-  const createNavigateToEvent = (event: Accessor<EventDetailResponseDTO>) => () =>
-    void navigate({
-      params: {
-        eventId: event().id,
-        id: props.stage().competitionId,
-        stageId: props.stage().id,
-      },
-      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
-    });
+  const createNavigateToEvent =
+    (event: Accessor<EventDetailResponseDTO>) => () =>
+      void navigate({
+        params: {
+          eventId: event().id,
+          id: props.stage().competitionId,
+          stageId: props.stage().id,
+        },
+        to: "/my/competitions/$id/stages/$stageId/events/$eventId",
+      });
   const createEditDialogOpenChange =
     (event: Accessor<EventDetailResponseDTO>) => (isOpen: boolean) => {
       if (isOpen) {
@@ -365,7 +359,6 @@ function CompetitionStageDetailBody(props: {
             </>
           }
         >
-          <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDITING_MODE_ACTIVE")}</p>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.TITLE")}
             value={title()}
@@ -394,7 +387,9 @@ function CompetitionStageDetailBody(props: {
           <h2>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}</h2>
           <Show when={isEditing()}>
             <AtomDialog
-              closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
+              closeButtonText={i18n.t(
+                "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+              )}
               content={
                 <Show when={eventDialogDraft()}>
                   {(draft) => (
@@ -424,7 +419,7 @@ function CompetitionStageDetailBody(props: {
               {(event) => (
                 <Card
                   topLeft={event().name}
-                  subHeader={<p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STATUS")}: ${event().status}`}</p>}
+                  subHeader={<StatusBadge status={event().status} />}
                   content={
                     <div class="aaaaa">
                       <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(event().discipline.id)}`}</p>
@@ -434,9 +429,7 @@ function CompetitionStageDetailBody(props: {
                   actions={
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
-                        <Show
-                          when={event().status !== EVENT_STATUS.CREATED}
-                        >
+                        <Show when={event().status !== EVENT_STATUS.CREATED}>
                           <ConfirmActionButton
                             text={event().name}
                             onConfirm={deleteEventClick(event)}
@@ -447,7 +440,9 @@ function CompetitionStageDetailBody(props: {
                           </ConfirmActionButton>
                         </Show>
                         <AtomDialog
-                          closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
+                          closeButtonText={i18n.t(
+                            "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+                          )}
                           content={
                             <Show when={eventDialogDraft()}>
                               {(draft) => (
@@ -463,7 +458,11 @@ function CompetitionStageDetailBody(props: {
                           onOpenChange={createEditDialogOpenChange(event)}
                           open={editingEventId() === event().id}
                           title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
-                          trigger={<span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}</span>}
+                          trigger={
+                            <span>
+                              {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+                            </span>
+                          }
                         />
                       </div>
                     ) : (
@@ -486,10 +485,10 @@ function CompetitionStageDetailBody(props: {
         toggled={isEditing()}
         nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
+        nonToggledIcon={pencilIcon}
+        toggledIcon={eyeIcon}
       />
-      <Show
-        when={isEditing() && props.stage().status !== STAGE_STATUS.CREATED}
-      >
+      <Show when={isEditing() && props.stage().status !== STAGE_STATUS.CREATED}>
         <ConfirmActionButton
           text={props.stage().name}
           onConfirm={props.onDelete}

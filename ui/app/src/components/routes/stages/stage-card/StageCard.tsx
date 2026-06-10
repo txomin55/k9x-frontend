@@ -2,17 +2,20 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import { Index, Show } from "solid-js";
+import { createSignal, Index, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
 import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import { canSeeClassification } from "@/utils/event";
+import bellIcon from "@/assets/bell.svg";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
   const i18n = useI18n();
+  const [notificationsEnabled, setNotificationsEnabled] = createSignal(false);
   const navigateToClassification = (eventId: string) =>
     void navigate({
       params: { id: props.id, eventId },
@@ -37,7 +40,13 @@ export default function StageCard(props: StageCardProps) {
       }
       topRight={
         <div class="stage-card__notifications">
-          <span>{i18n.t("STAGES.STAGE_CARD.BELL")}</span>
+          <IconToggleButton
+            src={bellIcon}
+            active={notificationsEnabled()}
+            activeLabel={i18n.t("STAGES.STAGE_CARD.UNNOTIFY")}
+            inactiveLabel={i18n.t("STAGES.STAGE_CARD.NOTIFY")}
+            onToggle={() => setNotificationsEnabled((enabled) => !enabled)}
+          />
         </div>
       }
       subHeader={

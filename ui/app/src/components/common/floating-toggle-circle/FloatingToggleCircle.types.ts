@@ -5,4 +5,6 @@ export interface FloatingToggleProps {
   toggled?: boolean;
   nonToggledText: string;
   toggledText?: string;
+  nonToggledIcon?: string;
+  toggledIcon?: string;
 }

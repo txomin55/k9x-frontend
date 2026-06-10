@@ -45,3 +45,24 @@
     color: var(--accent);
     border: 1px solid var(--accent-border);
 }
+
+.atom-badge--pulse {
+    animation: atom-badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes atom-badge-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .atom-badge--pulse {
+        animation: none;
+    }
+}

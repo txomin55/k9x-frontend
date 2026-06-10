@@ -1,12 +1,20 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import {
   isLive,
   positionTrend,
-  type TrendDirection
+  type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
@@ -14,7 +22,10 @@ import AtomTable from "@lib/components/atoms/table/AtomTable";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useI18n } from "@/stores/i18n/i18n";
-import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
+import {
+  useSearchParam,
+  useSearchParamList,
+} from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
 import "./styles.css";
 
@@ -199,11 +210,6 @@ function EventClassificationPage() {
       cell: (info) => info.getValue<string>(),
     },
     {
-      accessorKey: "owner",
-      header: t("STAGES.CLASSIFICATION.GUIDE"),
-      cell: (info) => info.getValue<string>(),
-    },
-    {
       accessorKey: "totalScore",
       header: t("STAGES.CLASSIFICATION.TOTAL"),
       cell: (info) => info.getValue<number>() ?? "-",
@@ -334,12 +340,14 @@ function EventClassificationPage() {
     <div class="classification">
       <Show
         when={classificationQuery.data}
-        fallback={<span>{t("STAGES.CLASSIFICATION.LOADING_CLASSIFICATION")}</span>}
+        fallback={
+          <span>{t("STAGES.CLASSIFICATION.LOADING_CLASSIFICATION")}</span>
+        }
       >
         {(classification) => (
           <>
             <div class="classification__header">
-              <span class="text-body-lg">{classification().event.name}</span>
+              <span class="text-heading-lg">{classification().event.name}</span>
               <span class="text-caption-md">
                 {t("STAGES.CLASSIFICATION.LAST_UPDATED")}{" "}
                 {formatDateTime(classification().lastUpdated)}

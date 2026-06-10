@@ -16,6 +16,8 @@ import {
 } from "@/utils/validation/textField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
+import pencilIcon from "@/assets/pencil.svg";
+import eyeIcon from "@/assets/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
 import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
@@ -343,6 +345,8 @@ function CompetitionDetailBody(props: {
         toggled={isEditing()}
         nonToggledText={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
+        nonToggledIcon={pencilIcon}
+        toggledIcon={eyeIcon}
       />
       <Show
         when={
