@@ -157,7 +157,7 @@ const normalizeCompetitor = (
   country: competitor.country ?? "",
   breed: competitor.breed ?? "",
   position: competitor.position ?? 0,
-  accepted: competitor.status === "accepted",
+  accepted: competitor.status === "ENROLLED",
   status: competitor.status ?? "",
 });
 

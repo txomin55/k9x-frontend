@@ -3,9 +3,7 @@ import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "library/src/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -13,11 +11,16 @@ import type { AtomSelectOption } from "library/src/components/atoms/select/AtomS
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
+import {
+  canAcceptCompetitorEnroll,
+  canSeeCompetitorScores,
+} from "@/utils/event";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: EventCompetitorDetail | null;
   competitors: EventCompetitorDetail[];
+  eventStatus: string;
   editingCompetitorId: string | null;
   isCreatingCompetitor: boolean;
   isEditing: boolean;
@@ -31,6 +34,7 @@ type EventCompetitorsSectionProps = {
   onDeleteCompetitor: (competitorId: string) => void;
   onOpenCompetitorEditor: (competitor: EventCompetitorDetail) => void;
   onCreateCompetitor: () => void;
+  onAcceptCompetitor: (dogId: string) => void;
 };
 
 export default function EventCompetitorsSection(
@@ -79,7 +83,8 @@ export default function EventCompetitorsSection(
     };
   };
 
-  const getOrderValue = (competitor: EventCompetitorDetail) => competitor.position;
+  const getOrderValue = (competitor: EventCompetitorDetail) =>
+    competitor.position;
 
   const sortedCompetitors = createMemo(() =>
     [...props.competitors].toSorted(
@@ -115,16 +120,6 @@ export default function EventCompetitorsSection(
       },
     });
 
-  const acceptCompetitor = () => {
-    props.onCompetitorDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            status: "accepted",
-          }
-        : current,
-    );
-  };
   return (
     <section class="event-competitors-section">
       <div class="event-competitors-section__header">
@@ -151,61 +146,71 @@ export default function EventCompetitorsSection(
               const details = () => getCompetitorDetails(competitor());
 
               return (
-              <Card
-                topLeft={details().owner}
-                content={
-                  <div class="event-competitors-section__competitors--competitor">
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
-                    <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
-                  </div>
-                }
-                actions={
-                  props.isEditing ? (
-                    <div class="event-competitors-section__competitors--actions">
-                      <ConfirmActionButton
-                        text={details().owner}
-                        onConfirm={() =>
-                          props.onDeleteCompetitor(competitor().dogId)
-                        }
-                      >
-                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                          {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
-                        </AtomButton>
-                      </ConfirmActionButton>
-                      <AtomButton
-                        type={BUTTON_TYPES.ACCENT}
-                        onClick={() => {
-                          props.onOpenCompetitorEditor(competitor());
-                          setDialogOpen(true);
-                        }}
-                      >
-                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
-                      </AtomButton>
+                <Card
+                  topLeft={details().owner}
+                  content={
+                    <div class="event-competitors-section__competitors--competitor">
+                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
                     </div>
-                  ) : (
-                    <>
-                      <AtomButton
-                        type={BUTTON_TYPES.ACCENT}
-                        onClick={() => {
-                          openCompetitorCollection(
-                            params().eventId,
-                            competitor().dogId,
-                          );
-                        }}
-                      >
-                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
-                      </AtomButton>
-                      <Show when={competitor().status === "requested"}>
-                        <AtomButton onClick={acceptCompetitor}>
-                          --Accept enroll
+                  }
+                  actions={
+                    props.isEditing ? (
+                      <div class="event-competitors-section__competitors--actions">
+                        <ConfirmActionButton
+                          text={details().owner}
+                          onConfirm={() =>
+                            props.onDeleteCompetitor(competitor().dogId)
+                          }
+                        >
+                          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
+                          </AtomButton>
+                        </ConfirmActionButton>
+                        <AtomButton
+                          type={BUTTON_TYPES.ACCENT}
+                          onClick={() => {
+                            props.onOpenCompetitorEditor(competitor());
+                            setDialogOpen(true);
+                          }}
+                        >
+                          {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
                         </AtomButton>
-                      </Show>
-                    </>
-                  )
-                }
-              />
+                      </div>
+                    ) : (
+                      <>
+                        <Show when={canSeeCompetitorScores(props.eventStatus)}>
+                          <AtomButton
+                            type={BUTTON_TYPES.ACCENT}
+                            onClick={() => {
+                              openCompetitorCollection(
+                                params().eventId,
+                                competitor().dogId,
+                              );
+                            }}
+                          >
+                            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
+                          </AtomButton>
+                        </Show>
+                        <Show
+                          when={canAcceptCompetitorEnroll(competitor().status)}
+                        >
+                          <AtomButton
+                            onClick={() =>
+                              props.onAcceptCompetitor(competitor().dogId)
+                            }
+                          >
+                            {i18n.t(
+                              "MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL",
+                            )}
+                          </AtomButton>
+                        </Show>
+                      </>
+                    )
+                  }
+                />
               );
             }}
           </Index>

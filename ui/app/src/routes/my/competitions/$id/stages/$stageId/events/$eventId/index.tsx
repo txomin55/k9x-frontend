@@ -201,10 +201,6 @@ function CompetitionObdxEventDetailBody(props: {
     event: EventEditorDraft | EventDetailResponseDTO,
   ) => {
     return JSON.stringify({
-      // Only the fields the PUT actually sends matter for "did it change?".
-      // Descriptive competitor fields are derived from the dogs cache, so they
-      // differ between the draft and the optimistic server projection and would
-      // otherwise produce false positives/negatives.
       competitors: event.competitors.map((competitor) => ({
         dogId: competitor.dogId,
         position: competitor.position,
@@ -225,7 +221,7 @@ function CompetitionObdxEventDetailBody(props: {
   ): EventCompetitorDetail => {
     return {
       position: order,
-      accepted: false,
+      accepted: true,
       dogId,
       identity: "",
       name: "",
@@ -688,6 +684,22 @@ function CompetitionObdxEventDetailBody(props: {
     );
   };
 
+  const handleAcceptCompetitor = (dogId: string) => {
+    const nextDraftEvent = updateDraftEvent((current) => ({
+      ...current,
+      competitors: current.competitors.map((entry) =>
+        entry.dogId === dogId
+          ? { ...entry, accepted: true, status: "ENROLLED" }
+          : entry,
+      ),
+    }));
+
+    props.onUpdate(
+      nextDraftEvent.id,
+      buildUpdatePayload(nextDraftEvent, name()),
+    );
+  };
+
   const handleOpenCompetitorEditor = (competitor: EventCompetitorDetail) => {
     setIsCreatingCompetitor(false);
     setEditingCompetitorId(competitor.dogId);
@@ -761,6 +773,7 @@ function CompetitionObdxEventDetailBody(props: {
         <EventCompetitorsSection
           competitorDialogDraft={competitorDialogDraft()}
           competitors={draftEvent().competitors}
+          eventStatus={props.event().status}
           editingCompetitorId={editingCompetitorId()}
           isCreatingCompetitor={isCreatingCompetitor()}
           isEditing={isEditing()}
@@ -770,6 +783,7 @@ function CompetitionObdxEventDetailBody(props: {
           onOpenCompetitorEditor={handleOpenCompetitorEditor}
           onCreateCompetitor={createCompetitor}
           onCommitCompetitor={saveCompetitorEditor}
+          onAcceptCompetitor={handleAcceptCompetitor}
         />
       ),
     },

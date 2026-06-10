@@ -22,11 +22,11 @@
 
 ### MVP
 
-- Boton aceptar perro en evento
 - mirar card de mapa
 - refinar vista de clasificacion
-- accion para si el competidor compite o no en collections de datos o evento mismo de stage en competitions
+- ~~Boton aceptar perro en evento~~
 - dorsal de competidor reusado como position?
+- accion para si el competidor compite o no en collections de datos o evento mismo de stage en competitions
 - Acciones de eliminar por estado
 - limpiar un poco todo visualmente en general
 - ~~cerrar formularios y poner un success~~
