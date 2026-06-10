@@ -77,6 +77,7 @@ export const toApiStage = (
     }),
   id: stage.id ?? "",
   name: stage.name ?? "",
+  status: stage.status,
 });
 
 const findCachedApiStage = (

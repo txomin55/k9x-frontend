@@ -11,6 +11,7 @@ import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import "./styles.css";
 import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
+import { STAGE_STATUS } from "@/utils/stage";
 import { useI18n } from "@/stores/i18n/i18n";
 
 type StageItem = NonNullable<CompetitionResponseDTO["stages"]>[number];
@@ -73,14 +74,16 @@ export default function StagesSection(props: StagesSectionProps) {
               actions={
                 props.isEditing ? (
                   <div class="stages-section__stages--actions">
-                    <ConfirmActionButton
-                      text={stage().name}
-                      onConfirm={() => props.onDeleteStage(stage().id)}
-                    >
-                      <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                        {i18n.t("MY.COMPETITIONS.STAGES_SECTION.DELETE")}
-                      </AtomButton>
-                    </ConfirmActionButton>
+                    <Show when={stage().status !== STAGE_STATUS.CREATED}>
+                      <ConfirmActionButton
+                        text={stage().name}
+                        onConfirm={() => props.onDeleteStage(stage().id)}
+                      >
+                        <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                          {i18n.t("MY.COMPETITIONS.STAGES_SECTION.DELETE")}
+                        </AtomButton>
+                      </ConfirmActionButton>
+                    </Show>
                     <AtomDialog
                       closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
                       content={

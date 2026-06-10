@@ -17,7 +17,7 @@ import type {
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { toEventEditorDraft } from "@/utils/event";
+import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
@@ -874,7 +874,7 @@ function CompetitionObdxEventDetailBody(props: {
         nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
       />
-      <Show when={isEditing()}>
+      <Show when={isEditing() && props.event().status !== EVENT_STATUS.CREATED}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
             {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}

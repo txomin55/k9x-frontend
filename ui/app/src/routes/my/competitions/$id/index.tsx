@@ -8,6 +8,7 @@ import {
   type UpdateCompetitionRequestDTO
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { toApiStage, useApiStage } from "@/services/secured/stage-crud/stageCrud";
+import { COMPETITION_STATUS } from "@/utils/competition";
 import { toUndefinedIfBlank } from "@/utils/date";
 import {
   validateRequiredSelection,
@@ -343,7 +344,12 @@ function CompetitionDetailBody(props: {
         nonToggledText={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
       />
-      <Show when={isEditing()}>
+      <Show
+        when={
+          isEditing() &&
+          props.competition()?.status !== COMPETITION_STATUS.CREATED
+        }
+      >
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
             {i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}

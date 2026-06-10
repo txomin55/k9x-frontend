@@ -14,6 +14,7 @@ export interface CompetitionStageDetailResponseDTO {
   events: CompetitionStageEventDetailResponseDTO[];
   id: string;
   name: string;
+  status?: string;
 }
 
 export interface CreateStageRequestDTO {
@@ -37,6 +38,7 @@ export interface StageEditorModel {
   events: EventDetailResponseDTO[];
   id: string;
   name: string;
+  status?: string;
 }
 
 export interface ApiStageRollbackPayload {

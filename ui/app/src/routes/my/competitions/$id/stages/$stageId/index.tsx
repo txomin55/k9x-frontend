@@ -19,7 +19,8 @@ import type {
   EventEditorDraft,
   UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
-import { toEventEditorDraft } from "@/utils/event";
+import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
+import { STAGE_STATUS } from "@/utils/stage";
 import {
   formatDateLabel,
   dayBefore,
@@ -433,14 +434,18 @@ function CompetitionStageDetailBody(props: {
                   actions={
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
-                        <ConfirmActionButton
-                          text={event().name}
-                          onConfirm={deleteEventClick(event)}
+                        <Show
+                          when={event().status !== EVENT_STATUS.CREATED}
                         >
-                          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
-                          </AtomButton>
-                        </ConfirmActionButton>
+                          <ConfirmActionButton
+                            text={event().name}
+                            onConfirm={deleteEventClick(event)}
+                          >
+                            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                              {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
+                            </AtomButton>
+                          </ConfirmActionButton>
+                        </Show>
                         <AtomDialog
                           closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
                           content={
@@ -482,7 +487,9 @@ function CompetitionStageDetailBody(props: {
         nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
         toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
       />
-      <Show when={isEditing()}>
+      <Show
+        when={isEditing() && props.stage().status !== STAGE_STATUS.CREATED}
+      >
         <ConfirmActionButton
           text={props.stage().name}
           onConfirm={props.onDelete}

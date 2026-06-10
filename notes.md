@@ -22,13 +22,26 @@
 
 ### MVP
 
+- En card stage el texto campana tiene que ser icono para hacer toggle
+- Los textos de crudo deben ser iconos
+- dorsal de competidor
+- País nombre organizador y fecha desde son lo único que se ve en tabla de stages
+- Quitar columna guía de tabla clasificación
+- Competicion quitar texto "titulo" de nombre
+- Reemplazar texto de estado en competición por badge
+- Quitar texto "modo edición activo" de stage
+- Reemplazar texto de estado en evento por badge
+- MY.COMPETITIONS.COMPETITOR_EDITOR.BREED sin desc
+- En collections el combo de selección de competidor la R cerda reemplazar
+
 - dorsal de competidor reusado como position?
 - accion para si el competidor compite o no en collections de datos o evento mismo de stage en competitions
 - reemplazar boton de eliminar de competidor por "no presentado" que haga la actualizacion del estado de not_competing
   en backend
-- eliminar botones de eliminar en cualquier entidad si hay algo empezado
-- Acciones de eliminar por estado
+- endpoint para saber si se puede eliminar perro
+- endpoint para saber si se puede eliminar juez
 - limpiar un poco todo visualmente en general
+- ~~eliminar botones de eliminar en cualquier entidad si hay algo empezado~~
 - ~~refinar vista de clasificacion~~
 - ~~Boton aceptar perro en evento~~
 - ~~cerrar formularios y poner un success~~
