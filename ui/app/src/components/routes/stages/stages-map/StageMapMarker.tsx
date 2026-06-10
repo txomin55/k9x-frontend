@@ -1,8 +1,6 @@
 import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { createSignal, Index, Show } from "solid-js";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
@@ -37,7 +35,8 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       <span class="stages-map-marker-popup__title">
         <span class="text-body-md">{props.stage.name}</span>
         <span class="text-caption-sm">
-          {props.stage.dateFrom ?? ""}-{props.stage.dateTo ?? ""}
+          {new Date(props.stage.dateFrom ?? 0).toLocaleDateString() ?? ""}-
+          {new Date(props.stage.dateTo ?? 0).toLocaleDateString() ?? ""}
         </span>
       </span>
       <span class="text-body-sm">{props.stage.description}</span>

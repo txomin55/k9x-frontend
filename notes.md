@@ -22,13 +22,12 @@
 
 ### MVP
 
-- mirar card de mapa
 - refinar vista de clasificacion
-- ~~Boton aceptar perro en evento~~
 - dorsal de competidor reusado como position?
 - accion para si el competidor compite o no en collections de datos o evento mismo de stage en competitions
 - Acciones de eliminar por estado
 - limpiar un poco todo visualmente en general
+- ~~Boton aceptar perro en evento~~
 - ~~cerrar formularios y poner un success~~
 - ~~Ver como simplificar el modelo oas~~
     - ~~Cuando se usa en get, hacer wrap de elemento con id y name + nombre identificador. Cuando se usa en post o put,
