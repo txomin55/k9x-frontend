@@ -287,5 +287,15 @@
   "HOME.CONNECTIVITY_TITLE": "Sigue trabajando cuando falla la conectividad",
   "HOME.CONNECTIVITY_DESCRIPTION": "La app está diseñada con flujos local-first para que el trabajo de campo no se detenga cuando no hay red.",
   "GLOBAL.SHARE.SHARE": "Compartir",
-  "GLOBAL.SHARE.LINK_COPIED": "Enlace copiado"
+  "GLOBAL.SHARE.LINK_COPIED": "Enlace copiado",
+  "COMMON.DATE.NO_DATE": "Sin fecha",
+  "MY.COMPETITIONS.DETAIL.DEFAULT_COMPETITION": "Competición por defecto",
+  "MY.COMPETITIONS.STAGE_DETAIL.DEFAULT_STAGE": "Prueba por defecto",
+  "MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EVENT": "Evento por defecto",
+  "STAGES.CLASSIFICATION.LOADING_CLASSIFICATION": "Cargando clasificación...",
+  "STAGES.CLASSIFICATION.LAST_UPDATED": "Última actualización",
+  "STAGES.CLASSIFICATION.STAGE": "Prueba",
+  "STAGES.CLASSIFICATION.DISCIPLINE": "Disciplina",
+  "STAGES.CLASSIFICATION.NO_DATA": "No hay datos de clasificación disponibles.",
+  "STAGES.INFO.UNTIL": "Hasta"
 }

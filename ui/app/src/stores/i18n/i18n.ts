@@ -74,6 +74,11 @@ const initI18n = async () => {
 
 const getCurrentLocale = () => getState().locale;
 
+const translate = (key: string, options?: Record<string, unknown>) => {
+  if (!getState().ready) return key;
+  return i18n.t(key, options);
+};
+
 const useI18n = () => {
   const locale = useAppStore((state) => state.locale);
   const ready = useAppStore((state) => state.ready);
@@ -97,4 +102,4 @@ const useI18n = () => {
   };
 };
 
-export { getCurrentLocale, initI18n, useI18n };
+export { getCurrentLocale, initI18n, translate, useI18n };

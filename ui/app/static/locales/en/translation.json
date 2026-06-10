@@ -287,5 +287,15 @@
   "HOME.CONNECTIVITY_TITLE": "Keep working when connectivity drops",
   "HOME.CONNECTIVITY_DESCRIPTION": "The app is built around local-first flows so field work does not stop when the network does.",
   "GLOBAL.SHARE.SHARE": "Share",
-  "GLOBAL.SHARE.LINK_COPIED": "Link copied"
+  "GLOBAL.SHARE.LINK_COPIED": "Link copied",
+  "COMMON.DATE.NO_DATE": "No date",
+  "MY.COMPETITIONS.DETAIL.DEFAULT_COMPETITION": "Default competition",
+  "MY.COMPETITIONS.STAGE_DETAIL.DEFAULT_STAGE": "Default trial",
+  "MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EVENT": "Default event",
+  "STAGES.CLASSIFICATION.LOADING_CLASSIFICATION": "Loading classification...",
+  "STAGES.CLASSIFICATION.LAST_UPDATED": "Last updated",
+  "STAGES.CLASSIFICATION.STAGE": "Stage",
+  "STAGES.CLASSIFICATION.DISCIPLINE": "Discipline",
+  "STAGES.CLASSIFICATION.NO_DATA": "No classification data available.",
+  "STAGES.INFO.UNTIL": "Until"
 }

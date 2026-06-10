@@ -22,11 +22,14 @@
 
 ### MVP
 
-- refinar vista de clasificacion
 - dorsal de competidor reusado como position?
 - accion para si el competidor compite o no en collections de datos o evento mismo de stage en competitions
+- reemplazar boton de eliminar de competidor por "no presentado" que haga la actualizacion del estado de not_competing
+  en backend
+- eliminar botones de eliminar en cualquier entidad si hay algo empezado
 - Acciones de eliminar por estado
 - limpiar un poco todo visualmente en general
+- ~~refinar vista de clasificacion~~
 - ~~Boton aceptar perro en evento~~
 - ~~cerrar formularios y poner un success~~
 - ~~Ver como simplificar el modelo oas~~

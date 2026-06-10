@@ -162,7 +162,7 @@ function StageInfoPage() {
                               {i18n.t("STAGES.INFO.ENROLL")}
                             </AtomButton>
                             <span class="text-caption-sm">
-                              --Until{" "}
+                              {i18n.t("STAGES.INFO.UNTIL")}{" "}
                               {formatDateLabel(
                                 toDateInputValue(
                                   event().enrollmentDeadline ?? 0,

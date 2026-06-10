@@ -11,6 +11,7 @@ import {
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import { CompetitionResponseDTO, getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import { translate } from "@/stores/i18n/i18n";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
   getConfigurationsFromCache
@@ -237,7 +238,7 @@ const mergeApiEventWithPayload = (
 const createDefaultApiEvent = (stageId: string): CreateEventRequestDTO => ({
   disciplineId: "",
   id: createId(),
-  name: "--Default event",
+  name: translate("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EVENT"),
   stageId,
 });
 

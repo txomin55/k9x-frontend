@@ -1,5 +1,18 @@
+import { translate } from "@/stores/i18n/i18n";
+
 export function formatStageDateRange(dateFrom: number, dateTo: number) {
   return `${new Date(dateFrom).toDateString()} - ${new Date(dateTo).toDateString()}`;
+}
+
+export function formatDateTime(timestamp: number) {
+  return new Date(timestamp).toLocaleString([], {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
 
 export function toUndefinedIfBlank(value: string) {
@@ -37,7 +50,7 @@ export function dayBefore(timestamp: number) {
 }
 
 export function formatDateLabel(value: string) {
-  if (!value) return "--No date";
+  if (!value) return translate("COMMON.DATE.NO_DATE");
 
   return value;
 }
