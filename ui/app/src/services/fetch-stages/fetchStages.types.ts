@@ -54,6 +54,7 @@ export interface StageEventDetailResponseDTO {
   name: string;
   status: string;
   enrollmentOpened: boolean;
+  enrollmentDeadline: number;
 }
 
 export interface CompetitionNotificationDetailResponseDTO {

@@ -1,10 +1,16 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -155,6 +161,14 @@ function StageInfoPage() {
                             >
                               {i18n.t("STAGES.INFO.ENROLL")}
                             </AtomButton>
+                            <span class="text-caption-sm">
+                              --Until{" "}
+                              {formatDateLabel(
+                                toDateInputValue(
+                                  event().enrollmentDeadline ?? 0,
+                                ),
+                              )}
+                            </span>
                           </Show>
                         </Show>
                       </div>
