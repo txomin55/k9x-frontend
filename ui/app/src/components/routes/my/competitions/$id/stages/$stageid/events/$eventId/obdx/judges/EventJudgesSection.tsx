@@ -3,6 +3,9 @@ import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
 } from "library/src/components/atoms/button/AtomButton";
+import AtomBadge, {
+  BADGE_TYPES,
+} from "library/src/components/atoms/badge/AtomBadge";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -95,6 +98,11 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
             {(judge) => (
               <Card
                 topLeft={getJudgeName(judge().id)}
+                topRight={
+                  <AtomBadge type={BADGE_TYPES.ACCENT}>
+                    {`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.RING")} ${judge().ring}`}
+                  </AtomBadge>
+                }
                 description={
                   <p>{`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EMAIL")}: ${judge().collectorEmail}`}</p>
                 }

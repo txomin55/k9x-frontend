@@ -313,6 +313,7 @@ function CompetitionObdxEventDetailBody(props: {
     collectorEmail: "",
     name: "",
     id: globalThis.crypto.randomUUID(),
+    ring: 1,
   });
 
   const createDefaultExercise = (
@@ -339,6 +340,7 @@ function CompetitionObdxEventDetailBody(props: {
     judges: event.judges.map((judge) => ({
       collectorEmail: judge.collectorEmail,
       id: judge.id,
+      ring: judge.ring,
     })),
     name: eventName,
   });
