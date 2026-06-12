@@ -7,7 +7,6 @@ import {
   type AtomComboboxOption,
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
-import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
@@ -37,19 +36,6 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         ? {
             ...current,
             [field]: value,
-          }
-        : current,
-    );
-  };
-
-  const updateRing = (value: number) => {
-    const ring = Math.max(1, Math.trunc(value) || 1);
-
-    props.onDraftChange((current) =>
-      current
-        ? {
-            ...current,
-            ring,
           }
         : current,
     );
@@ -99,13 +85,6 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         value={props.draft().collectorEmail}
         onBlur={props.onCommit}
         onChange={updateField("collectorEmail")}
-      />
-      <AtomNumberInput
-        label={i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.RING")}
-        value={props.draft().ring}
-        minValue={1}
-        onBlur={props.onCommit}
-        onRawValueChange={updateRing}
       />
       <div class="judge-editor-form__actions">
         <AtomButton onClick={props.onCancel} type={BUTTON_TYPES.ACCENT}>

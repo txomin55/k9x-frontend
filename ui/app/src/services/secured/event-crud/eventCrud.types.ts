@@ -117,13 +117,11 @@ export interface EventJudgeDetailResponseDTO {
   collectorEmail: string;
   id: string;
   name: string;
-  ring: number;
 }
 
 export interface EventJudgeDetailRequestDTO {
   collectorEmail: string;
   id: string;
-  ring: number;
 }
 
 export interface EventEditorDraft {
@@ -172,10 +170,6 @@ export const normalizeEventDetailResponse = (
     ...rawObdx,
     competitors: rawObdx.competitors.map(normalizeCompetitor),
     configuration: rawObdx.configuration ?? EMPTY_EVENT_CONFIGURATION,
-    judges: rawObdx.judges.map((judge) => ({
-      ...judge,
-      ring: judge.ring ?? 1,
-    })),
   };
 
   return {

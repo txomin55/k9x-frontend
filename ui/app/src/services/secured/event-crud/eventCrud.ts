@@ -125,7 +125,6 @@ const toApiJudge = (
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   id: judge.id ?? previousJudge?.id ?? "",
   name: previousJudge?.name ?? "",
-  ring: judge.ring ?? previousJudge?.ring ?? 1,
 });
 
 const toApiCompetitor = (
