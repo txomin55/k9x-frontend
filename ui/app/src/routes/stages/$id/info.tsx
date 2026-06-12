@@ -119,7 +119,7 @@ function StageInfoPage() {
     },
   ];
 
-  const stageTabsContents = createMemo(() => {
+  const eventsTabsContents = createMemo(() => {
     const stage = stageInfo.data;
     if (!stage) {
       return [];
@@ -156,19 +156,21 @@ function StageInfoPage() {
                           }
                         >
                           <Show when={event().enrollmentOpened}>
-                            <AtomButton
-                              onClick={() => openEnrollDialog(event().id)}
-                            >
-                              {i18n.t("STAGES.INFO.ENROLL")}
-                            </AtomButton>
-                            <span class="text-caption-sm">
-                              {i18n.t("STAGES.INFO.UNTIL")}{" "}
-                              {formatDateLabel(
-                                toDateInputValue(
-                                  event().enrollmentDeadline ?? 0,
-                                ),
-                              )}
-                            </span>
+                            <div class="stage-info__event--enrollment">
+                              <span class="text-caption-sm">
+                                {i18n.t("STAGES.INFO.UNTIL")}{" "}
+                                {formatDateLabel(
+                                  toDateInputValue(
+                                    event().enrollmentDeadline ?? 0,
+                                  ),
+                                )}
+                              </span>
+                              <AtomButton
+                                onClick={() => openEnrollDialog(event().id)}
+                              >
+                                {i18n.t("STAGES.INFO.ENROLL")}
+                              </AtomButton>
+                            </div>
                           </Show>
                         </Show>
                       </div>
@@ -236,15 +238,17 @@ function StageInfoPage() {
       >
         {(stage) => (
           <>
-            <h2>{stage().name}</h2>
-            <p class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</p>
-            <p class="text-caption-md">{stage().organizer}</p>
-            <p class="text-body-md">{stage().address}</p>
+            <div class="stage-info__title">
+              <span>{stage().name}</span>
+              <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
+            </div>
+            <span class="text-caption-md">{stage().organizer}</span>
+            <span class="text-body-md">{stage().address}</span>
 
             <AtomTabs
               defaultValue={TABS.EVENTS}
               options={stageTabsTitles}
-              contents={stageTabsContents()}
+              contents={eventsTabsContents()}
             />
             <AtomDialog
               closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}

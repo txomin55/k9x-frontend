@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import type { PositionBadgeProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/PositionBadge.types";
+import type { PositionBadgeProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-badge/PositionBadge.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function PositionBadge(props: PositionBadgeProps) {

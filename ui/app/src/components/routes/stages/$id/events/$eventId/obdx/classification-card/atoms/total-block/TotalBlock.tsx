@@ -1,5 +1,5 @@
 import { useI18n } from "@/stores/i18n/i18n";
-import type { TotalBlockProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/TotalBlock.types";
+import type { TotalBlockProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function TotalBlock(props: TotalBlockProps) {

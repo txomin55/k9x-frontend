@@ -1,9 +1,9 @@
-import { For, Show, createMemo } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
-import ScoreChip from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreChip";
-import ScoreFraction from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreFraction";
-import TagList from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/TagList";
-import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/TotalBlock";
+import ScoreChip from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip";
+import ScoreFraction from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-fraction/ScoreFraction";
+import TagList from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/tag-list/TagList";
+import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
 import {
   judgeInitials,
   uniqueJudges,

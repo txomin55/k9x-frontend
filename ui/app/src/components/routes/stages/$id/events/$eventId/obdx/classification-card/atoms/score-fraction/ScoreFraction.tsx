@@ -1,5 +1,5 @@
 import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type { ScoreFractionProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreFraction.types";
+import type { ScoreFractionProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-fraction/ScoreFraction.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function ScoreFraction(props: ScoreFractionProps) {

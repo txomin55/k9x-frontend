@@ -1,10 +1,6 @@
 import { Show } from "solid-js";
-import {
-  ratingColorClass
-} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type {
-  ScoreChipProps
-} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreChip.types";
+import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
+import type { ScoreChipProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function ScoreChip(props: ScoreChipProps) {

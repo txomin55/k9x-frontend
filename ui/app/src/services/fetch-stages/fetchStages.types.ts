@@ -103,6 +103,7 @@ export interface StageEventClassificationItemResponseDTO {
   team: string;
   totalScore: number;
   tied: boolean;
+  startOrder: number;
 }
 
 export type StageEnrollRollbackPayload = {

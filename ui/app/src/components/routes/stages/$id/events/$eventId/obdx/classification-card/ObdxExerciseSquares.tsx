@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import ScoreChip from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/ScoreChip";
+import ScoreChip from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip";
 import {
   averageValue,
   exerciseShortCode,

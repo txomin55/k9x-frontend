@@ -6,8 +6,8 @@ import { useI18n } from "@/stores/i18n/i18n";
 import ObdxCompetitorHeader from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader";
 import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import ObdxExerciseDetailTable from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable";
-import PinButton from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/PinButton";
-import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/TotalBlock";
+import PinButton from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
+import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 type ObdxClassificationProps = {
