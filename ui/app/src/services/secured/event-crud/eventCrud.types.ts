@@ -4,6 +4,7 @@ import {
 } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { COMPETITOR_STATUS } from "@/utils/event";
 
 export interface CreateEventRequestDTO {
   id: string;
@@ -30,13 +31,17 @@ export interface EventCompetitorResponseDTO {
   country: string;
   status: string;
   breed: string;
-  notCompeting?: boolean;
+  notCompeting: boolean;
 }
 
 export interface EventCompetitorRequestDTO {
   dogId: string;
   position: number;
   accepted: boolean;
+}
+
+export interface UpdateEventNotCompetingRequestDTO {
+  dogId: string;
   notCompeting: boolean;
 }
 
@@ -160,7 +165,7 @@ const normalizeCompetitor = (
   country: competitor.country ?? "",
   breed: competitor.breed ?? "",
   position: competitor.position ?? 0,
-  accepted: competitor.status === "ENROLLED",
+  accepted: competitor.status === COMPETITOR_STATUS.ENROLLED,
   status: competitor.status ?? "",
   notCompeting: competitor.notCompeting ?? false,
 });

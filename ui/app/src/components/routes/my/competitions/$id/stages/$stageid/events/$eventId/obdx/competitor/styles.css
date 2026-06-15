@@ -4,6 +4,10 @@
     justify-content: space-between;
 }
 
+.event-competitors-section__competitors--not-competing {
+    color: var(--error);
+}
+
 .event-competitors-section__header {
     display: flex;
     justify-content: flex-end;

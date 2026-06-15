@@ -53,7 +53,6 @@ export interface UpdateCollectionScoreRequestDTO {
   eventId: string;
   score: number;
 }
-
 export interface CollectionRollbackPayload {
   collectionId: string;
   previousCollection: CollectionResponseDTO | null;

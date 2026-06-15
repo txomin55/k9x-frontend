@@ -1,13 +1,21 @@
-import {useParams, useSearch} from "@tanstack/solid-router";
-import {updateCollectionScore, useCollectionById,} from "@/services/secured/collection-crud/collectionCrud";
+import { useParams, useSearch } from "@tanstack/solid-router";
+import {
+  updateCollectionScore,
+  useCollectionById,
+  useCollections,
+} from "@/services/secured/collection-crud/collectionCrud";
+import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import {useI18n} from "@/stores/i18n/i18n";
-import {createEffect, createMemo, createSignal, For, Show} from "solid-js";
-import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel
-  from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore
-  from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import { EVENT_STATUS } from "@/utils/event";
+import { useI18n } from "@/stores/i18n/i18n";
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
 import type {
   CollectionScoreResponseDTO,
   ExerciseScoresResponseDTO,
@@ -60,6 +68,15 @@ export default function ObdxCollectionDetail() {
   const search = useSearch({ from: "/my/collections/$id" });
 
   const collectionData = useCollectionById(params().id);
+  const collectionsList = useCollections({
+    refetchOnMount: false,
+    gcTime: 5 * 60 * 1000,
+  });
+  const eventStatus = createMemo(
+    () =>
+      collectionsList.data?.find((entry) => entry.eventId === params().id)
+        ?.status ?? "",
+  );
   const [pendingScores, setPendingScores] = createSignal<
     Record<string, number>
   >({});
@@ -97,9 +114,29 @@ export default function ObdxCollectionDetail() {
     ),
   );
 
+  const isSelectedCompetitorNotCompeting = createMemo(
+    () =>
+      collectionData.data?.obdx.competitors.find(
+        (c) => c.competitor.dog.id === selectedCompetitor()?.value,
+      )?.competitor.notCompeting ?? false,
+  );
+
   const markCompetitorAsSeen = (opt: AtomSelectOption) => {
     setSeenCompetitors([...seenCompetitors(), opt.value]);
     setSelectedCompetitor(opt);
+  };
+
+  const handleMarkNotCompeting = () => {
+    const competitor = selectedCompetitor();
+
+    if (!competitor) {
+      return;
+    }
+
+    updateApiEventNotCompeting(params().id, {
+      dogId: competitor.value,
+      notCompeting: true,
+    });
   };
 
   createEffect(() => {
@@ -232,12 +269,30 @@ export default function ObdxCollectionDetail() {
       <span class="text-caption-sm">
         {collectionData.data?.configuration?.description}
       </span>
+
       <AtomSelect
         label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
         options={collectionCompetitors()}
         value={selectedCompetitor()}
         onChange={markCompetitorAsSeen}
       />
+
+      <Show
+        when={
+          selectedCompetitor() &&
+          eventStatus() === EVENT_STATUS.STARTED &&
+          !isSelectedCompetitorNotCompeting()
+        }
+      >
+        <ConfirmActionButton
+          text={selectedCompetitor()?.label ?? ""}
+          onConfirm={handleMarkNotCompeting}
+        >
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+            {i18n.t("MY.COLLECTIONS.DETAIL.NOT_PRESENTED")}
+          </AtomButton>
+        </ConfirmActionButton>
+      </Show>
 
       <Show when={selectedCompetitor()}>
         <div

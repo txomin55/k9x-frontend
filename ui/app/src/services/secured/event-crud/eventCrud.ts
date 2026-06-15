@@ -28,6 +28,7 @@ import type {
   EventExerciseRequestDTO,
   EventJudgeDetailRequestDTO,
   EventJudgeDetailResponseDTO,
+  UpdateEventNotCompetingRequestDTO,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { normalizeEventDetailResponse } from "@/services/secured/event-crud/eventCrud.types";
@@ -142,8 +143,7 @@ const toApiCompetitor = (
     position: competitor.position ?? previousCompetitor?.position ?? 0,
     accepted: competitor.accepted ?? previousCompetitor?.accepted ?? false,
     status: previousCompetitor?.status ?? "",
-    notCompeting:
-      competitor.notCompeting ?? previousCompetitor?.notCompeting ?? false,
+    notCompeting: previousCompetitor?.notCompeting ?? false,
   };
 };
 
@@ -298,6 +298,61 @@ const findEventContext = (
   }
 
   return null;
+};
+
+const projectEventNotCompeting = (
+  event: EventDetailResponseDTO,
+  payload: UpdateEventNotCompetingRequestDTO,
+): EventDetailResponseDTO => {
+  const nextCore = {
+    ...event,
+    competitors: event.competitors.map((competitor) =>
+      competitor.dogId === payload.dogId
+        ? { ...competitor, notCompeting: payload.notCompeting }
+        : competitor,
+    ),
+  };
+
+  return {
+    ...nextCore,
+    obdx: nextCore,
+  };
+};
+
+export const updateApiEventNotCompeting = (
+  eventId: string,
+  payload: UpdateEventNotCompetingRequestDTO,
+) => {
+  const previousEvent = getCachedEventById(eventId) ?? null;
+
+  if (previousEvent) {
+    queryClient.setQueryData(
+      getEventByIdQueryKey(eventId),
+      projectEventNotCompeting(previousEvent, payload),
+    );
+  }
+
+  void (async () => {
+    await commitApiEventMutation({
+      entityId: eventId,
+      method: "PUT",
+      payload,
+      onCommitted: () =>
+        commitApiEventMutationSuccess({
+          competitionId: "",
+          eventId,
+          method: "PUT",
+          stageId: "",
+        }),
+      rollbackPayload: await createApiEventRollbackPayload({
+        competitionId: "",
+        entityId: eventId,
+        previousEvent,
+        stageId: "",
+      }),
+      url: `/secured/obdx/events/${eventId}/not-competing`,
+    });
+  })();
 };
 
 export const useApiEvent = () => {

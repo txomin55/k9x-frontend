@@ -6,7 +6,10 @@ import EventExercisesSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
 import EventJudgesSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
-import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
+import {
+  updateApiEventNotCompeting,
+  useApiEvent,
+} from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitorDetail,
   EventCompetitorRequestDTO,
@@ -208,7 +211,6 @@ function CompetitionObdxEventDetailBody(props: {
         dogId: competitor.dogId,
         position: competitor.position,
         accepted: competitor.accepted,
-        notCompeting: competitor.notCompeting,
       })),
       configuration: event.configuration,
       discipline: event.discipline,
@@ -308,7 +310,6 @@ function CompetitionObdxEventDetailBody(props: {
       dogId: competitor.dogId,
       position: competitor.position,
       accepted: competitor.accepted,
-      notCompeting: competitor.notCompeting,
     };
   };
 
@@ -714,10 +715,10 @@ function CompetitionObdxEventDetailBody(props: {
       ),
     }));
 
-    props.onUpdate(
-      nextDraftEvent.id,
-      buildUpdatePayload(nextDraftEvent, name()),
-    );
+    updateApiEventNotCompeting(nextDraftEvent.id, {
+      dogId,
+      notCompeting: true,
+    });
   };
 
   const handleOpenCompetitorEditor = (competitor: EventCompetitorDetail) => {

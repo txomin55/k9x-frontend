@@ -152,6 +152,20 @@ export default function EventCompetitorsSection(
                   topLeft={details().owner}
                   content={
                     <div class="event-competitors-section__competitors--competitor">
+                      <Show when={competitor().notCompeting}>
+                        <svg
+                          class="event-competitors-section__competitors--not-competing"
+                          viewBox="0 0 24 24"
+                          width="20"
+                          height="20"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        >
+                          <path d="M6 6l12 12M18 6L6 18" />
+                        </svg>
+                      </Show>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
@@ -167,20 +181,22 @@ export default function EventCompetitorsSection(
                               props.eventStatus === EVENT_STATUS.STARTED
                             }
                           >
-                            <ConfirmActionButton
-                              text={details().owner}
-                              onConfirm={() =>
-                                props.onMarkCompetitorNotCompeting(
-                                  competitor().dogId,
-                                )
-                              }
-                            >
-                              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                                {i18n.t(
-                                  "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
-                                )}
-                              </AtomButton>
-                            </ConfirmActionButton>
+                            <Show when={!competitor().notCompeting}>
+                              <ConfirmActionButton
+                                text={details().owner}
+                                onConfirm={() =>
+                                  props.onMarkCompetitorNotCompeting(
+                                    competitor().dogId,
+                                  )
+                                }
+                              >
+                                <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                                  {i18n.t(
+                                    "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
+                                  )}
+                                </AtomButton>
+                              </ConfirmActionButton>
+                            </Show>
                           </Match>
                           <Match
                             when={
