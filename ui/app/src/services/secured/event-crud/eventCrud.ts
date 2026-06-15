@@ -142,6 +142,8 @@ const toApiCompetitor = (
     position: competitor.position ?? previousCompetitor?.position ?? 0,
     accepted: competitor.accepted ?? previousCompetitor?.accepted ?? false,
     status: previousCompetitor?.status ?? "",
+    notCompeting:
+      competitor.notCompeting ?? previousCompetitor?.notCompeting ?? false,
   };
 };
 

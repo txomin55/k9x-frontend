@@ -208,6 +208,7 @@ function CompetitionObdxEventDetailBody(props: {
         dogId: competitor.dogId,
         position: competitor.position,
         accepted: competitor.accepted,
+        notCompeting: competitor.notCompeting,
       })),
       configuration: event.configuration,
       discipline: event.discipline,
@@ -233,6 +234,7 @@ function CompetitionObdxEventDetailBody(props: {
       country: "",
       breed: "",
       status: "",
+      notCompeting: false,
     };
   };
 
@@ -306,6 +308,7 @@ function CompetitionObdxEventDetailBody(props: {
       dogId: competitor.dogId,
       position: competitor.position,
       accepted: competitor.accepted,
+      notCompeting: competitor.notCompeting,
     };
   };
 
@@ -703,6 +706,20 @@ function CompetitionObdxEventDetailBody(props: {
     );
   };
 
+  const handleMarkCompetitorNotCompeting = (dogId: string) => {
+    const nextDraftEvent = updateDraftEvent((current) => ({
+      ...current,
+      competitors: current.competitors.map((entry) =>
+        entry.dogId === dogId ? { ...entry, notCompeting: true } : entry,
+      ),
+    }));
+
+    props.onUpdate(
+      nextDraftEvent.id,
+      buildUpdatePayload(nextDraftEvent, name()),
+    );
+  };
+
   const handleOpenCompetitorEditor = (competitor: EventCompetitorDetail) => {
     setIsCreatingCompetitor(false);
     setEditingCompetitorId(competitor.dogId);
@@ -787,6 +804,7 @@ function CompetitionObdxEventDetailBody(props: {
           onCreateCompetitor={createCompetitor}
           onCommitCompetitor={saveCompetitorEditor}
           onAcceptCompetitor={handleAcceptCompetitor}
+          onMarkCompetitorNotCompeting={handleMarkCompetitorNotCompeting}
         />
       ),
     },
