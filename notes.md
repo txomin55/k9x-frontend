@@ -22,12 +22,10 @@
 
 ### MVP
 
-- En collections el combo de selección de competidor la R cerda reemplazar
-- dorsal de competidor reusado como position?
 - reemplazar boton de eliminar de competidor por "no presentado" cuando el estado sea empezado que haga la actualizacion
   del estado de not_competing
   en backend
-    - añador boton en collections tambien
+    - añadir boton en collections tambien
     - ocultar botones de eliminar o no presentado cuando el evento ya a terminado
     - ocultar boton si el competidor ya esta no presentado y hacerlo visible
 - endpoint para saber si se puede eliminar perro

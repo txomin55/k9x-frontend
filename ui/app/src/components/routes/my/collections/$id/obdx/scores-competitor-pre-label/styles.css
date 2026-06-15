@@ -1,4 +1,11 @@
 .scores-competitor-pre-label {
     display: flex;
+    align-items: center;
     gap: var(--unit-1);
+}
+
+.scores-competitor-pre-label img {
+    max-width: var(--unit-1);
+    max-height: var(--unit-1);
+    flex-shrink: 0;
 }
