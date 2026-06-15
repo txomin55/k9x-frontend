@@ -22,12 +22,6 @@
 
 ### MVP
 
-- ~~reemplazar boton de eliminar de competidor por "no presentado" cuando el estado sea empezado que haga la
-  actualizacion
-  del estado de not_competing en backend~~
-    - añadir boton en collections tambien
-    - ~~ocultar botones de eliminar o no presentado cuando el evento ya a terminado~~
-    - ocultar boton si el competidor ya esta no presentado y hacerlo visible
 - endpoint para saber si se puede eliminar perro
 - endpoint para saber si se puede eliminar juez
 
