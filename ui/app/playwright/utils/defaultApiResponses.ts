@@ -51,5 +51,11 @@ export default async function defaultApiResponses(page: Page) {
       payload: defaultClassification,
       pathname: "/events/*/classification",
     }),
+    setRouteResponses(page, {
+      method: "PUT",
+      payload: "",
+      pathname: "/secured/events/*/enroll",
+      status: 204,
+    }),
   ]);
 }

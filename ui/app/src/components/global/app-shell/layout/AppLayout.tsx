@@ -132,6 +132,7 @@ export default function AppLayout(props: ParentProps) {
                   <div class="app-layout__user-img">
                     <ProfileImage
                       src={currentUser().image}
+                      alt={currentUser().name}
                       fallback={currentUser().name.slice(0, 2)}
                     />
                   </div>

@@ -50,20 +50,22 @@ export const setRouteResponses = async (page: Page, apiMock: ApiMock) => {
     const request = route.request();
     const pathname = new URL(request.url()).pathname;
 
+    // Hand off to the next matching route (not the network) so several mocks
+    // can share a pathname across methods (e.g. GET + POST on /secured/dogs).
     if (request.method() !== apiMock.method) {
-      await route.continue();
+      await route.fallback();
       return;
     }
 
     const pathnameMatch = pathname.match(pathMatcher) ?? undefined;
     if (!pathnameMatch) {
-      await route.continue();
+      await route.fallback();
       return;
     }
 
     const resolvedPayload =
       typeof apiMock.payload === "function"
-        ? await apiMock.payload(pathnameMatch)
+        ? await apiMock.payload(pathnameMatch, request)
         : apiMock.payload;
     const { body } = serializePayload(resolvedPayload);
 

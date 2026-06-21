@@ -10,6 +10,7 @@ export default defineConfig({
   testDir: "./src/",
   testMatch: "**/*.spec.ts",
   fullyParallel: true,
+  workers: 4,
   forbidOnly: !!process.env.CI,
   reporter: [
     ["list", { printSteps: true }],

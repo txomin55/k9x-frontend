@@ -13,8 +13,8 @@ export const defaultStageDetail: StageDetailResponseDTO = {
       id: "event-detail-1",
       name: "Agility Standard",
       status: "OPEN",
-      enrollmentOpened: false,
-      enrollmentDeadline: 0,
+      enrollmentOpened: true,
+      enrollmentDeadline: 1_730_000_000_000,
       discipline: { id: "disc-1", name: "Agility" },
       configuration: { id: "config-1", name: "Standard" },
       competitors: [
