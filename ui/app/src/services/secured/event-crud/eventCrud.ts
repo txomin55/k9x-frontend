@@ -350,7 +350,7 @@ export const updateApiEventNotCompeting = (
         previousEvent,
         stageId: "",
       }),
-      url: `/secured/events/${eventId}/not-competing`,
+      url: `/secured/obdx/events/${eventId}/not-competing`,
     });
   })();
 };

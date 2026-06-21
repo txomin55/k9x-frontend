@@ -30,14 +30,15 @@ export default defineConfig({
   webServer: {
     command: "pnpm run start:standalone",
     url: baseURL,
+    reuseExistingServer: !process.env.CI,
   },
   globalSetup: "./playwright/global-setup.ts",
   globalTeardown: "./playwright/global-teardown.ts",
   projects: [
     {
-      name: "Chrome",
+      name: "Mobile Chrome",
       use: {
-        ...devices["Desktop Chrome"],
+        ...devices["Pixel 5"],
       },
     },
   ],

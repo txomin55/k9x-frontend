@@ -5,10 +5,6 @@ export type ApiMock = {
   payload:
     | unknown
     | ((pathnameMatch?: RegExpMatchArray) => unknown | Promise<unknown>);
-  pathname:
-    | string
-    | {
-        pattern: RegExp;
-      };
+  pathname: string;
   status?: number;
 };

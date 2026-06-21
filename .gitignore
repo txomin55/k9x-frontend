@@ -46,3 +46,6 @@ dev-dist
 
 # local auth token for the k9x-browser-test skill
 .k9x-token
+/scripts/delete_old_deployments.py
+/scripts/delete_old_workflow_runs.py
+/scripts/delete_package_versions.py
