@@ -1,6 +1,7 @@
 import { useLocation } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { showToast } from "@/stores/toast/toast";
 import "./styles.css";
@@ -8,8 +9,10 @@ import "./styles.css";
 export default function FloatingShareButton() {
   const location = useLocation();
   const i18n = useI18n();
+  const user = useAuthUser();
 
-  const isVisible = () => !location().pathname.startsWith("/my");
+  const isVisible = () =>
+    Boolean(user()) && !location().pathname.startsWith("/my");
 
   const handleShare = async () => {
     const url = globalThis.location.href;
