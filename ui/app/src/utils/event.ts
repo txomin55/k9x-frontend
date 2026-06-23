@@ -33,6 +33,7 @@ export const EVENT_STATUS = {
 export const COMPETITOR_STATUS = {
   PENDING_ENROLL_ACCEPT: "PENDING_ENROLL_ACCEPT",
   ENROLLED: "ENROLLED",
+  NOT_COMPETING: "NOT_COMPETING",
 };
 
 export function canSeeClassification(status: string) {

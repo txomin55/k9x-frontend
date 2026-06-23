@@ -10,7 +10,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { EVENT_STATUS } from "@/utils/event";
+import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -118,7 +118,7 @@ export default function ObdxCollectionDetail() {
     () =>
       collectionData.data?.obdx.competitors.find(
         (c) => c.competitor.dog.id === selectedCompetitor()?.value,
-      )?.competitor.notCompeting ?? false,
+      )?.competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
   );
 
   const markCompetitorAsSeen = (opt: AtomSelectOption) => {

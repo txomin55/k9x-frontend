@@ -4,6 +4,8 @@ import type {
   CollectionsResponseDTO,
   UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
+import type { UpdateEventNotCompetingRequestDTO } from "@/services/secured/event-crud/eventCrud.types";
+import { COMPETITOR_STATUS } from "@/utils/event";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
 export const SINGLE_JUDGE = { id: "judge-1", name: "Judge Alpha" };
@@ -38,7 +40,6 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
           country: "ES",
           status: "ENROLLED",
           breed: "Border Collie",
-          notCompeting: false,
         },
         exercises: [
           {
@@ -62,6 +63,50 @@ const applyScore = (
     .flatMap((entry) => entry.collectionScores)
     .find((entry) => entry.judge.id === judgeId);
   if (target) target.score = score;
+};
+
+const applyNotCompeting = (
+  detail: CollectionResponseDTO,
+  { dogId, notCompeting }: UpdateEventNotCompetingRequestDTO,
+) => {
+  const target = detail.obdx.competitors.find(
+    (entry) => entry.competitor.dog.id === dogId,
+  );
+  if (target) {
+    target.competitor.status = notCompeting
+      ? COMPETITOR_STATUS.NOT_COMPETING
+      : COMPETITOR_STATUS.ENROLLED;
+  }
+};
+
+/**
+ * Stateful collections mocks for the "did not show" flow: the not-competing PUT
+ * persists into the detail so a post-flush reload reflects it.
+ */
+export const setupCollectionNotCompeting = (page: Page) => {
+  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+
+  return Promise.all([
+    setRouteResponses(page, {
+      method: "GET",
+      payload: defaultCollectionsList,
+      pathname: "/secured/collections",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: () => detail,
+      pathname: "/secured/events/*/collections",
+    }),
+    setRouteResponses(page, {
+      method: "PUT",
+      payload: (_match, request) => {
+        applyNotCompeting(detail, request.postDataJSON());
+        return "";
+      },
+      pathname: "/secured/obdx/events/*/not-competing",
+      status: 204,
+    }),
+  ]);
 };
 
 /**

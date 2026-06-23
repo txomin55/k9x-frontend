@@ -11,7 +11,13 @@ import {
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
 import { CompetitionResponseDTO, getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import {
+  applyCollectionUpsert,
+  getVisibleCollectionById,
+} from "@/services/secured/collection-crud/collectionCrudOfflineUtils";
+import type { CollectionResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { translate } from "@/stores/i18n/i18n";
+import { COMPETITOR_STATUS } from "@/utils/event";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
   getConfigurationsFromCache
@@ -319,6 +325,28 @@ const projectEventNotCompeting = (
   };
 };
 
+const projectCollectionNotCompeting = (
+  collection: CollectionResponseDTO,
+  payload: UpdateEventNotCompetingRequestDTO,
+): CollectionResponseDTO => ({
+  ...collection,
+  obdx: {
+    competitors: collection.obdx.competitors.map((competitorScores) =>
+      competitorScores.competitor.dog.id === payload.dogId
+        ? {
+            ...competitorScores,
+            competitor: {
+              ...competitorScores.competitor,
+              status: payload.notCompeting
+                ? COMPETITOR_STATUS.NOT_COMPETING
+                : COMPETITOR_STATUS.ENROLLED,
+            },
+          }
+        : competitorScores,
+    ),
+  },
+});
+
 export const updateApiEventNotCompeting = (
   eventId: string,
   payload: UpdateEventNotCompetingRequestDTO,
@@ -329,6 +357,15 @@ export const updateApiEventNotCompeting = (
     queryClient.setQueryData(
       getEventByIdQueryKey(eventId),
       projectEventNotCompeting(previousEvent, payload),
+    );
+  }
+
+  const previousCollection = getVisibleCollectionById(eventId);
+
+  if (previousCollection) {
+    applyCollectionUpsert(
+      eventId,
+      projectCollectionNotCompeting(previousCollection, payload),
     );
   }
 
