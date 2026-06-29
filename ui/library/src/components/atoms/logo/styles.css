@@ -11,23 +11,29 @@
 .atom-logo__wordmark {
     display: flex;
     align-items: baseline;
+    letter-spacing: calc(var(--unit-025) * -1);
+}
+
+.atom-logo__wordmark span {
+    font-family: 'Barlow Condensed', sans-serif;
+    line-height: 1
 }
 
 .atom-logo__k9 {
-    font-size: var(--text-heading-xxl);
+    font-size: calc(var(--text-heading-xxl) * 3);
     font-weight: var(--font-weight-bold);
     color: var(--primary);
 }
 
 .atom-logo__x {
-    font-size: var(--text-heading-md);
+    font-size: var(--text-heading-xxl);
     font-weight: var(--font-weight-bold);
     color: var(--accent);
 }
 
 .atom-logo__divider {
     width: var(--unit-025);
-    height: var(--unit-4);
+    height: var(--unit-5);
     border-radius: var(--unit-025);
     background: var(--border);
 }
@@ -35,22 +41,22 @@
 .atom-logo__tagline {
     display: flex;
     flex-direction: column;
-    gap: var(--unit-025);
+    gap: calc(var(--unit-025) / 2);
 }
 
 .atom-logo__tagline span {
     font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
+    line-height: 1;
+    font-size: var(--text-caption-sm);
 }
 
 .atom-logo__tagline--line1 {
-    font-size: var(--text-body-sm);
     letter-spacing: 0.35em;
     color: var(--accent);
 }
 
 .atom-logo__tagline--line2 {
-    font-size: var(--text-label-sm);
     letter-spacing: 0.55em;
     color: var(--focus-ring);
 }
