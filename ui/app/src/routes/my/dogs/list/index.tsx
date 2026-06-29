@@ -1,12 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
@@ -118,7 +111,7 @@ function MyDogsListPage() {
 
   return (
     <div class="my-dogs">
-      <h1>{i18n.t("MY.DOGS.LIST.DOGS")}</h1>
+      <span class="text-heading-lg">{i18n.t("MY.DOGS.LIST.DOGS")}</span>
       <AtomDialog
         title={
           editingDogId()

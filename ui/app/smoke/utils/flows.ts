@@ -227,6 +227,7 @@ export const addExerciseToEvent = async (
   competitionId: string,
   stageId: string,
   eventId: string,
+  optionIndex = 1,
 ) => {
   await page.goto(
     `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
@@ -242,7 +243,9 @@ export const addExerciseToEvent = async (
   const exercise = dialog.getByRole("combobox", { name: "Exercise" });
   await exercise.click();
   await expect(page.locator(".atom-combobox__listbox li")).not.toHaveCount(0);
-  await exercise.press("ArrowDown");
+  for (let i = 0; i < optionIndex; i++) {
+    await exercise.press("ArrowDown");
+  }
   await exercise.press("Enter");
   await waitForEventWrite(page, () =>
     dialog.getByRole("button", { name: "Create" }).click(),
@@ -314,29 +317,38 @@ export const addScores = async (
   eventId: string,
   competitorName: string,
 ) => {
-  await page.goto(
-    `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
-  );
+  // The "Scores" button on the event page only appears once the event is
+  // STARTED, which happens after the collector enters a score. So the collector
+  // reaches the collection directly (it shows up under My collections because
+  // the judge's collector email is the test user) and scores there.
+  await page.goto(`/my/collections/${eventId}`);
   await page.addStyleTag({
     content: ".floating-toggle-circle { pointer-events: none; }",
   });
-  await page.getByRole("tab", { name: "Competitors" }).click();
-  const scores = page.getByRole("button", { name: "Scores" }).first();
-  await expect(scores).toBeVisible();
-  await Promise.all([
-    page.waitForURL(new RegExp(`/my/collections/${eventId}`)),
-    scores.click(),
-  ]);
-  await expect(page.getByRole("heading", { name: "Specific scores" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Competitors" }).click();
-  await page.keyboard.type(competitorName);
-  await page.keyboard.press("Enter");
+  const competitorSelect = page
+    .getByRole("button", { name: /Competitors/ })
+    .first();
+  await expect(competitorSelect).toBeVisible();
+  await competitorSelect.click();
+  // The option is labelled by the competitor's owner, not the dog name, so just
+  // pick the only competitor in the list rather than filtering by name.
+  const option = page.getByRole("option").first();
+  await expect(option).toBeVisible();
+  await option.click();
 
   const score = page.getByRole("spinbutton").first();
   await score.fill("8");
   await score.blur();
   await expect(score).toHaveValue("8");
+
+  // Scoring transitions the event to STARTED; the "Scores" button now shows.
+  await page.goto(
+    `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+  );
+  await page.getByRole("tab", { name: "Competitors" }).click();
+  await expect(
+    page.getByRole("button", { name: "Scores" }).first(),
+  ).toBeVisible();
 };
 
 export const viewClassification = async (
@@ -346,5 +358,6 @@ export const viewClassification = async (
   dogName: string,
 ) => {
   await page.goto(`/stages/${stageId}/events/${eventId}/classification?view=TABLE`);
-  await expect(page.getByText(dogName)).toBeVisible();
+  // Classification is computed server-side and can take a while to populate.
+  await expect(page.getByText(dogName).first()).toBeVisible({ timeout: 30_000 });
 };

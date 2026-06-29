@@ -18,7 +18,10 @@ function MyCollectionsListPage() {
     gcTime: 2 * 60 * 1000,
   });
 
-  const navigateToCollectScoresView = (eventId: string, judges: IdNameDTO[]) => {
+  const navigateToCollectScoresView = (
+    eventId: string,
+    judges: IdNameDTO[],
+  ) => {
     void navigate({
       params: {
         id: eventId,
@@ -32,11 +35,19 @@ function MyCollectionsListPage() {
   };
   return (
     <div class="my-collections-list">
-      <h1>{i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}</h1>
-      <Suspense fallback={<span>{i18n.t("MY.COLLECTIONS.LIST.LOADING_COLLECTIONS")}</span>}>
+      <span class="text-heading-lg">
+        {i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}
+      </span>
+      <Suspense
+        fallback={
+          <span>{i18n.t("MY.COLLECTIONS.LIST.LOADING_COLLECTIONS")}</span>
+        }
+      >
         <Show
           when={collectionsQuery.data?.length}
-          fallback={<p>{i18n.t("MY.COLLECTIONS.LIST.NO_COLLECTIONS_AVAILABLE_YET")}</p>}
+          fallback={
+            <p>{i18n.t("MY.COLLECTIONS.LIST.NO_COLLECTIONS_AVAILABLE_YET")}</p>
+          }
         >
           <div class="collections-list">
             <For each={collectionsQuery.data}>

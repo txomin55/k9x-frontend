@@ -2,6 +2,9 @@ export const ACCESS_TOKEN_KEY = "k9x_access_token";
 
 export const SMOKE_STATE_PATH = ".auth/smoke-state.json";
 
+export const SMOKE_CREDENTIALS_PATH =
+  process.env.SMOKE_CREDENTIALS_FILE ?? ".auth/credentials.json";
+
 export const SMOKE_API_URL =
   process.env.SMOKE_API_URL ?? "http://localhost:4000";
 

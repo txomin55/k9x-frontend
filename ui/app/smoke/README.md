@@ -14,16 +14,26 @@ regresiones en los flujos felices.
 | `PWA_PRO_URL` | `http://localhost:5173` | URL del front a testar. En local arranca `start:integrated` (API en `:4000`). Apúntala a un deploy para testar otro entorno. |
 | `SMOKE_API_URL` | `http://localhost:4000` | API real usada por el cleanup (DELETE de lo creado). |
 | `SMOKE_RUN_ID` | `Date.now()` | Sufijo único de los nombres creados. |
+| `SMOKE_GOOGLE_EMAIL` / `SMOKE_GOOGLE_PASSWORD` | — | Credenciales para el auto-login (alternativa al fichero). |
+| `SMOKE_CREDENTIALS_FILE` | `.auth/credentials.json` | Ruta del fichero `{ "email", "password" }`. |
 
 ## Uso
 
-1. **Capturar la sesión real (una vez)** — abre un navegador headed, completa el
-   login de Google y guarda `.auth/smoke-state.json` (gitignored):
+1. **Capturar la sesión real (una vez)** — abre un navegador headed y guarda
+   `.auth/smoke-state.json` (gitignored):
 
    ```bash
    pnpm test:smoke:auth
    ```
 
+   - Si ya existe un `smoke-state.json` válido, **lo reutiliza** y no vuelve a loguear.
+   - Si no, hace el **login de Google automáticamente** con las credenciales de
+     `.auth/credentials.json` (`{ "email": ..., "password": ... }`, gitignored) o de
+     las env `SMOKE_GOOGLE_EMAIL` / `SMOKE_GOOGLE_PASSWORD`.
+   - Si el auto-login falla (captcha, 2FA, Google bloquea el navegador), cae al
+     **login manual**: complétalo a mano en el navegador headed (hasta 240s).
+
+   La cuenta de test **no debe tener 2FA** (Google bloquea el login automatizado con 2FA).
    La app refresca el token sola vía la cookie `refresh_token`; solo hay que
    re-capturar cuando esa cookie expira.
 

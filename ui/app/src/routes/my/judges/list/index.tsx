@@ -10,9 +10,7 @@ import {
   updateJudge,
   useJudges,
 } from "@/services/secured/judge-crud/judgeCrud";
-import type {
-  IdNameDTO,
-} from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -82,7 +80,7 @@ function MyJudgesListPage() {
 
   return (
     <div class="my-judges">
-      <h1>{i18n.t("MY.JUDGES.LIST.JUDGES")}</h1>
+      <span class="text-heading-lg">{i18n.t("MY.JUDGES.LIST.JUDGES")}</span>
       <AtomDialog
         title={
           editingJudgeId()
@@ -108,7 +106,9 @@ function MyJudgesListPage() {
         trigger={<span aria-hidden />}
       />
 
-      <Suspense fallback={<span>{i18n.t("MY.JUDGES.LIST.LOADING_JUDGES")}</span>}>
+      <Suspense
+        fallback={<span>{i18n.t("MY.JUDGES.LIST.LOADING_JUDGES")}</span>}
+      >
         <Show
           when={judgesQuery.data?.length}
           fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}

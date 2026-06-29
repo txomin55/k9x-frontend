@@ -19,11 +19,19 @@ function MyCompetitionsIndexPage() {
 
   return (
     <div class="my-competitions">
-      <h1>{i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}</h1>
-      <Suspense fallback={<span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>}>
+      <span class="text-heading-lg">
+        {i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}
+      </span>
+      <Suspense
+        fallback={
+          <span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>
+        }
+      >
         <Show
           when={fetchedCompetitions.data?.length}
-          fallback={<span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>}
+          fallback={
+            <span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>
+          }
         >
           <For each={fetchedCompetitions.data}>
             {(competition) => (

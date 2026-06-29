@@ -4,14 +4,76 @@ import { expect, test } from "@playwright/test";
 import {
   ACCESS_TOKEN_KEY,
   GOOGLE_LOGIN_TIMEOUT,
+  SMOKE_CREDENTIALS_PATH,
   SMOKE_STATE_PATH,
 } from "./utils/constants";
 
 const TOKEN_FILE = ".auth/token.txt";
 const REFRESH_FILE = ".auth/refresh.txt";
 
+type Credentials = { email: string; password: string };
+
+const readCredentials = (): Credentials | null => {
+  const email = process.env.SMOKE_GOOGLE_EMAIL?.trim();
+  const password = process.env.SMOKE_GOOGLE_PASSWORD?.trim();
+  if (email && password) return { email, password };
+
+  if (fs.existsSync(SMOKE_CREDENTIALS_PATH)) {
+    const parsed = JSON.parse(fs.readFileSync(SMOKE_CREDENTIALS_PATH, "utf-8"));
+    if (parsed?.email && parsed?.password) {
+      return { email: String(parsed.email), password: String(parsed.password) };
+    }
+  }
+  return null;
+};
+
 const readToken = (page: import("@playwright/test").Page) =>
   page.evaluate((key) => window.localStorage.getItem(key), ACCESS_TOKEN_KEY);
+
+// Drive Google's OAuth (GAIA) flow with its stable element ids: the email
+// step (#identifierId / #identifierNext), the password step
+// (input[name="Passwd"] / #passwordNext), and the optional consent screen.
+const fillGoogleLogin = async (
+  page: import("@playwright/test").Page,
+  { email, password }: Credentials,
+) => {
+  const clickNext = async () => {
+    const byId = page.locator("#identifierNext button, #passwordNext button").first();
+    if (await byId.isVisible().catch(() => false)) {
+      await byId.click();
+      return;
+    }
+    await page
+      .getByRole("button", { name: /next|siguiente/i })
+      .first()
+      .click();
+  };
+
+  // Email step — id varies across Google layouts (#identifierId vs plain input).
+  const emailInput = page
+    .locator('#identifierId, input[type="email"]')
+    .first();
+  await emailInput.waitFor({ state: "visible", timeout: 30_000 });
+  await emailInput.fill(email);
+  await clickNext();
+
+  // Password step.
+  const passwordInput = page
+    .locator('input[name="Passwd"], input[type="password"]')
+    .first();
+  await passwordInput.waitFor({ state: "visible", timeout: 30_000 });
+  await passwordInput.fill(password);
+  await clickNext();
+
+  // Optional consent / "Continue" screen — only present on some flows.
+  const consent = page
+    .getByRole("button", { name: /continue|continuar|allow|permitir/i })
+    .first();
+  await consent
+    .waitFor({ state: "visible", timeout: 10_000 })
+    .then(() => consent.click())
+    .catch(() => undefined);
+};
 
 const seedToken = (): string | null => {
   if (process.env.SMOKE_ACCESS_TOKEN) return process.env.SMOKE_ACCESS_TOKEN.trim();
@@ -129,8 +191,20 @@ test("authenticate", async ({ browser }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Login" }).click();
 
+  const credentials = readCredentials();
+  if (credentials) {
+    await fillGoogleLogin(page, credentials).catch((error) => {
+      console.warn(
+        "Auto Google login failed, falling back to manual login:",
+        error instanceof Error ? error.message : error,
+      );
+    });
+  }
+
   await expect
-    .poll(() => readToken(page), { timeout: GOOGLE_LOGIN_TIMEOUT })
+    .poll(() => readToken(page).catch(() => null), {
+      timeout: GOOGLE_LOGIN_TIMEOUT,
+    })
     .toBeTruthy();
 
   await persist(context);

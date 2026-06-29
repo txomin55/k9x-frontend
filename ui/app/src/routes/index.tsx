@@ -1,14 +1,21 @@
-import {createFileRoute, Link, useLocation, useNavigate,} from "@tanstack/solid-router";
-import {createMemo, createSignal, For, onMount, Show} from "solid-js";
-import {AppRoutePath} from "@/components/global/app-shell/paths";
+import {
+  createFileRoute,
+  Link,
+  useLocation,
+  useNavigate,
+} from "@tanstack/solid-router";
+import { createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import {useStages} from "@/services/fetch-stages/fetchStages";
-import {useI18n} from "@/stores/i18n/i18n";
+import { useStages } from "@/services/fetch-stages/fetchStages";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
-import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import {AtomLogo} from "@lib/components/atoms/logo/AtomLogo";
+import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -63,7 +70,9 @@ function EntryRoutePage() {
       />
 
       <div class="landing-page__hero">
-        <h1>{i18n.t("HOME.STAGE_MANAGEMENT_TITLE")}</h1>
+        <span class="text-heading-lg">
+          {i18n.t("HOME.STAGE_MANAGEMENT_TITLE")}
+        </span>
         <p class="landing-page__lead">
           {i18n.t("HOME.STAGE_MANAGEMENT_DESCRIPTION")}
         </p>

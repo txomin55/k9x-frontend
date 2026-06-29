@@ -63,7 +63,8 @@ test("scoring journey: build an event with a dog, add scores, view classificatio
 
   await flows.setEventConfiguration(page, competition.id, stage.id, event.id);
   await flows.addJudgeToEvent(page, competition.id, stage.id, event.id, judge.name);
-  await flows.addExerciseToEvent(page, competition.id, stage.id, event.id);
+  await flows.addExerciseToEvent(page, competition.id, stage.id, event.id, 1);
+  await flows.addExerciseToEvent(page, competition.id, stage.id, event.id, 2);
   await flows.addCompetitorToEvent(
     page,
     competition.id,

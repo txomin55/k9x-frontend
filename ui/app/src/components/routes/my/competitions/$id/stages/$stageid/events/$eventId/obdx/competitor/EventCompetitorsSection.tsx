@@ -1,4 +1,4 @@
-import { createMemo, createSignal, Index, Show, Switch, Match } from "solid-js";
+import { createMemo, createSignal, Index, Match, Show, Switch } from "solid-js";
 import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
@@ -11,11 +11,7 @@ import type { AtomSelectOption } from "library/src/components/atoms/select/AtomS
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import {
-  canAcceptCompetitorEnroll,
-  canSeeCompetitorScores,
-  EVENT_STATUS,
-} from "@/utils/event";
+import { canAcceptCompetitorEnroll, canSeeCompetitorScores, EVENT_STATUS } from "@/utils/event";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -177,9 +173,7 @@ export default function EventCompetitorsSection(
                       <div class="event-competitors-section__competitors--actions">
                         <Switch>
                           <Match
-                            when={
-                              props.eventStatus === EVENT_STATUS.STARTED
-                            }
+                            when={props.eventStatus === EVENT_STATUS.STARTED}
                           >
                             <Show when={!competitor().notCompeting}>
                               <ConfirmActionButton
@@ -199,9 +193,7 @@ export default function EventCompetitorsSection(
                             </Show>
                           </Match>
                           <Match
-                            when={
-                              props.eventStatus !== EVENT_STATUS.FINISHED
-                            }
+                            when={props.eventStatus !== EVENT_STATUS.FINISHED}
                           >
                             <ConfirmActionButton
                               text={details().owner}

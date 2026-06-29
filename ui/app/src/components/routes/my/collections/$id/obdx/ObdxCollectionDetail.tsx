@@ -1,4 +1,4 @@
-import { useParams, useSearch } from "@tanstack/solid-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import {
   updateCollectionScore,
   useCollectionById,
@@ -66,6 +66,7 @@ export default function ObdxCollectionDetail() {
   const i18n = useI18n();
   const params = useParams({ from: "/my/collections/$id" });
   const search = useSearch({ from: "/my/collections/$id" });
+  const navigate = useNavigate({ from: "/my/collections/$id" });
 
   const collectionData = useCollectionById(params().id);
   const collectionsList = useCollections({
@@ -124,6 +125,9 @@ export default function ObdxCollectionDetail() {
   const markCompetitorAsSeen = (opt: AtomSelectOption) => {
     setSeenCompetitors([...seenCompetitors(), opt.value]);
     setSelectedCompetitor(opt);
+    void navigate({
+      search: (prev) => ({ ...prev, competitorId: opt.value }),
+    });
   };
 
   const handleMarkNotCompeting = () => {
@@ -265,7 +269,9 @@ export default function ObdxCollectionDetail() {
 
   return (
     <div class="collection-detail">
-      <h1>{i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}</h1>
+      <span class="text-heading-lg">
+        {i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}
+      </span>
       <span class="text-caption-sm">
         {collectionData.data?.configuration?.description}
       </span>

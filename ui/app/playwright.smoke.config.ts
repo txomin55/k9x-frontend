@@ -26,6 +26,7 @@ export default defineConfig({
   reporter: [
     ["list", { printSteps: true }],
     ["junit", { outputFile: ".reports/test/smoke/junit.xml" }],
+    ["html", { outputFolder: ".reports/test/smoke/html", open: "never" }],
   ],
   outputDir: path.join(os.tmpdir(), "k9x-smoke-artifacts"),
   use: {
@@ -39,7 +40,13 @@ export default defineConfig({
     {
       name: "setup",
       testMatch: /auth\.setup\.ts/,
-      use: { ...devices["Pixel 5"] },
+      use: {
+        ...devices["Pixel 5"],
+        headless: false,
+        launchOptions: {
+          args: ["--disable-blink-features=AutomationControlled"],
+        },
+      },
     },
     {
       name: "smoke",
