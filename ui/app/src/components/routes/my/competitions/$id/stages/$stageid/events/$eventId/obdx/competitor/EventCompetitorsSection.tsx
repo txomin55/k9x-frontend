@@ -200,7 +200,7 @@ export default function EventCompetitorsSection(
                           </Match>
                           <Match
                             when={
-                              props.eventStatus !== EVENT_STATUS.COMPLETED
+                              props.eventStatus !== EVENT_STATUS.FINISHED
                             }
                           >
                             <ConfirmActionButton
