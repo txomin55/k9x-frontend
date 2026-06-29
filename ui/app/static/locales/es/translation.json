@@ -57,6 +57,8 @@
   "COMMON.STATUS.CLOSED_ENROLLMENT": "Inscripción cerrada",
   "COMMON.STATUS.STARTED": "En curso",
   "COMMON.STATUS.COMPLETED": "Completada",
+  "COMMON.STATUS.FINISHED": "Finalizada",
+  "COMMON.STATUS.TO_START": "Por comenzar",
   "COMMON.STATUS.DELETED": "Eliminada",
   "COMMON.COUNTRY_FLAG.NA": "N/D",
   "COMMON.COUNTRY_FIELD.PORTUGAL": "Portugal",
@@ -305,5 +307,7 @@
   "STAGES.CLASSIFICATION.STAGE": "Prueba",
   "STAGES.CLASSIFICATION.DISCIPLINE": "Disciplina",
   "STAGES.CLASSIFICATION.NO_DATA": "No hay datos de clasificación disponibles.",
+  "STAGES.CLASSIFICATION.ERROR": "No se pudo cargar la clasificación. Inténtalo de nuevo.",
+  "STAGES.CLASSIFICATION.RETRY": "Reintentar",
   "STAGES.INFO.UNTIL": "Hasta"
 }

@@ -71,7 +71,7 @@ export const toApiStage = (
         judges: [],
         name: rawEvent.name,
         stage: { id: stage.id, name: stage.name },
-        status: "",
+        status: rawEvent.status,
       };
       return { ...core, obdx: core };
     }),

@@ -6,10 +6,13 @@ import {
   createMemo,
   createSignal,
   For,
+  Match,
   onCleanup,
   onMount,
   Show,
+  Switch,
 } from "solid-js";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import {
   isLive,
@@ -338,76 +341,90 @@ function EventClassificationPage() {
 
   return (
     <div class="classification">
-      <Show
-        when={classificationQuery.data}
+      <Switch
         fallback={
           <span>{t("STAGES.CLASSIFICATION.LOADING_CLASSIFICATION")}</span>
         }
       >
-        {(classification) => (
-          <>
-            <div class="classification__header">
-              <span class="text-heading-lg">{classification().event.name}</span>
-              <span class="text-caption-md">
-                {t("STAGES.CLASSIFICATION.LAST_UPDATED")}{" "}
-                {formatDateTime(classification().lastUpdated)}
-              </span>
-            </div>
-            <div class="classification__sub-header">
-              <span class="text-body-md">
-                {t("STAGES.CLASSIFICATION.STAGE")} {classification().stage.name}
-              </span>
-              <span class="text-body-md">
-                {t("STAGES.CLASSIFICATION.DISCIPLINE")}{" "}
-                {classification().discipline.name}
-              </span>
-            </div>
-            <Show when={pinnedCompetitors().length}>
-              <div class="obdx-clf__pinned">
-                <For each={pinnedCompetitors()}>
-                  {(competitor) => (
-                    <ObdxClassificationCard
-                      competitor={competitor}
-                      trend={trends().get(competitor.dog.id)}
-                      pinned
-                      pinDisabled={liveIds().has(competitor.dog.id)}
-                      onTogglePin={() => togglePin(competitor.dog.id)}
-                      open={isOpen(competitor.dog.id)}
-                      onOpenChange={(open) => setOpen(competitor.dog.id, open)}
-                    />
-                  )}
-                </For>
+        <Match when={classificationQuery.isError && !classificationQuery.data}>
+          <div class="classification__error">
+            <span>{t("STAGES.CLASSIFICATION.ERROR")}</span>
+            <AtomButton onClick={() => classificationQuery.refetch()}>
+              {t("STAGES.CLASSIFICATION.RETRY")}
+            </AtomButton>
+          </div>
+        </Match>
+        <Match when={classificationQuery.data}>
+          {(classification) => (
+            <>
+              <div class="classification__header">
+                <span class="text-heading-lg">
+                  {classification().event.name}
+                </span>
+                <span class="text-caption-md">
+                  {t("STAGES.CLASSIFICATION.LAST_UPDATED")}{" "}
+                  {formatDateTime(classification().lastUpdated)}
+                </span>
               </div>
-            </Show>
-            <Show
-              when={classification()?.obdx?.competitors?.length}
-              fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
-            >
-              <AtomSegmentedControl
-                title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
-                control={controlValue()}
-                onControlChange={setControlValue}
-                controls={[
-                  {
-                    value: CONTROLS_KEYS.LIST,
-                    text: t("STAGES.CLASSIFICATION.LIST"),
-                    content: listContent(
-                      classification().obdx?.competitors ?? [],
-                    ),
-                  },
-                  {
-                    value: CONTROLS_KEYS.TABLE,
-                    text: t("STAGES.CLASSIFICATION.TABLE"),
-                    content: tableContent(
-                      classification().obdx?.competitors ?? [],
-                    ),
-                  },
-                ]}
-              />
-            </Show>
-          </>
-        )}
-      </Show>
+              <div class="classification__sub-header">
+                <span class="text-body-md">
+                  {t("STAGES.CLASSIFICATION.STAGE")}{" "}
+                  {classification().stage.name}
+                </span>
+                <span class="text-body-md">
+                  {t("STAGES.CLASSIFICATION.DISCIPLINE")}{" "}
+                  {classification().discipline.name}
+                </span>
+              </div>
+              <Show when={pinnedCompetitors().length}>
+                <div class="obdx-clf__pinned">
+                  <For each={pinnedCompetitors()}>
+                    {(competitor) => (
+                      <ObdxClassificationCard
+                        competitor={competitor}
+                        trend={trends().get(competitor.dog.id)}
+                        pinned
+                        pinDisabled={liveIds().has(competitor.dog.id)}
+                        onTogglePin={() => togglePin(competitor.dog.id)}
+                        open={isOpen(competitor.dog.id)}
+                        onOpenChange={(open) =>
+                          setOpen(competitor.dog.id, open)
+                        }
+                      />
+                    )}
+                  </For>
+                </div>
+              </Show>
+              <Show
+                when={classification()?.obdx?.competitors?.length}
+                fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
+              >
+                <AtomSegmentedControl
+                  title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
+                  control={controlValue()}
+                  onControlChange={setControlValue}
+                  controls={[
+                    {
+                      value: CONTROLS_KEYS.LIST,
+                      text: t("STAGES.CLASSIFICATION.LIST"),
+                      content: listContent(
+                        classification().obdx?.competitors ?? [],
+                      ),
+                    },
+                    {
+                      value: CONTROLS_KEYS.TABLE,
+                      text: t("STAGES.CLASSIFICATION.TABLE"),
+                      content: tableContent(
+                        classification().obdx?.competitors ?? [],
+                      ),
+                    },
+                  ]}
+                />
+              </Show>
+            </>
+          )}
+        </Match>
+      </Switch>
     </div>
   );
 }

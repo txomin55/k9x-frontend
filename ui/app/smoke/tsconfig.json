@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": false,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node", "@playwright/test"],
+    "isolatedModules": true,
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@lib/*": ["../library/src/*"],
+      "@test/*": ["./playwright/*"]
+    }
+  },
+  "include": ["./**/*.ts", "../playwright.smoke.config.ts"]
+}

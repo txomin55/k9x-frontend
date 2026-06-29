@@ -6,10 +6,7 @@ import EventExercisesSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
 import EventJudgesSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
-import {
-  updateApiEventNotCompeting,
-  useApiEvent,
-} from "@/services/secured/event-crud/eventCrud";
+import { updateApiEventNotCompeting, useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitorDetail,
   EventCompetitorRequestDTO,
@@ -20,7 +17,7 @@ import type {
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
+import { COMPETITOR_STATUS, EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
 import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
@@ -38,6 +35,7 @@ import ObdxCompetitionEventDetailBodyWrapper
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import "./styles.css";
 
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
@@ -214,6 +212,7 @@ function CompetitionObdxEventDetailBody(props: {
       })),
       configuration: event.configuration,
       discipline: event.discipline,
+      enrollmentDeadline: event.enrollmentDeadline,
       exercises: event.exercises,
       judges: event.judges,
       name: event.name,
@@ -696,7 +695,7 @@ function CompetitionObdxEventDetailBody(props: {
       ...current,
       competitors: current.competitors.map((entry) =>
         entry.dogId === dogId
-          ? { ...entry, accepted: true, status: "ENROLLED" }
+          ? { ...entry, accepted: true, status: COMPETITOR_STATUS.ENROLLED }
           : entry,
       ),
     }));
@@ -833,12 +832,14 @@ function CompetitionObdxEventDetailBody(props: {
         <Show
           when={isEditing()}
           fallback={
-            <>
-              <h1>{props.event().name}</h1>
+            <div class="competition-event-detail__content--header">
+              <span class="text-heading-lg">{props.event().name}</span>
               <StatusBadge status={props.event().status} />
-              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
-              <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</p>
-            </>
+              <div class="competition-event-detail__content--header-detail">
+                <span>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</span>
+                <span>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>
+              </div>
+            </div>
           }
         >
           <div>

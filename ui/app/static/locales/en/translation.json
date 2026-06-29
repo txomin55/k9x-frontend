@@ -57,6 +57,8 @@
   "COMMON.STATUS.CLOSED_ENROLLMENT": "Enrollment closed",
   "COMMON.STATUS.STARTED": "Started",
   "COMMON.STATUS.COMPLETED": "Completed",
+  "COMMON.STATUS.FINISHED": "Finished",
+  "COMMON.STATUS.TO_START": "To start",
   "COMMON.STATUS.DELETED": "Deleted",
   "COMMON.COUNTRY_FLAG.NA": "N/A",
   "COMMON.COUNTRY_FIELD.PORTUGAL": "Portugal",
@@ -305,5 +307,7 @@
   "STAGES.CLASSIFICATION.STAGE": "Stage",
   "STAGES.CLASSIFICATION.DISCIPLINE": "Discipline",
   "STAGES.CLASSIFICATION.NO_DATA": "No classification data available.",
+  "STAGES.CLASSIFICATION.ERROR": "We couldn't load the classification. Please try again.",
+  "STAGES.CLASSIFICATION.RETRY": "Retry",
   "STAGES.INFO.UNTIL": "Until"
 }

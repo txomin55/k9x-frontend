@@ -8,6 +8,7 @@ import { COMPETITION_STATUS } from "@/utils/competition";
 import { defaultDogs } from "@test/api-mocks/dogs";
 import { defaultJudges } from "@test/api-mocks/judges";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import { COMPETITOR_STATUS } from "@/utils/event";
 
 export const EVENT_DETAIL_ID = "event-detail-1";
 export const EVENT_DETAIL_STAGE_ID = "stage-detail-1";
@@ -98,11 +99,13 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
         name: "Detail Stage",
         dateFrom: 1_717_200_000_000,
         dateTo: 1_717_286_400_000,
+        status: "CREATED",
         events: [
           {
             id: EVENT_DETAIL_ID,
             name: "Detail Event",
             discipline: { id: "obdx", name: "FCI OBEDIENCE" },
+            status: "CREATED",
           },
         ],
       },
@@ -156,7 +159,9 @@ const applyEventUpdate = (
         country: dog?.country ?? existing?.country ?? "",
         status:
           existing?.status ??
-          (competitor.accepted ? "ENROLLED" : "PENDING_ENROLL_ACCEPT"),
+          (competitor.accepted
+            ? COMPETITOR_STATUS.ENROLLED
+            : COMPETITOR_STATUS.PENDING_ENROLL_ACCEPT),
         breed: dog?.breed ?? existing?.breed ?? "",
       };
     }),

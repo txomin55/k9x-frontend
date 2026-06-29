@@ -134,11 +134,13 @@ export default function StagesMap(props: StagesMapProps) {
 
     const bounds = clusterGroup.getBounds();
 
-    map.fitBounds(bounds, {
-      paddingTopLeft: [80, 80],
-      paddingBottomRight: [80, 160],
-      maxZoom: 4,
-    });
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {
+        paddingTopLeft: [80, 80],
+        paddingBottomRight: [80, 160],
+        maxZoom: 4,
+      });
+    }
 
     setMapReady(true);
 

@@ -36,6 +36,15 @@
     color: var(--text-primary);
 }
 
+.classification__error {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--unit-1);
+    padding: var(--unit-2) 0;
+    color: var(--text-secondary);
+}
+
 .obdx-clf__pinned {
     display: grid;
     gap: var(--unit-1);

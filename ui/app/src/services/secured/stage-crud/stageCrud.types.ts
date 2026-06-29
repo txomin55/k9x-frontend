@@ -6,6 +6,7 @@ export interface CompetitionStageEventDetailResponseDTO {
   id: string;
   name: string;
   discipline: IdNameDTO;
+  status: string;
 }
 
 export interface CompetitionStageDetailResponseDTO {
@@ -14,7 +15,7 @@ export interface CompetitionStageDetailResponseDTO {
   events: CompetitionStageEventDetailResponseDTO[];
   id: string;
   name: string;
-  status?: string;
+  status: string;
 }
 
 export interface CreateStageRequestDTO {

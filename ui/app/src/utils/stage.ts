@@ -1,9 +1,9 @@
 export const STAGE_STATUS = {
-  CREATED: "created",
-  TO_BE_STARTED: "to_be_started",
-  STARTED: "started",
-  COMPLETED: "completed",
-  DELETED: "deleted",
+  CREATED: "CREATED",
+  TO_BE_STARTED: "TO_BE_STARTED",
+  STARTED: "STARTED",
+  COMPLETED: "COMPLETED",
+  DELETED: "DELETED",
 };
 
 export function getMarkerColorByStatus(status: string) {

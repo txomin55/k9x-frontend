@@ -9,10 +9,11 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import "./styles.css";
 import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
 import { STAGE_STATUS } from "@/utils/stage";
 import { useI18n } from "@/stores/i18n/i18n";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import "./styles.css";
 
 type StageItem = NonNullable<CompetitionResponseDTO["stages"]>[number];
 
@@ -41,7 +42,9 @@ export default function StagesSection(props: StagesSectionProps) {
         <h2>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}</h2>
         <Show when={props.isEditing}>
           <AtomDialog
-            closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
+            closeButtonText={i18n.t(
+              "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+            )}
             content={
               <StageEditorForm
                 draft={props.draft}
@@ -68,8 +71,15 @@ export default function StagesSection(props: StagesSectionProps) {
           {(stage) => (
             <Card
               topLeft={stage().name}
+              topRight={
+                <Show when={stage().status}>
+                  {(status) => <StatusBadge status={status()} />}
+                </Show>
+              }
               subHeader={
-                <p>{formatStageDateRange(stage().dateFrom, stage().dateTo)}</p>
+                <span class="text-body-md">
+                  {formatStageDateRange(stage().dateFrom, stage().dateTo)}
+                </span>
               }
               actions={
                 props.isEditing ? (
@@ -85,7 +95,9 @@ export default function StagesSection(props: StagesSectionProps) {
                       </ConfirmActionButton>
                     </Show>
                     <AtomDialog
-                      closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
+                      closeButtonText={i18n.t(
+                        "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+                      )}
                       content={
                         <StageEditorForm
                           draft={props.draft}
@@ -106,7 +118,11 @@ export default function StagesSection(props: StagesSectionProps) {
                       }}
                       open={props.editingStageId === stage().id}
                       title={`${i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")} ${stage().name}`}
-                      trigger={<span>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}</span>}
+                      trigger={
+                        <span>
+                          {i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}
+                        </span>
+                      }
                     />
                   </div>
                 ) : (

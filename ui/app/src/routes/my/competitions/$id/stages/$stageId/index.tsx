@@ -353,10 +353,13 @@ function CompetitionStageDetailBody(props: {
         <Show
           when={isEditing()}
           fallback={
-            <>
-              <h1>{props.stage().name}</h1>
-              <p>{`${formatDateLabel(toDateInputValue(props.stage().dateFrom))} - ${formatDateLabel(toDateInputValue(props.stage().dateTo))}`}</p>
-            </>
+            <div class="stage-detail__header--info">
+              <span class="text-heading-lg">{props.stage().name}</span>
+              <Show when={props.stage()?.status}>
+                {(status) => <StatusBadge status={status()} />}
+              </Show>
+              <span class="text-body-md">{`${formatDateLabel(toDateInputValue(props.stage().dateFrom))} - ${formatDateLabel(toDateInputValue(props.stage().dateTo))}`}</span>
+            </div>
           }
         >
           <AtomInput
@@ -384,7 +387,9 @@ function CompetitionStageDetailBody(props: {
 
       <section class="stage-detail__content">
         <div class="stage-detail__content--events">
-          <h2>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}</h2>
+          <span class="text-heading-md">
+            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}
+          </span>
           <Show when={isEditing()}>
             <AtomDialog
               closeButtonText={i18n.t(
@@ -421,7 +426,7 @@ function CompetitionStageDetailBody(props: {
                   topLeft={event().name}
                   subHeader={<StatusBadge status={event().status} />}
                   content={
-                    <div class="aaaaa">
+                    <div>
                       <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(event().discipline.id)}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS")}: ${event().competitors.length}`}</p>
                     </div>

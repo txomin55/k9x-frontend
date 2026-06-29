@@ -25,6 +25,7 @@ import {
   CompetitionStageDetailResponseDTO,
   StageEditorModel,
 } from "@/services/secured/stage-crud/stageCrud.types";
+import { STAGE_STATUS } from "@/utils/stage";
 
 const toCompetitionDetailStage = (
   stage: StageEditorModel,
@@ -34,6 +35,7 @@ const toCompetitionDetailStage = (
   events: stage.events,
   id: stage.id,
   name: stage.name,
+  status: stage.status ?? STAGE_STATUS.CREATED,
 });
 
 const buildNextCompetitionDetail = (
@@ -92,8 +94,9 @@ const buildCompetitionsListWithoutStage = (
   );
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()) ??
-  [];
+  queryClient.getQueryData<CompetitionResponseDTO[]>(
+    getCompetitionsQueryKey(),
+  ) ?? [];
 
 const persistApiStageCompetitionSnapshot = async (
   apiStage: StageEditorModel,

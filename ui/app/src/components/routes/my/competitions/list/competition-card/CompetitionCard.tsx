@@ -8,6 +8,7 @@ import type {
 } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 
 export default function CompetitionCard(props: CompetitionCardProps) {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
       }
       topRight={
         <div class="competition-card__status">
-          <span>{props.status}</span>
+          <StatusBadge status={props.status} />
         </div>
       }
       subHeader={

@@ -20,6 +20,8 @@
 
     margin-inline-start: var(--unit-025);
     margin-inline-end: var(--unit-025);
+
+    width: max-content;
 }
 
 .atom-badge[data-variant="success"] {

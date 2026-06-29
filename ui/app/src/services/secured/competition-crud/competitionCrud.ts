@@ -16,7 +16,6 @@ import type {
   CompetitionResponseDTO,
   UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
-import type { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
@@ -34,9 +33,11 @@ export const getCompetitionsQueryKey = () =>
 
 const refreshCompetitionsSnapshot = async () => {
   if (!isOrganizer()) {
-    return queryClient.getQueryData<CompetitionResponseDTO[]>(
-      getCompetitionsQueryKey(),
-    ) ?? [];
+    return (
+      queryClient.getQueryData<CompetitionResponseDTO[]>(
+        getCompetitionsQueryKey(),
+      ) ?? []
+    );
   }
 
   const competitions = await rawRequest<CompetitionResponseDTO[]>({
@@ -136,33 +137,6 @@ export const getCachedCompetitions = () =>
       getCompetitionsQueryKey(),
     ),
   );
-
-export const hydrateCompetitionStages = async (competitionId: string) => {
-  const stages = await rawRequest<CompetitionStageDetailResponseDTO[]>({
-    path: `/secured/competitions/${competitionId}/stages`,
-  });
-
-  let nextCompetitions: CompetitionResponseDTO[] = [];
-
-  queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(
-    getCompetitionsQueryKey(),
-    (previousCompetitions) => {
-      const competitions = previousCompetitions ?? [];
-
-      nextCompetitions = competitions.map((competition) =>
-        competition.id === competitionId
-          ? { ...competition, stages }
-          : competition,
-      );
-
-      return nextCompetitions;
-    },
-  );
-
-  await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, nextCompetitions);
-
-  return stages;
-};
 
 export const useCompetition = () => {
   const getCompetitions = (options?: TanstackCreateQuery) =>
