@@ -8,6 +8,7 @@ import "./styles.css";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import {AtomLogo} from "@lib/components/atoms/logo/AtomLogo";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -56,8 +57,12 @@ function EntryRoutePage() {
 
   return (
     <section class="landing-page">
+      <AtomLogo
+        line1Text={i18n.t("HOME.LOGO.LINE1")}
+        line2Text={i18n.t("HOME.LOGO.LINE2")}
+      />
+
       <div class="landing-page__hero">
-        <p class="landing-page__eyebrow">{i18n.t("HOME.K9X")}</p>
         <h1>{i18n.t("HOME.STAGE_MANAGEMENT_TITLE")}</h1>
         <p class="landing-page__lead">
           {i18n.t("HOME.STAGE_MANAGEMENT_DESCRIPTION")}

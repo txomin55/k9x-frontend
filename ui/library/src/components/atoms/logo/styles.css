@@ -1,0 +1,56 @@
+.atom-logo {
+    padding: var(--unit-2) var(--unit-3);
+    border-radius: var(--unit-2);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--unit-1);
+    background: var(--surface);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.atom-logo__wordmark {
+    display: flex;
+    align-items: baseline;
+}
+
+.atom-logo__k9 {
+    font-size: var(--text-heading-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary);
+}
+
+.atom-logo__x {
+    font-size: var(--text-heading-md);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent);
+}
+
+.atom-logo__divider {
+    width: var(--unit-025);
+    height: var(--unit-4);
+    border-radius: var(--unit-025);
+    background: var(--border);
+}
+
+.atom-logo__tagline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-025);
+}
+
+.atom-logo__tagline span {
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+}
+
+.atom-logo__tagline--line1 {
+    font-size: var(--text-body-sm);
+    letter-spacing: 0.35em;
+    color: var(--accent);
+}
+
+.atom-logo__tagline--line2 {
+    font-size: var(--text-label-sm);
+    letter-spacing: 0.55em;
+    color: var(--focus-ring);
+}

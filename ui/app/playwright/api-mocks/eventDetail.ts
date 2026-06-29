@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import type {
-  DisciplineFederationConfigurationResponseDTO,
+  DisciplineFederationConfigurationResponseDTO
 } from "@/services/secured/configurations/configurations.types";
 import type { EventDetailRawResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { COMPETITION_STATUS } from "@/utils/competition";
@@ -36,7 +36,11 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
         name: "Config One",
       },
       judges: [
-        { id: "judge-1", name: judgeName("judge-1"), collectorEmail: "alpha@k9x.test" },
+        {
+          id: "judge-1",
+          name: judgeName("judge-1"),
+          collectorEmail: "alpha@k9x.test",
+        },
       ],
       exercises: [
         { id: "conf-ex-1", name: "Heel work", position: 1, tags: ["base"] },
@@ -105,21 +109,27 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
     ],
   },
 ];
-
-type RawObdx = EventDetailRawResponseDTO["obdx"];
-
 // The PUT payload carries the full event (UpdateEventRequestDTO). Rebuild the
 // raw obdx arrays from it (looking up judge names and dog details) so a
 // post-flush reload reflects every sub-entity change.
-const applyEventUpdate = (event: EventDetailRawResponseDTO, payload: {
-  name: string;
-  enrollmentDeadline: number;
-  judges?: { id: string; collectorEmail: string }[];
-  exercises?: { id: string; name: string; position: number; tags: string[] }[];
-  competitors?: { dogId: string; position: number; accepted: boolean }[];
-}) => {
+const applyEventUpdate = (
+  event: EventDetailRawResponseDTO,
+  payload: {
+    name: string;
+    enrollmentDeadline: number;
+    judges?: { id: string; collectorEmail: string }[];
+    exercises?: {
+      id: string;
+      name: string;
+      position: number;
+      tags: string[];
+    }[];
+    competitors?: { dogId: string; position: number; accepted: boolean }[];
+  },
+) => {
   const previous = event.obdx;
-  const next: RawObdx = {
+
+  event.obdx = {
     ...previous,
     name: payload.name,
     enrollmentDeadline: payload.enrollmentDeadline,
@@ -135,7 +145,10 @@ const applyEventUpdate = (event: EventDetailRawResponseDTO, payload: {
       );
       const dog = dogById(competitor.dogId);
       return {
-        dog: { id: competitor.dogId, name: dog?.name ?? existing?.dog.name ?? "" },
+        dog: {
+          id: competitor.dogId,
+          name: dog?.name ?? existing?.dog.name ?? "",
+        },
         position: competitor.position,
         team: dog?.team ?? existing?.team ?? "",
         identity: dog?.identifier ?? existing?.identity ?? "",
@@ -148,7 +161,6 @@ const applyEventUpdate = (event: EventDetailRawResponseDTO, payload: {
       };
     }),
   };
-  event.obdx = next;
 };
 
 /**

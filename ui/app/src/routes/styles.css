@@ -14,7 +14,6 @@
     box-shadow: 0 20px 60px rgba(15, 23, 32, 0.08);
 }
 
-.landing-page__eyebrow,
 .landing-page__card-kicker {
     margin: 0;
     color: var(--text-secondary);
