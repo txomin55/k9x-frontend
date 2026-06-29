@@ -1,7 +1,6 @@
 import type { BrowserContext } from "@playwright/test";
 import { test as baseTest } from "@test/utils/testFixture";
 import { mockAccessToken } from "@test/api-mocks/login";
-import { defaultCompetitions } from "@test/api-mocks/competitions";
 import { competitorUser, organizerUser } from "@test/api-mocks/user";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
@@ -35,11 +34,6 @@ export const organizerTest = baseTest.extend<{ autoOrganizer: void }>({
         method: "GET",
         payload: organizerUser,
         pathname: "/secured/user",
-      });
-      await setRouteResponses(page, {
-        method: "GET",
-        payload: defaultCompetitions,
-        pathname: "/secured/competitions",
       });
       await use();
     },

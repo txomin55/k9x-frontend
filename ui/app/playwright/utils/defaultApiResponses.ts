@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { defaultClassification } from "@test/api-mocks/classification";
+import { defaultCompetitions } from "@test/api-mocks/competitions";
 import { resolveDogByIdPayload } from "@test/api-mocks/dogById";
 import { defaultDogs } from "@test/api-mocks/dogs";
 import { mockAccessToken } from "@test/api-mocks/login";
@@ -25,6 +26,11 @@ export default async function defaultApiResponses(page: Page) {
       method: "GET",
       payload: defaultDogs,
       pathname: "/secured/dogs",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: defaultCompetitions,
+      pathname: "/secured/competitions",
     }),
     setRouteResponses(page, {
       method: "GET",
