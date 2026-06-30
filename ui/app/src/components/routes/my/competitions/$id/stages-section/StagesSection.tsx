@@ -37,7 +37,9 @@ export default function StagesSection(props: StagesSectionProps) {
   return (
     <div class="stages-section">
       <div class="stages-section__title">
-        <h2>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}</h2>
+        <span class="text-heading-sm">
+          {i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}
+        </span>
         <Show when={props.isEditing}>
           <AtomDialog
             closeButtonText={i18n.t(

@@ -3,6 +3,7 @@ import { useCollections } from "@/services/secured/collection-crud/collectionCru
 import { For, Show, Suspense } from "solid-js";
 import CollectionCard from "@/components/routes/my/collections/list/collection-card/CollectionCard";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import Page from "@/components/common/page/Page";
 import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/collections/list/")({
@@ -34,10 +35,7 @@ function MyCollectionsListPage() {
     });
   };
   return (
-    <div class="my-collections-list">
-      <span class="text-heading-lg">
-        {i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}
-      </span>
+    <Page title={i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}>
       <Suspense
         fallback={
           <span>{i18n.t("MY.COLLECTIONS.LIST.LOADING_COLLECTIONS")}</span>
@@ -66,6 +64,6 @@ function MyCollectionsListPage() {
           </div>
         </Show>
       </Suspense>
-    </div>
+    </Page>
   );
 }

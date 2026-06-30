@@ -90,7 +90,9 @@ function EntryRoutePage() {
       <Show when={latestStages().length > 0}>
         <div class="landing-page__latest">
           <div class="landing-page__latest-header">
-            <h2>{i18n.t("HOME.LATEST_STAGES")}</h2>
+            <span class="landing-page__latest-title">
+              {i18n.t("HOME.LATEST_STAGES")}
+            </span>
             <Link
               class="landing-page__latest-link"
               to={AppRoutePath.STAGES as "/stages"}
@@ -128,7 +130,9 @@ function EntryRoutePage() {
           <span class="landing-page__card-kicker">
             {i18n.t("HOME.DISCOVER")}
           </span>
-          <h2>{i18n.t("HOME.PUBLIC_STAGES_TITLE")}</h2>
+          <span class="landing-page__card-title">
+            {i18n.t("HOME.PUBLIC_STAGES_TITLE")}
+          </span>
           <p>{i18n.t("HOME.PUBLIC_STAGES_DESCRIPTION")}</p>
         </article>
 
@@ -136,7 +140,9 @@ function EntryRoutePage() {
           <span class="landing-page__card-kicker">
             {i18n.t("HOME.OPERATE")}
           </span>
-          <h2>{i18n.t("HOME.COMPETITION_TOOLING_TITLE")}</h2>
+          <span class="landing-page__card-title">
+            {i18n.t("HOME.COMPETITION_TOOLING_TITLE")}
+          </span>
           <p>{i18n.t("HOME.COMPETITION_TOOLING_DESCRIPTION")}</p>
         </article>
 
@@ -144,7 +150,9 @@ function EntryRoutePage() {
           <span class="landing-page__card-kicker">
             {i18n.t("HOME.OFFLINE_READY")}
           </span>
-          <h2>{i18n.t("HOME.CONNECTIVITY_TITLE")}</h2>
+          <span class="landing-page__card-title">
+            {i18n.t("HOME.CONNECTIVITY_TITLE")}
+          </span>
           <p>{i18n.t("HOME.CONNECTIVITY_DESCRIPTION")}</p>
         </article>
       </div>

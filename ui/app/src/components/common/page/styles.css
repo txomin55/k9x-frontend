@@ -1,0 +1,27 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-2);
+    padding-bottom: var(--unit-8);
+}
+
+.page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--unit-1);
+}
+
+.page__title {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-line-height);
+    font-weight: var(--font-weight-medium);
+}
+
+.page__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}

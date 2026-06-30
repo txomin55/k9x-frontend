@@ -269,7 +269,7 @@ export default function ObdxCollectionDetail() {
 
   return (
     <div class="collection-detail">
-      <span class="text-heading-lg">
+      <span class="text-heading-sm">
         {i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}
       </span>
       <span class="text-caption-sm">

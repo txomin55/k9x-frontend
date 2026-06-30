@@ -358,7 +358,7 @@ function EventClassificationPage() {
           {(classification) => (
             <>
               <div class="classification__header">
-                <span class="text-heading-lg">
+                <span class="text-heading-sm">
                   {classification().event.name}
                 </span>
                 <span class="text-caption-md">

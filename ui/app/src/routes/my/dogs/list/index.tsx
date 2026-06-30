@@ -4,6 +4,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
+import Page from "@/components/common/page/Page";
 import { createDog, deleteDog, updateDog, useDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
@@ -112,8 +113,7 @@ function MyDogsListPage() {
   };
 
   return (
-    <div class="my-dogs">
-      <span class="text-heading-lg">{i18n.t("MY.DOGS.LIST.DOGS")}</span>
+    <Page title={i18n.t("MY.DOGS.LIST.DOGS")}>
       <AtomDialog
         title={
           editingDogId()
@@ -161,6 +161,6 @@ function MyDogsListPage() {
       </Suspense>
 
       <FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
-    </div>
+    </Page>
   );
 }

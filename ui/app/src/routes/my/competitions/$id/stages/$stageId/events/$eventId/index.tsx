@@ -848,7 +848,7 @@ function CompetitionObdxEventDetailBody(props: {
           when={isEditing()}
           fallback={
             <div class="competition-event-detail__content--header">
-              <span class="text-heading-lg">{props.event().name}</span>
+              <span class="text-heading-sm">{props.event().name}</span>
               <StatusBadge status={props.event().status} />
               <div class="competition-event-detail__content--header-detail">
                 <span>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</span>

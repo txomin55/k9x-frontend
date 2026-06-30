@@ -3,6 +3,7 @@ import { For, Show, Suspense } from "solid-js";
 import CompetitionCard from "@/components/routes/my/competitions/list/competition-card/CompetitionCard";
 import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
+import Page from "@/components/common/page/Page";
 import { useI18n } from "@/stores/i18n/i18n";
 
 export const Route = createFileRoute("/my/competitions/list/")({
@@ -18,10 +19,7 @@ function MyCompetitionsIndexPage() {
   });
 
   return (
-    <div class="my-competitions">
-      <span class="text-heading-lg">
-        {i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}
-      </span>
+    <Page title={i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}>
       <Suspense
         fallback={
           <span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>
@@ -57,6 +55,6 @@ function MyCompetitionsIndexPage() {
         }
         nonToggledText="+"
       />
-    </div>
+    </Page>
   );
 }

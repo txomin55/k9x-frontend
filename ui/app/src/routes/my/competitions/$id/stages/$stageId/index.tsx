@@ -374,7 +374,7 @@ function CompetitionStageDetailBody(props: {
           when={isEditing()}
           fallback={
             <div class="stage-detail__header--info">
-              <span class="text-heading-lg">{props.stage().name}</span>
+              <span class="text-heading-sm">{props.stage().name}</span>
               <Show when={props.stage()?.status}>
                 {(status) => <StatusBadge status={status()} />}
               </Show>

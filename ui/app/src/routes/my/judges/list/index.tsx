@@ -4,6 +4,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
 import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
+import Page from "@/components/common/page/Page";
 import {
   createJudge,
   deleteJudge,
@@ -79,8 +80,7 @@ function MyJudgesListPage() {
   };
 
   return (
-    <div class="my-judges">
-      <span class="text-heading-lg">{i18n.t("MY.JUDGES.LIST.JUDGES")}</span>
+    <Page title={i18n.t("MY.JUDGES.LIST.JUDGES")}>
       <AtomDialog
         title={
           editingJudgeId()
@@ -128,6 +128,6 @@ function MyJudgesListPage() {
       </Suspense>
 
       <FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
-    </div>
+    </Page>
   );
 }
