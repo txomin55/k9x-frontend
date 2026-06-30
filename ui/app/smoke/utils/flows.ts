@@ -98,6 +98,8 @@ export const createDog = async (page: Page) => {
       await page.getByRole("button", { name: "+", exact: true }).click();
       const dialog = page.getByRole("dialog");
       await dialog.getByLabel("Name").fill(name);
+      await dialog.getByText("Owned", { exact: true }).click();
+      await expect(page.getByRole("checkbox", { name: "Owned" })).toBeChecked();
       await dialog.getByRole("button", { name: "Country" }).click();
       await page.keyboard.type("Spain");
       await page.keyboard.press("Enter");

@@ -42,6 +42,7 @@ export default defineConfig({
       testMatch: /auth\.setup\.ts/,
       use: {
         ...devices["Pixel 5"],
+        headless: !!process.env.CI,
         launchOptions: {
           args: ["--disable-blink-features=AutomationControlled"],
         },
@@ -53,7 +54,7 @@ export default defineConfig({
       dependencies: ["setup"],
       use: {
         ...devices["Pixel 5"],
-        headless: false,
+        headless: !!process.env.CI,
         storageState: SMOKE_STATE_PATH,
       },
     },

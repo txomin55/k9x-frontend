@@ -44,10 +44,10 @@ test("enroll journey: build an event from a judge and dog, view info, enroll ano
   await flows.enrollDog(page, stage.id, otherDog.name);
 });
 
-test("scoring journey: build an event with a dog, add scores, view classification", async ({
+test("scoring journey: build an event with a dog, enroll the owned dog, add scores, view classification", async ({
   page,
 }) => {
-  flows.setDeadlineOffset(-1);
+  flows.setDeadlineOffset(1);
 
   const judge = await flows.createJudge(page);
   registry.judgeIds.push(judge.id);
@@ -65,13 +65,7 @@ test("scoring journey: build an event with a dog, add scores, view classificatio
   await flows.addJudgeToEvent(page, competition.id, stage.id, event.id, judge.name);
   await flows.addExerciseToEvent(page, competition.id, stage.id, event.id, 1);
   await flows.addExerciseToEvent(page, competition.id, stage.id, event.id, 2);
-  await flows.addCompetitorToEvent(
-    page,
-    competition.id,
-    stage.id,
-    event.id,
-    dog.name,
-  );
+  await flows.enrollDog(page, stage.id, dog.name);
 
   await flows.addScores(page, competition.id, stage.id, event.id, dog.name);
   await flows.viewClassification(page, stage.id, event.id, dog.name);
