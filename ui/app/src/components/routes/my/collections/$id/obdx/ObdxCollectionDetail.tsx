@@ -10,6 +10,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import Page from "@/components/common/page/Page";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
@@ -268,10 +269,7 @@ export default function ObdxCollectionDetail() {
   });
 
   return (
-    <div class="collection-detail">
-      <span class="text-heading-sm">
-        {i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}
-      </span>
+    <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
       <span class="text-caption-sm">
         {collectionData.data?.configuration?.description}
       </span>
@@ -335,6 +333,6 @@ export default function ObdxCollectionDetail() {
           </div>
         </div>
       </Show>
-    </div>
+    </Page>
   );
 }

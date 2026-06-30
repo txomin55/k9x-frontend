@@ -307,7 +307,7 @@ function CompetitionDetailBody(props: {
   };
 
   return (
-    <div class="competition-detail">
+    <div class="page competition-detail">
       <CompetitionInfo
         address={address()}
         country={country()}

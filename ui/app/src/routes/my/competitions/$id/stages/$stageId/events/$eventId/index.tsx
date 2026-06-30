@@ -842,7 +842,7 @@ function CompetitionObdxEventDetailBody(props: {
   });
 
   return (
-    <div class="competition-event-detail__content">
+    <div class="page competition-event-detail__content">
       <header>
         <Show
           when={isEditing()}

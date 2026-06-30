@@ -368,7 +368,7 @@ function CompetitionStageDetailBody(props: {
   };
 
   return (
-    <div class="stage-detail">
+    <div class="page stage-detail">
       <header class="stage-detail__header">
         <Show
           when={isEditing()}

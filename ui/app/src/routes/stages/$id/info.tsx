@@ -17,12 +17,12 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useAuthUser } from "@/stores/auth/auth";
-import "./styles.css";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import "./styles.css";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -135,15 +135,12 @@ function StageInfoPage() {
                 <Card
                   topLeft={
                     <span>
-                      {event().name} ({event().discipline.name})
+                      {event().configuration.name} ({event().discipline.name})
                     </span>
                   }
                   content={
                     <div class="stage-info__event--item">
                       <div class="stage-info__event--header">
-                        <span>
-                          <b>{event().configuration.name}</b>
-                        </span>
                         <Show
                           when={user()}
                           fallback={

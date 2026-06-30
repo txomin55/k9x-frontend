@@ -340,7 +340,7 @@ function EventClassificationPage() {
   );
 
   return (
-    <div class="classification">
+    <div class="page classification">
       <Switch
         fallback={
           <span>{t("STAGES.CLASSIFICATION.LOADING_CLASSIFICATION")}</span>
