@@ -2,9 +2,7 @@ import { type Accessor, Index, Show } from "solid-js";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
@@ -84,7 +82,7 @@ export default function StagesSection(props: StagesSectionProps) {
               actions={
                 props.isEditing ? (
                   <div class="stages-section__stages--actions">
-                    <Show when={stage().status !== STAGE_STATUS.CREATED}>
+                    <Show when={stage().status === STAGE_STATUS.CREATED}>
                       <ConfirmActionButton
                         text={stage().name}
                         onConfirm={() => props.onDeleteStage(stage().id)}

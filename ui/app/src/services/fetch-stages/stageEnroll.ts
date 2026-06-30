@@ -38,6 +38,7 @@ const buildOptimisticCompetitor = (
 ): StageEventDetailCompetitorResponseDTO => ({
   dog: { id: dog.id, name: dog.name },
   owner: dog.owner,
+  handler: dog.handler,
   team: dog.team,
   country: dog.country,
   breed: dog.breed,

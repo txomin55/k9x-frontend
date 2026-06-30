@@ -21,6 +21,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
         {
           dog: { id: "dog-1", name: "Rex" },
           owner: "Ana Perez",
+          handler: "Ana Perez",
           team: "Team Alpha",
           country: "ES",
           breed: "Border Collie",
@@ -28,6 +29,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
         {
           dog: { id: "dog-2", name: "Luna" },
           owner: "Marc Soler",
+          handler: "Marc Soler",
           team: "Team Beta",
           country: "FR",
           breed: "Australian Shepherd",

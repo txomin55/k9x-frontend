@@ -35,6 +35,11 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
             {props.competitor.owner}
           </span>
         </Show>
+        <Show when={props.competitor.handler}>
+          <span class="obdx-clf__owner text-body-sm">
+            {props.competitor.handler}
+          </span>
+        </Show>
       </div>
     </div>
   );

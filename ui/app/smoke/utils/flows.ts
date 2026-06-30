@@ -97,9 +97,7 @@ export const createDog = async (page: Page) => {
     async () => {
       await page.getByRole("button", { name: "+", exact: true }).click();
       const dialog = page.getByRole("dialog");
-      await dialog.getByLabel("Chip").fill(`CHIP-${name}`);
       await dialog.getByLabel("Name").fill(name);
-      await dialog.getByLabel("Owner").fill("Smoke Owner");
       await dialog.getByRole("button", { name: "Country" }).click();
       await page.keyboard.type("Spain");
       await page.keyboard.press("Enter");
@@ -135,7 +133,10 @@ export const createStage = async (
     page,
     { urlIncludes: "/secured/stages" },
     async () => {
-      await page.getByRole("button", { name: "+", exact: true }).first().click();
+      await page
+        .getByRole("button", { name: "+", exact: true })
+        .first()
+        .click();
       const dialog = page.getByRole("dialog");
       await dialog.getByLabel("Trial title").fill(title);
       await dialog.getByLabel("Date from").fill(futureDate(startInDays));
@@ -159,7 +160,10 @@ export const createEvent = async (
     page,
     { urlIncludes: "/secured/events" },
     async () => {
-      await page.getByRole("button", { name: "+", exact: true }).first().click();
+      await page
+        .getByRole("button", { name: "+", exact: true })
+        .first()
+        .click();
       const dialog = page.getByRole("dialog");
       await dialog.getByLabel("Event title").fill(title);
       await selectFirstOption(
@@ -278,7 +282,9 @@ export const addCompetitorToEvent = async (
   await waitForEventWrite(page, () =>
     dialog.getByRole("button", { name: "Create" }).click(),
   );
-  await expect(page.getByText(`Dog: ${dogName}`, { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(`Dog: ${dogName}`, { exact: true }),
+  ).toBeVisible();
 };
 
 export const viewEventInfo = async (
@@ -357,7 +363,11 @@ export const viewClassification = async (
   eventId: string,
   dogName: string,
 ) => {
-  await page.goto(`/stages/${stageId}/events/${eventId}/classification?view=TABLE`);
+  await page.goto(
+    `/stages/${stageId}/events/${eventId}/classification?view=TABLE`,
+  );
   // Classification is computed server-side and can take a while to populate.
-  await expect(page.getByText(dogName).first()).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText(dogName).first()).toBeVisible({
+    timeout: 30_000,
+  });
 };

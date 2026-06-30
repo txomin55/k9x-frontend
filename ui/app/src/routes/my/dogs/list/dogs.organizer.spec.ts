@@ -29,7 +29,6 @@ organizerTest.describe("My dogs (write) - organizer", () => {
         performMutation: async () => {
           await page.getByRole("button", { name: "+", exact: true }).click();
           const dialog = page.getByRole("dialog");
-          await dialog.getByLabel("Chip").fill("CHIP-REX");
           await dialog.getByLabel("Name").fill("Rex");
           await dialog.getByLabel("Owner").fill("Olivia Organizer");
           await expect(ownedCheckbox).not.toBeChecked();
@@ -43,7 +42,8 @@ organizerTest.describe("My dogs (write) - organizer", () => {
         },
       });
 
-      expect(createPayload).toMatchObject({ name: "Rex", owned: false });
+      expect(createPayload).toMatchObject({ name: "Rex" });
+      expect(createPayload).not.toHaveProperty("owned");
     },
   );
 
@@ -89,7 +89,8 @@ organizerTest.describe("My dogs (write) - organizer", () => {
         },
       });
 
-      expect(updatePayload).toMatchObject({ name: "Luna Edited", owned: false });
+      expect(updatePayload).toMatchObject({ name: "Luna Edited" });
+      expect(updatePayload).not.toHaveProperty("owned");
     },
   );
 

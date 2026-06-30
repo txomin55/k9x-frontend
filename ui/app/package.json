@@ -11,7 +11,6 @@
     "preview": "npx serve .output/public -l 5173",
     "test:unit:coverage": "vitest --coverage",
     "test:e2e:coverage": "playwright test",
-    "test:smoke:auth": "playwright test --config playwright.smoke.config.ts --project=setup --headed",
     "test:smoke": "playwright test --config playwright.smoke.config.ts",
     "test:smoke:report": "playwright show-report .reports/test/smoke/html",
     "ts": "pnpm exec tsc"

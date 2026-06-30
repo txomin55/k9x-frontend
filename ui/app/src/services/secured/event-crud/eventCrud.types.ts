@@ -28,6 +28,7 @@ export interface EventCompetitorResponseDTO {
   team: string;
   identity: string;
   owner: string;
+  handler: string;
   country: string;
   status: string;
   breed: string;
@@ -49,6 +50,7 @@ export interface EventCompetitorDetail {
   identity: string;
   name: string;
   owner: string;
+  handler: string;
   team: string;
   country: string;
   breed: string;
@@ -159,6 +161,7 @@ const normalizeCompetitor = (
   dogId: competitor.dog.id,
   name: competitor.dog.name,
   owner: competitor.owner ?? "",
+  handler: competitor.handler ?? "",
   identity: competitor.identity ?? "",
   team: competitor.team ?? "",
   country: competitor.country ?? "",

@@ -41,6 +41,7 @@ export interface StageDetailResponseDTO {
 export interface StageEventDetailCompetitorResponseDTO {
   dog: IdNameDTO;
   owner: string;
+  handler: string;
   team: string;
   country: string;
   breed: string;
@@ -97,6 +98,7 @@ export interface StageEventClassificationItemResponseDTO {
   exercises: StageEventClassificationExerciseScoresResponseDTO[];
   identity: string;
   owner: string;
+  handler: string;
   position: number;
   scoreRating: number;
   status: string;

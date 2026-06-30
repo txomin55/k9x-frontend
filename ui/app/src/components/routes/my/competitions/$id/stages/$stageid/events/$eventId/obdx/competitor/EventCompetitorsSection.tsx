@@ -3,7 +3,9 @@ import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -11,7 +13,11 @@ import type { AtomSelectOption } from "library/src/components/atoms/select/AtomS
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import { canAcceptCompetitorEnroll, canSeeCompetitorScores, EVENT_STATUS } from "@/utils/event";
+import {
+  canAcceptCompetitorEnroll,
+  canSeeCompetitorScores,
+  EVENT_STATUS,
+} from "@/utils/event";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -75,6 +81,7 @@ export default function EventCompetitorsSection(
       name: dog?.name ?? competitor.name,
       breed: dog?.breed ?? competitor.breed,
       owner: dog?.owner ?? competitor.owner,
+      handler: dog?.handler ?? competitor.handler,
       identity: dog?.identifier ?? competitor.identity,
       team: dog?.team ?? competitor.team,
       country: dog?.country ?? competitor.country,
@@ -164,6 +171,7 @@ export default function EventCompetitorsSection(
                       </Show>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
+                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.HANDLER")}: ${details().handler}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
                     </div>
@@ -193,7 +201,7 @@ export default function EventCompetitorsSection(
                             </Show>
                           </Match>
                           <Match
-                            when={props.eventStatus !== EVENT_STATUS.FINISHED}
+                            when={props.eventStatus === EVENT_STATUS.CREATED}
                           >
                             <ConfirmActionButton
                               text={details().owner}

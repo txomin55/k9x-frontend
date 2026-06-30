@@ -77,6 +77,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
         competitor: {
           dog: { id: "dog-1", name: "Dog 1" },
           owner: "Owner",
+          handler: "Handler",
           position: 1,
           team: "",
           identity: "",

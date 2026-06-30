@@ -37,6 +37,7 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
           team: "Team Alpha",
           identity: "ES-001",
           owner: "Ana Perez",
+          handler: "Ana Perez",
           country: "ES",
           status: "ENROLLED",
           breed: "Border Collie",

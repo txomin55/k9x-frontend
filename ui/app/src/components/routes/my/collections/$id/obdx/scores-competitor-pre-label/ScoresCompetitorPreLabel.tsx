@@ -19,6 +19,7 @@ export default (props: ScoresCompetitorPreLabelProps) => {
       <div>
         <span>{props.competitor.country}</span>
         <span>{props.competitor.owner}</span>
+        <span>{props.competitor.handler}</span>
       </div>
     </div>
   );

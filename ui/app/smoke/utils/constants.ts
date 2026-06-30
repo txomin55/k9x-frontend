@@ -8,11 +8,20 @@ export const SMOKE_CREDENTIALS_PATH =
 export const SMOKE_API_URL =
   process.env.SMOKE_API_URL ?? "http://localhost:4000";
 
-const rawRunId = process.env.SMOKE_RUN_ID ?? `${Date.now()}`;
+const pad = (value: number) => String(value).padStart(2, "0");
 
-export const RUN_ID = rawRunId;
+const readableRunId = () => {
+  const now = new Date();
+  return `${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+};
 
-let sequence = 0;
-export const named = (label: string) => `${label} ${RUN_ID}-${++sequence}`;
+export const RUN_ID = process.env.SMOKE_RUN_ID ?? readableRunId();
+
+const sequences = new Map<string, number>();
+export const named = (label: string) => {
+  const next = (sequences.get(label) ?? 0) + 1;
+  sequences.set(label, next);
+  return `${label} ${next} (${RUN_ID})`;
+};
 
 export const GOOGLE_LOGIN_TIMEOUT = 240_000;

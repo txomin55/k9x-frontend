@@ -5,6 +5,7 @@ export interface Dog {
   breed: string;
   identifier: string;
   owner: string;
+  handler: string;
   team: string;
   country: string;
   owned: boolean;
@@ -17,9 +18,9 @@ export interface CreateDogRequestDTO {
   breed: string;
   identifier: string;
   owner: string;
+  handler: string;
   team: string;
   country: string;
-  owned: boolean;
 }
 
 export interface UpdateDogRequestDTO {
@@ -28,9 +29,9 @@ export interface UpdateDogRequestDTO {
   breed: string;
   identifier?: string;
   owner?: string;
+  handler?: string;
   team?: string;
   country?: string;
-  owned: boolean;
 }
 
 export interface DogRollbackPayload {

@@ -204,6 +204,7 @@ function StageInfoPage() {
                                     <span>
                                       {competitor.owner} ({competitor.team})
                                     </span>
+                                    <span>{competitor.handler}</span>
                                   </li>
                                 )}
                               </For>

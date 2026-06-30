@@ -61,6 +61,30 @@ const serializeHeaders = (headers: Headers) =>
 const serializeBody = (body: unknown) =>
   body === undefined ? undefined : JSON.stringify(body);
 
+const extractErrorMessage = async (
+  response: Response,
+): Promise<string | undefined> => {
+  try {
+    const contentType = response.headers.get("content-type") ?? "";
+
+    if (contentType.includes("application/json")) {
+      const data = (await response.json()) as Record<string, unknown> | null;
+      const message =
+        data?.msg ?? data?.message ?? data?.error ?? data?.detail;
+
+      return typeof message === "string" && message.length > 0
+        ? message
+        : undefined;
+    }
+
+    const text = (await response.text()).trim();
+
+    return text.length > 0 ? text : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const createSerializableRequest = ({
   body,
   credentials,
@@ -133,7 +157,11 @@ const rawRequest = async <TResponse>({
   }
 
   if (!response.ok) {
-    throw new HttpRequestError(path, response.status);
+    throw new HttpRequestError(
+      path,
+      response.status,
+      await extractErrorMessage(response),
+    );
   }
 
   if (response.status === 204) {

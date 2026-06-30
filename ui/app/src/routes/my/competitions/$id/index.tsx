@@ -10,10 +10,7 @@ import {
 import { toApiStage, useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import { COMPETITION_STATUS } from "@/utils/competition";
 import { toUndefinedIfBlank } from "@/utils/date";
-import {
-  validateRequiredSelection,
-  validateRequiredText,
-} from "@/utils/validation/textField";
+import { validateRequiredSelection, validateRequiredText } from "@/utils/validation/textField";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import pencilIcon from "@/assets/pencil.svg";
@@ -351,7 +348,7 @@ function CompetitionDetailBody(props: {
       <Show
         when={
           isEditing() &&
-          props.competition()?.status !== COMPETITION_STATUS.CREATED
+          props.competition()?.status === COMPETITION_STATUS.CREATED
         }
       >
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>

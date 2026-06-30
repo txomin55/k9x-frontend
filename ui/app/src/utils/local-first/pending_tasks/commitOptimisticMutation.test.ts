@@ -14,8 +14,8 @@ const HttpRequestError = vi.hoisted(
       path: string;
       status: number;
 
-      constructor(path: string, status: number) {
-        super(`Request failed for ${path} with status ${status}`);
+      constructor(path: string, status: number, message?: string) {
+        super(message ?? `Request failed for ${path} with status ${status}`);
         this.name = "HttpRequestError";
         this.path = path;
         this.status = status;
@@ -46,6 +46,12 @@ vi.mock("@/utils/service-worker/pending_tasks/backgroundSync", () => ({
   requestPendingTasksBackgroundSync,
 }));
 
+const showToast = vi.hoisted(() => vi.fn());
+
+vi.mock("@/stores/toast/toast", () => ({
+  showToast,
+}));
+
 describe("commitOptimisticMutation", () => {
   beforeEach(() => {
     shouldQueueOfflineMutation.mockReset();
@@ -55,6 +61,7 @@ describe("commitOptimisticMutation", () => {
     enqueuePendingTask.mockReset();
     processPendingTasks.mockReset();
     requestPendingTasksBackgroundSync.mockReset();
+    showToast.mockReset();
   });
 
   it("sends the mutation directly when the app is online", async () => {
@@ -148,5 +155,33 @@ describe("commitOptimisticMutation", () => {
     ).rejects.toThrow("boom");
 
     expect(rollback).toHaveBeenCalledWith({ entityId: "1" });
+  });
+
+  it("rolls back and shows a toast without rethrowing when the server rejects the request", async () => {
+    const rollback = vi.fn();
+    const error = new HttpRequestError(
+      "/api/stages/1",
+      412,
+      "Stage cannot be deleted in its current state",
+    );
+
+    shouldQueueOfflineMutation.mockReturnValue(false);
+    rawRequest.mockRejectedValue(error);
+
+    await expect(
+      commitOptimisticMutation({
+        entityId: "1",
+        entityType: "stage",
+        method: "DELETE",
+        rollback,
+        rollbackPayload: { entityId: "1" },
+        url: "/api/stages/1",
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(rollback).toHaveBeenCalledWith({ entityId: "1" });
+    expect(showToast).toHaveBeenCalledWith(
+      "Stage cannot be deleted in its current state",
+    );
   });
 });

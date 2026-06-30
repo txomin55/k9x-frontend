@@ -1,4 +1,4 @@
-import type { CreateDogRequestDTO } from "@/services/secured/dog-crud/dogCrud.types";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -19,10 +19,8 @@ import {
 import "./styles.css";
 
 type DogFormProps = {
-  draft: () => CreateDogRequestDTO;
-  onDraftChange: (
-    updater: (current: CreateDogRequestDTO) => CreateDogRequestDTO,
-  ) => void;
+  draft: () => Dog;
+  onDraftChange: (updater: (current: Dog) => Dog) => void;
   onCancel: () => void;
   onSave: () => void;
 };
@@ -61,11 +59,9 @@ export default function DogForm(props: DogFormProps) {
 
   const idError = () => validateRequiredText(props.draft().id);
   const nameError = () => validateRequiredText(props.draft().name);
-  const ownerError = () => validateRequiredText(props.draft().owner);
   const countryError = () => validateRequiredSelection(props.draft().country);
 
-  const isValid = () =>
-    !idError() && !nameError() && !ownerError() && !countryError();
+  const isValid = () => !idError() && !nameError() && !countryError();
 
   const fieldProps = (field: string, error: () => TextFieldError) => ({
     onBlur: () => markTouched(field),
@@ -96,6 +92,7 @@ export default function DogForm(props: DogFormProps) {
     props.onDraftChange((current) => ({
       ...current,
       owned,
+      owner: owned ? (user()?.email ?? "") : "",
     }));
 
   const updateBreed = (breed: string) =>
@@ -114,6 +111,12 @@ export default function DogForm(props: DogFormProps) {
     props.onDraftChange((current) => ({
       ...current,
       owner,
+    }));
+
+  const updateHandler = (handler: string) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      handler,
     }));
 
   const updateTeam = (team: string) =>
@@ -165,11 +168,17 @@ export default function DogForm(props: DogFormProps) {
         onChange={updateIdentifier}
       />
       <Show when={!!user()?.organizer}>
+        <Show when={!props.draft().owned}>
+          <AtomInput
+            label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
+            value={props.draft().owner}
+            onChange={updateOwner}
+          />
+        </Show>
         <AtomInput
-          label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
-          value={props.draft().owner}
-          onChange={updateOwner}
-          {...fieldProps("owner", ownerError)}
+          label={i18n.t("MY.DOGS.DOG_FORM.HANDLER")}
+          value={props.draft().handler}
+          onChange={updateHandler}
         />
       </Show>
       <AtomInput

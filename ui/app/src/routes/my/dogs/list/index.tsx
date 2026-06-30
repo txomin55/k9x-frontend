@@ -5,7 +5,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
 import { createDog, deleteDog, updateDog, useDogs } from "@/services/secured/dog-crud/dogCrud";
-import type { CreateDogRequestDTO, Dog } from "@/services/secured/dog-crud/dogCrud.types";
+import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -19,14 +19,15 @@ function MyDogsListPage() {
   const user = useAuthUser();
   const i18n = useI18n();
 
-  const buildDogDraft = (isOrganizer: boolean): CreateDogRequestDTO => ({
-    id: "",
+  const buildDogDraft = (isOrganizer: boolean): Dog => ({
+    id: globalThis.crypto.randomUUID(),
     name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
     breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
     owned: !isOrganizer,
     identifier: "",
     image: "",
     owner: !isOrganizer ? (user()?.email ?? "") : "",
+    handler: "",
     team: "",
     country: "",
   });
@@ -44,7 +45,7 @@ function MyDogsListPage() {
   });
 
   const [dogParam, setDogParam] = useSearchParam("dog", "", "push");
-  const [draftDog, setDraftDog] = createSignal<CreateDogRequestDTO>(
+  const [draftDog, setDraftDog] = createSignal<Dog>(
     buildDogDraft(!!user()?.organizer),
   );
 
@@ -52,13 +53,14 @@ function MyDogsListPage() {
   const editingDogId = () =>
     dogParam() && dogParam() !== "new" ? dogParam() : null;
 
-  const dogToDraft = (dog: Dog): CreateDogRequestDTO => ({
+  const dogToDraft = (dog: Dog): Dog => ({
     id: dog.id,
     name: dog.name,
     image: dog.image,
     breed: dog.breed,
     identifier: dog.identifier,
     owner: dog.owner,
+    handler: dog.handler,
     team: dog.team,
     country: dog.country,
     owned: dog.owned,
@@ -98,9 +100,9 @@ function MyDogsListPage() {
         breed: payload.breed,
         identifier: payload.identifier,
         owner: payload.owner,
+        handler: payload.handler,
         team: payload.team,
         country: payload.country,
-        owned: payload.owned,
       });
     } else {
       createDog(payload);

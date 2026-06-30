@@ -12,6 +12,7 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { processPendingTasks } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import { requestPendingTasksBackgroundSync } from "@/utils/service-worker/pending_tasks/backgroundSync";
+import { showToast } from "@/stores/toast/toast";
 
 export const commitOptimisticMutation = async <TRollbackPayload>({
   entityId,
@@ -42,11 +43,13 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
       await onCommitted?.();
       return;
     } catch (error) {
+      await rollback(rollbackPayload);
+
       if (error instanceof HttpRequestError) {
+        showToast(error.message);
         return;
       }
 
-      await rollback(rollbackPayload);
       throw error;
     }
   }

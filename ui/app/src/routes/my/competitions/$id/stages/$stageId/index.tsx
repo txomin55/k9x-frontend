@@ -1,17 +1,35 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequestDTO,
   EventDetailResponseDTO,
   EventEditorDraft,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
-import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {
+  dayBefore,
+  formatDateLabel,
+  parseDateInputValue,
+  toDateInputValue,
+} from "@/utils/date";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
@@ -24,7 +42,10 @@ import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import "./styles.css";
-import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import {
+  StageEditorModel,
+  UpdateStageRequestDTO,
+} from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 
@@ -430,7 +451,7 @@ function CompetitionStageDetailBody(props: {
                   actions={
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
-                        <Show when={event().status !== EVENT_STATUS.CREATED}>
+                        <Show when={event().status === EVENT_STATUS.CREATED}>
                           <ConfirmActionButton
                             text={event().name}
                             onConfirm={deleteEventClick(event)}
@@ -489,7 +510,7 @@ function CompetitionStageDetailBody(props: {
         nonToggledIcon={pencilIcon}
         toggledIcon={eyeIcon}
       />
-      <Show when={isEditing() && props.stage().status !== STAGE_STATUS.CREATED}>
+      <Show when={isEditing() && props.stage().status === STAGE_STATUS.CREATED}>
         <ConfirmActionButton
           text={props.stage().name}
           onConfirm={props.onDelete}

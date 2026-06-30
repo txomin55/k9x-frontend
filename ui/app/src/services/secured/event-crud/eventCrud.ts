@@ -143,6 +143,7 @@ const toApiCompetitor = (
     identity: previousCompetitor?.identity ?? "",
     name: previousCompetitor?.name ?? "",
     owner: previousCompetitor?.owner ?? "",
+    handler: previousCompetitor?.handler ?? "",
     team: previousCompetitor?.team ?? "",
     country: previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",

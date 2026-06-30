@@ -134,21 +134,20 @@ export const useAllDogs = (options?: TanstackCreateQuery) => {
   });
 };
 
-const mergeDogWithPayload = (payload: CreateDogRequestDTO): Dog => ({
-  id: payload.id,
-  name: payload.name,
-  image: payload.image,
-  breed: payload.breed,
-  identifier: payload.identifier,
-  owner: payload.owner,
-  team: payload.team,
-  country: payload.country,
-  owned: payload.owned,
+const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
+  id: draftDog.id,
+  name: draftDog.name,
+  image: draftDog.image,
+  breed: draftDog.breed,
+  identifier: draftDog.identifier,
+  owner: draftDog.owner,
+  handler: draftDog.handler,
+  team: draftDog.team,
+  country: draftDog.country,
 });
 
-export const createDog = (payload: CreateDogRequestDTO) => {
+export const createDog = (draftDog: Dog) => {
   const previousDogs = getVisibleDogs();
-  const draftDog = mergeDogWithPayload(payload);
 
   applyDogUpsert(draftDog);
 
@@ -156,7 +155,7 @@ export const createDog = (payload: CreateDogRequestDTO) => {
     await commitDogMutation({
       entityId: draftDog.id,
       method: "POST",
-      payload,
+      payload: toCreateDogRequest(draftDog),
       rollbackPayload: await createDogRollbackPayload(
         draftDog.id,
         null,

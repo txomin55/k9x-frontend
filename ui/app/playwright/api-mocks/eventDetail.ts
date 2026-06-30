@@ -53,6 +53,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
           team: seedDog.team,
           identity: seedDog.identifier,
           owner: seedDog.owner,
+          handler: seedDog.handler,
           country: seedDog.country,
           status: "ENROLLED",
           breed: seedDog.breed,
@@ -156,6 +157,7 @@ const applyEventUpdate = (
         team: dog?.team ?? existing?.team ?? "",
         identity: dog?.identifier ?? existing?.identity ?? "",
         owner: dog?.owner ?? existing?.owner ?? "",
+        handler: dog?.handler ?? existing?.handler ?? "",
         country: dog?.country ?? existing?.country ?? "",
         status:
           existing?.status ??
