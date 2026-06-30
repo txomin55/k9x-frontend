@@ -17,13 +17,8 @@ Install dependencies with `pnpm install` at the workspace root and use the scrip
 ## Structure
 
 - `src/components/atoms`: basic components. Example: `AtomButton` and `AtomSvgIcon`.
-- `src/components/molecules`: compositions of atoms. Example: `AnimalIcon` that renders SVGs from
-  `src/assets/svg/animals`.
+- `src/components/molecules`: compositions of atoms. Example: `Card` and `ProfileImage`.
 - `src/assets/styles`: global styles and color variables.
-- `src/assets/svg/animals`: SVG sprites referenced by `AnimalIcon` and `animals.constants.ts`.
-
-`AnimalIcon` resolves the selected animal icon from the app's `/animals` static path, so rendering only requests the
-current SVG while the service worker can warm the rest in the background.
 
 ## Component conventions
 

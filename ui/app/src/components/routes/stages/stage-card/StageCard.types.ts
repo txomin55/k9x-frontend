@@ -8,6 +8,7 @@ export interface StageCardProps {
   from: number;
   id: string;
   name: string;
+  status?: string;
   to: number;
   organizer: string;
 }

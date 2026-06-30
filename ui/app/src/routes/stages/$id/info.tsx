@@ -4,7 +4,10 @@ import {
   useParams,
 } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useStageById } from "@/services/fetch-stages/fetchStages";
+import {
+  getCachedStageStatus,
+  useStageById,
+} from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
@@ -21,6 +24,7 @@ import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
@@ -48,6 +52,9 @@ function StageInfoPage() {
   const params = useParams({ from: "/stages/$id/info" });
 
   const stageInfo = useStageById(params().id);
+  const stageStatus = createMemo(
+    () => stageInfo.data?.status ?? getCachedStageStatus(params().id),
+  );
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
@@ -237,6 +244,9 @@ function StageInfoPage() {
           <>
             <div class="stage-info__title">
               <span>{stage().name}</span>
+              <Show when={stageStatus()}>
+                {(status) => <StatusBadge status={status()} />}
+              </Show>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
             <span class="text-caption-md">{stage().organizer}</span>

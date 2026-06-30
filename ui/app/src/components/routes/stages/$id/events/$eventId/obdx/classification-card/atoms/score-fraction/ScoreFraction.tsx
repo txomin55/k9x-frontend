@@ -15,7 +15,7 @@ export default function ScoreFraction(props: ScoreFractionProps) {
         "is-grey": color() === "grey",
       }}
     >
-      {props.score}
+      {props.score ?? "-"}
       <span class="obdx-clf__fraction-max">/{props.max}</span>
     </span>
   );

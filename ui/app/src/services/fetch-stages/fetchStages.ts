@@ -103,3 +103,32 @@ export const getCachedStageById = (id: string) =>
 
 export const getCachedEventById = (stageId: string, eventId: string) =>
   getCachedStageById(stageId)?.events?.find((event) => event.id === eventId);
+
+const getStageNameFromClassificationCache = (stageId: string) => {
+  const entries = queryClient.getQueriesData<StageEventClassificationResponseDTO>(
+    { queryKey: ["stage-event-classification", stageId] },
+  );
+
+  for (const [, data] of entries) {
+    if (data?.stage?.name) return data.stage.name;
+  }
+
+  return undefined;
+};
+
+export const getCachedStageName = (id: string) =>
+  getCachedStageById(id)?.name ?? getStageNameFromClassificationCache(id);
+
+const getStageStatusFromSummaryCache = (id: string) =>
+  queryClient
+    .getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey())
+    ?.find((stage) => stage.id === id)?.status;
+
+export const getCachedStageStatus = (id: string) =>
+  getCachedStageById(id)?.status ?? getStageStatusFromSummaryCache(id);
+
+export const getCachedEventName = (stageId: string, eventId: string) =>
+  getCachedEventById(stageId, eventId)?.name ??
+  queryClient.getQueryData<StageEventClassificationResponseDTO>(
+    getEventClassificationQueryKey(stageId, eventId),
+  )?.event?.name;

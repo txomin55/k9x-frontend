@@ -1,13 +1,12 @@
 import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation } from "@tanstack/solid-router";
-import { createEffect, onCleanup, onMount, Show } from "solid-js";
+import { createEffect, onMount, Show } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import Toast from "@/components/global/toast/Toast";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 
 import { resolveAppPath } from "@/utils/paths/app-paths";
-import { warmAnimalIconsInBackground } from "@/utils/service-worker/native_features/offline_load/animal-icons";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { prefetchAllDogs, prefetchDogs } from "@/services/secured/dog-crud/dogCrud";
@@ -21,7 +20,6 @@ import "./styles.css";
 export default function AppShell() {
   const i18n = useI18n();
   const user = useAuthUser();
-  let cancelAnimalIconWarmup: () => void;
 
   const location = useLocation();
 
@@ -40,7 +38,6 @@ export default function AppShell() {
     if (user()) {
       warmOfflineBundleInBackground();
     }
-    cancelAnimalIconWarmup = warmAnimalIconsInBackground();
   });
 
   createEffect(() => {
@@ -68,10 +65,6 @@ export default function AppShell() {
         gcTime: 2 * 60 * 1000,
       });
     }
-  });
-
-  onCleanup(() => {
-    cancelAnimalIconWarmup?.();
   });
 
   return (

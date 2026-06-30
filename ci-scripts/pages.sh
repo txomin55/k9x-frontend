@@ -13,10 +13,5 @@ rm -rf public
 mkdir -p public
 cp -R ui/app/.output/public/. public/
 
-# Shared animal SVGs are requested at runtime from /animals/*.svg.
-# Copy them directly into the final Pages artifact.
-mkdir -p public/animals
-cp -R ui/library/src/assets/svg/animals/. public/animals/
-
 # Precompress text assets for static hosting while keeping the original files.
 find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\|csv\)$' -exec gzip -f -k {} \;

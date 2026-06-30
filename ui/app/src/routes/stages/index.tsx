@@ -9,6 +9,7 @@ import AtomTable from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -44,6 +45,7 @@ function StagesIndexPage() {
       id={stage.id}
       country={stage.country ?? ""}
       name={stage.name}
+      status={stage.status}
       from={stage.dateFrom ?? 0}
       to={stage.dateTo ?? 0}
       description={stage.description ?? ""}
@@ -72,6 +74,16 @@ function StagesIndexPage() {
       accessorFn: (stage) => stage.dateFrom ?? 0,
       header: i18n.t("STAGES.INDEX.DATE_FROM"),
       cell: (info) => new Date(info.getValue<number>()).toLocaleDateString(),
+    },
+    {
+      id: "status",
+      accessorFn: (stage) => stage.status,
+      header: i18n.t("STAGES.INDEX.STATUS"),
+      enableSorting: false,
+      cell: (info) => {
+        const status = info.getValue<string>();
+        return status ? <StatusBadge status={status} /> : null;
+      },
     },
     {
       id: "expander",

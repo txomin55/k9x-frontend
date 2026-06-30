@@ -4,6 +4,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import { createSignal, Index, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
 import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
 import { useNavigate } from "@tanstack/solid-router";
@@ -36,6 +37,9 @@ export default function StageCard(props: StageCardProps) {
             <CountryFlag country={props.country} alt={`${props.name} flag`} />
           </div>
           <span class="text-heading-sm">{props.name}</span>
+          <Show when={props.status}>
+            {(status) => <StatusBadge status={status()} />}
+          </Show>
         </div>
       }
       topRight={

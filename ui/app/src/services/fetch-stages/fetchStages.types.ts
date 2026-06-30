@@ -36,6 +36,7 @@ export interface StageDetailResponseDTO {
   name: string;
   notifications: CompetitionNotificationDetailResponseDTO[];
   organizer: string;
+  status?: string;
 }
 
 export interface StageEventDetailCompetitorResponseDTO {

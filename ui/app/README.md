@@ -14,8 +14,6 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
   worker registration.
 - API: Language headers are updated based on the active locale.
 - i18n: `i18next` with `i18next-http-backend` and language detector, loading strings from `static/locales/{{lng}}`.
-- Animal SVGs live in `ui/library/src/assets/svg/animals` and are copied into the final GitHub Pages artifact by
-  `ci-scripts/pages.sh` as `public/animals/*.svg`.
 
 ## Offline model
 
@@ -30,7 +28,6 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
   manifest into `app-shell-v1`.
 - Anonymous users keep the normal lazy-loading behavior. The aggressive offline warmup is only triggered once the user
   is authenticated.
-- Animal SVGs are still warmed separately in the background.
 
 ## Local-first data
 

@@ -1,5 +1,5 @@
 export type ScoreFractionProps = {
-  score: number;
+  score: number | null | undefined;
   max: number;
   rating: number | null | undefined;
 };

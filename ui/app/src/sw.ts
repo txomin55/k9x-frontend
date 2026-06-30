@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 
-import { registerAnimalIconCache } from "@/utils/service-worker/events/animal-icons";
 import { registerNotificationClickHandler } from "@/utils/service-worker/events/notification-click";
 import {
   APP_SHELL_CACHE,
@@ -16,6 +15,5 @@ registerServiceWorkerSetup(self, {
   cacheNames: [APP_SHELL_CACHE],
 });
 registerNotificationClickHandler(self);
-registerAnimalIconCache(self);
 registerAppShellCache(self);
 registerPendingTasksBackgroundSync(self, processPendingTasksInBackground);

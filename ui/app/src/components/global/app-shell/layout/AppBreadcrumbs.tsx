@@ -1,7 +1,8 @@
 import { useMatches, useNavigate } from "@tanstack/solid-router";
-import { createMemo } from "solid-js";
+import { createMemo, createSignal, onCleanup } from "solid-js";
 import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
 import { resolveBreadcrumbLabel } from "@/utils/router/breadcrumbs";
+import { queryClient } from "@/utils/http/query-client";
 
 type BreadcrumbItem = {
   route: string;
@@ -11,8 +12,17 @@ type BreadcrumbItem = {
 export default function AppBreadcrumbs() {
   const matches = useMatches();
   const navigate = useNavigate();
-  const breadcrumbs = createMemo<BreadcrumbItem[]>(() =>
-    matches()
+
+  const [cacheVersion, setCacheVersion] = createSignal(0);
+  const unsubscribe = queryClient
+    .getQueryCache()
+    .subscribe(() => setCacheVersion((version) => version + 1));
+  onCleanup(unsubscribe);
+
+  const breadcrumbs = createMemo<BreadcrumbItem[]>(() => {
+    cacheVersion();
+
+    return matches()
       .map((match) => {
         const label = resolveBreadcrumbLabel(
           match.staticData?.breadcrumb,
@@ -28,8 +38,8 @@ export default function AppBreadcrumbs() {
       })
       .filter(
         (breadcrumb): breadcrumb is BreadcrumbItem => breadcrumb !== null,
-      ),
-  );
+      );
+  });
 
   return (
     <div class="app-layout__breadcrumbs" hidden={breadcrumbs().length === 0}>

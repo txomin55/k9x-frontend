@@ -8,9 +8,10 @@ import {
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
-import { Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
+import { validateEmail } from "@/utils/validation/textField";
 
 type JudgeEditorFormProps = {
   draft: () => EventJudgeDetailResponseDTO;
@@ -29,6 +30,11 @@ type JudgeEditorFormProps = {
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   const navigate = useNavigate();
   const i18n = useI18n();
+
+  const [emailTouched, setEmailTouched] = createSignal(false);
+
+  const emailError = () => validateEmail(props.draft().collectorEmail);
+  const emailInvalid = () => emailTouched() && !!emailError();
 
   const updateField = (field: "id" | "collectorEmail") => (value: string) => {
     props.onDraftChange((current) =>
@@ -82,8 +88,18 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
       <AtomInput
         label={i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.EMAIL")}
         type="email"
+        description={i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.EMAIL_HINT")}
         value={props.draft().collectorEmail}
-        onBlur={props.onCommit}
+        validationState={emailInvalid() ? "invalid" : undefined}
+        errorMessage={
+          emailInvalid()
+            ? i18n.t("COMMON.VALIDATION.INVALID_EMAIL")
+            : undefined
+        }
+        onBlur={() => {
+          setEmailTouched(true);
+          props.onCommit();
+        }}
         onChange={updateField("collectorEmail")}
       />
       <div class="judge-editor-form__actions">

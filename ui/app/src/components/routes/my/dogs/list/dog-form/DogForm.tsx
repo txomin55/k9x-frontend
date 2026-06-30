@@ -13,6 +13,7 @@ import CountryField from "@/components/common/country-field/CountryField";
 import {
   MIN_TEXT_LENGTH,
   type TextFieldError,
+  validateEmail,
   validateRequiredSelection,
   validateRequiredText,
 } from "@/utils/validation/textField";
@@ -54,14 +55,21 @@ export default function DogForm(props: DogFormProps) {
     if (error === "REQUIRED") return i18n.t("COMMON.VALIDATION.REQUIRED");
     if (error === "MIN_LENGTH")
       return i18n.t("COMMON.VALIDATION.MIN_LENGTH", { min: MIN_TEXT_LENGTH });
+    if (error === "INVALID_EMAIL")
+      return i18n.t("COMMON.VALIDATION.INVALID_EMAIL");
     return undefined;
   };
+
+  const ownerFieldVisible = () => !!user()?.organizer && !props.draft().owned;
 
   const idError = () => validateRequiredText(props.draft().id);
   const nameError = () => validateRequiredText(props.draft().name);
   const countryError = () => validateRequiredSelection(props.draft().country);
+  const ownerError = () =>
+    ownerFieldVisible() ? validateEmail(props.draft().owner) : null;
 
-  const isValid = () => !idError() && !nameError() && !countryError();
+  const isValid = () =>
+    !idError() && !nameError() && !countryError() && !ownerError();
 
   const fieldProps = (field: string, error: () => TextFieldError) => ({
     onBlur: () => markTouched(field),
@@ -171,8 +179,11 @@ export default function DogForm(props: DogFormProps) {
         <Show when={!props.draft().owned}>
           <AtomInput
             label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
+            type="email"
+            description={i18n.t("MY.DOGS.DOG_FORM.OWNER_HINT")}
             value={props.draft().owner}
             onChange={updateOwner}
+            {...fieldProps("owner", ownerError)}
           />
         </Show>
         <AtomInput

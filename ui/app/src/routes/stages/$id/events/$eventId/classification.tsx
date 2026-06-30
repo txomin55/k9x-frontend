@@ -136,6 +136,19 @@ function EventClassificationPage() {
     return record;
   });
 
+  const [pinnedOpenIds, setPinnedOpenIds] = createSignal<Set<string>>(
+    new Set(),
+  );
+
+  const isPinnedOpen = (id: string) => pinnedOpenIds().has(id);
+
+  const setPinnedOpen = (id: string, open: boolean) => {
+    const next = new Set(pinnedOpenIds());
+    if (open) next.add(id);
+    else next.delete(id);
+    setPinnedOpenIds(next);
+  };
+
   const handleExpandedChange = (
     updater: Record<string, boolean> | ((old: any) => any) | boolean,
   ) => {
@@ -239,9 +252,7 @@ function EventClassificationPage() {
     },
   ]);
 
-  const listContent = (
-    classification: StageEventClassificationItemResponseDTO[],
-  ) => (
+  const listContent = () => (
     <div
       ref={setScrollEl}
       style={{
@@ -258,10 +269,11 @@ function EventClassificationPage() {
       >
         <For each={virtualizer.getVirtualItems()}>
           {(virtualRow) => {
-            const competitor = classification[virtualRow.index];
-            if (!competitor) return null;
+            const competitor = () => competitors()[virtualRow.index];
 
             return (
+              <Show when={competitor()}>
+                {(item) => (
               <div
                 data-index={virtualRow.index}
                 ref={(el) => {
@@ -292,15 +304,17 @@ function EventClassificationPage() {
                 }}
               >
                 <ObdxClassificationCard
-                  competitor={competitor}
-                  trend={trends().get(competitor.dog.id)}
-                  pinned={isPinned(competitor.dog.id)}
-                  pinDisabled={liveIds().has(competitor.dog.id)}
-                  onTogglePin={() => togglePin(competitor.dog.id)}
-                  open={isOpen(competitor.dog.id)}
-                  onOpenChange={(open) => setOpen(competitor.dog.id, open)}
+                  competitor={item()}
+                  trend={trends().get(item().dog.id)}
+                  pinned={isPinned(item().dog.id)}
+                  pinDisabled={liveIds().has(item().dog.id)}
+                  onTogglePin={() => togglePin(item().dog.id)}
+                  open={isOpen(item().dog.id)}
+                  onOpenChange={(open) => setOpen(item().dog.id, open)}
                 />
               </div>
+                )}
+              </Show>
             );
           }}
         </For>
@@ -308,12 +322,10 @@ function EventClassificationPage() {
     </div>
   );
 
-  const tableContent = (
-    classification: StageEventClassificationItemResponseDTO[],
-  ) => (
+  const tableContent = () => (
     <div style={{ height: `${listHeight()}px` }}>
       <AtomTable<StageEventClassificationItemResponseDTO>
-        data={classification}
+        data={competitors()}
         columns={columns()}
         getRowCanExpand={() => true}
         getRowId={(row) => row.dog.id}
@@ -386,9 +398,9 @@ function EventClassificationPage() {
                         pinned
                         pinDisabled={liveIds().has(competitor.dog.id)}
                         onTogglePin={() => togglePin(competitor.dog.id)}
-                        open={isOpen(competitor.dog.id)}
+                        open={isPinnedOpen(competitor.dog.id)}
                         onOpenChange={(open) =>
-                          setOpen(competitor.dog.id, open)
+                          setPinnedOpen(competitor.dog.id, open)
                         }
                       />
                     )}
@@ -407,16 +419,12 @@ function EventClassificationPage() {
                     {
                       value: CONTROLS_KEYS.LIST,
                       text: t("STAGES.CLASSIFICATION.LIST"),
-                      content: listContent(
-                        classification().obdx?.competitors ?? [],
-                      ),
+                      content: listContent(),
                     },
                     {
                       value: CONTROLS_KEYS.TABLE,
                       text: t("STAGES.CLASSIFICATION.TABLE"),
-                      content: tableContent(
-                        classification().obdx?.competitors ?? [],
-                      ),
+                      content: tableContent(),
                     },
                   ]}
                 />

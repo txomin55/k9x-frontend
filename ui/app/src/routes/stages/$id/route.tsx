@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
-import { getCachedStageById } from "@/services/fetch-stages/fetchStages";
+import { getCachedStageName } from "@/services/fetch-stages/fetchStages";
 
 export const Route = createFileRoute("/stages/$id")({
   component: EventDetailLayoutPage,
   staticData: {
-    breadcrumb: (match) => getCachedStageById(match.params.id)?.name,
+    breadcrumb: (match) => getCachedStageName(match.params.id),
   },
 });
 
