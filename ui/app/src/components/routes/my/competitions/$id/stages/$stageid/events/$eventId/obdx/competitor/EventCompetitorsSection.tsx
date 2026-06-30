@@ -63,7 +63,7 @@ export default function EventCompetitorsSection(
     return (dogsQuery.data ?? [])
       .filter((dog) => !addedDogIds.has(dog.id))
       .map((dog) => ({
-        label: dog.owner ? `${dog.name} (${dog.owner})` : dog.name,
+        label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
         value: dog.id,
       }));
   });
@@ -80,7 +80,6 @@ export default function EventCompetitorsSection(
     return {
       name: dog?.name ?? competitor.name,
       breed: dog?.breed ?? competitor.breed,
-      owner: dog?.owner ?? competitor.owner,
       handler: dog?.handler ?? competitor.handler,
       identity: dog?.identifier ?? competitor.identity,
       team: dog?.team ?? competitor.team,
@@ -152,7 +151,7 @@ export default function EventCompetitorsSection(
 
               return (
                 <Card
-                  topLeft={details().owner}
+                  topLeft={details().handler}
                   content={
                     <div class="event-competitors-section__competitors--competitor">
                       <Show when={competitor().notCompeting}>
@@ -171,7 +170,6 @@ export default function EventCompetitorsSection(
                       </Show>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
-                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.HANDLER")}: ${details().handler}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
                     </div>
@@ -185,7 +183,7 @@ export default function EventCompetitorsSection(
                           >
                             <Show when={!competitor().notCompeting}>
                               <ConfirmActionButton
-                                text={details().owner}
+                                text={details().handler}
                                 onConfirm={() =>
                                   props.onMarkCompetitorNotCompeting(
                                     competitor().dogId,
@@ -204,7 +202,7 @@ export default function EventCompetitorsSection(
                             when={props.eventStatus === EVENT_STATUS.CREATED}
                           >
                             <ConfirmActionButton
-                              text={details().owner}
+                              text={details().handler}
                               onConfirm={() =>
                                 props.onDeleteCompetitor(competitor().dogId)
                               }

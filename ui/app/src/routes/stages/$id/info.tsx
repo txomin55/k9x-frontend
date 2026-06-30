@@ -54,7 +54,7 @@ function StageInfoPage() {
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     (dogsQuery.data ?? []).map((dog) => ({
-      label: dog.owner ? `${dog.name} (${dog.owner})` : dog.name,
+      label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
       value: dog.id,
     })),
   );
@@ -202,9 +202,8 @@ function StageInfoPage() {
                                       </b>
                                     </span>
                                     <span>
-                                      {competitor.owner} ({competitor.team})
+                                      {competitor.handler} ({competitor.team})
                                     </span>
-                                    <span>{competitor.handler}</span>
                                   </li>
                                 )}
                               </For>

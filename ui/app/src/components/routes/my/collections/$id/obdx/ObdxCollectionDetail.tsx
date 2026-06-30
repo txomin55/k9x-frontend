@@ -96,7 +96,7 @@ export default function ObdxCollectionDetail() {
       .flatMap((c) => {
         return [
           {
-            label: c.competitor.owner,
+            label: c.competitor.handler,
             value: c.competitor.dog.id,
             preLabel: (
               <ScoresCompetitorPreLabel

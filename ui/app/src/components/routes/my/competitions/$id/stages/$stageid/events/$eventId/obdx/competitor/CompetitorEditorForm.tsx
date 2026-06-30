@@ -113,10 +113,6 @@ export default function CompetitorEditorForm(
             {selectedDog(draft().dogId)?.breed ?? draft().breed}
           </p>
           <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.OWNER")}{" "}
-            {selectedDog(draft().dogId)?.owner ?? draft().owner}
-          </p>
-          <p>
             {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.HANDLER")}{" "}
             {selectedDog(draft().dogId)?.handler ?? draft().handler}
           </p>
