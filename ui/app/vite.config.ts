@@ -6,7 +6,6 @@ import eslint from "vite-plugin-eslint";
 import path from "node:path";
 import commonjs from "vite-plugin-commonjs";
 import { fileURLToPath } from "node:url";
-import { viteStaticCopy } from "vite-plugin-static-copy";
 import { AppRoutePath } from "./src/components/global/app-shell/paths";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,16 +34,6 @@ export default defineConfig(({ mode }) => {
       }),
       eslint({ include: "src/**/*.+(ts|tsx)" }),
       commonjs(),
-      //JUST FOR DEV
-      viteStaticCopy({
-        targets: [
-          {
-            src:
-              path.resolve(__dirname, "../library/src/assets/svg") + "/[!.]*",
-            dest: "./",
-          },
-        ],
-      }),
     ],
     resolve: {
       alias: {

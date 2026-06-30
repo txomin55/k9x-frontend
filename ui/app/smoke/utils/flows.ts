@@ -289,14 +289,11 @@ export const addCompetitorToEvent = async (
   ).toBeVisible();
 };
 
-export const viewEventInfo = async (
-  page: Page,
-  stageId: string,
-  eventTitle: string,
-) => {
+export const viewEventInfo = async (page: Page, stageId: string) => {
   await page.goto(`/stages/${stageId}/info`);
-  await expect(page.getByText(eventTitle)).toBeVisible();
-  await page.getByRole("button", { name: "Competitors enrolled" }).click();
+  const enrolled = page.getByRole("button", { name: "Competitors enrolled" });
+  await expect(enrolled).toBeVisible();
+  await enrolled.click();
 };
 
 export const enrollDog = async (

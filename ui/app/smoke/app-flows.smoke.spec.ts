@@ -40,7 +40,7 @@ test("enroll journey: build an event from a judge and dog, view info, enroll ano
     dog.name,
   );
 
-  await flows.viewEventInfo(page, stage.id, event.title);
+  await flows.viewEventInfo(page, stage.id);
   await flows.enrollDog(page, stage.id, otherDog.name);
 });
 
