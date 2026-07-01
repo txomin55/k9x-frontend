@@ -5,5 +5,6 @@ export interface AtomBadgeProps {
   type?: (typeof BADGE_TYPES)[keyof typeof BADGE_TYPES];
   textValue?: string;
   pulse?: boolean;
+  dotMode?: boolean;
   children: JSX.Element;
 }

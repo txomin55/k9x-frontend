@@ -115,10 +115,16 @@
     }
 }
 
-.landing-page__latest-item-link {
+.landing-page__summary {
     display: flex;
     align-items: center;
     gap: var(--unit-2);
+}
+
+.landing-page__latest-item-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: var(--unit-1) var(--unit-15);
     border: 1px solid var(--border);
     border-radius: var(--unit-15);

@@ -1,22 +1,16 @@
-import {
-  createFileRoute,
-  Link,
-  useLocation,
-  useNavigate,
-} from "@tanstack/solid-router";
+import { createFileRoute, Link, useLocation, useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, For, onMount, Show } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useI18n } from "@/stores/i18n/i18n";
-import "./styles.css";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
+import { isStageLive } from "@/utils/stage";
+import "./styles.css";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -94,12 +88,6 @@ function EntryRoutePage() {
             <span class="landing-page__latest-title">
               {i18n.t("HOME.LATEST_STAGES")}
             </span>
-            <Link
-              class="landing-page__latest-link"
-              to={AppRoutePath.STAGES as "/stages"}
-            >
-              {i18n.t("HOME.BROWSE_STAGES")}
-            </Link>
           </div>
           <ul class="landing-page__latest-list">
             <For each={latestStages()}>
@@ -110,14 +98,18 @@ function EntryRoutePage() {
                     params={{ id: stage.id }}
                     to="/stages/$id/info"
                   >
-                    <CountryFlag
-                      country={stage.country ?? ""}
-                      alt={`${stage.name} flag`}
-                    />
-                    <span class="landing-page__latest-name">{stage.name}</span>
-                    <Show when={stage.status}>
-                      {(status) => <StatusBadge status={status()} />}
-                    </Show>
+                    <div class="landing-page__summary">
+                      <CountryFlag
+                        country={stage.country ?? ""}
+                        alt={`${stage.name} flag`}
+                      />
+                      <span class="landing-page__latest-name">
+                        {stage.name}
+                      </span>
+                      <Show when={stage.status && isStageLive(stage.status)}>
+                        <StatusBadge status={stage.status!} dotMode />
+                      </Show>
+                    </div>
                     <span class="landing-page__latest-date">
                       {new Date(stage.dateFrom ?? 0).toLocaleDateString()}
                     </span>

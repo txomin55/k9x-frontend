@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/solid-router";
-import { createEffect, createMemo, For, Suspense } from "solid-js";
+import { createEffect, createMemo, For, Show, Suspense } from "solid-js";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
@@ -12,6 +12,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { isStageLive } from "@/utils/stage";
 import "./styles.css";
 
 export const Route = createFileRoute("/stages/")({
@@ -65,25 +66,26 @@ function StagesIndexPage() {
       ),
     },
     {
-      accessorKey: "name",
+      id: "name_status",
+      accessorFn: (stage) => stage,
       header: i18n.t("STAGES.INDEX.NAME"),
-      cell: (info) => info.getValue<string>(),
+      cell: (info) => {
+        const stage = info.getValue<StageSummaryResponseDTO>();
+        return (
+          <div>
+            <span>{stage.name}</span>
+            <Show when={stage.status && isStageLive(stage.status)}>
+              <StatusBadge status={stage.status!} dotMode />
+            </Show>
+          </div>
+        );
+      },
     },
     {
       id: "dateFrom",
       accessorFn: (stage) => stage.dateFrom ?? 0,
       header: i18n.t("STAGES.INDEX.DATE_FROM"),
       cell: (info) => new Date(info.getValue<number>()).toLocaleDateString(),
-    },
-    {
-      id: "status",
-      accessorFn: (stage) => stage.status,
-      header: i18n.t("STAGES.INDEX.STATUS"),
-      enableSorting: false,
-      cell: (info) => {
-        const status = info.getValue<string>();
-        return status ? <StatusBadge status={status} /> : null;
-      },
     },
     {
       id: "expander",

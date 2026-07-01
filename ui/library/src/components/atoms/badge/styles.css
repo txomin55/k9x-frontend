@@ -48,6 +48,21 @@
     border: 1px solid var(--accent-border);
 }
 
+.atom-badge[data-variant="primary"] {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border: 1px solid var(--primary-border);
+}
+
+.atom-badge--dot {
+    min-height: unset;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    background: currentColor;
+    border: none;
+}
+
 .atom-badge--pulse {
     animation: atom-badge-pulse 2s ease-in-out infinite;
 }

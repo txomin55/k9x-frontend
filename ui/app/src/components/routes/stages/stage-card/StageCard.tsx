@@ -11,6 +11,7 @@ import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import { canSeeClassification } from "@/utils/event";
 import bellIcon from "@/assets/bell.svg";
+import { isStageLive } from "@/utils/stage";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
@@ -36,10 +37,10 @@ export default function StageCard(props: StageCardProps) {
           <div class="stage-card__country-flag">
             <CountryFlag country={props.country} alt={`${props.name} flag`} />
           </div>
-          <span class="text-heading-sm">{props.name}</span>
-          <Show when={props.status}>
-            {(status) => <StatusBadge status={status()} />}
+          <Show when={props.status && isStageLive(props.status)}>
+            <StatusBadge status={props.status!} dotMode />
           </Show>
+          <span class="text-heading-sm">{props.name}</span>
         </div>
       }
       topRight={

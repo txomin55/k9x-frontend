@@ -10,9 +10,9 @@ type StatusConfig = {
 const STATUS_CONFIG: Record<string, StatusConfig> = {
   CREATED: {},
   CLOSED_ENROLLMENT: { type: BADGE_TYPES.WARNING },
-  TO_BE_STARTED: { type: BADGE_TYPES.WARNING, pulse: true },
+  TO_START: { type: BADGE_TYPES.WARNING, pulse: true },
   STARTED: { type: BADGE_TYPES.SUCCESS, pulse: true },
-  COMPLETED: {},
+  FINISHED: { type: BADGE_TYPES.ACCENT },
   DELETED: { type: BADGE_TYPES.ERROR },
 };
 
@@ -24,7 +24,12 @@ export default function StatusBadge(props: StatusBadgeProps) {
   const label = () => i18n.t(`COMMON.STATUS.${key()}`);
 
   return (
-    <AtomBadge type={config().type} pulse={config().pulse} textValue={label()}>
+    <AtomBadge
+      type={config().type}
+      pulse={config().pulse}
+      dotMode={props.dotMode}
+      textValue={label()}
+    >
       {label()}
     </AtomBadge>
   );

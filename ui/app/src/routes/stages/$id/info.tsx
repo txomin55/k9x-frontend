@@ -1,19 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import {
-  getCachedStageStatus,
-  useStageById,
-} from "@/services/fetch-stages/fetchStages";
+import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -27,6 +18,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
+import { isStageLive } from "@/utils/stage";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -52,9 +44,6 @@ function StageInfoPage() {
   const params = useParams({ from: "/stages/$id/info" });
 
   const stageInfo = useStageById(params().id);
-  const stageStatus = createMemo(
-    () => stageInfo.data?.status ?? getCachedStageStatus(params().id),
-  );
   const dogsQuery = useDogs({
     refetchOnMount: false,
     gcTime: 5 * 60 * 1000,
@@ -244,8 +233,8 @@ function StageInfoPage() {
           <>
             <div class="stage-info__title">
               <span>{stage().name}</span>
-              <Show when={stageStatus()}>
-                {(status) => <StatusBadge status={status()} />}
+              <Show when={stage().status && isStageLive(stage().status!)}>
+                <StatusBadge status={stage().status!} dotMode />
               </Show>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>

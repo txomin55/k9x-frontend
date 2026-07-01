@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import { useI18n } from "@/stores/i18n/i18n";
-import { getMarkerColorByStatus, isStageLive } from "@/utils/stage";
+import { getMarkerColorByStatus, getMarkerTextColorByStatus, isStageLive } from "@/utils/stage";
 import { canSeeClassification } from "@/utils/event";
 
 interface StageMapMarker {
@@ -94,7 +94,7 @@ export function StageMapMarker(props: StageMapMarker) {
       }}
       style={{
         background: getMarkerColorByStatus(props.stage.status),
-        color: getMarkerColorByStatus(props.stage.status),
+        color: getMarkerTextColorByStatus(props.stage.status),
       }}
     />
   );

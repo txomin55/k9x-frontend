@@ -75,7 +75,7 @@
     left: 50%;
     z-index: 21;
 
-    width: min(calc(100vw - (var(--unit-1) * 2)), var(--dialog-max-width-md));
+    width: min(calc(100vw - (var(--unit-2) * 2)), var(--dialog-max-width-md));
     max-height: calc(100vh - (var(--unit-1) * 2));
     overflow: auto;
 
@@ -214,7 +214,7 @@
 
 @media (max-width: 640px) {
     .atom-dialog__content {
-        width: calc(100vw - (var(--unit-1) * 2));
+        width: calc(100vw - (var(--unit-2) * 2));
         max-height: calc(100vh - (var(--unit-1) * 2));
         padding: var(--unit-1);
         border-radius: var(--radius-md);

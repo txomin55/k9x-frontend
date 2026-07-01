@@ -7,17 +7,21 @@ export const BADGE_TYPES = {
   ERROR: "error",
   SUCCESS: "success",
   ACCENT: "accent",
+  PRIMARY: "primary",
 } as const;
 
 export default function (props: AtomBadgeProps) {
   return (
     <Badge
       class="atom-badge"
-      classList={{ "atom-badge--pulse": props.pulse }}
+      classList={{
+        "atom-badge--pulse": props.pulse,
+        "atom-badge--dot": props.dotMode,
+      }}
       data-variant={props.type}
       textValue={props.textValue}
     >
-      {props.children}
+      {!props.dotMode && props.children}
     </Badge>
   );
 }

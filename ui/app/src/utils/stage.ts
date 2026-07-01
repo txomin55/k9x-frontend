@@ -6,16 +6,32 @@ export const STAGE_STATUS = {
   DELETED: "DELETED",
 };
 
+export function getMarkerTextColorByStatus(status: string) {
+  switch (status) {
+    case STAGE_STATUS.CREATED:
+      return "var(--text-primary)";
+    case STAGE_STATUS.TO_START:
+      return "var(--warning-text)";
+    case STAGE_STATUS.STARTED:
+      return "var(--success-text)";
+    case STAGE_STATUS.FINISHED:
+      return "var(--accent)";
+    case STAGE_STATUS.DELETED:
+      return "var(--error-text)";
+  }
+}
 export function getMarkerColorByStatus(status: string) {
   switch (status) {
     case STAGE_STATUS.CREATED:
-      return "var(--primary)";
+      return "var(--surface-muted)";
     case STAGE_STATUS.TO_START:
-      return "var(--warning-border)";
+      return "var(--warning-bg)";
     case STAGE_STATUS.STARTED:
-      return "var(--success-border)";
+      return "var(--success-bg)";
     case STAGE_STATUS.FINISHED:
-      return "var(--accent-border)";
+      return "var(--accent-soft)";
+    case STAGE_STATUS.DELETED:
+      return "var(--error-bg)";
   }
 }
 
