@@ -1,0 +1,12 @@
+.yellow-card-dialog__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-2);
+}
+
+.yellow-card-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--unit-1);
+    margin-top: var(--unit-2);
+}

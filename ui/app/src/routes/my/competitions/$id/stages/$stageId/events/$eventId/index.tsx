@@ -223,6 +223,7 @@ function CompetitionObdxEventDetailBody(props: {
         dogId: competitor.dogId,
         position: competitor.position,
         accepted: competitor.accepted,
+        bih: competitor.bih,
       })),
       configuration: event.configuration,
       discipline: event.discipline,
@@ -251,6 +252,7 @@ function CompetitionObdxEventDetailBody(props: {
       breed: "",
       status: "",
       notCompeting: false,
+      bih: false,
     };
   };
 
@@ -324,6 +326,7 @@ function CompetitionObdxEventDetailBody(props: {
       dogId: competitor.dogId,
       position: competitor.position,
       accepted: competitor.accepted,
+      bih: competitor.bih,
     };
   };
 

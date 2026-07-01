@@ -8,6 +8,7 @@ export const BUTTON_TYPES = {
   ACCENT: "accent",
   DESTRUCTIVE: "destructive",
   GHOST: "ghost",
+  WARNING: "warning",
 } as const;
 
 export default function AtomButton(props: CoreButtonProps) {

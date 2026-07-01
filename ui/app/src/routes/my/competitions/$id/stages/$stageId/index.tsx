@@ -356,6 +356,7 @@ function CompetitionStageDetailBody(props: {
         dogId: competitor.dogId,
         position: competitor.position,
         accepted: competitor.accepted,
+        bih: competitor.bih,
       })),
       configurationId: draft.configuration.id,
       enrollmentDeadline: draft.enrollmentDeadline,

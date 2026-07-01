@@ -102,6 +102,7 @@ export default function AtomSelect(props: AtomSelectProps) {
 
                     return (
                       <Select.Item
+                        aria-label={item.rawValue.label}
                         class="atom-select__item"
                         item={item}
                         style={{

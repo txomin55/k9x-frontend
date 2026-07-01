@@ -10,8 +10,10 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
 import Page from "@/components/common/page/Page";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
+import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -279,6 +281,13 @@ export default function ObdxCollectionDetail() {
         options={collectionCompetitors()}
         value={selectedCompetitor()}
         onChange={markCompetitorAsSeen}
+      />
+
+      <YellowCardDialog
+        eventId={params().id}
+        competitors={collectionData.data?.obdx.competitors ?? []}
+        judgesIds={search().judgesIds}
+        canChooseJudge={isOrganizer()}
       />
 
       <Show

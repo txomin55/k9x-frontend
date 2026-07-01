@@ -7,7 +7,9 @@ export default function Page(props: PageProps) {
     <div class="page">
       <Show when={props.title}>
         <div class="page__header">
-          <span class="page__title">{props.title}</span>
+          <span class="page__title" role="heading" aria-level={1}>
+            {props.title}
+          </span>
           <Show when={props.actions}>
             <div class="page__actions">{props.actions}</div>
           </Show>

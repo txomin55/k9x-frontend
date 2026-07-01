@@ -96,6 +96,23 @@
 }
 
 /* ----------------------------- */
+/* WARNING (Yellow)              */
+/* ----------------------------- */
+.atom-button.warning {
+    --button-background-color: var(--warning);
+    --button-background-color-hover: var(--warning-text);
+    --button-background-color-active: var(--warning-text);
+    --button-text-color: var(--text-primary);
+    --button-border-color: var(--warning);
+}
+
+.atom-button.warning:disabled {
+    --button-text-color: var(--warning-text);
+    --button-background-color: var(--warning-bg);
+    --button-border-color: var(--warning-border);
+}
+
+/* ----------------------------- */
 /* GHOST                         */
 /* ----------------------------- */
 .atom-button.ghost {

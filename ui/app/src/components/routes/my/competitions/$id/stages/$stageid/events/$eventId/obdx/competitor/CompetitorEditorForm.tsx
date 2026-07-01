@@ -1,4 +1,5 @@
 import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
+import AtomCheckbox from "library/src/components/atoms/checkbox/AtomCheckbox";
 import { AtomCombobox, type AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
@@ -53,6 +54,19 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
+  const setBih = (value: boolean) => {
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            bih: value,
+          }
+        : current,
+    );
+
+    props.onCommitCompetitor();
+  };
+
   const dogOptions = (): AtomComboboxOption[] =>
     props.dogOptions.map((option) => ({
       disabled: option.disabled,
@@ -132,6 +146,11 @@ export default function CompetitorEditorForm(
             onChange={setOrder}
             minValue={minOrder}
             maxValue={maxOrder}
+          />
+          <AtomCheckbox
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BIH")}
+            checked={draft().bih}
+            setChecked={setBih}
           />
           <div class="competitor-editor-form__actions">
             <AtomButton

@@ -8,6 +8,7 @@ import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButto
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useAuthUser } from "@/stores/auth/auth";
@@ -27,10 +28,12 @@ export const Route = createFileRoute("/stages/$id/info")({
 
 type EnrollDraft = {
   dogId: string;
+  bih: boolean;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
   dogId: "",
+  bih: false,
 });
 
 const TABS = {
@@ -287,6 +290,17 @@ function StageInfoPage() {
                       </AtomButton>
                     </Show>
                   </AtomCombobox>
+
+                  <AtomCheckbox
+                    label={i18n.t("STAGES.INFO.BIH")}
+                    checked={enrollDraft().bih}
+                    setChecked={(value) =>
+                      updateEnrollDraft((current) => ({
+                        ...current,
+                        bih: value,
+                      }))
+                    }
+                  />
 
                   <div class="stage-info__enroll-form-actions">
                     <AtomButton

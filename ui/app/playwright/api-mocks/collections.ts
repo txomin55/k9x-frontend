@@ -111,6 +111,34 @@ export const setupCollectionNotCompeting = (page: Page) => {
 };
 
 /**
+ * Stateful collections mocks for the yellow-card flow. The yellow-card PUT has no
+ * projection in the collection detail, so nothing is mutated; the mock just
+ * acknowledges the request so it flushes on reconnect.
+ */
+export const setupCollectionYellowCard = (page: Page) => {
+  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+
+  return Promise.all([
+    setRouteResponses(page, {
+      method: "GET",
+      payload: defaultCollectionsList,
+      pathname: "/secured/collections",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: () => detail,
+      pathname: "/secured/events/*/collections",
+    }),
+    setRouteResponses(page, {
+      method: "PUT",
+      payload: () => "",
+      pathname: "/secured/events/*/yellow-card",
+      status: 200,
+    }),
+  ]);
+};
+
+/**
  * Stateful collections mocks: the score PUT persists into the detail so a
  * post-flush reload reflects it. The detail returns a single judge.
  */
