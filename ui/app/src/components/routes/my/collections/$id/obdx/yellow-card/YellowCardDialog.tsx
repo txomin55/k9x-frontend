@@ -7,7 +7,6 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { registerYellowCard } from "@/services/secured/yellow-card-crud/yellowCardCrud";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
-import { showToast } from "@/stores/toast/toast";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -98,7 +97,6 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
       judgeId: judge.value,
     });
 
-    showToast(i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.REGISTERED"));
     setSelectedCompetitor(undefined);
     setSelectedExercise(undefined);
     setIsOpen(false);

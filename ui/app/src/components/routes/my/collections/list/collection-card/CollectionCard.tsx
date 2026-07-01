@@ -1,7 +1,5 @@
 import { CollectionCardProps } from "@/components/routes/my/collections/list/collection-card/CollectionCard.types";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomBadge, { BADGE_TYPES } from "@lib/components/atoms/badge/AtomBadge";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -20,16 +18,18 @@ export default function CollectionCard(props: CollectionCardProps) {
       description={
         <div class="collection-card">
           <AtomBadge
-            type={BADGE_TYPES.ACCENT}
+            type={BADGE_TYPES.SUCCESS}
             textValue={props.collection.status}
           >
             {props.collection.status}
           </AtomBadge>
           <p class="text-body-md">
-            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COMPETITION")}: {props.collection.competitionName}
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COMPETITION")}:{" "}
+            {props.collection.competitionName}
           </p>
           <p class="text-body-md">
-            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.STAGE")}: {props.collection.stageName}
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.STAGE")}:{" "}
+            {props.collection.stageName}
           </p>
         </div>
       }
