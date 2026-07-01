@@ -1,14 +1,17 @@
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  onMount,
-} from "solid-js";
 import L from "leaflet";
-import { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { StageMapMarker, StageMapMarkerPopup } from "@/components/routes/stages/stages-map/StageMapMarker";
+import {
+	createEffect,
+	createMemo,
+	createSignal,
+	onCleanup,
+	onMount,
+} from "solid-js";
 import { render } from "solid-js/web";
+import {
+	StageMapMarker,
+	StageMapMarkerPopup,
+} from "@/components/routes/stages/stages-map/StageMapMarker";
+import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { isDark } from "@/stores/theme/theme";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "leaflet.markercluster";
@@ -18,166 +21,177 @@ import "leaflet/dist/leaflet.css";
 import "./styles.css";
 
 interface StagesMapProps {
-  stages: StageSummaryResponseDTO[];
+	stages: StageSummaryResponseDTO[];
 }
 
 export default function StagesMap(props: StagesMapProps) {
-  let mapEl!: HTMLDivElement;
-  let map: L.Map | undefined;
-  let resizeObserver: ResizeObserver | undefined;
-  let tileLayer: L.TileLayer | undefined;
-  const disposers: Array<() => void> = [];
-  const markerByStage = new Map<string, L.Marker>();
-  const [mapReady, setMapReady] = createSignal(false);
-  const [stageParam, setStageParam] = useSearchParam("stage", "");
+	let mapEl!: HTMLDivElement;
+	let map: L.Map | undefined;
+	let resizeObserver: ResizeObserver | undefined;
+	let tileLayer: L.TileLayer | undefined;
+	const disposers: Array<() => void> = [];
+	const markerByStage = new Map<string, L.Marker>();
+	const [mapReady, setMapReady] = createSignal(false);
+	const [stageParam, setStageParam] = useSearchParam("stage", "");
 
-  const clusterGroup = L.markerClusterGroup({
-    showCoverageOnHover: false,
-    spiderfyOnMaxZoom: true,
-    zoomToBoundsOnClick: true,
-    disableClusteringAtZoom: 10,
-    maxClusterRadius: (zoom) => (zoom < 6 ? 100 : 300),
-    removeOutsideVisibleBounds: true,
-    animate: true,
-  });
+	const clusterGroup = L.markerClusterGroup({
+		showCoverageOnHover: false,
+		spiderfyOnMaxZoom: true,
+		zoomToBoundsOnClick: true,
+		disableClusteringAtZoom: 10,
+		maxClusterRadius: (zoom) => (zoom < 6 ? 100 : 300),
+		removeOutsideVisibleBounds: true,
+		animate: true,
+	});
 
-  const fixSize = () => {
-    if (!map) return;
-    map.invalidateSize(true);
-  };
+	const fixSize = () => {
+		if (!map) return;
+		map.invalidateSize(true);
+	};
 
-  const getIconStyle = (stage: StageSummaryResponseDTO) => {
-    const container = document.createElement("div");
-    const dispose = render(() => <StageMapMarker stage={stage} />, container);
+	const getIconStyle = (stage: StageSummaryResponseDTO) => {
+		const container = document.createElement("div");
+		const dispose = render(() => <StageMapMarker stage={stage} />, container);
 
-    disposers.push(dispose);
+		disposers.push(dispose);
 
-    return L.divIcon({
-      className: "stage-map-marker",
-      html: container,
-    });
-  };
+		return L.divIcon({
+			className: "stage-map-marker",
+			html: container,
+		});
+	};
 
-  const markers = createMemo(() => {
-    markerByStage.clear();
-    return props.stages.map((stage) => {
-      const marker = L.marker(
-        [stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
-        { icon: getIconStyle(stage) },
-      );
+	const markers = createMemo(() => {
+		markerByStage.clear();
+		return props.stages.map((stage) => {
+			const marker = L.marker(
+				[stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
+				{ icon: getIconStyle(stage) },
+			);
 
-      const container = document.createElement("div");
-      const dispose = render(
-        () => <StageMapMarkerPopup stage={stage} />,
-        container,
-      );
+			const container = document.createElement("div");
+			const dispose = render(
+				() => <StageMapMarkerPopup stage={stage} />,
+				container,
+			);
 
-      disposers.push(dispose);
-      marker.bindPopup(container);
+			disposers.push(dispose);
+			marker.bindPopup(container);
 
-      marker.on("popupopen", () => {
-        if (stageParam() !== stage.id) setStageParam(stage.id);
-      });
-      marker.on("popupclose", () => {
-        if (stageParam() === stage.id) setStageParam("");
-      });
+			marker.on("popupopen", () => {
+				if (stageParam() !== stage.id) setStageParam(stage.id);
+			});
+			marker.on("popupclose", () => {
+				if (stageParam() === stage.id) setStageParam("");
+			});
 
-      markerByStage.set(stage.id, marker);
+			markerByStage.set(stage.id, marker);
 
-      return marker;
-    });
-  });
+			return marker;
+		});
+	});
 
-  createEffect(() => {
-    const id = stageParam();
-    if (!mapReady() || !map || !id) return;
+	const fitToMarkers = () => {
+		if (!map) return;
 
-    const marker = markerByStage.get(id);
-    if (!marker || marker.isPopupOpen()) return;
+		const bounds = clusterGroup.getBounds();
+		if (bounds.isValid()) {
+			map.fitBounds(bounds, {
+				paddingTopLeft: [80, 80],
+				paddingBottomRight: [80, 160],
+				maxZoom: 4,
+			});
+		}
+	};
 
-    clusterGroup.zoomToShowLayer(marker, () => marker.openPopup());
-  });
+	createEffect(() => {
+		const currentMarkers = markers();
+		if (!mapReady() || !map) return;
 
-  const getTileLayerUrl = (isDark: boolean) =>
-    isDark
-      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+		clusterGroup.clearLayers();
+		clusterGroup.addLayers(currentMarkers);
+		fitToMarkers();
+	});
 
-  const addTileLayer = (isDark: boolean) => {
-    if (!map) return;
+	createEffect(() => {
+		const id = stageParam();
+		if (!mapReady() || !map || !id) return;
 
-    tileLayer?.remove();
+		const marker = markerByStage.get(id);
+		if (!marker || marker.isPopupOpen()) return;
 
-    tileLayer = L.tileLayer(getTileLayerUrl(isDark), {
-      maxZoom: 20,
-    }).addTo(map);
-  };
+		clusterGroup.zoomToShowLayer(marker, () => marker.openPopup());
+	});
 
-  createEffect(() => {
-    addTileLayer(isDark());
-  });
+	const getTileLayerUrl = (isDark: boolean) =>
+		isDark
+			? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+			: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
 
-  onMount(() => {
-    map = L.map(mapEl, {
-      zoomControl: true,
-    });
+	const addTileLayer = (isDark: boolean) => {
+		if (!map) return;
 
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-      {
-        maxZoom: 20,
-      },
-    ).addTo(map);
+		tileLayer?.remove();
 
-    map.addLayer(clusterGroup);
-    clusterGroup.addLayers(markers());
+		tileLayer = L.tileLayer(getTileLayerUrl(isDark), {
+			maxZoom: 20,
+		}).addTo(map);
+	};
 
-    const bounds = clusterGroup.getBounds();
+	createEffect(() => {
+		addTileLayer(isDark());
+	});
 
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, {
-        paddingTopLeft: [80, 80],
-        paddingBottomRight: [80, 160],
-        maxZoom: 4,
-      });
-    }
+	onMount(() => {
+		map = L.map(mapEl, {
+			zoomControl: true,
+		});
 
-    setMapReady(true);
+		L.tileLayer(
+			"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+			{
+				maxZoom: 20,
+			},
+		).addTo(map);
 
-    resizeObserver = new ResizeObserver(() => {
-      requestAnimationFrame(() => {
-        if (!map) {
-          return;
-        }
+		map.addLayer(clusterGroup);
 
-        fixSize();
+		setMapReady(true);
 
-        const bounds = clusterGroup.getBounds();
+		resizeObserver = new ResizeObserver(() => {
+			requestAnimationFrame(() => {
+				if (!map) {
+					return;
+				}
 
-        if (bounds.isValid()) {
-          map.fitBounds(bounds, {
-            padding: [48, 48],
-            maxZoom: 5,
-            animate: false,
-          });
-        }
-      });
-    });
+				fixSize();
 
-    resizeObserver.observe(mapEl);
+				const bounds = clusterGroup.getBounds();
 
-    window.addEventListener("orientationchange", () => {
-      setTimeout(() => {
-        fixSize();
-      }, 250);
-    });
-  });
+				if (bounds.isValid()) {
+					map.fitBounds(bounds, {
+						padding: [48, 48],
+						maxZoom: 5,
+						animate: false,
+					});
+				}
+			});
+		});
 
-  onCleanup(() => {
-    resizeObserver?.disconnect();
-    map?.remove();
-    disposers.forEach((dispose) => dispose());
-  });
+		resizeObserver.observe(mapEl);
 
-  return <div class="stages-map" ref={mapEl} />;
+		window.addEventListener("orientationchange", () => {
+			setTimeout(() => {
+				fixSize();
+			}, 250);
+		});
+	});
+
+	onCleanup(() => {
+		resizeObserver?.disconnect();
+		map?.remove();
+		disposers.forEach((dispose) => dispose());
+	});
+
+	return <div class="stages-map" ref={mapEl} />;
 }

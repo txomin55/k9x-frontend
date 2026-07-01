@@ -316,5 +316,13 @@
   "STAGES.CLASSIFICATION.NO_DATA": "No classification data available.",
   "STAGES.CLASSIFICATION.ERROR": "We couldn't load the classification. Please try again.",
   "STAGES.CLASSIFICATION.RETRY": "Retry",
-  "STAGES.INFO.UNTIL": "Until"
+  "STAGES.INFO.UNTIL": "Until",
+  "COMMON.NAME_FILTER.NO_MATCHES": "No results match the filter.",
+  "COMMON.COUNTRY_FIELD.ALL": "All countries",
+  "STAGES.FILTERS.DATE_FROM": "From date",
+  "STAGES.FILTERS.DATE_TO": "To date",
+  "STAGES.FILTERS.NAME": "Stage name",
+  "MY.JUDGES.LIST.NAME_FILTER": "Judge name",
+  "MY.DOGS.LIST.NAME_FILTER": "Dog name",
+  "MY.COMPETITIONS.LIST.NAME_FILTER": "Competition name"
 }

@@ -316,5 +316,13 @@
   "STAGES.CLASSIFICATION.NO_DATA": "No hay datos de clasificación disponibles.",
   "STAGES.CLASSIFICATION.ERROR": "No se pudo cargar la clasificación. Inténtalo de nuevo.",
   "STAGES.CLASSIFICATION.RETRY": "Reintentar",
-  "STAGES.INFO.UNTIL": "Hasta"
+  "STAGES.INFO.UNTIL": "Hasta",
+  "COMMON.NAME_FILTER.NO_MATCHES": "Ningún resultado coincide con el filtro.",
+  "COMMON.COUNTRY_FIELD.ALL": "Todos los países",
+  "STAGES.FILTERS.DATE_FROM": "Fecha desde",
+  "STAGES.FILTERS.DATE_TO": "Fecha hasta",
+  "STAGES.FILTERS.NAME": "Nombre de la prueba",
+  "MY.JUDGES.LIST.NAME_FILTER": "Nombre del juez",
+  "MY.DOGS.LIST.NAME_FILTER": "Nombre del perro",
+  "MY.COMPETITIONS.LIST.NAME_FILTER": "Nombre de la competición"
 }
