@@ -13,7 +13,8 @@ import {
   saveJudgesSnapshot,
 } from "./judgeCrudOfflineUtils";
 import type {
-  IdNameDTO,
+  CreateJudgeRequestDTO,
+  JudgeResponseDTO,
   UpdateJudgeRequestDTO,
 } from "./judgeCrud.types";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
@@ -22,10 +23,10 @@ import { isOrganizer } from "@/stores/auth/auth";
 
 const refreshJudgesSnapshot = async () => {
   if (!isOrganizer()) {
-    return queryClient.getQueryData<IdNameDTO[]>(getJudgesQueryKey()) ?? [];
+    return queryClient.getQueryData<JudgeResponseDTO[]>(getJudgesQueryKey()) ?? [];
   }
 
-  const judges = await rawRequest<IdNameDTO[]>({
+  const judges = await rawRequest<JudgeResponseDTO[]>({
     path: "/secured/judges",
   });
 
@@ -79,22 +80,24 @@ export const useJudges = (options?: TanstackCreateQuery) => {
 };
 
 const mergeJudgeWithPayload = (
-  payload: IdNameDTO,
-  existingJudge?: IdNameDTO,
-): IdNameDTO => ({
+  payload: CreateJudgeRequestDTO,
+  existingJudge?: JudgeResponseDTO,
+): JudgeResponseDTO => ({
   id: payload.id ?? existingJudge?.id ?? globalThis.crypto.randomUUID(),
   name: payload.name ?? existingJudge?.name ?? "",
+  country: payload.country ?? existingJudge?.country ?? "",
 });
 
 const updateJudgeProjection = (
-  existingJudge: IdNameDTO,
+  existingJudge: JudgeResponseDTO,
   payload: UpdateJudgeRequestDTO,
-): IdNameDTO => ({
+): JudgeResponseDTO => ({
   ...existingJudge,
   name: payload.name,
+  country: payload.country,
 });
 
-export const createJudge = (payload: IdNameDTO) => {
+export const createJudge = (payload: CreateJudgeRequestDTO) => {
   const previousJudges = getVisibleJudges();
   const draftJudge = mergeJudgeWithPayload(payload);
 

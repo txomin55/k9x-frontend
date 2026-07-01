@@ -19,7 +19,7 @@ import {
 	updateJudge,
 	useJudges,
 } from "@/services/secured/judge-crud/judgeCrud";
-import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
@@ -31,9 +31,10 @@ export const Route = createFileRoute("/my/judges/list/")({
 
 function MyJudgesListPage() {
 	const i18n = useI18n();
-	const buildJudgeDraft = (): IdNameDTO => ({
+	const buildJudgeDraft = (): JudgeResponseDTO => ({
 		id: globalThis.crypto.randomUUID(),
 		name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
+		country: "",
 	});
 	const judgesQuery = useJudges({
 		refetchOnMount: false,
@@ -41,7 +42,7 @@ function MyJudgesListPage() {
 	});
 
 	const [judgeParam, setJudgeParam] = useSearchParam("judge", "", "push");
-	const [draftJudge, setDraftJudge] = createSignal<IdNameDTO>(
+	const [draftJudge, setDraftJudge] = createSignal<JudgeResponseDTO>(
 		buildJudgeDraft(),
 	);
 	const [nameFilter, setNameFilter] = createSignal("");
@@ -63,10 +64,11 @@ function MyJudgesListPage() {
 		setJudgeParam("");
 	};
 
-	const openEditDialog = (judge: IdNameDTO) => {
+	const openEditDialog = (judge: JudgeResponseDTO) => {
 		setDraftJudge(() => ({
 			id: judge.id,
 			name: judge.name,
+			country: judge.country,
 		}));
 		setJudgeParam(judge.id);
 	};
@@ -76,7 +78,11 @@ function MyJudgesListPage() {
 		if (!id) return;
 		const judge = judgesQuery.data?.find((entry) => entry.id === id);
 		if (judge && draftJudge().id !== judge.id) {
-			setDraftJudge(() => ({ id: judge.id, name: judge.name }));
+			setDraftJudge(() => ({
+				id: judge.id,
+				name: judge.name,
+				country: judge.country,
+			}));
 		}
 	});
 
@@ -87,6 +93,7 @@ function MyJudgesListPage() {
 		if (currentEditingJudgeId) {
 			updateJudge(currentEditingJudgeId, {
 				name: payload.name,
+				country: payload.country,
 			});
 		} else {
 			createJudge(payload);

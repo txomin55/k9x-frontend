@@ -6,6 +6,7 @@ import AtomButton, {
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
@@ -56,6 +57,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
       .map((judge) => ({
         label: judge.name,
         value: judge.id,
+        preLabel: <CountryFlag country={judge.country} alt={`${judge.country} flag`} />,
       }));
   });
 

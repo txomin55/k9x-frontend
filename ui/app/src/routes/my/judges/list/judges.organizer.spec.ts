@@ -18,6 +18,9 @@ organizerTest.describe("My judges (write) - organizer", () => {
           await page.getByRole("button", { name: "+", exact: true }).click();
           const dialog = page.getByRole("dialog");
           await dialog.getByLabel("Name").fill("Judge Mike");
+          await dialog.getByRole("button", { name: "Country" }).click();
+          await page.keyboard.type("Spain");
+          await page.keyboard.press("Enter");
           await dialog.getByRole("button", { name: "Save" }).click();
         },
         assertOptimistic: async () => {

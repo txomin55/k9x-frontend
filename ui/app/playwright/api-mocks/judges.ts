@@ -1,10 +1,10 @@
 import type { Page } from "@playwright/test";
-import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
-export const defaultJudges: IdNameDTO[] = [
-  { id: "judge-1", name: "Judge Alpha" },
-  { id: "judge-2", name: "Judge Beta" },
+export const defaultJudges: JudgeResponseDTO[] = [
+  { id: "judge-1", name: "Judge Alpha", country: "es" },
+  { id: "judge-2", name: "Judge Beta", country: "pt" },
 ];
 
 /**

@@ -1,20 +1,22 @@
-import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createSignal } from "solid-js";
+import CountryField from "@/components/common/country-field/CountryField";
 import {
   MIN_TEXT_LENGTH,
+  validateRequiredSelection,
   validateRequiredText,
 } from "@/utils/validation/textField";
 import "./styles.css";
 
 type JudgeFormProps = {
-  draft: () => IdNameDTO;
+  draft: () => JudgeResponseDTO;
   onDraftChange: (
-    updater: (current: IdNameDTO) => IdNameDTO,
+    updater: (current: JudgeResponseDTO) => JudgeResponseDTO,
   ) => void;
   onCancel: () => void;
   onSave: () => void;
@@ -22,7 +24,7 @@ type JudgeFormProps = {
 
 export default function JudgeForm(props: JudgeFormProps) {
   const i18n = useI18n();
-  const updateField = (field: keyof IdNameDTO) => (value: string) => {
+  const updateField = (field: keyof JudgeResponseDTO) => (value: string) => {
     props.onDraftChange((current) => ({
       ...current,
       [field]: value,
@@ -30,7 +32,11 @@ export default function JudgeForm(props: JudgeFormProps) {
   };
 
   const [nameTouched, setNameTouched] = createSignal(false);
+  const [countryTouched, setCountryTouched] = createSignal(false);
   const nameError = () => validateRequiredText(props.draft().name);
+  const countryError = () => validateRequiredSelection(props.draft().country);
+
+  const isValid = () => !nameError() && !countryError();
 
   const nameErrorMessage = () => {
     const error = nameError();
@@ -52,11 +58,26 @@ export default function JudgeForm(props: JudgeFormProps) {
         }
         errorMessage={nameTouched() ? nameErrorMessage() : undefined}
       />
+      <CountryField
+        onChange={(value) => {
+          setCountryTouched(true);
+          updateField("country")(value.value);
+        }}
+        value={props.draft().country ?? ""}
+        validationState={
+          countryTouched() && countryError() ? "invalid" : undefined
+        }
+        errorMessage={
+          countryTouched() && countryError()
+            ? i18n.t("COMMON.VALIDATION.REQUIRED")
+            : undefined
+        }
+      />
       <div class="judge-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.JUDGES.JUDGE_FORM.CANCEL")}
         </AtomButton>
-        <AtomButton onClick={props.onSave} disabled={!!nameError()}>
+        <AtomButton onClick={props.onSave} disabled={!isValid()}>
           {i18n.t("MY.JUDGES.JUDGE_FORM.SAVE")}
         </AtomButton>
       </div>
