@@ -11,11 +11,14 @@ export function useSearchParam(
   defaultValue = "",
   mode: SearchParamMode = "replace",
 ) {
-  const search = useSearch({ strict: false });
+  const search = useSearch({
+    strict: false,
+    select: (current) => (current as SearchRecord)[key],
+  });
   const navigate = useNavigate();
 
   const value = (): string => {
-    const current = (search() as SearchRecord)[key];
+    const current = search();
     if (typeof current === "string") return current;
     if (typeof current === "number") return String(current);
     return defaultValue;
@@ -41,11 +44,14 @@ export function useSearchParamList(
   key: string,
   mode: SearchParamMode = "replace",
 ) {
-  const search = useSearch({ strict: false });
+  const search = useSearch({
+    strict: false,
+    select: (current) => (current as SearchRecord)[key],
+  });
   const navigate = useNavigate();
 
   const value = (): string[] => {
-    const current = (search() as SearchRecord)[key];
+    const current = search();
     if (Array.isArray(current)) {
       return current;
     }
