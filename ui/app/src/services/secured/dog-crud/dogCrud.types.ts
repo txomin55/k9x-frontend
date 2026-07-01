@@ -4,6 +4,7 @@ export interface Dog {
   image: string;
   breed: string;
   identifier: string;
+  identity?: string;
   owner: string;
   handler: string;
   team: string;

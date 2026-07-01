@@ -77,7 +77,7 @@ function MyDogsListPage() {
 		name: dog.name,
 		image: dog.image,
 		breed: dog.breed,
-		identifier: dog.identifier,
+		identifier: dog.identity ?? dog.identifier,
 		owner: dog.owner,
 		handler: dog.handler,
 		team: dog.team,
