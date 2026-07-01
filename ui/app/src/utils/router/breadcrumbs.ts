@@ -1,9 +1,13 @@
 import type { AnyRouteMatch } from "@tanstack/solid-router";
 import i18n from "i18next";
 
+export type AppBreadcrumbResult = { label: string; route?: string };
+
 export type AppBreadcrumbValue =
   | string
-  | ((match: AnyRouteMatch) => string | null | undefined);
+  | ((
+      match: AnyRouteMatch,
+    ) => string | null | undefined | AppBreadcrumbResult);
 
 declare module "@tanstack/solid-router" {
   interface StaticDataRouteOption {
@@ -11,15 +15,17 @@ declare module "@tanstack/solid-router" {
   }
 }
 
-export const resolveBreadcrumbLabel = (
+export const resolveBreadcrumb = (
   breadcrumb: AppBreadcrumbValue | undefined,
   match: AnyRouteMatch,
-) => {
+): AppBreadcrumbResult | null => {
   if (!breadcrumb) return null;
 
   if (typeof breadcrumb === "function") {
-    return breadcrumb(match) ?? null;
+    const result = breadcrumb(match);
+    if (!result) return null;
+    return typeof result === "string" ? { label: result } : result;
   }
 
-  return i18n.t(breadcrumb);
+  return { label: i18n.t(breadcrumb) };
 };

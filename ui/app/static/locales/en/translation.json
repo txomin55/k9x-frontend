@@ -162,6 +162,7 @@
   "STAGES.STAGES_MAP.MARKER.INFO": "+Info",
   "STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS": "View Qualifications",
   "STAGES.INFO.EVENTS": "Events",
+  "STAGES.INFO.SEE_CLASSIFICATION": "See classification",
   "STAGES.INFO.NOTIFICATIONS": "Notifications",
   "STAGES.INFO.LOGIN_TO_ENROLL": "Login to enroll",
   "STAGES.INFO.ENROLL": "Enroll",

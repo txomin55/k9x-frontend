@@ -4,7 +4,12 @@ import { getCachedStageName } from "@/services/fetch-stages/fetchStages";
 export const Route = createFileRoute("/stages/$id")({
   component: EventDetailLayoutPage,
   staticData: {
-    breadcrumb: (match) => getCachedStageName(match.params.id),
+    breadcrumb: (match) => {
+      const label = getCachedStageName(match.params.id);
+      return label
+        ? { label, route: `/stages/${match.params.id}/info` }
+        : null;
+    },
   },
 });
 

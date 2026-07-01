@@ -19,6 +19,7 @@ import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 import { isStageLive } from "@/utils/stage";
+import { canSeeClassification } from "@/utils/event";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -166,6 +167,16 @@ function StageInfoPage() {
                             </div>
                           </Show>
                         </Show>
+                        <Show when={canSeeClassification(event().status)}>
+                          <AtomButton
+                            type={BUTTON_TYPES.PRIMARY}
+                            onClick={() =>
+                              navigateToClassification(event().id)
+                            }
+                          >
+                            {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
+                          </AtomButton>
+                        </Show>
                       </div>
                       <AtomCollapsible
                         trigger={
@@ -222,6 +233,12 @@ function StageInfoPage() {
   const handleGoToDogs = () =>
     navigate({
       to: "/my/dogs",
+    });
+
+  const navigateToClassification = (eventId: string) =>
+    void navigate({
+      params: { id: params().id, eventId },
+      to: "/stages/$id/events/$eventId/classification",
     });
   return (
     <div class="stage-info">
