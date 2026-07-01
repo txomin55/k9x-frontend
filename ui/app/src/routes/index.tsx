@@ -10,6 +10,7 @@ import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButto
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
 import { isStageLive } from "@/utils/stage";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
@@ -24,7 +25,7 @@ function EntryRoutePage() {
   const i18n = useI18n();
 
   const fetchedStages = useStages({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
 

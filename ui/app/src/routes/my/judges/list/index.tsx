@@ -24,6 +24,7 @@ import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/my/judges/list/")({
 	component: MyJudgesListPage,
@@ -37,7 +38,7 @@ function MyJudgesListPage() {
 		country: "",
 	});
 	const judgesQuery = useJudges({
-		refetchOnMount: false,
+		refetchOnMount: !isOffline(),
 		gcTime: 2 * 60 * 1000,
 	});
 

@@ -18,6 +18,7 @@ import {
   canSeeCompetitorScores,
   EVENT_STATUS,
 } from "@/utils/event";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 type EventCompetitorsSectionProps = {
@@ -50,7 +51,7 @@ export default function EventCompetitorsSection(
   });
 
   const dogsQuery = useAllDogs({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() => {

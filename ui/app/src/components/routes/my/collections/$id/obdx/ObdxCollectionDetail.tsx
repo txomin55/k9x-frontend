@@ -13,6 +13,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
 import Page from "@/components/common/page/Page";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
@@ -73,7 +74,7 @@ export default function ObdxCollectionDetail() {
 
   const collectionData = useCollectionById(params().id);
   const collectionsList = useCollections({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
   const eventStatus = createMemo(

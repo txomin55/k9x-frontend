@@ -11,6 +11,7 @@ import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 type EventJudgesSectionProps = {
@@ -34,7 +35,7 @@ type EventJudgesSectionProps = {
 export default function EventJudgesSection(props: EventJudgesSectionProps) {
   const i18n = useI18n();
   const judgesQuery = useJudges({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
   const judgeNameById = createMemo(() => {

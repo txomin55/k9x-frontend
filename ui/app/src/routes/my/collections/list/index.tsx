@@ -5,6 +5,7 @@ import CollectionCard from "@/components/routes/my/collections/list/collection-c
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import Page from "@/components/common/page/Page";
 import { useI18n } from "@/stores/i18n/i18n";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/my/collections/list/")({
   component: MyCollectionsListPage,
@@ -15,7 +16,7 @@ function MyCollectionsListPage() {
   const navigate = useNavigate();
 
   const collectionsQuery = useCollections({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 2 * 60 * 1000,
   });
 

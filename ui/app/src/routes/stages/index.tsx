@@ -37,7 +37,7 @@ function StagesIndexPage() {
 	const isLoggedIn = () => !!user();
 
 	const fetchedStages = useStages({
-		refetchOnMount: false,
+		refetchOnMount: !isOffline(),
 		gcTime: 5 * 60 * 1000,
 	});
 

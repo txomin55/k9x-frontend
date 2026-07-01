@@ -30,6 +30,7 @@ import {
   useSearchParamList,
 } from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -53,7 +54,7 @@ function EventClassificationPage() {
     params().id,
     params().eventId,
     {
-      refetchOnMount: false,
+      refetchOnMount: !isOffline(),
       gcTime: 5 * 60 * 1000,
     },
   );

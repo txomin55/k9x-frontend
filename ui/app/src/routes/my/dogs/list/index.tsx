@@ -25,6 +25,7 @@ import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/my/dogs/list/")({
 	component: MyDogsListPage,
@@ -47,7 +48,7 @@ function MyDogsListPage() {
 		country: "",
 	});
 	const dogsQuery = useDogs({
-		refetchOnMount: false,
+		refetchOnMount: !isOffline(),
 		gcTime: 2 * 60 * 1000,
 	});
 

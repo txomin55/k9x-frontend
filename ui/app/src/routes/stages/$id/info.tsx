@@ -21,6 +21,7 @@ import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 import { isStageLive } from "@/utils/stage";
 import { canSeeClassification } from "@/utils/event";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoPage,
@@ -49,7 +50,7 @@ function StageInfoPage() {
 
   const stageInfo = useStageById(params().id);
   const dogsQuery = useDogs({
-    refetchOnMount: false,
+    refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() =>

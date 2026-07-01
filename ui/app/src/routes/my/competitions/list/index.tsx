@@ -7,6 +7,7 @@ import CompetitionCard from "@/components/routes/my/competitions/list/competitio
 import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/my/competitions/list/")({
 	component: MyCompetitionsIndexPage,
@@ -16,7 +17,7 @@ function MyCompetitionsIndexPage() {
 	const navigate = useNavigate();
 	const i18n = useI18n();
 	const fetchedCompetitions = useCompetitions({
-		refetchOnMount: false,
+		refetchOnMount: !isOffline(),
 		gcTime: 2 * 60 * 1000,
 	});
 	const [nameFilter, setNameFilter] = createSignal("");
