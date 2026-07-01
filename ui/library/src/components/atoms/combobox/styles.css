@@ -151,6 +151,13 @@
     color 120ms ease;
 }
 
+/* Item option (preLabel + label) */
+.atom-combobox__item-option {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-05);
+}
+
 /* Highlighted */
 .atom-combobox__item[data-highlighted] {
     background: var(--accent);
