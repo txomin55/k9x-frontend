@@ -4,15 +4,25 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.t
 import { COUNTRY_OPTIONS } from "@/components/common/country-field/CountryField";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useI18n } from "@/stores/i18n/i18n";
+import { STAGE_STATUS } from "@/utils/stage";
 import "./styles.css";
+
+const STATUS_VALUES = [
+	STAGE_STATUS.CREATED,
+	STAGE_STATUS.TO_START,
+	STAGE_STATUS.STARTED,
+	STAGE_STATUS.FINISHED,
+];
 
 type StagesFiltersProps = {
 	name: string;
 	country: string;
+	status: string;
 	dateFrom: string;
 	dateTo: string;
 	onNameChange: (value: string) => void;
 	onCountryChange: (value: string) => void;
+	onStatusChange: (value: string) => void;
 	onDateFromChange: (value: string) => void;
 	onDateToChange: (value: string) => void;
 };
@@ -33,6 +43,18 @@ export default function StagesFilters(props: StagesFiltersProps) {
 		countryOptions.find((option) => option.value === props.country) ??
 		countryOptions[0];
 
+	const statusOptions: AtomSelectOption[] = [
+		{ label: i18n.t("STAGES.FILTERS.ALL_STATUSES"), value: "" },
+		...STATUS_VALUES.map((value) => ({
+			label: i18n.t(`COMMON.STATUS.${value}`),
+			value,
+		})),
+	];
+
+	const selectedStatus = () =>
+		statusOptions.find((option) => option.value === props.status) ??
+		statusOptions[0];
+
 	return (
 		<div class="stages-filters">
 			<AtomInput
@@ -46,6 +68,12 @@ export default function StagesFilters(props: StagesFiltersProps) {
 				options={countryOptions}
 				value={selectedCountry()}
 				onChange={(option) => props.onCountryChange(option?.value ?? "")}
+			/>
+			<AtomSelect
+				label={i18n.t("STAGES.FILTERS.STATUS")}
+				options={statusOptions}
+				value={selectedStatus()}
+				onChange={(option) => props.onStatusChange(option?.value ?? "")}
 			/>
 			<div class="stages-filters__dates">
 				<AtomInput

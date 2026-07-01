@@ -43,6 +43,7 @@ function StagesIndexPage() {
 
 	const [nameFilter, setNameFilter] = useSearchParam("name", "");
 	const [countryFilter, setCountryFilter] = useSearchParam("country", "");
+	const [statusFilter, setStatusFilter] = useSearchParam("status", "");
 	const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
 	const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
 
@@ -52,6 +53,7 @@ function StagesIndexPage() {
 
 		const matchesName = buildNameMatcher(nameFilter());
 		const country = countryFilter().toLowerCase();
+		const status = statusFilter();
 		const fromTs = dateFromFilter()
 			? new Date(dateFromFilter()).getTime()
 			: null;
@@ -64,6 +66,7 @@ function StagesIndexPage() {
 			if (country && (stage.country ?? "").toLowerCase() !== country) {
 				return false;
 			}
+			if (status && stage.status !== status) return false;
 			const date = stage.dateFrom ?? 0;
 			if (fromTs !== null && date < fromTs) return false;
 			if (toTs !== null && date > toTs) return false;
@@ -199,10 +202,12 @@ function StagesIndexPage() {
 					<StagesFilters
 						name={nameFilter()}
 						country={countryFilter()}
+						status={statusFilter()}
 						dateFrom={dateFromFilter()}
 						dateTo={dateToFilter()}
 						onNameChange={setNameFilter}
 						onCountryChange={setCountryFilter}
+						onStatusChange={setStatusFilter}
 						onDateFromChange={setDateFromFilter}
 						onDateToChange={setDateToFilter}
 					/>

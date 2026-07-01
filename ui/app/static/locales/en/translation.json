@@ -330,6 +330,8 @@
   "STAGES.FILTERS.DATE_FROM": "From date",
   "STAGES.FILTERS.DATE_TO": "To date",
   "STAGES.FILTERS.NAME": "Stage name",
+  "STAGES.FILTERS.STATUS": "Status",
+  "STAGES.FILTERS.ALL_STATUSES": "All statuses",
   "MY.JUDGES.LIST.NAME_FILTER": "Judge name",
   "MY.DOGS.LIST.NAME_FILTER": "Dog name",
   "MY.COMPETITIONS.LIST.NAME_FILTER": "Competition name"

@@ -330,6 +330,8 @@
   "STAGES.FILTERS.DATE_FROM": "Fecha desde",
   "STAGES.FILTERS.DATE_TO": "Fecha hasta",
   "STAGES.FILTERS.NAME": "Nombre de la prueba",
+  "STAGES.FILTERS.STATUS": "Estado",
+  "STAGES.FILTERS.ALL_STATUSES": "Todos los estados",
   "MY.JUDGES.LIST.NAME_FILTER": "Nombre del juez",
   "MY.DOGS.LIST.NAME_FILTER": "Nombre del perro",
   "MY.COMPETITIONS.LIST.NAME_FILTER": "Nombre de la competición"
