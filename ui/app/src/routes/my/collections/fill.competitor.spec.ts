@@ -12,7 +12,7 @@ competitorTest.describe("Collection scoring (write) - competitor", () => {
       await page.goto("/my/collections/list");
       await page.getByRole("button", { name: "Collect", exact: true }).click();
       await expect(
-        page.getByRole("heading", { name: "Specific scores" }),
+        page.getByRole("heading", { name: "Score collector" }),
       ).toBeVisible();
 
       const selectCompetitor = async () => {
