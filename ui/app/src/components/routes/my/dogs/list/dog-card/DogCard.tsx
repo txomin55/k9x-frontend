@@ -22,7 +22,7 @@ export default function DogCard(props: DogCardProps) {
         </div>
       }
       topRight={<span class="dog-card__breed">{props.dog.breed}</span>}
-      description={<span class="text-body-md">{props.dog.id}</span>}
+      description={<span class="text-body-md">{props.dog.identifier}</span>}
       content={
         <Show when={props.dog.image}>
           <img

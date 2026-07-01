@@ -36,7 +36,7 @@ function MyDogsListPage() {
 	const i18n = useI18n();
 
 	const buildDogDraft = (isOrganizer: boolean): Dog => ({
-		id: globalThis.crypto.randomUUID(),
+		id: "",
 		name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
 		breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
 		owned: !isOrganizer,
