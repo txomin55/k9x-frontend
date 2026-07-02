@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, For } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
@@ -75,11 +75,25 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
     }
   });
 
+  const isDuplicateSelection = createMemo(() => {
+    const judge = selectedJudge();
+    const exercise = selectedExercise();
+
+    if (!judge || !exercise) {
+      return false;
+    }
+
+    return existingYellowCards().some(
+      (card) => card.judge.id === judge.value && card.exercise.id === exercise.value,
+    );
+  });
+
   const canSubmit = createMemo(
     () =>
       Boolean(props.competitorId) &&
       Boolean(selectedJudge()) &&
-      Boolean(selectedExercise()),
+      Boolean(selectedExercise()) &&
+      !isDuplicateSelection(),
   );
 
   const handleConfirm = () => {
@@ -144,7 +158,9 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
           <div class="yellow-card-dialog__content">
             <div class="yellow-card-dialog__note">
               <p>
-                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE")}
+                {existingYellowCards().length >= 2
+                  ? i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_TWO")
+                  : i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE")}
               </p>
               <For each={existingYellowCards()}>
                 {(card) => (
@@ -161,11 +177,13 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
                 )}
               </For>
             </div>
-            <div class="yellow-card-dialog__actions">
-              <AtomButton type={BUTTON_TYPES.WARNING} onClick={handleAcceptNote}>
-                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT")}
-              </AtomButton>
-            </div>
+            <Show when={existingYellowCards().length < 2}>
+              <div class="yellow-card-dialog__actions">
+                <AtomButton type={BUTTON_TYPES.WARNING} onClick={handleAcceptNote}>
+                  {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT")}
+                </AtomButton>
+              </div>
+            </Show>
           </div>
         }
       />
@@ -188,6 +206,11 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
               value={selectedExercise()}
               onChange={setSelectedExercise}
             />
+            <Show when={isDuplicateSelection()}>
+              <p class="text-caption-sm yellow-card-dialog__duplicate-warning">
+                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.DUPLICATE_SELECTION")}
+              </p>
+            </Show>
             <div class="yellow-card-dialog__actions">
               <AtomButton
                 type={BUTTON_TYPES.ACCENT}

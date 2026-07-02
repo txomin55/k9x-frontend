@@ -45,6 +45,11 @@
     flex-direction: column;
 }
 
+.yellow-card-dialog__duplicate-warning {
+    color: var(--error);
+    margin: 0;
+}
+
 .yellow-card-dialog__actions {
     display: flex;
     justify-content: flex-end;

@@ -300,6 +300,8 @@
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.REGISTERED": "Yellow card registered",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT": "Accept",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE": "This competitor already has a yellow card",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_TWO": "This competitor already has 2 yellow cards",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.DUPLICATE_SELECTION": "This competitor already has a yellow card with this judge and exercise",
   "HOME.LATEST_STAGES": "Latest trials",
   "HOME.LOGO.LINE1": "Canine",
   "HOME.LOGO.LINE2": "Index",

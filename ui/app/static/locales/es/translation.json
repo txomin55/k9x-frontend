@@ -300,6 +300,8 @@
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.REGISTERED": "Tarjeta amarilla registrada",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT": "Aceptar",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE": "Este competidor ya tiene una tarjeta amarilla",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_TWO": "Este competidor ya tiene 2 tarjetas amarillas",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.DUPLICATE_SELECTION": "Este competidor ya tiene una tarjeta amarilla con este juez y ejercicio",
   "HOME.LATEST_STAGES": "Últimas pruebas",
   "HOME.LOGO.LINE1": "Canine",
   "HOME.LOGO.LINE2": "Index",
