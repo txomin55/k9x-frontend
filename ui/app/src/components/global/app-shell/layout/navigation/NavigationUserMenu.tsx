@@ -72,7 +72,11 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
               : i18n.t("GLOBAL.NAVIGATION.DARK")
           }
         >
-          <CircleButton onClick={props.onToggleMode} size="md">
+          <CircleButton
+            onClick={props.onToggleMode}
+            size="md"
+            type={BUTTON_TYPES.ACCENT}
+          >
             <AtomSvgIcon
               alt={
                 props.isDark
