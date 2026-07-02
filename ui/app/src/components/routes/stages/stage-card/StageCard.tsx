@@ -1,6 +1,5 @@
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, {
-  BUTTON_SIZES,
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import { createSignal, Index, Show } from "solid-js";
@@ -86,7 +85,6 @@ export default function StageCard(props: StageCardProps) {
               </div>
               <Show when={canSeeClassification(event().status)}>
                 <AtomButton
-                  size={BUTTON_SIZES.SM}
                   type={BUTTON_TYPES.PRIMARY}
                   onClick={() => navigateToClassification(event().id)}
                 >
@@ -100,7 +98,6 @@ export default function StageCard(props: StageCardProps) {
       actions={
         <div class="stage-card__actions">
           <AtomButton
-            size={BUTTON_SIZES.SM}
             type={BUTTON_TYPES.ACCENT}
             onClick={() => navigateToStageInfo(props.id)}
           >

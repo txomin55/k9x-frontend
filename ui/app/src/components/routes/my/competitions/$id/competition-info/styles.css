@@ -16,6 +16,12 @@
     align-items: center;
 }
 
+.competition-info__view--title {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: center;
+}
+
 .competition-info__form {
     display: flex;
     flex-direction: column;

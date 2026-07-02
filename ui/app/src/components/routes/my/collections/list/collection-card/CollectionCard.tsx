@@ -1,8 +1,11 @@
 import { CollectionCardProps } from "@/components/routes/my/collections/list/collection-card/CollectionCard.types";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
-import AtomBadge, { BADGE_TYPES } from "@lib/components/atoms/badge/AtomBadge";
 import { useI18n } from "@/stores/i18n/i18n";
+import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import "./styles.css";
 
 export default function CollectionCard(props: CollectionCardProps) {
   const i18n = useI18n();
@@ -10,6 +13,7 @@ export default function CollectionCard(props: CollectionCardProps) {
     <Card
       topLeft={
         <div class="collection-card__heading">
+          <StatusBadge status={props.collection.status} />
           <span class="collection-card__name">
             {props.collection.eventName}
           </span>
@@ -17,20 +21,14 @@ export default function CollectionCard(props: CollectionCardProps) {
       }
       description={
         <div class="collection-card">
-          <AtomBadge
-            type={BADGE_TYPES.SUCCESS}
-            textValue={props.collection.status}
-          >
-            {props.collection.status}
-          </AtomBadge>
-          <p class="text-body-md">
-            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COMPETITION")}:{" "}
-            {props.collection.competitionName}
-          </p>
-          <p class="text-body-md">
-            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.STAGE")}:{" "}
-            {props.collection.stageName}
-          </p>
+          <span class="text-caption-sm">
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.COMPETITION")}
+            <span class="text-body-sm">{props.collection.competitionName}</span>
+          </span>
+          <span class="text-caption-sm">
+            {i18n.t("MY.COLLECTIONS.COLLECTION_CARD.STAGE")}
+            <span class="text-body-sm">{props.collection.stageName}</span>
+          </span>
         </div>
       }
       actions={

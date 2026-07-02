@@ -100,13 +100,15 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
       </Show>
       <Show when={!props.isEditing}>
         <div class="competition-info__view">
-          <span class="text-heading-sm">{props.title}</span>
-
           <div class="competition-info__view--status">
-            <CountryFlag country={props.country} alt={`${props.title} flag`} />
             <Show when={props.status}>
               {(status) => <StatusBadge status={status()} />}
             </Show>
+          </div>
+
+          <div class="competition-info__view--title">
+            <span class="text-heading-sm">{props.title}</span>
+            <CountryFlag country={props.country} alt={`${props.title} flag`} />
           </div>
 
           <span>

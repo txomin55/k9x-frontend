@@ -1,10 +1,17 @@
-import AtomButton, { BUTTON_SIZES, BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_SIZES,
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import { createSignal, Index, Show } from "solid-js";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { canSeeClassification } from "@/utils/event";
-import { getMarkerColorByStatus, getMarkerTextColorByStatus, isStageLive } from "@/utils/stage";
+import {
+  getMarkerColorByStatus,
+  getMarkerTextColorByStatus,
+  isStageLive,
+} from "@/utils/stage";
 import { formatStageDateRange } from "@/utils/date";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -54,10 +61,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
               </Show>
             </div>
             <Show when={canSeeClassification(event().status)}>
-              <AtomButton
-                size={BUTTON_SIZES.SM}
-                onClick={() => navigateToClassification(event().id)}
-              >
+              <AtomButton onClick={() => navigateToClassification(event().id)}>
                 {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
               </AtomButton>
             </Show>

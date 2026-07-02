@@ -3,6 +3,7 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--unit-2);
+    padding-bottom: var(--unit-05);
 }
 
 .stages-section__stages--actions {

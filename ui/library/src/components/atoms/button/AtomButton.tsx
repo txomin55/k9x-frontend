@@ -19,7 +19,7 @@ export const BUTTON_SIZES = {
 export default function AtomButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);
   const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
-  const sizeClass = () => props.size ?? BUTTON_SIZES.MD;
+  const sizeClass = () => props.size ?? BUTTON_SIZES.SM;
   const className = () =>
     props.class
       ? `atom-button ${typeClass()} ${sizeClass()} ${props.class}`

@@ -1,7 +1,7 @@
-import {createFileRoute, useParams} from "@tanstack/solid-router";
-import {useEventClassification} from "@/services/fetch-stages/fetchStages";
-import type {StageEventClassificationItemResponseDTO} from "@/services/fetch-stages/fetchStages.types";
-import {createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch,} from "solid-js";
+import { createFileRoute, useParams } from "@tanstack/solid-router";
+import { useEventClassification } from "@/services/fetch-stages/fetchStages";
+import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import { createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import ObdxExerciseSquares
@@ -9,17 +9,17 @@ import ObdxExerciseSquares
 import {
   isLive,
   positionTrend,
-  type TrendDirection,
+  type TrendDirection
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import {createVirtualizer} from "@tanstack/solid-virtual";
-import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
+import { createVirtualizer } from "@tanstack/solid-virtual";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
-import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import {useI18n} from "@/stores/i18n/i18n";
-import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
-import {formatDateTime} from "@/utils/date";
-import {isOffline} from "@/utils/local-first/localFirstPolicy";
+import { useI18n } from "@/stores/i18n/i18n";
+import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
+import { formatDateTime } from "@/utils/date";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -388,12 +388,10 @@ function EventClassificationPage() {
                 </span>
               </div>
               <div class="classification__sub-header">
-                <span class="text-body-md">
-                  {t("STAGES.CLASSIFICATION.STAGE")}{" "}
-                  {classification().stage.name}
+                <span class="text-caption-md">
+                  {classification().configuration.name}
                 </span>
-                <span class="text-body-md">
-                  {t("STAGES.CLASSIFICATION.DISCIPLINE")}{" "}
+                <span class="text-caption-md">
                   {classification().discipline.name}
                 </span>
               </div>

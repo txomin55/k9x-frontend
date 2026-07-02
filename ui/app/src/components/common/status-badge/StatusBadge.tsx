@@ -12,6 +12,7 @@ const STATUS_CONFIG: Record<string, StatusConfig> = {
   CLOSED_ENROLLMENT: { type: BADGE_TYPES.WARNING },
   TO_START: { type: BADGE_TYPES.WARNING, pulse: true },
   STARTED: { type: BADGE_TYPES.SUCCESS, pulse: true },
+  OPEN: { type: BADGE_TYPES.SUCCESS, pulse: true },
   FINISHED: { type: BADGE_TYPES.ACCENT },
   DELETED: { type: BADGE_TYPES.ERROR },
 };

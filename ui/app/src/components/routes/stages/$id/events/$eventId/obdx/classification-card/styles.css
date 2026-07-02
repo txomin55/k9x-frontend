@@ -225,8 +225,8 @@
 
 .obdx-clf__yellow-card-indicator {
     position: absolute;
-    top: calc(var(--unit-05) * -1);
-    right: calc(var(--unit-05) * -1);
+    top: calc(var(--unit-1) * -1);
+    right: calc(var(--unit-1) * -1);
     width: var(--unit-2);
     height: var(--unit-2);
     line-height: 0;
