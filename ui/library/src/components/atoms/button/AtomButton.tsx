@@ -11,13 +11,19 @@ export const BUTTON_TYPES = {
   WARNING: "warning",
 } as const;
 
+export const BUTTON_SIZES = {
+  MD: "md",
+  SM: "sm",
+} as const;
+
 export default function AtomButton(props: CoreButtonProps) {
   const disabled = () => Boolean(props.disabled);
   const typeClass = () => props.type ?? BUTTON_TYPES.PRIMARY;
+  const sizeClass = () => props.size ?? BUTTON_SIZES.MD;
   const className = () =>
     props.class
-      ? `atom-button ${typeClass()} ${props.class}`
-      : `atom-button ${typeClass()}`;
+      ? `atom-button ${typeClass()} ${sizeClass()} ${props.class}`
+      : `atom-button ${typeClass()} ${sizeClass()}`;
 
   const handleClick: JSX.EventHandler<HTMLButtonElement, MouseEvent> = (
     event,

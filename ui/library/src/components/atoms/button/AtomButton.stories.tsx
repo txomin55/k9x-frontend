@@ -1,5 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomButton, {
+  BUTTON_SIZES,
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.types";
@@ -12,6 +13,11 @@ const meta = {
     type: {
       options: Object.values(BUTTON_TYPES),
       mapping: BUTTON_TYPES,
+      control: { type: "select" },
+    },
+    size: {
+      options: Object.values(BUTTON_SIZES),
+      mapping: BUTTON_SIZES,
       control: { type: "select" },
     },
     onClick: { control: "function" },

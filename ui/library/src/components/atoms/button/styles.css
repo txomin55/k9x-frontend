@@ -40,6 +40,15 @@
 }
 
 /* ----------------------------- */
+/* SIZES                         */
+/* ----------------------------- */
+.atom-button.sm {
+    height: var(--unit-4);
+    padding: 0 var(--unit-15);
+    font-size: var(--text-label-sm);
+}
+
+/* ----------------------------- */
 /* PRIMARY                       */
 /* ----------------------------- */
 .atom-button.primary {
