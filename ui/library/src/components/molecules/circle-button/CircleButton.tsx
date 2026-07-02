@@ -14,6 +14,7 @@ export default function CircleButton(props: CircleButtonProps) {
       class={sizeClass()}
       disabled={props.disabled}
       onClick={props.onClick}
+      type={props.type}
     >
       {props.children}
     </AtomButton>
