@@ -58,6 +58,9 @@ export default function ObdxExerciseDetailTable(
                                   shape="pill"
                                   value={s().value}
                                   rating={s().scoreRating}
+                                  hasYellowCard={exercise.yellowCards.some(
+                                    (card) => card.judge.id === judge.id,
+                                  )}
                                 />
                               )}
                             </Show>

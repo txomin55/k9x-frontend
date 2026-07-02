@@ -71,6 +71,11 @@ export interface StageEventClassificationScoreResponseDTO {
   scoreRating: number;
 }
 
+export interface StageEventClassificationYellowCardResponseDTO {
+  judge: IdNameDTO;
+  timestamp: number;
+}
+
 export interface StageEventClassificationExerciseScoresResponseDTO {
   exercise: IdNameDTO;
   scores: StageEventClassificationScoreResponseDTO[];
@@ -78,6 +83,7 @@ export interface StageEventClassificationExerciseScoresResponseDTO {
   scoreRating: number;
   totalScore: number;
   tags: string[];
+  yellowCards: StageEventClassificationYellowCardResponseDTO[];
 }
 
 interface ObdxStageEventClassificationResponseDTO {

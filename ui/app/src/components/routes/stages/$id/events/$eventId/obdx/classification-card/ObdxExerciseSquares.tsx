@@ -17,6 +17,7 @@ export default function ObdxExerciseSquares(props: ObdxExerciseSquaresProps) {
             value={averageValue(exercise.scores)}
             rating={exercise.scoreRating}
             sublabel={exerciseShortCode(exercise.exercise.name)}
+            hasYellowCard={exercise.yellowCards.length > 0}
           />
         )}
       </For>

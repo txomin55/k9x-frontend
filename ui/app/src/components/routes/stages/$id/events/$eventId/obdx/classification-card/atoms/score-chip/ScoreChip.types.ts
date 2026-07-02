@@ -5,4 +5,5 @@ export type ScoreChipProps = {
   rating: number | null | undefined;
   shape: ScoreChipShape;
   sublabel?: string;
+  hasYellowCard?: boolean;
 };
