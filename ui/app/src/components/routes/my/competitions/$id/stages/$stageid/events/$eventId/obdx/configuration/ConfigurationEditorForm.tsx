@@ -101,6 +101,7 @@ export default function ConfigurationEditorForm(
                 id: "",
                 name: "",
               },
+              exercises: [],
             }
         : current,
     );
@@ -130,6 +131,7 @@ export default function ConfigurationEditorForm(
                 id: configuration.id,
                 name: configuration.name,
               },
+              exercises: [],
             }
         : current,
     );
