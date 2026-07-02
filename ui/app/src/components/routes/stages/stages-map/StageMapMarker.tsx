@@ -17,8 +17,6 @@ interface StageMapMarker {
 export function StageMapMarkerPopup(props: StageMapMarker) {
   const navigate = useNavigate();
   const i18n = useI18n();
-  const getDisciplineLabel = (discipline?: string | { name?: string }) =>
-    typeof discipline === "string" ? discipline : (discipline?.name ?? "");
   const navigateToClassification = (eventId: string) =>
     void navigate({
       params: { id: props.stage.id, eventId },
