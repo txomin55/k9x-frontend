@@ -92,6 +92,9 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
             value={props.address}
             onBlur={props.onCommit}
             onChange={props.onAddressChange}
+            description={i18n.t(
+              "MY.COMPETITIONS.COMPETITION_INFO.ADDRESS_HINT",
+            )}
           />
         </div>
       </Show>
