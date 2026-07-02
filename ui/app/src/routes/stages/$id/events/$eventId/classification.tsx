@@ -1,17 +1,7 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
-import { useEventClassification } from "@/services/fetch-stages/fetchStages";
-import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  Match,
-  onCleanup,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
+import {createFileRoute, useParams} from "@tanstack/solid-router";
+import {useEventClassification} from "@/services/fetch-stages/fetchStages";
+import type {StageEventClassificationItemResponseDTO} from "@/services/fetch-stages/fetchStages.types";
+import {createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch,} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import {
@@ -19,18 +9,15 @@ import {
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import { createVirtualizer } from "@tanstack/solid-virtual";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import {createVirtualizer} from "@tanstack/solid-virtual";
+import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
-import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import { useI18n } from "@/stores/i18n/i18n";
-import {
-  useSearchParam,
-  useSearchParamList,
-} from "@/utils/search-params/useSearchParam";
-import { formatDateTime } from "@/utils/date";
-import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import {useI18n} from "@/stores/i18n/i18n";
+import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
+import {formatDateTime} from "@/utils/date";
+import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -213,18 +200,19 @@ function EventClassificationPage() {
       cell: (info) => info.getValue<number>(),
     },
     {
-      accessorKey: "country",
-      header: t("STAGES.CLASSIFICATION.COUNTRY"),
-      enableSorting: false,
-      cell: (info) => (
-        <CountryFlag country={info.getValue<string>()} width={20} height={20} />
-      ),
-    },
-    {
-      id: "dog",
-      accessorFn: (row) => row.dog.name,
+      id: "country_dog",
+      accessorFn: (stage) => stage,
       header: t("STAGES.CLASSIFICATION.DOG"),
-      cell: (info) => info.getValue<string>(),
+      enableSorting: false,
+      cell: (info) => {
+        const row = info.getValue<StageEventClassificationItemResponseDTO>();
+        return (
+          <div>
+            <CountryFlag country={row.country} width={20} height={20} />
+            <span>{row.dog.name}</span>
+          </div>
+        );
+      },
     },
     {
       accessorKey: "totalScore",
@@ -275,45 +263,45 @@ function EventClassificationPage() {
             return (
               <Show when={competitor()}>
                 {(item) => (
-              <div
-                data-index={virtualRow.index}
-                ref={(el) => {
-                  const index = virtualRow.index;
-                  el.setAttribute("data-index", String(index));
-                  rowEls.set(index, el);
-                  virtualizer.measureElement(el);
-                  let raf = 0;
-                  const ro = new ResizeObserver(() => {
-                    cancelAnimationFrame(raf);
-                    raf = requestAnimationFrame(() =>
-                      virtualizer.measureElement(el),
-                    );
-                  });
-                  ro.observe(el);
-                  onCleanup(() => {
-                    cancelAnimationFrame(raf);
-                    ro.disconnect();
-                    if (rowEls.get(index) === el) rowEls.delete(index);
-                  });
-                }}
-                style={{
-                  position: "absolute",
-                  top: "0",
-                  left: "0",
-                  right: "0",
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                <ObdxClassificationCard
-                  competitor={item()}
-                  trend={trends().get(item().dog.id)}
-                  pinned={isPinned(item().dog.id)}
-                  pinDisabled={liveIds().has(item().dog.id)}
-                  onTogglePin={() => togglePin(item().dog.id)}
-                  open={isOpen(item().dog.id)}
-                  onOpenChange={(open) => setOpen(item().dog.id, open)}
-                />
-              </div>
+                  <div
+                    data-index={virtualRow.index}
+                    ref={(el) => {
+                      const index = virtualRow.index;
+                      el.setAttribute("data-index", String(index));
+                      rowEls.set(index, el);
+                      virtualizer.measureElement(el);
+                      let raf = 0;
+                      const ro = new ResizeObserver(() => {
+                        cancelAnimationFrame(raf);
+                        raf = requestAnimationFrame(() =>
+                          virtualizer.measureElement(el),
+                        );
+                      });
+                      ro.observe(el);
+                      onCleanup(() => {
+                        cancelAnimationFrame(raf);
+                        ro.disconnect();
+                        if (rowEls.get(index) === el) rowEls.delete(index);
+                      });
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      right: "0",
+                      transform: `translateY(${virtualRow.start}px)`,
+                    }}
+                  >
+                    <ObdxClassificationCard
+                      competitor={item()}
+                      trend={trends().get(item().dog.id)}
+                      pinned={isPinned(item().dog.id)}
+                      pinDisabled={liveIds().has(item().dog.id)}
+                      onTogglePin={() => togglePin(item().dog.id)}
+                      open={isOpen(item().dog.id)}
+                      onOpenChange={(open) => setOpen(item().dog.id, open)}
+                    />
+                  </div>
                 )}
               </Show>
             );
