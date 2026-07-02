@@ -4,6 +4,12 @@
     gap: var(--unit-2);
 }
 
+.stage-info__title--status {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: center;
+}
+
 .stage-info__title {
     display: flex;
     width: 100%;

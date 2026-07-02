@@ -1,10 +1,16 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -174,9 +180,7 @@ function StageInfoPage() {
                         <Show when={canSeeClassification(event().status)}>
                           <AtomButton
                             type={BUTTON_TYPES.PRIMARY}
-                            onClick={() =>
-                              navigateToClassification(event().id)
-                            }
+                            onClick={() => navigateToClassification(event().id)}
                           >
                             {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
                           </AtomButton>
@@ -253,10 +257,12 @@ function StageInfoPage() {
         {(stage) => (
           <>
             <div class="stage-info__title">
-              <span>{stage().name}</span>
-              <Show when={stage().status && isStageLive(stage().status!)}>
-                <StatusBadge status={stage().status!} dotMode />
-              </Show>
+              <div class="stage-info__title--status">
+                <span>{stage().name}</span>
+                <Show when={stage().status && isStageLive(stage().status!)}>
+                  <StatusBadge status={stage().status!} dotMode />
+                </Show>
+              </div>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
             <span class="text-caption-md">{stage().organizer}</span>

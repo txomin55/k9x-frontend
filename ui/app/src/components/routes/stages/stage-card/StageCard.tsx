@@ -37,10 +37,10 @@ export default function StageCard(props: StageCardProps) {
           <div class="stage-card__country-flag">
             <CountryFlag country={props.country} alt={`${props.name} flag`} />
           </div>
+          <span class="text-heading-sm">{props.name}</span>
           <Show when={props.status && isStageLive(props.status)}>
             <StatusBadge status={props.status!} dotMode />
           </Show>
-          <span class="text-heading-sm">{props.name}</span>
         </div>
       }
       topRight={
