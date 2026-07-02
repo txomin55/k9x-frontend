@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import PositionBadge from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-badge/PositionBadge";
 import { isLive } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import type { ObdxCompetitorHeaderProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader.types";
@@ -24,6 +25,9 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
             />
           </Show>
           {props.competitor.dog.name}
+          <Show when={props.competitor.bih}>
+            <BihIndicator />
+          </Show>
           <Show when={props.competitor.startOrder}>
             <span class="obdx-clf__start-order">
               #{props.competitor.startOrder}

@@ -119,6 +119,7 @@ export interface StageEventClassificationItemResponseDTO {
   totalScore: number;
   tied: boolean;
   startOrder: number;
+  bih: boolean;
 }
 
 export type StageEnrollRollbackPayload = {
