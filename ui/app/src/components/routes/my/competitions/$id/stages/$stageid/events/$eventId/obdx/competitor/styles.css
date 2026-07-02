@@ -25,3 +25,17 @@
     width: 100%;
     justify-content: space-between;
 }
+
+.competitor-editor-form__info--handler,
+.competitor-editor-form__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-025);
+}
+
+.competitor-editor-form__info--handler > span,
+.competitor-editor-form__info > span {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: center;
+}

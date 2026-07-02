@@ -122,23 +122,43 @@ export default function CompetitorEditorForm(
               </AtomButton>
             </Show>
           </AtomCombobox>
-          <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}{" "}
-            {selectedDog(draft().dogId)?.breed ?? draft().breed}
-          </p>
-          <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.HANDLER")}{" "}
-            {selectedDog(draft().dogId)?.handler ?? draft().handler}
-          </p>
-          <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}{" "}
-            {selectedDog(draft().dogId)?.identity ?? draft().identity}
-          </p>
-          <p>
-            {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}{" "}
-            {selectedDog(draft().dogId)?.team ?? draft().team}
-          </p>
-          <CountryFlag country={selectedDog(draft().dogId)?.country} />
+
+          <div class="competitor-editor-form__info">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
+              <CountryFlag country={selectedDog(draft().dogId)?.country} />
+            </span>
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CHIP")}
+              <span class="text-label-sm">
+                {selectedDog(draft().dogId)?.id ?? draft().dogId}
+              </span>
+            </span>
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
+              <span class="text-label-sm">
+                {selectedDog(draft().dogId)?.identity ?? draft().identity}
+              </span>
+            </span>
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
+              <span>{selectedDog(draft().dogId)?.breed ?? draft().breed}</span>
+            </span>
+            <div class="competitor-editor-form__info--handler">
+              <span class="text-caption-md">
+                {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.HANDLER")}
+                <span class="text-label-sm">
+                  {selectedDog(draft().dogId)?.handler ?? draft().handler}
+                </span>
+              </span>
+              <span class="text-caption-md">
+                {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
+                <span class="text-label-sm">
+                  ({selectedDog(draft().dogId)?.team ?? draft().team})
+                </span>
+              </span>
+            </div>
+          </div>
           <AtomNumberInput
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
             value={draft().position}
