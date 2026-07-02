@@ -11,6 +11,26 @@
     gap: var(--unit-05);
 }
 
+.obdx-clf-table {
+    container-type: inline-size;
+}
+
+.obdx-clf-table__dog {
+    display: flex;
+    gap: var(--unit-05);
+    align-items: baseline;
+}
+
+.obdx-clf-table__scores {
+    display: none;
+}
+
+@container (min-width: 700px) {
+    .obdx-clf-table__scores {
+        display: block;
+    }
+}
+
 .obdx-clf-table__expander {
     display: inline-flex;
     align-items: center;

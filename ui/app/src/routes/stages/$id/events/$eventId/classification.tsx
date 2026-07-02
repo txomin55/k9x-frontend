@@ -4,6 +4,8 @@ import type {StageEventClassificationItemResponseDTO} from "@/services/fetch-sta
 import {createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch,} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
+import ObdxExerciseSquares
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
   isLive,
   positionTrend,
@@ -207,9 +209,27 @@ function EventClassificationPage() {
       cell: (info) => {
         const row = info.getValue<StageEventClassificationItemResponseDTO>();
         return (
-          <div>
+          <div class="obdx-clf-table__dog">
             <CountryFlag country={row.country} width={20} height={20} />
             <span>{row.dog.name}</span>
+          </div>
+        );
+      },
+    },
+    {
+      id: "scores",
+      accessorFn: (stage) => stage,
+      header: () => (
+        <div class="obdx-clf-table__scores">
+          {t("STAGES.CLASSIFICATION.SCORES")}
+        </div>
+      ),
+      enableSorting: false,
+      cell: (info) => {
+        const row = info.getValue<StageEventClassificationItemResponseDTO>();
+        return (
+          <div class="obdx-clf-table__scores">
+            <ObdxExerciseSquares exercises={row.exercises} />
           </div>
         );
       },
@@ -312,7 +332,7 @@ function EventClassificationPage() {
   );
 
   const tableContent = () => (
-    <div style={{ height: `${listHeight()}px` }}>
+    <div class="obdx-clf-table" style={{ height: `${listHeight()}px` }}>
       <AtomTable<StageEventClassificationItemResponseDTO>
         data={competitors()}
         columns={columns()}
