@@ -25,6 +25,7 @@ import type {
   ExerciseScoresResponseDTO,
   UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
+import "./styles.css";
 
 const getPendingScoreKey = ({
   dogId,
@@ -79,7 +80,7 @@ export default function ObdxCollectionDetail() {
   });
   const eventStatus = createMemo(
     () =>
-      collectionsList.data?.find((entry) => entry.eventId === params().id)
+      collectionsList.data?.find((entry) => entry.eventId === params()?.id)
         ?.status ?? "",
   );
   const [pendingScores, setPendingScores] = createSignal<
@@ -277,20 +278,22 @@ export default function ObdxCollectionDetail() {
         {collectionData.data?.configuration?.description}
       </span>
 
-      <AtomSelect
-        label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
-        options={collectionCompetitors()}
-        value={selectedCompetitor()}
-        onChange={markCompetitorAsSeen}
-      />
+      <div class="obdx-collection-detail__competitor">
+        <AtomSelect
+          label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
+          options={collectionCompetitors()}
+          value={selectedCompetitor()}
+          onChange={markCompetitorAsSeen}
+        />
 
-      <YellowCardDialog
-        eventId={params().id}
-        competitorId={selectedCompetitor()?.value ?? ""}
-        competitors={collectionData.data?.obdx.competitors ?? []}
-        judgesIds={search().judgesIds}
-        canChooseJudge={isOrganizer()}
-      />
+        <YellowCardDialog
+          eventId={params().id}
+          competitorId={selectedCompetitor()?.value ?? ""}
+          competitors={collectionData.data?.obdx.competitors ?? []}
+          judgesIds={search().judgesIds}
+          canChooseJudge={isOrganizer()}
+        />
+      </div>
 
       <Show
         when={

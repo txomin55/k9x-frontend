@@ -4,6 +4,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import {
   fetchYellowCards,
@@ -12,6 +13,7 @@ import {
 import type { YellowCardResponseDTO } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import yellowCardIcon from "@/assets/yellow-card.svg";
 import "./styles.css";
 
 type YellowCardDialogProps = {
@@ -121,13 +123,19 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
 
   return (
     <>
-      <AtomButton
-        type={BUTTON_TYPES.WARNING}
-        onClick={handleOpenClick}
+      <button
+        type="button"
+        class="yellow-card-dialog__trigger"
+        title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
+        aria-label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
         disabled={!props.competitorId}
+        onClick={handleOpenClick}
       >
-        {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
-      </AtomButton>
+        <AtomSvgIcon
+          src={yellowCardIcon}
+          alt={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
+        />
+      </button>
       <AtomDialog
         title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE")}
         open={isNoteOpen()}

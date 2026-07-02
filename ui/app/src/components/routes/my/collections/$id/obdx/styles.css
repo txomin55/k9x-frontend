@@ -1,0 +1,7 @@
+.obdx-collection-detail__competitor {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--unit-2);
+}
+
