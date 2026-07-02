@@ -56,3 +56,7 @@
     gap: var(--unit-1);
     margin-top: var(--unit-2);
 }
+
+.yellow-card-dialog__trigger--hidden {
+    visibility: hidden;
+}

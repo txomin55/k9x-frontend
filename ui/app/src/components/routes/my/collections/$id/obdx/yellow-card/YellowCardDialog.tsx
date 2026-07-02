@@ -1,15 +1,10 @@
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import {
-  fetchYellowCards,
-  registerYellowCard,
-} from "@/services/secured/yellow-card-crud/yellowCardCrud";
+import { fetchYellowCards, registerYellowCard } from "@/services/secured/yellow-card-crud/yellowCardCrud";
 import type { YellowCardResponseDTO } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -36,13 +31,12 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
     createSignal<AtomSelectOption>();
 
   const selectedCompetitorScores = createMemo(() =>
-    props.competitors.find(
-      (c) => c.competitor.dog.id === props.competitorId,
-    ),
+    props.competitors.find((c) => c.competitor.dog.id === props.competitorId),
   );
 
   const judgeOptions = createMemo<AtomSelectOption[]>(() => {
-    const scores = selectedCompetitorScores()?.exercises[0]?.collectionScores ?? [];
+    const scores =
+      selectedCompetitorScores()?.exercises[0]?.collectionScores ?? [];
 
     return scores
       .filter((score) =>
@@ -56,7 +50,9 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
   const exerciseOptions = createMemo<AtomSelectOption[]>(
     () =>
       selectedCompetitorScores()
-        ?.exercises.toSorted((a, b) => a.exercise.position - b.exercise.position)
+        ?.exercises.toSorted(
+          (a, b) => a.exercise.position - b.exercise.position,
+        )
         .map((e) => ({ label: e.exercise.name, value: e.exercise.id })) ?? [],
   );
 
@@ -84,7 +80,8 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
     }
 
     return existingYellowCards().some(
-      (card) => card.judge.id === judge.value && card.exercise.id === exercise.value,
+      (card) =>
+        card.judge.id === judge.value && card.exercise.id === exercise.value,
     );
   });
 
@@ -136,13 +133,14 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
   };
 
   return (
-    <>
+    <div
+      classList={{ "yellow-card-dialog__trigger--hidden": !props.competitorId }}
+    >
       <button
         type="button"
         class="yellow-card-dialog__trigger"
         title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
         aria-label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
-        disabled={!props.competitorId}
         onClick={handleOpenClick}
       >
         <AtomSvgIcon
@@ -179,7 +177,10 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
             </div>
             <Show when={existingYellowCards().length < 2}>
               <div class="yellow-card-dialog__actions">
-                <AtomButton type={BUTTON_TYPES.WARNING} onClick={handleAcceptNote}>
+                <AtomButton
+                  type={BUTTON_TYPES.WARNING}
+                  onClick={handleAcceptNote}
+                >
                   {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT")}
                 </AtomButton>
               </div>
@@ -208,7 +209,9 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
             />
             <Show when={isDuplicateSelection()}>
               <p class="text-caption-sm yellow-card-dialog__duplicate-warning">
-                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.DUPLICATE_SELECTION")}
+                {i18n.t(
+                  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.DUPLICATE_SELECTION",
+                )}
               </p>
             </Show>
             <div class="yellow-card-dialog__actions">
@@ -229,6 +232,6 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
           </div>
         }
       />
-    </>
+    </div>
   );
 }

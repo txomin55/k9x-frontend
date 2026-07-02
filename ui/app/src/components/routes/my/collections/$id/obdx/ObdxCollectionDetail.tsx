@@ -127,7 +127,11 @@ export default function ObdxCollectionDetail() {
       )?.competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
   );
 
-  const markCompetitorAsSeen = (opt: AtomSelectOption) => {
+  const markCompetitorAsSeen = (opt: AtomSelectOption | null) => {
+    if (!opt) {
+      return;
+    }
+
     setSeenCompetitors([...seenCompetitors(), opt.value]);
     setSelectedCompetitor(opt);
     void navigate({
