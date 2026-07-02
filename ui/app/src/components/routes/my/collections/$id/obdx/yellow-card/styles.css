@@ -4,6 +4,22 @@
     gap: var(--unit-2);
 }
 
+.yellow-card-dialog__note {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.yellow-card-dialog__note p,
+.yellow-card-dialog__note-item {
+    margin: 0;
+}
+
+.yellow-card-dialog__note-item {
+    display: flex;
+    flex-direction: column;
+}
+
 .yellow-card-dialog__actions {
     display: flex;
     justify-content: flex-end;

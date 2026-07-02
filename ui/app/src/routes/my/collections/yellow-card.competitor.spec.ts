@@ -22,16 +22,15 @@ competitorTest.describe("Collection yellow card (write) - collector", () => {
         mutation: { method: "PUT", urlIncludes: "/yellow-card" },
         entityType: "yellow-card",
         performMutation: async () => {
+          await page.getByRole("button", { name: "Competitors" }).click();
+          await page.keyboard.press("ArrowDown");
+          await page.keyboard.press("Enter");
+
           await yellowCardButton.click();
 
-          const pickFirstOption = async (selectLabel: string) => {
-            await dialog.getByRole("button", { name: selectLabel }).click();
-            await page.keyboard.press("ArrowDown");
-            await page.keyboard.press("Enter");
-          };
-
-          await pickFirstOption("Competitors");
-          await pickFirstOption("Exercise");
+          await dialog.getByRole("button", { name: "Exercise" }).click();
+          await page.keyboard.press("ArrowDown");
+          await page.keyboard.press("Enter");
 
           await dialog
             .getByRole("button", { name: "Register", exact: true })

@@ -1,6 +1,10 @@
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import { registerPendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import { RegisterYellowCardRequestDTO } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
+import { rawRequest } from "@/utils/http/client";
+import {
+  RegisterYellowCardRequestDTO,
+  YellowCardResponseDTO,
+} from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
 
 const YELLOW_CARD_ENTITY_TYPE = "yellow-card";
 
@@ -18,4 +22,10 @@ export const registerYellowCard = (
     rollback: () => Promise.resolve(),
     rollbackPayload: null,
     url: `/secured/events/${eventId}/yellow-card`,
+  });
+
+export const fetchYellowCards = (eventId: string, competitorId: string) =>
+  rawRequest<YellowCardResponseDTO[]>({
+    auth: true,
+    path: `/secured/events/${eventId}/${competitorId}/yellow-cards`,
   });

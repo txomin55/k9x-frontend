@@ -298,6 +298,8 @@
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE": "Juez",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.CONFIRM": "Registrar",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.REGISTERED": "Tarjeta amarilla registrada",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT": "Aceptar",
+  "MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE": "Este competidor ya tiene una tarjeta amarilla",
   "HOME.LATEST_STAGES": "Últimas pruebas",
   "HOME.LOGO.LINE1": "Canine",
   "HOME.LOGO.LINE2": "Index",

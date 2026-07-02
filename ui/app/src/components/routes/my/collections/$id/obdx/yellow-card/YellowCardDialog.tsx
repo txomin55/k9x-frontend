@@ -1,17 +1,22 @@
-import { createEffect, createMemo, createSignal } from "solid-js";
+import { createEffect, createMemo, createSignal, For } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { registerYellowCard } from "@/services/secured/yellow-card-crud/yellowCardCrud";
+import {
+  fetchYellowCards,
+  registerYellowCard,
+} from "@/services/secured/yellow-card-crud/yellowCardCrud";
+import type { YellowCardResponseDTO } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type YellowCardDialogProps = {
   eventId: string;
+  competitorId: string;
   competitors: CompetitorScoresResponseDTO[];
   judgesIds: string[];
   canChooseJudge: boolean;
@@ -20,25 +25,22 @@ type YellowCardDialogProps = {
 export default function YellowCardDialog(props: YellowCardDialogProps) {
   const i18n = useI18n();
   const [isOpen, setIsOpen] = createSignal(false);
-  const [selectedCompetitor, setSelectedCompetitor] =
-    createSignal<AtomSelectOption>();
+  const [isNoteOpen, setIsNoteOpen] = createSignal(false);
+  const [existingYellowCards, setExistingYellowCards] = createSignal<
+    YellowCardResponseDTO[]
+  >([]);
   const [selectedJudge, setSelectedJudge] = createSignal<AtomSelectOption>();
   const [selectedExercise, setSelectedExercise] =
     createSignal<AtomSelectOption>();
 
-  const competitorOptions = createMemo<AtomSelectOption[]>(() =>
-    props.competitors
-      .toSorted(
-        (a, b) => (a.competitor.position ?? 0) - (b.competitor.position ?? 0),
-      )
-      .map((c) => ({
-        label: c.competitor.handler,
-        value: c.competitor.dog.id ?? "",
-      })),
+  const selectedCompetitorScores = createMemo(() =>
+    props.competitors.find(
+      (c) => c.competitor.dog.id === props.competitorId,
+    ),
   );
 
   const judgeOptions = createMemo<AtomSelectOption[]>(() => {
-    const scores = props.competitors[0]?.exercises[0]?.collectionScores ?? [];
+    const scores = selectedCompetitorScores()?.exercises[0]?.collectionScores ?? [];
 
     return scores
       .filter((score) =>
@@ -49,16 +51,17 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
       .map((score) => ({ label: score.judge.name, value: score.judge.id }));
   });
 
-  const exerciseOptions = createMemo<AtomSelectOption[]>(() => {
-    const competitor = props.competitors.find(
-      (c) => c.competitor.dog.id === selectedCompetitor()?.value,
-    );
+  const exerciseOptions = createMemo<AtomSelectOption[]>(
+    () =>
+      selectedCompetitorScores()
+        ?.exercises.toSorted((a, b) => a.exercise.position - b.exercise.position)
+        .map((e) => ({ label: e.exercise.name, value: e.exercise.id })) ?? [],
+  );
 
-    return (
-      competitor?.exercises
-        .toSorted((a, b) => a.exercise.position - b.exercise.position)
-        .map((e) => ({ label: e.exercise.name, value: e.exercise.id })) ?? []
-    );
+  createEffect(() => {
+    props.competitorId;
+    setSelectedExercise(undefined);
+    setSelectedJudge(undefined);
   });
 
   createEffect(() => {
@@ -72,84 +75,129 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
 
   const canSubmit = createMemo(
     () =>
-      Boolean(selectedCompetitor()) &&
+      Boolean(props.competitorId) &&
       Boolean(selectedJudge()) &&
       Boolean(selectedExercise()),
   );
 
-  const handleCompetitorChange = (option: AtomSelectOption) => {
-    setSelectedCompetitor(option);
-    setSelectedExercise(undefined);
-  };
-
   const handleConfirm = () => {
-    const competitor = selectedCompetitor();
     const judge = selectedJudge();
     const exercise = selectedExercise();
 
-    if (!competitor || !judge || !exercise) {
+    if (!props.competitorId || !judge || !exercise) {
       return;
     }
 
     registerYellowCard(props.eventId, {
-      dogId: competitor.value,
+      dogId: props.competitorId,
       exerciseId: exercise.value,
       judgeId: judge.value,
     });
 
-    setSelectedCompetitor(undefined);
     setSelectedExercise(undefined);
     setIsOpen(false);
   };
 
+  const handleOpenClick = async () => {
+    if (!props.competitorId) {
+      return;
+    }
+
+    const cards = await fetchYellowCards(props.eventId, props.competitorId);
+
+    if (cards.length === 0) {
+      setIsOpen(true);
+      return;
+    }
+
+    setExistingYellowCards(cards);
+    setIsNoteOpen(true);
+  };
+
+  const handleAcceptNote = () => {
+    setIsNoteOpen(false);
+    setIsOpen(true);
+  };
+
   return (
-    <AtomDialog
-      title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE")}
-      open={isOpen()}
-      onOpenChange={setIsOpen}
-      trigger={
-        <AtomButton type={BUTTON_TYPES.WARNING}>
-          {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
-        </AtomButton>
-      }
-      content={
-        <div class="yellow-card-dialog__content">
-          <AtomSelect
-            label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
-            options={competitorOptions()}
-            value={selectedCompetitor()}
-            onChange={handleCompetitorChange}
-          />
-          <AtomSelect
-            label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE")}
-            options={judgeOptions()}
-            value={selectedJudge()}
-            onChange={setSelectedJudge}
-            disabled={!props.canChooseJudge}
-          />
-          <AtomSelect
-            label={i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}
-            options={exerciseOptions()}
-            value={selectedExercise()}
-            onChange={setSelectedExercise}
-          />
-          <div class="yellow-card-dialog__actions">
-            <AtomButton
-              type={BUTTON_TYPES.ACCENT}
-              onClick={() => setIsOpen(false)}
-            >
-              {i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CANCEL")}
-            </AtomButton>
-            <AtomButton
-              type={BUTTON_TYPES.WARNING}
-              onClick={handleConfirm}
-              disabled={!canSubmit()}
-            >
-              {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.CONFIRM")}
-            </AtomButton>
+    <>
+      <AtomButton
+        type={BUTTON_TYPES.WARNING}
+        onClick={handleOpenClick}
+        disabled={!props.competitorId}
+      >
+        {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
+      </AtomButton>
+      <AtomDialog
+        title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE")}
+        open={isNoteOpen()}
+        onOpenChange={setIsNoteOpen}
+        content={
+          <div class="yellow-card-dialog__content">
+            <div class="yellow-card-dialog__note">
+              <p>
+                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ALREADY_HAS_ONE")}
+              </p>
+              <For each={existingYellowCards()}>
+                {(card) => (
+                  <div class="yellow-card-dialog__note-item">
+                    <p class="text-caption-sm">
+                      {i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}:{" "}
+                      {card.exercise.name}
+                    </p>
+                    <p class="text-caption-sm">
+                      {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE")}:{" "}
+                      {card.judge.name}
+                    </p>
+                  </div>
+                )}
+              </For>
+            </div>
+            <div class="yellow-card-dialog__actions">
+              <AtomButton type={BUTTON_TYPES.WARNING} onClick={handleAcceptNote}>
+                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.ACCEPT")}
+              </AtomButton>
+            </div>
           </div>
-        </div>
-      }
-    />
+        }
+      />
+      <AtomDialog
+        title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE")}
+        open={isOpen()}
+        onOpenChange={setIsOpen}
+        content={
+          <div class="yellow-card-dialog__content">
+            <AtomSelect
+              label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE")}
+              options={judgeOptions()}
+              value={selectedJudge()}
+              onChange={setSelectedJudge}
+              disabled={!props.canChooseJudge}
+            />
+            <AtomSelect
+              label={i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}
+              options={exerciseOptions()}
+              value={selectedExercise()}
+              onChange={setSelectedExercise}
+            />
+            <div class="yellow-card-dialog__actions">
+              <AtomButton
+                type={BUTTON_TYPES.ACCENT}
+                onClick={() => setIsOpen(false)}
+              >
+                {i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CANCEL")}
+              </AtomButton>
+              <AtomButton
+                type={BUTTON_TYPES.WARNING}
+                onClick={handleConfirm}
+                disabled={!canSubmit()}
+              >
+                {i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.CONFIRM")}
+              </AtomButton>
+            </div>
+          </div>
+        }
+      />
+    </>
   );
 }

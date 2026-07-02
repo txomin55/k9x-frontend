@@ -130,6 +130,11 @@ export const setupCollectionYellowCard = (page: Page) => {
       pathname: "/secured/events/*/collections",
     }),
     setRouteResponses(page, {
+      method: "GET",
+      payload: [],
+      pathname: "/secured/events/*/*/yellow-cards",
+    }),
+    setRouteResponses(page, {
       method: "PUT",
       payload: () => "",
       pathname: "/secured/events/*/yellow-card",

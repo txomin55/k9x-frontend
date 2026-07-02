@@ -286,6 +286,7 @@ export default function ObdxCollectionDetail() {
 
       <YellowCardDialog
         eventId={params().id}
+        competitorId={selectedCompetitor()?.value ?? ""}
         competitors={collectionData.data?.obdx.competitors ?? []}
         judgesIds={search().judgesIds}
         canChooseJudge={isOrganizer()}
