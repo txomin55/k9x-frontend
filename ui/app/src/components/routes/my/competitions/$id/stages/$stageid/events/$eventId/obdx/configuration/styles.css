@@ -1,5 +1,8 @@
 .event-configuration-section {
-    padding-bottom: var(--unit-4);
+    padding-bottom: var(--unit-2);
+    gap: var(--unit-1);
+    display: flex;
+    flex-direction: column;
 }
 
 .event-configuration-section__content {
@@ -10,5 +13,6 @@
 
 .event-configuration-section__content--federation {
     display: flex;
-    gap: var(--unit-05);
+    gap: var(--unit-1);
+    align-items: baseline;
 }

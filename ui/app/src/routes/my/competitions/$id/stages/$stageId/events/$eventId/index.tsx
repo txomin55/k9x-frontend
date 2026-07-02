@@ -1,22 +1,12 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createMemo,
-  createSignal,
-  Show,
-} from "solid-js";
-import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
-import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
-import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
-import {
-  updateApiEventNotCompeting,
-  useApiEvent,
-} from "@/services/secured/event-crud/eventCrud";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
+import EventCompetitorsSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
+import EventExercisesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
+import EventJudgesSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
+import { updateApiEventNotCompeting, useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import type {
   EventCompetitorDetail,
   EventCompetitorRequestDTO,
@@ -24,19 +14,12 @@ import type {
   EventEditorDraft,
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import {
-  COMPETITOR_STATUS,
-  EVENT_STATUS,
-  toEventEditorDraft,
-} from "@/utils/event";
+import { COMPETITOR_STATUS, EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
-import { getEventDisciplineLabel } from "@/components/common/event-discipline-field/EventDisciplineField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import pencilIcon from "@/assets/pencil.svg";
@@ -44,8 +27,10 @@ import eyeIcon from "@/assets/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
-import ObdxCompetitionEventDetailBodyWrapper from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
+import EventConfigurationSection
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
+import ObdxCompetitionEventDetailBodyWrapper
+  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -851,11 +836,9 @@ function CompetitionObdxEventDetailBody(props: {
           when={isEditing()}
           fallback={
             <div class="competition-event-detail__content--header">
-              <span class="text-heading-sm">{props.event().name}</span>
-              <StatusBadge status={props.event().status} />
-              <div class="competition-event-detail__content--header-detail">
-                <span>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</span>
-                <span>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>
+              <div class="competition-event-detail__content--header-title">
+                <span class="text-heading-sm">{props.event().name}</span>
+                <StatusBadge status={props.event().status} />
               </div>
             </div>
           }
@@ -867,8 +850,6 @@ function CompetitionObdxEventDetailBody(props: {
               value={name()}
               onChange={setName}
             />
-            <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DISCIPLINE")}: ${getEventDisciplineLabel(props.event().discipline.id)}`}</p>
-            <p>{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</p>
           </div>
         </Show>
       </header>
@@ -891,6 +872,10 @@ function CompetitionObdxEventDetailBody(props: {
           )
         }
       />
+
+      <div class="competition-event-detail__content--header-detail">
+        <span class="text-caption-md">{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>{" "}
+      </div>
 
       <EventConfigurationSection
         draft={draftEvent()}

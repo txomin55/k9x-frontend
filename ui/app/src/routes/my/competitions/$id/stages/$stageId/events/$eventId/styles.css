@@ -1,3 +1,15 @@
+.competition-event-detail__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.competition-event-detail__content--header-title {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: var(--unit-1);
+}
+
 .competition-event-detail__content--header {
     display: flex;
     flex-direction: column;
