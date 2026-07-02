@@ -11,6 +11,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
+import RedCardDialog from "@/components/routes/my/collections/$id/obdx/red-card/RedCardDialog";
 import Page from "@/components/common/page/Page";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
@@ -291,6 +292,14 @@ export default function ObdxCollectionDetail() {
         />
 
         <YellowCardDialog
+          eventId={params().id}
+          competitorId={selectedCompetitor()?.value ?? ""}
+          competitors={collectionData.data?.obdx.competitors ?? []}
+          judgesIds={search().judgesIds}
+          canChooseJudge={isOrganizer()}
+        />
+
+        <RedCardDialog
           eventId={params().id}
           competitorId={selectedCompetitor()?.value ?? ""}
           competitors={collectionData.data?.obdx.competitors ?? []}

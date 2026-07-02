@@ -6,4 +6,5 @@ export type ScoreChipProps = {
   shape: ScoreChipShape;
   sublabel?: string;
   hasYellowCard?: boolean;
+  hasRedCard?: boolean;
 };

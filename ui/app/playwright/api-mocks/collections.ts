@@ -144,6 +144,39 @@ export const setupCollectionYellowCard = (page: Page) => {
 };
 
 /**
+ * Stateful collections mocks for the red-card flow. The red-card PUT has no
+ * projection in the collection detail, so nothing is mutated; the mock just
+ * acknowledges the request so it flushes on reconnect.
+ */
+export const setupCollectionRedCard = (page: Page) => {
+  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+
+  return Promise.all([
+    setRouteResponses(page, {
+      method: "GET",
+      payload: defaultCollectionsList,
+      pathname: "/secured/collections",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: () => detail,
+      pathname: "/secured/events/*/collections",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: null,
+      pathname: "/secured/events/*/*/red-card",
+    }),
+    setRouteResponses(page, {
+      method: "PUT",
+      payload: () => "",
+      pathname: "/secured/events/*/red-card",
+      status: 200,
+    }),
+  ]);
+};
+
+/**
  * Stateful collections mocks: the score PUT persists into the detail so a
  * post-flush reload reflects it. The detail returns a single judge.
  */

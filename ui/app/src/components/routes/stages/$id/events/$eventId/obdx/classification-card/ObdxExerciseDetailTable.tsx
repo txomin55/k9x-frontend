@@ -61,6 +61,9 @@ export default function ObdxExerciseDetailTable(
                                   hasYellowCard={exercise.yellowCards.some(
                                     (card) => card.judge.id === judge.id,
                                   )}
+                                  hasRedCard={
+                                    exercise.redCard?.judge.id === judge.id
+                                  }
                                 />
                               )}
                             </Show>
