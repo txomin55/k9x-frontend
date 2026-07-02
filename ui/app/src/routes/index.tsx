@@ -11,6 +11,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
 import { isStageLive } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import { formatUtcDateOnly } from "@/utils/date";
 import "./styles.css";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
@@ -112,7 +113,7 @@ function EntryRoutePage() {
                       </Show>
                     </div>
                     <span class="landing-page__latest-date">
-                      {new Date(stage.dateFrom ?? 0).toLocaleDateString()}
+                      {formatUtcDateOnly(stage.dateFrom ?? 0)}
                     </span>
                   </Link>
                 </li>

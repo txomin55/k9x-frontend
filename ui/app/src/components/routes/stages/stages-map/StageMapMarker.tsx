@@ -13,6 +13,7 @@ import {
 	getMarkerTextColorByStatus,
 	isStageLive,
 } from "@/utils/stage";
+import { formatStageDateRange } from "@/utils/date";
 
 interface StageMapMarker {
 	stage: StageSummaryResponseDTO;
@@ -41,8 +42,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
 			<span class="stages-map-marker-popup__title">
 				<span class="text-body-md">{props.stage.name}</span>
 				<span class="text-caption-sm">
-					{new Date(props.stage.dateFrom ?? 0).toLocaleDateString() ?? ""}-
-					{new Date(props.stage.dateTo ?? 0).toLocaleDateString() ?? ""}
+					{formatStageDateRange(props.stage.dateFrom ?? 0, props.stage.dateTo ?? 0)}
 				</span>
 			</span>
 			<span class="text-body-sm">{props.stage.description}</span>

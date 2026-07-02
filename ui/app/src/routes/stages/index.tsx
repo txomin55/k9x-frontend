@@ -16,6 +16,7 @@ import { useOffline } from "@/stores/network/network";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isStageLive } from "@/utils/stage";
+import { formatUtcDateOnly } from "@/utils/date";
 import "./styles.css";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -125,7 +126,7 @@ function StagesIndexPage() {
 			id: "dateFrom",
 			accessorFn: (stage) => stage.dateFrom ?? 0,
 			header: i18n.t("STAGES.INDEX.DATE_FROM"),
-			cell: (info) => new Date(info.getValue<number>()).toLocaleDateString(),
+			cell: (info) => formatUtcDateOnly(info.getValue<number>()),
 		},
 		{
 			id: "expander",

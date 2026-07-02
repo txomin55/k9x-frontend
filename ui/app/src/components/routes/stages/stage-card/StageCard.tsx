@@ -12,6 +12,7 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { canSeeClassification } from "@/utils/event";
 import bellIcon from "@/assets/bell.svg";
 import { isStageLive } from "@/utils/stage";
+import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
@@ -63,7 +64,7 @@ export default function StageCard(props: StageCardProps) {
             {props.address}
           </span>
           <span class="stage-card__date text-caption-sm">
-            {`${new Date(props.from).toDateString()} - ${new Date(props.to).toDateString()}`}
+            {formatStageDateRange(props.from, props.to)}
           </span>
         </div>
       }

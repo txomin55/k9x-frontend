@@ -7,6 +7,7 @@ import type {
   CompetitionCardProps
 } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 
@@ -53,7 +54,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
               <div class="competition-card__stages--info">
                 <span>{stage.name}</span>
                 <span class="text-caption-sm">
-                  {`${new Date(stage.dateFrom).toDateString()} - ${new Date(stage.dateTo).toDateString()}`}
+                  {formatStageDateRange(stage.dateFrom, stage.dateTo)}
                 </span>
               </div>
             </div>

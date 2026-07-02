@@ -1,7 +1,16 @@
 import { translate } from "@/stores/i18n/i18n";
 
+export function formatUtcDateOnly(timestamp: number) {
+  const date = new Date(timestamp);
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+  ).toLocaleDateString();
+}
+
 export function formatStageDateRange(dateFrom: number, dateTo: number) {
-  return `${new Date(dateFrom).toDateString()} - ${new Date(dateTo).toDateString()}`;
+  return `${formatUtcDateOnly(dateFrom)} - ${formatUtcDateOnly(dateTo)}`;
 }
 
 export function formatDateTime(timestamp: number) {
@@ -35,12 +44,16 @@ export function toDateInputValue(timestamp: number) {
 
   if (Number.isNaN(date.getTime())) return "";
 
-  return date.toISOString().slice(0, 10);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export function parseDateInputValue(value: string, fallback: number) {
   if (!value) return fallback;
-  return new Date(`${value}T00:00:00`).getTime();
+  return new Date(`${value}T00:00:00Z`).getTime();
 }
 
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
