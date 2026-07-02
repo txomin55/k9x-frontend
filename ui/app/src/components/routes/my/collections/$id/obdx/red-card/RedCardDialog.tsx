@@ -62,6 +62,13 @@ export default function RedCardDialog(props: RedCardDialogProps) {
   });
 
   createEffect(() => {
+    if (isOpen()) {
+      setSelectedExercise(undefined);
+      setSelectedJudge(undefined);
+    }
+  });
+
+  createEffect(() => {
     if (!props.canChooseJudge && !selectedJudge()) {
       const lockedJudge = judgeOptions()[0];
       if (lockedJudge) {

@@ -157,12 +157,14 @@ export default function EventCompetitorsSection(
                   topLeft={details().handler}
                   content={
                     <div class="event-competitors-section__competitors--competitor">
-                      <Show when={competitor().notCompeting}>
-                        <NotCompetingIndicator />
-                      </Show>
-                      <Show when={competitor().bih}>
-                        <BihIndicator />
-                      </Show>
+                      <div class="event-competitors-section__competitors--badges">
+                        <Show when={competitor().notCompeting}>
+                          <NotCompetingIndicator />
+                        </Show>
+                        <Show when={competitor().bih}>
+                          <BihIndicator />
+                        </Show>
+                      </div>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
@@ -170,28 +172,26 @@ export default function EventCompetitorsSection(
                     </div>
                   }
                   actions={
-                    props.isEditing ? (
+                    competitor().notCompeting ? null : props.isEditing ? (
                       <div class="event-competitors-section__competitors--actions">
                         <Switch>
                           <Match
                             when={props.eventStatus === EVENT_STATUS.STARTED}
                           >
-                            <Show when={!competitor().notCompeting}>
-                              <ConfirmActionButton
-                                text={details().handler}
-                                onConfirm={() =>
-                                  props.onMarkCompetitorNotCompeting(
-                                    competitor().dogId,
-                                  )
-                                }
-                              >
-                                <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                                  {i18n.t(
-                                    "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
-                                  )}
-                                </AtomButton>
-                              </ConfirmActionButton>
-                            </Show>
+                            <ConfirmActionButton
+                              text={details().handler}
+                              onConfirm={() =>
+                                props.onMarkCompetitorNotCompeting(
+                                  competitor().dogId,
+                                )
+                              }
+                            >
+                              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                                {i18n.t(
+                                  "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
+                                )}
+                              </AtomButton>
+                            </ConfirmActionButton>
                           </Match>
                           <Match
                             when={props.eventStatus === EVENT_STATUS.CREATED}

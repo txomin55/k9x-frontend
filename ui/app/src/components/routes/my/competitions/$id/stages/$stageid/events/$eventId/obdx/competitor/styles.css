@@ -9,6 +9,12 @@
     justify-content: flex-end;
 }
 
+.event-competitors-section__competitors--badges {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
 .competitor-editor-form {
     display: flex;
     flex-direction: column;

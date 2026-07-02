@@ -1,16 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -91,6 +85,9 @@ function StageInfoPage() {
     }));
   };
 
+  const selectedDog = (dogId: string) =>
+    (dogsQuery.data ?? []).find((dog) => dog.id === dogId);
+
   const openEnrollDialog = (eventId: string) => {
     setEnrollDraft(createEmptyEnrollDraft());
     setSelectedEventId(eventId);
@@ -161,6 +158,11 @@ function StageInfoPage() {
                         >
                           <Show when={event().enrollmentOpened}>
                             <div class="stage-info__event--enrollment">
+                              <AtomButton
+                                onClick={() => openEnrollDialog(event().id)}
+                              >
+                                {i18n.t("STAGES.INFO.ENROLL")}
+                              </AtomButton>
                               <span class="text-caption-sm">
                                 {i18n.t("STAGES.INFO.UNTIL")}{" "}
                                 {formatDateLabel(
@@ -169,11 +171,6 @@ function StageInfoPage() {
                                   ),
                                 )}
                               </span>
-                              <AtomButton
-                                onClick={() => openEnrollDialog(event().id)}
-                              >
-                                {i18n.t("STAGES.INFO.ENROLL")}
-                              </AtomButton>
                             </div>
                           </Show>
                         </Show>
@@ -297,6 +294,15 @@ function StageInfoPage() {
                       </AtomButton>
                     </Show>
                   </AtomCombobox>
+
+                  <Show when={selectedDog(enrollDraft().dogId)}>
+                    {(dog) => (
+                      <span class="text-caption-md">
+                        {i18n.t("STAGES.INFO.BREED")}
+                        <span class="text-label-sm">{dog().breed}</span>
+                      </span>
+                    )}
+                  </Show>
 
                   <AtomCheckbox
                     label={i18n.t("STAGES.INFO.BIH")}

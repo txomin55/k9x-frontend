@@ -39,8 +39,11 @@
 
 .stage-info__event--enrollment {
     display: flex;
-    gap: var(--unit-1);
+    flex-direction: column;
+    gap: var(--unit-05);
     align-items: end;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .stage-info__competitors {

@@ -39,6 +39,7 @@ import type {
 } from "@/services/secured/event-crud/eventCrud.types";
 import { normalizeEventDetailResponse } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 const fetchEventById = (id: string) =>
   rawRequest<EventDetailRawResponseDTO>({
@@ -60,6 +61,7 @@ export const useEventById = (id: string, options?: TanstackCreateQuery) =>
   eventByIdQuery.useQuery([id], {
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
+    refetchOnMount: options?.refetchOnMount,
     enabled: !!id && id !== "new",
   });
 
@@ -149,7 +151,9 @@ const toApiCompetitor = (
     breed: previousCompetitor?.breed ?? "",
     position: competitor.position ?? previousCompetitor?.position ?? 0,
     accepted: competitor.accepted ?? previousCompetitor?.accepted ?? false,
-    status: previousCompetitor?.status ?? "",
+    status: competitor.accepted
+      ? COMPETITOR_STATUS.ENROLLED
+      : (previousCompetitor?.status ?? ""),
     notCompeting: previousCompetitor?.notCompeting ?? false,
     bih: competitor.bih ?? previousCompetitor?.bih ?? false,
   };
@@ -402,6 +406,7 @@ export const useApiEvent = () => {
 
     const eventQuery = useEventById(id, {
       staleTime: Number.POSITIVE_INFINITY,
+      refetchOnMount: !isOffline(),
     });
 
     return createMemo(() => eventQuery.data);

@@ -52,21 +52,17 @@ export default function ObdxExerciseDetailTable(
                         const score = scoreByJudge(judge.id);
                         return (
                           <td>
-                            <Show when={score}>
-                              {(s) => (
-                                <ScoreChip
-                                  shape="pill"
-                                  value={s().value}
-                                  rating={s().scoreRating}
-                                  hasYellowCard={exercise.yellowCards.some(
-                                    (card) => card.judge.id === judge.id,
-                                  )}
-                                  hasRedCard={
-                                    exercise.redCard?.judge.id === judge.id
-                                  }
-                                />
+                            <ScoreChip
+                              shape="pill"
+                              value={score?.value ?? null}
+                              rating={score?.scoreRating ?? null}
+                              hasYellowCard={exercise.yellowCards.some(
+                                (card) => card.judge.id === judge.id,
                               )}
-                            </Show>
+                              hasRedCard={
+                                exercise.redCard?.judge.id === judge.id
+                              }
+                            />
                           </td>
                         );
                       }}

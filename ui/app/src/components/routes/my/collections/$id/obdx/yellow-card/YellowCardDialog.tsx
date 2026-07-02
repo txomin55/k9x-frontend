@@ -63,6 +63,13 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
   });
 
   createEffect(() => {
+    if (isOpen()) {
+      setSelectedExercise(undefined);
+      setSelectedJudge(undefined);
+    }
+  });
+
+  createEffect(() => {
     if (!props.canChooseJudge && !selectedJudge()) {
       const lockedJudge = judgeOptions()[0];
       if (lockedJudge) {

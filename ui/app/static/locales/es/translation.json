@@ -179,6 +179,7 @@
   "STAGES.INFO.DOG": "Perro",
   "STAGES.INFO.SELECT_A_DOG": "Selecciona un perro",
   "STAGES.INFO.CREATE_DOG": "Crear perro",
+  "STAGES.INFO.BREED": "Raza",
   "STAGES.INFO.IDENTIFIER": "Identificador",
   "STAGES.INFO.OWNER": "Propietario",
   "STAGES.INFO.COUNTRY": "País",
