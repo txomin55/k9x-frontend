@@ -139,7 +139,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   name: draftDog.name,
   image: draftDog.image,
   breed: draftDog.breed,
-  identifier: draftDog.identifier,
+  identity: draftDog.identity,
   owner: draftDog.owner,
   handler: draftDog.handler,
   team: draftDog.team,

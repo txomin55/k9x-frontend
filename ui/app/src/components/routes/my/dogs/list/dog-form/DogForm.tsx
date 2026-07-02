@@ -109,10 +109,10 @@ export default function DogForm(props: DogFormProps) {
       breed,
     }));
 
-  const updateIdentifier = (identifier: string) =>
+  const updateIdentity = (identity: string) =>
     props.onDraftChange((current) => ({
       ...current,
-      identifier,
+      identity,
     }));
 
   const updateOwner = (owner: string) =>
@@ -172,8 +172,8 @@ export default function DogForm(props: DogFormProps) {
       />
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER")}
-        value={props.draft().identifier}
-        onChange={updateIdentifier}
+        value={props.draft().identity}
+        onChange={updateIdentity}
       />
       <Show when={!!user()?.organizer}>
         <Show when={!props.draft().owned}>
