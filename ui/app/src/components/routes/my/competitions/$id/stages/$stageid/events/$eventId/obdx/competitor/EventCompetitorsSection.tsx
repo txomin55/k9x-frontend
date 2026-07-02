@@ -8,6 +8,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
@@ -157,18 +158,7 @@ export default function EventCompetitorsSection(
                   content={
                     <div class="event-competitors-section__competitors--competitor">
                       <Show when={competitor().notCompeting}>
-                        <svg
-                          class="event-competitors-section__competitors--not-competing"
-                          viewBox="0 0 24 24"
-                          width="20"
-                          height="20"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                        >
-                          <path d="M6 6l12 12M18 6L6 18" />
-                        </svg>
+                        <NotCompetingIndicator />
                       </Show>
                       <Show when={competitor().bih}>
                         <BihIndicator />

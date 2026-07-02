@@ -16,6 +16,8 @@ import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
@@ -212,6 +214,12 @@ function EventClassificationPage() {
           <div class="obdx-clf-table__dog">
             <CountryFlag country={row.country} width={20} height={20} />
             <span>{row.dog.name}</span>
+            <Show when={row.bih}>
+              <BihIndicator />
+            </Show>
+            <Show when={row.notCompeting}>
+              <NotCompetingIndicator />
+            </Show>
           </div>
         );
       },
