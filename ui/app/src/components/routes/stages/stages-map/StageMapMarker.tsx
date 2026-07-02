@@ -43,6 +43,8 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       </span>
       <span class="text-caption-lg">{props.stage.description}</span>
 
+      <div class="divider" />
+
       <span class="text-body-md">{i18n.t("STAGES.INFO.EVENTS")}</span>
       <Index each={props.stage.events ?? []}>
         {(event) => (

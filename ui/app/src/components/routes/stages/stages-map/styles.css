@@ -68,6 +68,13 @@
     gap: var(--unit-05);
 }
 
+.divider {
+    height: 1px;
+    flex-shrink: 0;
+    background: var(--border-strong);
+    opacity: 0.5;
+}
+
 .stages-map-marker-popup__row {
     display: flex;
     width: 100%;
