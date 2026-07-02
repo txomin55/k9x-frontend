@@ -298,6 +298,7 @@
   "MY.COLLECTIONS.DETAIL.NOT_PRESENTED": "Did not show",
   "MY.COLLECTIONS.DETAIL.EXERCISE": "Exercise",
   "MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN": "Allowed values between",
+  "MY.COLLECTIONS.DETAIL.SCORES_NOT_ALLOWED": "This competitor cannot receive scores because it is not competing",
   "MY.COLLECTIONS.DETAIL.READY": "R",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON": "Yellow card",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE": "Register yellow card",

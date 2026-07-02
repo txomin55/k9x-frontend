@@ -128,6 +128,13 @@ export default function ObdxCollectionDetail() {
       )?.competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
   );
 
+  const isSelectedCompetitorScoresAllowed = createMemo(
+    () =>
+      collectionData.data?.obdx.competitors.find(
+        (c) => c.competitor.dog.id === selectedCompetitor()?.value,
+      )?.competitor.scoresAllowed !== false,
+  );
+
   const markCompetitorAsSeen = (opt: AtomSelectOption | null) => {
     if (!opt) {
       return;
@@ -326,37 +333,45 @@ export default function ObdxCollectionDetail() {
       </Show>
 
       <Show when={selectedCompetitor()}>
-        <div
-          class="collection-detail__exercises"
-          style={{
-            "--collection-detail-exercises-columns": exercisesGridTemplate(),
-          }}
-        >
-          <div class="collection-detail__exercises--headers">
-            <span>{i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}</span>
-            <For each={collectionJudges()}>
-              {(score) => <span>{score.judge.name}</span>}
-            </For>
-          </div>
-          <div class="collection-detail__exercises--rows">
-            <For each={collectionExercises()}>
-              {(exerciseScores) => (
-                <Show when={collectionData.data?.configuration}>
-                  {(configuration) => (
-                    <CollectionExerciseScore
-                      competitorId={selectedCompetitor()?.value ?? ""}
-                      eventId={params().id}
-                      exercise={exerciseScores.exercise}
-                      scores={exerciseScores.scores.filter(
-                        filterByEligibleJudges,
-                      )}
-                      allowedValues={configuration().allowedValues}
-                      onCommitScore={handleCommitScore}
-                    />
-                  )}
-                </Show>
-              )}
-            </For>
+        <div class="collection-detail__exercises-wrapper">
+          <Show when={!isSelectedCompetitorScoresAllowed()}>
+            <div class="collection-detail__exercises-overlay">
+              {i18n.t("MY.COLLECTIONS.DETAIL.SCORES_NOT_ALLOWED")}
+            </div>
+          </Show>
+          <div
+            class="collection-detail__exercises"
+            style={{
+              "--collection-detail-exercises-columns": exercisesGridTemplate(),
+            }}
+          >
+            <div class="collection-detail__exercises--headers">
+              <span>{i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}</span>
+              <For each={collectionJudges()}>
+                {(score) => <span>{score.judge.name}</span>}
+              </For>
+            </div>
+            <div class="collection-detail__exercises--rows">
+              <For each={collectionExercises()}>
+                {(exerciseScores) => (
+                  <Show when={collectionData.data?.configuration}>
+                    {(configuration) => (
+                      <CollectionExerciseScore
+                        competitorId={selectedCompetitor()?.value ?? ""}
+                        eventId={params().id}
+                        exercise={exerciseScores.exercise}
+                        scores={exerciseScores.scores.filter(
+                          filterByEligibleJudges,
+                        )}
+                        allowedValues={configuration().allowedValues}
+                        disabled={!isSelectedCompetitorScoresAllowed()}
+                        onCommitScore={handleCommitScore}
+                      />
+                    )}
+                  </Show>
+                )}
+              </For>
+            </div>
           </div>
         </div>
       </Show>

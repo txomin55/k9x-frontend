@@ -33,6 +33,7 @@ export interface EventCompetitorResponseDTO {
   status: string;
   breed: string;
   bih?: boolean;
+  scoresAllowed?: boolean;
 }
 
 export interface EventCompetitorRequestDTO {

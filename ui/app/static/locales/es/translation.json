@@ -298,6 +298,7 @@
   "MY.COLLECTIONS.DETAIL.NOT_PRESENTED": "No presentado",
   "MY.COLLECTIONS.DETAIL.EXERCISE": "Ejercicio",
   "MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN": "Valores permitidos entre",
+  "MY.COLLECTIONS.DETAIL.SCORES_NOT_ALLOWED": "Este competidor no puede tener puntuaciones porque no compite",
   "MY.COLLECTIONS.DETAIL.READY": "R",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON": "Tarjeta amarilla",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE": "Registrar tarjeta amarilla",

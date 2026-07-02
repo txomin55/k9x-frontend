@@ -14,6 +14,7 @@ interface CollectionExerciseScoresProps {
   exercise: ExerciseResponseDTO;
   scores: CollectionScoreResponseDTO[];
   allowedValues: number[];
+  disabled?: boolean;
   onCommitScore: (payload: UpdateCollectionScoreRequestDTO) => void;
 }
 
@@ -23,6 +24,7 @@ function CollectionExerciseScoreInput(props: {
   exerciseId: string;
   score: CollectionScoreResponseDTO;
   allowedValues: number[];
+  disabled?: boolean;
   onCommitScore: (payload: UpdateCollectionScoreRequestDTO) => void;
 }) {
   const [rawValue, setRawValue] = createSignal(props.score.score);
@@ -69,6 +71,7 @@ function CollectionExerciseScoreInput(props: {
       onBlur={handleBlur}
       minValue={minValue()}
       maxValue={maxValue()}
+      disabled={props.disabled}
       validationState={isValidValue() ? "valid" : "invalid"}
       errorMessage={`${i18n.t("MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN")}: ${minValue()} - ${maxValue()}`}
     />
@@ -90,6 +93,7 @@ export default (props: CollectionExerciseScoresProps) => {
               exerciseId={props.exercise.id}
               score={score}
               allowedValues={props.allowedValues}
+              disabled={props.disabled}
               onCommitScore={props.onCommitScore}
             />
           </div>

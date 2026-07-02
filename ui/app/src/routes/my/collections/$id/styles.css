@@ -24,3 +24,21 @@
     flex-direction: column;
     gap: var(--unit-1);
 }
+
+.collection-detail__exercises-wrapper {
+    position: relative;
+}
+
+.collection-detail__exercises-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--unit-2);
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    backdrop-filter: blur(1px);
+    color: var(--text-secondary);
+}
