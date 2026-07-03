@@ -16,6 +16,7 @@ import type {
   EventJudgeDetailResponseDTO,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
+import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { COMPETITOR_STATUS, EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
@@ -32,6 +33,7 @@ import EventConfigurationSection
 import ObdxCompetitionEventDetailBodyWrapper
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
+import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
@@ -163,6 +165,24 @@ function CompetitionObdxEventDetailBody(props: {
     COMPETITORS: "COMPETITORS",
   };
 
+  const scoreCalculationOptions = createMemo<AtomSelectOption[]>(() => [
+    {
+      label: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_AVG"),
+      value: SCORE_CALCULATION.AVG,
+    },
+    {
+      label: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_MID_AVG"),
+      value: SCORE_CALCULATION.MID_AVG,
+    },
+  ]);
+
+  const selectedScoreCalculationOption = createMemo<AtomSelectOption | null>(
+    () =>
+      scoreCalculationOptions().find(
+        (option) => option.value === draftEvent().scoreCalculation,
+      ) ?? null,
+  );
+
   const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
     const configurationExercises =
       configurations.data?.obdx?.federations
@@ -216,6 +236,7 @@ function CompetitionObdxEventDetailBody(props: {
       exercises: event.exercises,
       judges: event.judges,
       name: event.name,
+      scoreCalculation: event.scoreCalculation,
       status: event.status,
     });
   };
@@ -347,6 +368,7 @@ function CompetitionObdxEventDetailBody(props: {
       id: judge.id,
     })),
     name: eventName,
+    scoreCalculation: event.scoreCalculation,
   });
 
   const persistEventEdits = (
@@ -867,6 +889,26 @@ function CompetitionObdxEventDetailBody(props: {
                 value,
                 current.enrollmentDeadline,
               ),
+            }),
+            { persist: true },
+          )
+        }
+      />
+
+      <AtomSelect
+        label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
+        placeholder={i18n.t(
+          "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
+        )}
+        disabled={!isEditing()}
+        options={scoreCalculationOptions()}
+        value={selectedScoreCalculationOption()}
+        onChange={(option) =>
+          option &&
+          updateDraftEvent(
+            (current) => ({
+              ...current,
+              scoreCalculation: option.value,
             }),
             { persist: true },
           )

@@ -20,6 +20,7 @@ export const toEventEditorDraft = (
   name: event.name,
   stageId: event.stage.id,
   status: event.status,
+  scoreCalculation: event.scoreCalculation,
 });
 
 export const EVENT_STATUS = {

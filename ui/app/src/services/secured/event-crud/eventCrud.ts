@@ -37,7 +37,7 @@ import type {
   UpdateEventNotCompetingRequestDTO,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
-import { normalizeEventDetailResponse } from "@/services/secured/event-crud/eventCrud.types";
+import { normalizeEventDetailResponse, SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
@@ -236,6 +236,10 @@ const mergeApiEventWithPayload = (
       previousEvent?.judges ??
       [],
     name: payload.name ?? previousEvent?.name ?? "",
+    scoreCalculation:
+      updatePayload?.scoreCalculation ??
+      previousEvent?.scoreCalculation ??
+      SCORE_CALCULATION.AVG,
     stage: {
       id: nextStageId,
       name: nextStageName,

@@ -19,6 +19,7 @@ import type {
   EventEditorDraft,
   UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
+import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
 import {
@@ -271,6 +272,7 @@ function CompetitionStageDetailBody(props: {
       id: draft.id ?? globalThis.crypto.randomUUID(),
       judges: [],
       name: draft.name ?? "",
+      scoreCalculation: SCORE_CALCULATION.AVG,
       stageId: draft.stageId,
       status: "",
     });
@@ -363,6 +365,7 @@ function CompetitionStageDetailBody(props: {
       exercises: draft.exercises,
       judges: draft.judges,
       name: draft.name,
+      scoreCalculation: draft.scoreCalculation,
     });
 
     closeEventEditor();

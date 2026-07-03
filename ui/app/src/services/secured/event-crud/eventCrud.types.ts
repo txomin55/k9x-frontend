@@ -13,6 +13,11 @@ export interface CreateEventRequestDTO {
   disciplineId: string;
 }
 
+export const SCORE_CALCULATION = {
+  AVG: "AVG",
+  MID_AVG: "MID_AVG",
+} as const;
+
 export interface UpdateEventRequestDTO {
   competitors?: EventCompetitorRequestDTO[];
   configurationId: string;
@@ -20,6 +25,7 @@ export interface UpdateEventRequestDTO {
   judges?: EventJudgeDetailRequestDTO[];
   name: string;
   enrollmentDeadline: number;
+  scoreCalculation: string;
 }
 
 export interface EventCompetitorResponseDTO {
@@ -86,6 +92,7 @@ export interface ObdxEventDetailResponseDTO {
   judges: EventJudgeDetailResponseDTO[];
   name: string;
   status: string;
+  scoreCalculation: string;
 }
 
 export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
@@ -148,6 +155,7 @@ export interface EventEditorDraft {
   name: string;
   stageId: string;
   status: string;
+  scoreCalculation: string;
 }
 
 export interface ApiEventRollbackPayload {

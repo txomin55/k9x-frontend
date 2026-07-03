@@ -19,6 +19,7 @@ import {
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations.types";
+import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { translate } from "@/stores/i18n/i18n";
 
 const createId = () => globalThis.crypto.randomUUID();
@@ -70,6 +71,7 @@ export const toApiStage = (
         id: rawEvent.id,
         judges: [],
         name: rawEvent.name,
+        scoreCalculation: SCORE_CALCULATION.AVG,
         stage: { id: stage.id, name: stage.name },
         status: rawEvent.status,
       };

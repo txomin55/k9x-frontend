@@ -31,6 +31,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
       discipline: { id: "obdx", name: "FCI OBEDIENCE" },
       stage: { id: EVENT_DETAIL_STAGE_ID, name: "Detail Stage" },
       enrollmentDeadline: 1_717_200_000_000,
+      scoreCalculation: "AVG",
       configuration: {
         federation: FEDERATION,
         id: CONFIGURATION_ID,
@@ -121,6 +122,7 @@ const applyEventUpdate = (
   payload: {
     name: string;
     enrollmentDeadline: number;
+    scoreCalculation: string;
     judges?: { id: string; collectorEmail: string }[];
     exercises?: {
       id: string;
@@ -137,6 +139,7 @@ const applyEventUpdate = (
     ...previous,
     name: payload.name,
     enrollmentDeadline: payload.enrollmentDeadline,
+    scoreCalculation: payload.scoreCalculation,
     judges: (payload.judges ?? []).map((judge) => ({
       id: judge.id,
       collectorEmail: judge.collectorEmail,
