@@ -66,12 +66,14 @@ export default function StagesFilters(props: StagesFiltersProps) {
       <div class="stages-filters__inline">
         <AtomSelect
           label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
+          placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
           options={countryOptions}
           value={selectedCountry()}
           onChange={(option) => props.onCountryChange(option?.value ?? "")}
         />
         <AtomSelect
           label={i18n.t("STAGES.FILTERS.STATUS")}
+          placeholder={i18n.t("STAGES.FILTERS.SELECT_STATUS")}
           options={statusOptions}
           value={selectedStatus()}
           onChange={(option) => props.onStatusChange(option?.value ?? "")}

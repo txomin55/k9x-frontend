@@ -203,6 +203,7 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
           <div class="yellow-card-dialog__content">
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE")}
+              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.SELECT_JUDGE")}
               options={judgeOptions()}
               value={selectedJudge()}
               onChange={setSelectedJudge}
@@ -210,6 +211,7 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
             />
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}
+              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.SELECT_EXERCISE")}
               options={exerciseOptions()}
               value={selectedExercise()}
               onChange={setSelectedExercise}

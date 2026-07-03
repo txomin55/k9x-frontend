@@ -168,6 +168,7 @@ export default function DogForm(props: DogFormProps) {
       />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
+        placeholder={i18n.t("MY.DOGS.DOG_FORM.SELECT_BREED")}
         onChange={(option) => updateBreed(option?.value ?? "")}
         options={BREED_SELECT_OPTIONS}
         value={selectedBreedOption()}

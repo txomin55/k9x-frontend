@@ -293,6 +293,7 @@ export default function ObdxCollectionDetail() {
       <div class="obdx-collection-detail__competitor">
         <AtomSelect
           label={i18n.t("MY.COLLECTIONS.DETAIL.COMPETITORS")}
+          placeholder={i18n.t("MY.COLLECTIONS.DETAIL.SELECT_COMPETITOR")}
           options={collectionCompetitors()}
           value={selectedCompetitor()}
           onChange={markCompetitorAsSeen}

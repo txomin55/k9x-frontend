@@ -166,6 +166,7 @@ export default function RedCardDialog(props: RedCardDialogProps) {
           <div class="red-card-dialog__content">
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.JUDGE")}
+              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.SELECT_JUDGE")}
               options={judgeOptions()}
               value={selectedJudge()}
               onChange={setSelectedJudge}
@@ -173,6 +174,7 @@ export default function RedCardDialog(props: RedCardDialogProps) {
             />
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}
+              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.SELECT_EXERCISE")}
               options={exerciseOptions()}
               value={selectedExercise()}
               onChange={setSelectedExercise}

@@ -27,6 +27,7 @@ export default function EventDisciplineField(props: EventDisciplineFieldProps) {
   return (
     <AtomSelect
       label={i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.DISCIPLINE")}
+      placeholder={i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.SELECT_DISCIPLINE")}
       onChange={props.onChange}
       options={EVENT_DISCIPLINE_OPTIONS}
       value={getEventDisciplineOption(props.value)}

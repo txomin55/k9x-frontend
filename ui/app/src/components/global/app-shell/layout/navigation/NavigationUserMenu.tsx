@@ -59,6 +59,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
     <div class="navigation-tools">
       <div class="navigation-tools__row">
         <AtomSelect
+          placeholder={i18n.t("GLOBAL.NAVIGATION.LOCALE")}
           onChange={(option) => option && i18n.setLocale(option.value)}
           options={localeOptions}
           value={selectedLocale()}

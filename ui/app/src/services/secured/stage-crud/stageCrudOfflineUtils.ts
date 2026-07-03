@@ -4,7 +4,10 @@ import {
   readCompetitionsSnapshot,
   saveCompetitionsSnapshot,
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
-import { getCompetitionsQueryKey } from "@/services/secured/competition-crud/competitionCrud";
+import {
+  getCompetitionsQueryKey,
+  refreshCompetitionsSnapshot,
+} from "@/services/secured/competition-crud/competitionCrud";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
@@ -236,6 +239,12 @@ export const commitApiStageMutationSuccess = async ({
   payload?: unknown;
   stageId: string;
 }) => {
+  if (method === "PUT") {
+    await refreshCompetitionsSnapshot();
+    clearCompetitionDraft(competitionId);
+    return;
+  }
+
   const visibleCompetitions = getVisibleCompetitions();
 
   if (method === "DELETE") {
@@ -248,7 +257,7 @@ export const commitApiStageMutationSuccess = async ({
           stageId,
         ),
     );
-  } else if (method === "POST" || method === "PUT") {
+  } else if (method === "POST") {
     queryClient.setQueryData<CompetitionResponseDTO[]>(
       getCompetitionsQueryKey(),
       visibleCompetitions,

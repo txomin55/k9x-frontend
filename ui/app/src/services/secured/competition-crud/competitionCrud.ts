@@ -31,7 +31,7 @@ export const COMPETITIONS_SNAPSHOT_ID = "competitions";
 export const getCompetitionsQueryKey = () =>
   ["competitions", getCurrentLocale()] as const;
 
-const refreshCompetitionsSnapshot = async () => {
+export const refreshCompetitionsSnapshot = async () => {
   if (!isOrganizer()) {
     return (
       queryClient.getQueryData<CompetitionResponseDTO[]>(

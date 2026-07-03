@@ -41,6 +41,7 @@ export default function CountryField(props: CountryFieldProps) {
   return (
     <AtomSelect
       label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
+      placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
       onChange={props.onChange}
       options={options}
       value={getCountryOption(props.value, options)}
