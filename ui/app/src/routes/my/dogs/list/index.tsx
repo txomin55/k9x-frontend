@@ -46,6 +46,8 @@ function MyDogsListPage() {
 		handler: "",
 		team: "",
 		country: "",
+		sex: "MALE",
+		withersCm: 0,
 	});
 	const dogsQuery = useDogs({
 		refetchOnMount: !isOffline(),
@@ -82,6 +84,8 @@ function MyDogsListPage() {
 		handler: dog.handler,
 		team: dog.team,
 		country: dog.country,
+		sex: dog.sex,
+		withersCm: dog.withersCm,
 		owned: dog.owned,
 	});
 
@@ -122,6 +126,8 @@ function MyDogsListPage() {
 				handler: payload.handler,
 				team: payload.team,
 				country: payload.country,
+				sex: payload.sex,
+				withersCm: payload.withersCm,
 			});
 		} else {
 			createDog(payload);

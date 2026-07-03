@@ -1,8 +1,9 @@
-import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
+import type { Dog, DogSex } from "@/services/secured/dog-crud/dogCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
+import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { createSignal, Show } from "solid-js";
@@ -36,6 +37,11 @@ export default function DogForm(props: DogFormProps) {
       label: name,
       value: id,
     }));
+
+  const SEX_SELECT_OPTIONS = (): AtomSelectOption[] => [
+    { label: i18n.t("MY.DOGS.DOG_FORM.SEX_MALE"), value: "MALE" },
+    { label: i18n.t("MY.DOGS.DOG_FORM.SEX_FEMALE"), value: "FEMALE" },
+  ];
 
   const user = useAuthUser();
 
@@ -74,6 +80,11 @@ export default function DogForm(props: DogFormProps) {
   const selectedBreedOption = () =>
     BREED_SELECT_OPTIONS().find(
       (breedOption) => breedOption.value === props.draft().breed,
+    ) ?? null;
+
+  const selectedSexOption = () =>
+    SEX_SELECT_OPTIONS().find(
+      (sexOption) => sexOption.value === props.draft().sex,
     ) ?? null;
 
   const updateId = (id: string) =>
@@ -130,6 +141,18 @@ export default function DogForm(props: DogFormProps) {
       ...current,
       country,
     }));
+
+  const updateSex = (sex: DogSex) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      sex,
+    }));
+
+  const updateWithersCm = (withersCm: number) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      withersCm,
+    }));
   return (
     <div class="dog-form">
       <AtomInput
@@ -168,6 +191,20 @@ export default function DogForm(props: DogFormProps) {
         label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER")}
         value={props.draft().identity}
         onChange={updateIdentity}
+      />
+      <AtomSelect
+        label={i18n.t("MY.DOGS.DOG_FORM.SEX")}
+        placeholder={i18n.t("MY.DOGS.DOG_FORM.SELECT_SEX")}
+        onChange={(option) => updateSex((option?.value as DogSex) ?? "MALE")}
+        options={SEX_SELECT_OPTIONS()}
+        value={selectedSexOption()}
+      />
+      <AtomNumberInput
+        label={i18n.t("MY.DOGS.DOG_FORM.WITHERS_CM")}
+        value={props.draft().withersCm}
+        onRawValueChange={updateWithersCm}
+        step={0.1}
+        minValue={0}
       />
       <Show when={!!user()?.organizer}>
         <Show when={!props.draft().owned}>

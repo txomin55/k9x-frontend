@@ -31,6 +31,8 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   handler: dog.handler ?? previousDog?.handler,
   team: dog.team ?? previousDog?.team,
   country: dog.country ?? previousDog?.country,
+  sex: dog.sex ?? previousDog?.sex,
+  withersCm: dog.withersCm ?? previousDog?.withersCm,
   owned: dog.owned ?? previousDog?.owned,
 });
 

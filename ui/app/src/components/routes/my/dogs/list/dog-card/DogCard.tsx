@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
 import { useI18n } from "@/stores/i18n/i18n";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import "./styles.css";
@@ -19,6 +20,7 @@ export default function DogCard(props: DogCardProps) {
       topLeft={
         <div class="dog-card__heading">
           <span class="dog-card__name">{props.dog.name}</span>
+          <SexIcon sex={props.dog.sex} />
         </div>
       }
       topRight={<span class="dog-card__breed">{props.dog.breed}</span>}

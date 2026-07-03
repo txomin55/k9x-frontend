@@ -144,6 +144,8 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   handler: draftDog.handler,
   team: draftDog.team,
   country: draftDog.country,
+  sex: draftDog.sex,
+  withersCm: draftDog.withersCm,
 });
 
 export const createDog = (draftDog: Dog) => {

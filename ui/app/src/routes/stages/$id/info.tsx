@@ -16,6 +16,7 @@ import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -300,20 +301,23 @@ function StageInfoPage() {
                       <span class="text-caption-md">
                         {i18n.t("STAGES.INFO.BREED")}
                         <span class="text-label-sm">{dog().breed}</span>
+                        <SexIcon sex={dog().sex} />
                       </span>
                     )}
                   </Show>
 
-                  <AtomCheckbox
-                    label={i18n.t("STAGES.INFO.BIH")}
-                    checked={enrollDraft().bih}
-                    setChecked={(value) =>
-                      updateEnrollDraft((current) => ({
-                        ...current,
-                        bih: value,
-                      }))
-                    }
-                  />
+                  <Show when={selectedDog(enrollDraft().dogId)?.sex !== "MALE"}>
+                    <AtomCheckbox
+                      label={i18n.t("STAGES.INFO.BIH")}
+                      checked={enrollDraft().bih}
+                      setChecked={(value) =>
+                        updateEnrollDraft((current) => ({
+                          ...current,
+                          bih: value,
+                        }))
+                      }
+                    />
+                  </Show>
 
                   <div class="stage-info__enroll-form-actions">
                     <AtomButton

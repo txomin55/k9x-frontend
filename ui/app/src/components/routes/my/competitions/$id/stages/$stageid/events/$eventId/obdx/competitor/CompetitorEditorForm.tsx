@@ -9,6 +9,7 @@ import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.t
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
 
 type OrderBounds = {
   minValue: number;
@@ -129,6 +130,10 @@ export default function CompetitorEditorForm(
               <CountryFlag country={selectedDog(draft().dogId)?.country} />
             </span>
             <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SEX")}
+              <SexIcon sex={selectedDog(draft().dogId)?.sex} />
+            </span>
+            <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CHIP")}
               <span class="text-label-sm">
                 {selectedDog(draft().dogId)?.id ?? draft().dogId}
@@ -167,11 +172,13 @@ export default function CompetitorEditorForm(
             minValue={minOrder}
             maxValue={maxOrder}
           />
-          <AtomCheckbox
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BIH")}
-            checked={draft().bih}
-            setChecked={setBih}
-          />
+          <Show when={selectedDog(draft().dogId)?.sex !== "MALE"}>
+            <AtomCheckbox
+              label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BIH")}
+              checked={draft().bih}
+              setChecked={setBih}
+            />
+          </Show>
           <div class="competitor-editor-form__actions">
             <AtomButton
               type={BUTTON_TYPES.ACCENT}

@@ -1,3 +1,5 @@
+export type DogSex = "MALE" | "FEMALE";
+
 export interface Dog {
   id: string;
   name: string;
@@ -8,6 +10,8 @@ export interface Dog {
   handler: string;
   team: string;
   country: string;
+  sex: DogSex;
+  withersCm: number;
   owned: boolean;
 }
 
@@ -21,6 +25,8 @@ export interface CreateDogRequestDTO {
   handler: string;
   team: string;
   country: string;
+  sex: DogSex;
+  withersCm: number;
 }
 
 export interface UpdateDogRequestDTO {
@@ -32,6 +38,8 @@ export interface UpdateDogRequestDTO {
   handler?: string;
   team?: string;
   country?: string;
+  sex?: DogSex;
+  withersCm?: number;
 }
 
 export interface DogRollbackPayload {

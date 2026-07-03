@@ -13,6 +13,8 @@ export const defaultDogs: Dog[] = [
     handler: "Carlos Competitor",
     team: "Team Alpha",
     country: "ES",
+    sex: "FEMALE",
+    withersCm: 52,
     owned: true,
   },
   {
@@ -25,6 +27,8 @@ export const defaultDogs: Dog[] = [
     handler: "Carlos Competitor",
     team: "Team Beta",
     country: "ES",
+    sex: "MALE",
+    withersCm: 58,
     owned: true,
   },
 ];

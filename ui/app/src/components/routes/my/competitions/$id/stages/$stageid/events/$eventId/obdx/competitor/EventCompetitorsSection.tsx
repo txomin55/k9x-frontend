@@ -8,6 +8,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -87,6 +88,7 @@ export default function EventCompetitorsSection(
       identity: dog?.identity ?? competitor.identity,
       team: dog?.team ?? competitor.team,
       country: dog?.country ?? competitor.country,
+      sex: dog?.sex,
     };
   };
 
@@ -165,7 +167,10 @@ export default function EventCompetitorsSection(
                           <BihIndicator />
                         </Show>
                       </div>
-                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}</p>
+                      <p>
+                        {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
+                        <SexIcon sex={details().sex} />
+                      </p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
