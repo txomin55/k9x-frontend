@@ -148,6 +148,7 @@ function MyDogsListPage() {
 						}
 						onCancel={handleCloseDialog}
 						onSave={handleSave}
+						isEditMode={!!editingDogId()}
 					/>
 				}
 				open={isDialogOpen()}

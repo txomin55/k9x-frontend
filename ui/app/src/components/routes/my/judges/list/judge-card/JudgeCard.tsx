@@ -1,7 +1,5 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import type { JudgeCardProps } from "@/components/routes/my/judges/list/judge-card/JudgeCard.types";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -18,7 +16,6 @@ export default function JudgeCard(props: JudgeCardProps) {
         </div>
       }
       topRight={<CountryFlag country={props.judge.country} />}
-      description={<span class="text-body-md">{props.judge.id}</span>}
       actions={
         <div class="judge-card__actions">
           <ConfirmActionButton

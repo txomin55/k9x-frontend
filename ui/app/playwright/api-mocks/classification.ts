@@ -23,6 +23,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         totalScore: 98,
         tied: false,
         startOrder: 1,
+        bih: false,
       },
       {
         position: 2,
@@ -38,6 +39,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         totalScore: 95,
         tied: false,
         startOrder: 2,
+        bih: false,
       },
     ],
   },

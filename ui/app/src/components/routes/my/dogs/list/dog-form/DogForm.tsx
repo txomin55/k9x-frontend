@@ -24,6 +24,7 @@ type DogFormProps = {
   onDraftChange: (updater: (current: Dog) => Dog) => void;
   onCancel: () => void;
   onSave: () => void;
+  isEditMode: boolean;
 };
 
 export default function DogForm(props: DogFormProps) {
@@ -144,6 +145,7 @@ export default function DogForm(props: DogFormProps) {
         label={i18n.t("MY.DOGS.DOG_FORM.CHIP")}
         value={props.draft().id}
         onChange={updateId}
+        disabled={props.isEditMode}
         {...fieldProps("id", idError)}
       />
       <AtomInput
@@ -166,7 +168,7 @@ export default function DogForm(props: DogFormProps) {
       />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
-        onChange={(option) => updateBreed(option.value)}
+        onChange={(option) => updateBreed(option?.value ?? "")}
         options={BREED_SELECT_OPTIONS}
         value={selectedBreedOption()}
       />
