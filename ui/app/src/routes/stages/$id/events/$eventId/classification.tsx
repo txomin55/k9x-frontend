@@ -16,6 +16,7 @@ import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -400,7 +401,7 @@ function EventClassificationPage() {
                   {classification().configuration.name}
                 </span>
                 <span class="text-caption-md">
-                  {classification().discipline.name}
+                  <DisciplineIcon disciplineId={classification().discipline.id} />
                 </span>
               </div>
               <Show when={pinnedCompetitors().length}>

@@ -39,6 +39,7 @@ import eyeIcon from "@/assets/eye.svg";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
@@ -450,7 +451,10 @@ function CompetitionStageDetailBody(props: {
                   topLeft={event().name}
                   subHeader={<StatusBadge status={event().status} />}
                   content={
-                    <p>{`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: ${event().discipline.name}`}</p>
+                    <p>
+                      {`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: `}
+                      <DisciplineIcon disciplineId={event().discipline.id} />
+                    </p>
                   }
                   actions={
                     isEditing() ? (

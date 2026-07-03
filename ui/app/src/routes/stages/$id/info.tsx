@@ -16,6 +16,7 @@ import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -140,7 +141,8 @@ function StageInfoPage() {
                 <Card
                   topLeft={
                     <span>
-                      {event().configuration.name} ({event().discipline.name})
+                      {event().configuration.name}{" "}
+                      <DisciplineIcon disciplineId={event().discipline.id} />
                     </span>
                   }
                   content={
