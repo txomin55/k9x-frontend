@@ -10,18 +10,33 @@ export type AtomComboboxOption = {
   preLabel?: JSX.Element;
 };
 
-export type AtomComboboxProps = ParentProps<{
+type AtomComboboxBaseProps = {
   options: AtomComboboxOption[];
-  value?: AtomComboboxOption | null;
-  defaultValue?: AtomComboboxOption;
-  onChange?: (value: AtomComboboxOption | null) => void;
   placeholder?: string;
   label?: string;
   description?: string;
   errorMessage?: string;
   disabled?: boolean;
   validationState?: "valid" | "invalid";
-}>;
+};
+
+type AtomComboboxSingleProps = AtomComboboxBaseProps & {
+  multiple?: false;
+  value?: AtomComboboxOption | null;
+  defaultValue?: AtomComboboxOption;
+  onChange?: (value: AtomComboboxOption | null) => void;
+};
+
+type AtomComboboxMultipleProps = AtomComboboxBaseProps & {
+  multiple: true;
+  value?: AtomComboboxOption[];
+  defaultValue?: AtomComboboxOption[];
+  onChange?: (value: AtomComboboxOption[]) => void;
+};
+
+export type AtomComboboxProps = ParentProps<
+  AtomComboboxSingleProps | AtomComboboxMultipleProps
+>;
 
 const ITEM_HEIGHT = 36;
 const OVERSCAN = 5;
@@ -60,9 +75,10 @@ export function AtomCombobox(props: AtomComboboxProps) {
   };
 
   return (
-    <Combobox
+    <Combobox<AtomComboboxOption>
       class="atom-combobox"
-      defaultValue={props.defaultValue}
+      multiple={props.multiple as true}
+      defaultValue={props.defaultValue as AtomComboboxOption[]}
       aria-label={props.label ?? "--Combobox"}
       disabled={props.disabled}
       allowsEmptyCollection
@@ -73,8 +89,8 @@ export function AtomCombobox(props: AtomComboboxProps) {
       optionLabel="label"
       optionTextValue="label"
       optionValue="value"
-      value={props.value}
-      onChange={props.onChange}
+      value={props.value as AtomComboboxOption[]}
+      onChange={props.onChange as (value: AtomComboboxOption[]) => void}
       onInputChange={setInputValue}
       placeholder={props.placeholder}
       virtualized
@@ -84,14 +100,38 @@ export function AtomCombobox(props: AtomComboboxProps) {
           {props.label}
         </Combobox.Label>
       ) : null}
-      <Combobox.Control class="atom-combobox__control">
-        <Combobox.Input
-          class="atom-combobox__input"
-          placeholder={props.placeholder}
-        />
-        <Combobox.Trigger>
-          <Combobox.Icon class="atom-combobox__icon">^</Combobox.Icon>
-        </Combobox.Trigger>
+      <Combobox.Control<AtomComboboxOption> class="atom-combobox__control">
+        {(state) => (
+          <>
+            {props.multiple && state.selectedOptions().length ? (
+              <div class="atom-combobox__tags">
+                <For each={state.selectedOptions()}>
+                  {(option) => (
+                    <span class="atom-combobox__tag">
+                      {option.label}
+                      <button
+                        type="button"
+                        class="atom-combobox__tag-remove"
+                        aria-label={`Remove ${option.label}`}
+                        onPointerDown={(event) => event.stopPropagation()}
+                        onClick={() => state.remove(option)}
+                      >
+                        x
+                      </button>
+                    </span>
+                  )}
+                </For>
+              </div>
+            ) : null}
+            <Combobox.Input
+              class="atom-combobox__input"
+              placeholder={props.placeholder}
+            />
+            <Combobox.Trigger>
+              <Combobox.Icon class="atom-combobox__icon">^</Combobox.Icon>
+            </Combobox.Trigger>
+          </>
+        )}
       </Combobox.Control>
       {props.description ? (
         <Combobox.Description class="atom-combobox__description">

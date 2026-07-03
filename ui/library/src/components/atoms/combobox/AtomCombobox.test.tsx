@@ -96,4 +96,34 @@ describe("AtomCombobox", () => {
 
     expect(getByText("Contenido extra")).toBeInTheDocument();
   });
+
+  test("supports selecting multiple options and removing them", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    const { getByRole, getByText } = render(() => (
+      <AtomCombobox
+        multiple
+        options={OPTIONS}
+        onChange={onChange}
+        placeholder="Select fruits"
+      />
+    ));
+
+    await user.click(getByRole("button"));
+    await user.click(await screen.findByRole("option", { name: "Apple" }));
+
+    expect(onChange).toHaveBeenLastCalledWith([OPTIONS[0]]);
+    expect(getByText("Apple")).toBeInTheDocument();
+
+    await user.click(
+      await screen.findByRole("option", { name: "Blueberry" }),
+    );
+
+    expect(onChange).toHaveBeenLastCalledWith([OPTIONS[0], OPTIONS[2]]);
+
+    await user.click(getByRole("button", { name: "Remove Apple" }));
+
+    expect(onChange).toHaveBeenLastCalledWith([OPTIONS[2]]);
+  });
 });

@@ -36,7 +36,7 @@ function MyCollectionsListPage() {
     });
   };
   return (
-    <Page title={i18n.t("MY.COLLECTIONS.LIST.COLLECTIONS")}>
+    <Page>
       <Suspense
         fallback={
           <span>{i18n.t("MY.COLLECTIONS.LIST.LOADING_COLLECTIONS")}</span>

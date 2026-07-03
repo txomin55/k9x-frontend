@@ -12,18 +12,22 @@ import {
   getMarkerTextColorByStatus,
   isStageLive,
 } from "@/utils/stage";
-import { formatStageDateRange } from "@/utils/date";
+import { formatDateLabel, formatStageDateRange, toDateInputValue } from "@/utils/date";
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import { useAuthUser } from "@/stores/auth/auth";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 
 interface StageMapMarker {
   stage: StageSummaryResponseDTO;
+  onEnroll?: (stageId: string, eventId: string) => void;
 }
 
 export function StageMapMarkerPopup(props: StageMapMarker) {
   const navigate = useNavigate();
   const i18n = useI18n();
+  const user = useAuthUser();
   const navigateToClassification = (eventId: string) =>
     void navigate({
       params: { id: props.stage.id, eventId },
@@ -60,9 +64,41 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                 <StatusBadge status={event().status} dotMode />
               </Show>
             </div>
+            <Show
+              when={user()}
+              fallback={
+                <AtomButton
+                  type={BUTTON_TYPES.GHOST}
+                  size={BUTTON_SIZES.SM}
+                  onClick={startGoogleInteractiveLogin}
+                >
+                  {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                </AtomButton>
+              }
+            >
+              <Show when={event().enrollmentOpened}>
+                <div class="stages-map-marker-popup__enrollment">
+                  <AtomButton
+                    size={BUTTON_SIZES.SM}
+                    onClick={() => props.onEnroll?.(props.stage.id, event().id)}
+                  >
+                    {i18n.t("STAGES.INFO.ENROLL")}
+                  </AtomButton>
+                  <span class="text-caption-sm">
+                    {i18n.t("STAGES.INFO.UNTIL")}{" "}
+                    {formatDateLabel(
+                      toDateInputValue(event().enrollmentDeadline ?? 0),
+                    )}
+                  </span>
+                </div>
+              </Show>
+            </Show>
             <Show when={canSeeClassification(event().status)}>
-              <AtomButton onClick={() => navigateToClassification(event().id)}>
-                {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_QUALIFICATIONS")}
+              <AtomButton
+                size={BUTTON_SIZES.SM}
+                onClick={() => navigateToClassification(event().id)}
+              >
+                {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_CLASSIFICATIONS")}
               </AtomButton>
             </Show>
           </div>

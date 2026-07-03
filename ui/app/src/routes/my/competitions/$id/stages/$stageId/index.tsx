@@ -1,36 +1,18 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import {
-  type Accessor,
-  createEffect,
-  createSignal,
-  Index,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
+import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequestDTO,
   EventDetailResponseDTO,
   EventEditorDraft,
-  UpdateEventRequestDTO,
+  UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
-import {
-  dayBefore,
-  formatDateLabel,
-  parseDateInputValue,
-  toDateInputValue,
-} from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
@@ -43,13 +25,10 @@ import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
-import "./styles.css";
-import {
-  StageEditorModel,
-  UpdateStageRequestDTO,
-} from "@/services/secured/stage-crud/stageCrud.types";
+import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
   component: CompetitionStageDetailPage,
@@ -379,7 +358,6 @@ function CompetitionStageDetailBody(props: {
           when={isEditing()}
           fallback={
             <div class="stage-detail__header--info">
-              <span class="text-heading-sm">{props.stage().name}</span>
               <Show when={props.stage()?.status}>
                 {(status) => <StatusBadge status={status()} />}
               </Show>
@@ -451,10 +429,7 @@ function CompetitionStageDetailBody(props: {
                   topLeft={event().name}
                   subHeader={<StatusBadge status={event().status} />}
                   content={
-                    <p>
-                      {`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE")}: `}
-                      <DisciplineIcon disciplineId={event().discipline.id} />
-                    </p>
+                    <DisciplineIcon disciplineId={event().discipline.id} />
                   }
                   actions={
                     isEditing() ? (

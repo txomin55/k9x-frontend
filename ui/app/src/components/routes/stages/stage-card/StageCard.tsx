@@ -12,12 +12,15 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { canSeeClassification } from "@/utils/event";
 import bellIcon from "@/assets/bell.svg";
 import { isStageLive } from "@/utils/stage";
-import { formatStageDateRange } from "@/utils/date";
+import { formatDateLabel, formatStageDateRange, toDateInputValue } from "@/utils/date";
+import { useAuthUser } from "@/stores/auth/auth";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
   const i18n = useI18n();
+  const user = useAuthUser();
   const [notificationsEnabled, setNotificationsEnabled] = createSignal(false);
   const navigateToClassification = (eventId: string) =>
     void navigate({
@@ -83,6 +86,31 @@ export default function StageCard(props: StageCardProps) {
                 <span>{event().name}</span>
                 <span>({event().competitors})</span>
               </div>
+              <Show
+                when={user()}
+                fallback={
+                  <AtomButton
+                    type={BUTTON_TYPES.GHOST}
+                    onClick={startGoogleInteractiveLogin}
+                  >
+                    {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                  </AtomButton>
+                }
+              >
+                <Show when={event().enrollmentOpened}>
+                  <div class="stage-card__events-content--enrollment">
+                    <AtomButton onClick={() => props.onEnroll?.(event().id)}>
+                      {i18n.t("STAGES.INFO.ENROLL")}
+                    </AtomButton>
+                    <span class="text-caption-sm">
+                      {i18n.t("STAGES.INFO.UNTIL")}{" "}
+                      {formatDateLabel(
+                        toDateInputValue(event().enrollmentDeadline ?? 0),
+                      )}
+                    </span>
+                  </div>
+                </Show>
+              </Show>
               <Show when={canSeeClassification(event().status)}>
                 <AtomButton
                   type={BUTTON_TYPES.PRIMARY}

@@ -38,96 +38,6 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.t
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
-export const Route = createFileRoute(
-  "/my/competitions/$id/stages/$stageId/events/$eventId/",
-)({
-  component: CompetitionEventDetailPage,
-  staticData: {
-    breadcrumb: (match) => {
-      const competition = getCachedCompetitions()?.find(
-        (entry) => entry.id === match.params.id,
-      );
-      const stage = competition?.stages?.find(
-        (entry) => entry.id === match.params.stageId,
-      );
-      const event = stage?.events?.find(
-        (entry) => entry.id === match.params.eventId,
-      );
-
-      return event?.name;
-    },
-  },
-});
-
-function CompetitionEventDetailPage() {
-  const i18n = useI18n();
-  const navigate = useNavigate();
-  const params = useParams({
-    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
-  });
-  const {
-    createApiEvent,
-    createDefaultApiEvent,
-    deleteApiEvent,
-    getEvent,
-    updateApiEvent,
-  } = useApiEvent();
-  let hasCreatedDraftEvent = false;
-
-  const createDraftEvent = () => {
-    const draftEvent = createDefaultApiEvent(params().stageId);
-
-    createApiEvent(draftEvent, { competitionId: params().id });
-    void navigate({
-      params: {
-        eventId: draftEvent.id,
-        id: params().id,
-        stageId: params().stageId,
-      },
-      replace: true,
-      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
-    });
-  };
-
-  const handleDeleteEvent = (eventId: string) =>
-    deleteApiEvent(eventId, params().stageId, {
-      competitionId: params().id,
-    });
-
-  const handleUpdateEvent = (eventId: string, event: UpdateEventRequestDTO) =>
-    updateApiEvent(params().stageId, eventId, event, {
-      competitionId: params().id,
-    });
-
-  createEffect(() => {
-    if (params().eventId !== "new" || hasCreatedDraftEvent) return;
-
-    hasCreatedDraftEvent = true;
-    createDraftEvent();
-  });
-
-  return params().eventId === "new" ? (
-    <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CREATING_EVENT")}</span>
-  ) : (
-    <ObdxCompetitionEventDetailBodyWrapper
-      competitionId={params().id}
-      event={getEvent(params().id, params().stageId, params().eventId)}
-      eventId={params().eventId}
-      onDeleteEvent={handleDeleteEvent}
-      onUpdate={handleUpdateEvent}
-      stageId={params().stageId}
-    >
-      {({ event, onDelete, onUpdate }) => (
-        <CompetitionObdxEventDetailBody
-          event={event}
-          onDelete={onDelete}
-          onUpdate={onUpdate}
-        />
-      )}
-    </ObdxCompetitionEventDetailBodyWrapper>
-  );
-}
-
 function CompetitionObdxEventDetailBody(props: {
   event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
@@ -859,7 +769,6 @@ function CompetitionObdxEventDetailBody(props: {
           fallback={
             <div class="competition-event-detail__content--header">
               <div class="competition-event-detail__content--header-title">
-                <span class="text-heading-sm">{props.event().name}</span>
                 <StatusBadge status={props.event().status} />
               </div>
             </div>
@@ -895,29 +804,38 @@ function CompetitionObdxEventDetailBody(props: {
         }
       />
 
-      <AtomSelect
-        label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
-        placeholder={i18n.t(
-          "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
-        )}
-        disabled={!isEditing()}
-        options={scoreCalculationOptions()}
-        value={selectedScoreCalculationOption()}
-        onChange={(option) =>
-          option &&
-          updateDraftEvent(
-            (current) => ({
-              ...current,
-              scoreCalculation: option.value,
-            }),
-            { persist: true },
-          )
+      <Show
+        when={isEditing()}
+        fallback={
+          <div class="competition-event-detail__content--calculation">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
+            </span>
+            <span class="text-body-md">
+              {selectedScoreCalculationOption()?.label}
+            </span>
+          </div>
         }
-      />
-
-      <div class="competition-event-detail__content--header-detail">
-        <span class="text-caption-md">{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>{" "}
-      </div>
+      >
+        <AtomSelect
+          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
+          placeholder={i18n.t(
+            "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
+          )}
+          options={scoreCalculationOptions()}
+          value={selectedScoreCalculationOption()}
+          onChange={(option) =>
+            option &&
+            updateDraftEvent(
+              (current) => ({
+                ...current,
+                scoreCalculation: option.value,
+              }),
+              { persist: true },
+            )
+          }
+        />
+      </Show>
 
       <EventConfigurationSection
         draft={draftEvent()}
@@ -929,6 +847,10 @@ function CompetitionObdxEventDetailBody(props: {
           })
         }
       />
+
+      <div class="competition-event-detail__content--header-detail">
+        <span class="text-caption-md">{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>{" "}
+      </div>
 
       <AtomTabs
         defaultValue={TABS.JUDGES}
@@ -952,5 +874,95 @@ function CompetitionObdxEventDetailBody(props: {
         </ConfirmActionButton>
       </Show>
     </div>
+  );
+}
+
+export const Route = createFileRoute(
+  "/my/competitions/$id/stages/$stageId/events/$eventId/",
+)({
+  component: CompetitionEventDetailPage,
+  staticData: {
+    breadcrumb: (match) => {
+      const competition = getCachedCompetitions()?.find(
+        (entry) => entry.id === match.params.id,
+      );
+      const stage = competition?.stages?.find(
+        (entry) => entry.id === match.params.stageId,
+      );
+      const event = stage?.events?.find(
+        (entry) => entry.id === match.params.eventId,
+      );
+
+      return event?.name;
+    },
+  },
+});
+
+function CompetitionEventDetailPage() {
+  const i18n = useI18n();
+  const navigate = useNavigate();
+  const params = useParams({
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
+  });
+  const {
+    createApiEvent,
+    createDefaultApiEvent,
+    deleteApiEvent,
+    getEvent,
+    updateApiEvent,
+  } = useApiEvent();
+  let hasCreatedDraftEvent = false;
+
+  const createDraftEvent = () => {
+    const draftEvent = createDefaultApiEvent(params().stageId);
+
+    createApiEvent(draftEvent, { competitionId: params().id });
+    void navigate({
+      params: {
+        eventId: draftEvent.id,
+        id: params().id,
+        stageId: params().stageId,
+      },
+      replace: true,
+      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
+    });
+  };
+
+  const handleDeleteEvent = (eventId: string) =>
+    deleteApiEvent(eventId, params().stageId, {
+      competitionId: params().id,
+    });
+
+  const handleUpdateEvent = (eventId: string, event: UpdateEventRequestDTO) =>
+    updateApiEvent(params().stageId, eventId, event, {
+      competitionId: params().id,
+    });
+
+  createEffect(() => {
+    if (params().eventId !== "new" || hasCreatedDraftEvent) return;
+
+    hasCreatedDraftEvent = true;
+    createDraftEvent();
+  });
+
+  return params().eventId === "new" ? (
+    <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CREATING_EVENT")}</span>
+  ) : (
+    <ObdxCompetitionEventDetailBodyWrapper
+      competitionId={params().id}
+      event={getEvent(params().id, params().stageId, params().eventId)}
+      eventId={params().eventId}
+      onDeleteEvent={handleDeleteEvent}
+      onUpdate={handleUpdateEvent}
+      stageId={params().stageId}
+    >
+      {({ event, onDelete, onUpdate }) => (
+        <CompetitionObdxEventDetailBody
+          event={event}
+          onDelete={onDelete}
+          onUpdate={onUpdate}
+        />
+      )}
+    </ObdxCompetitionEventDetailBodyWrapper>
   );
 }

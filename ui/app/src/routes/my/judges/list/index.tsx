@@ -104,7 +104,7 @@ function MyJudgesListPage() {
 	};
 
 	return (
-		<Page title={i18n.t("MY.JUDGES.LIST.JUDGES")}>
+		<Page>
 			<AtomDialog
 				title={
 					editingJudgeId()

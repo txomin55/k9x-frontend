@@ -17,7 +17,6 @@ import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
-import SexIcon from "@/components/common/sex-icon/SexIcon";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -178,12 +177,16 @@ function StageInfoPage() {
                           </Show>
                         </Show>
                         <Show when={canSeeClassification(event().status)}>
-                          <AtomButton
-                            type={BUTTON_TYPES.PRIMARY}
-                            onClick={() => navigateToClassification(event().id)}
-                          >
-                            {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
-                          </AtomButton>
+                          <div class="stage-info__event--classification">
+                            <AtomButton
+                              type={BUTTON_TYPES.PRIMARY}
+                              onClick={() =>
+                                navigateToClassification(event().id)
+                              }
+                            >
+                              {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
+                            </AtomButton>
+                          </div>
                         </Show>
                       </div>
                       <AtomCollapsible
@@ -257,12 +260,11 @@ function StageInfoPage() {
         {(stage) => (
           <>
             <div class="stage-info__title">
-              <div class="stage-info__title--status">
-                <span>{stage().name}</span>
-                <Show when={stage().status && isStageLive(stage().status!)}>
+              <Show when={stage().status && isStageLive(stage().status!)}>
+                <div class="stage-info__title--status">
                   <StatusBadge status={stage().status!} dotMode />
-                </Show>
-              </div>
+                </div>
+              </Show>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
             <span class="text-caption-md">{stage().organizer}</span>
@@ -298,17 +300,12 @@ function StageInfoPage() {
                     </Show>
                   </AtomCombobox>
 
-                  <Show when={selectedDog(enrollDraft().dogId)}>
-                    {(dog) => (
-                      <span class="text-caption-md">
-                        {i18n.t("STAGES.INFO.BREED")}
-                        <span class="text-label-sm">{dog().breed}</span>
-                        <SexIcon sex={dog().sex} />
-                      </span>
-                    )}
-                  </Show>
-
-                  <Show when={selectedDog(enrollDraft().dogId)?.sex !== "MALE"}>
+                  <Show
+                    when={
+                      selectedDog(enrollDraft().dogId) &&
+                      selectedDog(enrollDraft().dogId)?.sex !== "MALE"
+                    }
+                  >
                     <AtomCheckbox
                       label={i18n.t("STAGES.INFO.BIH")}
                       checked={enrollDraft().bih}

@@ -1,4 +1,3 @@
-import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import obdxIcon from "@/assets/obdx.svg";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -12,8 +11,6 @@ const normalizeDiscipline = (disciplineId?: string) =>
 export default function DisciplineIcon(props: {
   alt?: string;
   disciplineId?: string;
-  height?: number;
-  width?: number;
 }) {
   const i18n = useI18n();
   const disciplineId = () => normalizeDiscipline(props.disciplineId);
@@ -24,18 +21,11 @@ export default function DisciplineIcon(props: {
   }
 
   return (
-    <div
+    <img
+      alt={props.alt ?? `${disciplineId()} icon`}
       class="discipline-icon"
-      style={{
-        height: `${props.height ?? 24}px`,
-        width: `${props.width ?? 24}px`,
-      }}
-    >
-      <ProfileImage
-        alt={props.alt ?? `${disciplineId()} icon`}
-        fallback={disciplineId().toUpperCase()}
-        src={src()}
-      />
-    </div>
+      src={src()}
+      style={{ height: "var(--unit-4)", width: "auto" }}
+    />
   );
 }

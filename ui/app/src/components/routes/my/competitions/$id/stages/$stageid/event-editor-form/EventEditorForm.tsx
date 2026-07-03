@@ -1,12 +1,12 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import EventDisciplineField from "@/components/common/event-discipline-field/EventDisciplineField";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import type { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
+import { Show } from "solid-js";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import "./styles.css";
 
 type EventEditorFormProps = {
@@ -58,11 +58,16 @@ export default function EventEditorForm(props: EventEditorFormProps) {
         value={props.draft.name}
         onChange={handleNameChange}
       />
-      <EventDisciplineField
-        onChange={updateDiscipline}
-        value={props.draft.discipline.id}
-        disabled={!props.isCreate}
-      />
+      <Show
+        when={props.isCreate}
+        fallback={<DisciplineIcon disciplineId={props.draft.discipline.id} />}
+      >
+        <EventDisciplineField
+          onChange={updateDiscipline}
+          value={props.draft.discipline.id}
+          disabled={!props.isCreate}
+        />
+      </Show>
       <div class="event-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.EVENT_EDITOR_FORM.CANCEL")}

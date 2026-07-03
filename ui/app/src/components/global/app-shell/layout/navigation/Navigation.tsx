@@ -21,18 +21,47 @@ export default function Navigation(props) {
     >
       <div class="navigation__sidebar-panel">
         <nav class="navigation__sidebar-panel--navigation">
-          <Link to={AppRoutePath.HOME as "/"}>{i18n.t("GLOBAL.NAVIGATION.LANDING")}</Link>
-          <Link to={AppRoutePath.STAGES as "/stages"}>{i18n.t("GLOBAL.NAVIGATION.STAGES")}</Link>
+          <Link
+            to={AppRoutePath.HOME as "/"}
+            activeOptions={{ exact: true }}
+            activeProps={{ class: "navigation__link--active" }}
+          >
+            {i18n.t("GLOBAL.NAVIGATION.LANDING")}
+          </Link>
+          <Link
+            to={AppRoutePath.STAGES as "/stages"}
+            activeProps={{ class: "navigation__link--active" }}
+          >
+            {i18n.t("GLOBAL.NAVIGATION.STAGES")}
+          </Link>
           <Show when={user()}>
             <p>{i18n.t("GLOBAL.NAVIGATION.MY")}</p>
             <Show when={user()?.organizer}>
-              <Link to={AppRoutePath.MY_COMPETITIONS as never}>
+              <Link
+                to={AppRoutePath.MY_COMPETITIONS as never}
+                activeProps={{ class: "navigation__link--active" }}
+              >
                 {i18n.t("GLOBAL.NAVIGATION.COMPETITIONS")}
               </Link>
-              <Link to={AppRoutePath.MY_JUDGES as never}>{i18n.t("GLOBAL.NAVIGATION.JUDGES")}</Link>
+              <Link
+                to={AppRoutePath.MY_JUDGES as never}
+                activeProps={{ class: "navigation__link--active" }}
+              >
+                {i18n.t("GLOBAL.NAVIGATION.JUDGES")}
+              </Link>
             </Show>
-            <Link to={AppRoutePath.MY_COLLECTIONS as never}>{i18n.t("GLOBAL.NAVIGATION.COLLECTIONS")}</Link>
-            <Link to={AppRoutePath.MY_DOGS as never}>{i18n.t("GLOBAL.NAVIGATION.DOGS")}</Link>
+            <Link
+              to={AppRoutePath.MY_COLLECTIONS as never}
+              activeProps={{ class: "navigation__link--active" }}
+            >
+              {i18n.t("GLOBAL.NAVIGATION.COLLECTIONS")}
+            </Link>
+            <Link
+              to={AppRoutePath.MY_DOGS as never}
+              activeProps={{ class: "navigation__link--active" }}
+            >
+              {i18n.t("GLOBAL.NAVIGATION.DOGS")}
+            </Link>
           </Show>
         </nav>
       </div>

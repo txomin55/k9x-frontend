@@ -2,13 +2,11 @@ import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import {
   updateCollectionScore,
   useCollectionById,
-  useCollections,
+  useCollections
 } from "@/services/secured/collection-crud/collectionCrud";
 import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
 import RedCardDialog from "@/components/routes/my/collections/$id/obdx/red-card/RedCardDialog";
@@ -19,12 +17,14 @@ import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
-import CollectionExerciseScore from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
+import ScoresCompetitorPreLabel
+  from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import CollectionExerciseScore
+  from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
 import type {
   CollectionScoreResponseDTO,
   ExerciseScoresResponseDTO,
-  UpdateCollectionScoreRequestDTO,
+  UpdateCollectionScoreRequestDTO
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import "./styles.css";
 
@@ -102,7 +102,7 @@ export default function ObdxCollectionDetail() {
       .flatMap((c) => {
         return [
           {
-            label: c.competitor.handler,
+            label: c.competitor.dog.name,
             value: c.competitor.dog.id,
             preLabel: (
               <ScoresCompetitorPreLabel
@@ -301,7 +301,11 @@ export default function ObdxCollectionDetail() {
 
         <YellowCardDialog
           eventId={params().id}
-          competitorId={selectedCompetitor()?.value ?? ""}
+          competitorId={
+            isSelectedCompetitorScoresAllowed()
+              ? selectedCompetitor()?.value ?? ""
+              : ""
+          }
           competitors={collectionData.data?.obdx.competitors ?? []}
           judgesIds={search().judgesIds}
           canChooseJudge={isOrganizer()}
@@ -309,7 +313,11 @@ export default function ObdxCollectionDetail() {
 
         <RedCardDialog
           eventId={params().id}
-          competitorId={selectedCompetitor()?.value ?? ""}
+          competitorId={
+            isSelectedCompetitorScoresAllowed()
+              ? selectedCompetitor()?.value ?? ""
+              : ""
+          }
           competitors={collectionData.data?.obdx.competitors ?? []}
           judgesIds={search().judgesIds}
           canChooseJudge={isOrganizer()}

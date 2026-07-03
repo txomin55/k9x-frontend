@@ -24,6 +24,8 @@
 .atom-combobox__control {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
 
     min-height: 40px;
     padding: 0 var(--unit-1);
@@ -35,6 +37,45 @@
     transition: border-color 140ms ease,
     box-shadow 140ms ease,
     background-color 140ms ease;
+}
+
+/* Selected tags (multiple mode) */
+.atom-combobox__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
+    padding: var(--unit-05) 0;
+}
+
+.atom-combobox__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--unit-05);
+
+    padding: 0 var(--unit-05);
+    height: 24px;
+
+    background: var(--accent-soft);
+    color: var(--text-primary);
+    border-radius: var(--unit-05);
+
+    font-size: var(--text-caption-sm);
+    line-height: var(--text-caption-line-height);
+}
+
+.atom-combobox__tag-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    height: 16px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
 }
 
 /* Input */

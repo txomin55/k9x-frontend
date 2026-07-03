@@ -6,6 +6,8 @@ export interface StageEventSummaryResponseDTO {
   id: string;
   name: string;
   status: string;
+  enrollmentOpened: boolean;
+  enrollmentDeadline: number;
 }
 
 export interface StageSummaryResponseDTO {

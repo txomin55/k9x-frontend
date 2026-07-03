@@ -15,6 +15,7 @@ import { createVirtualizer } from "@tanstack/solid-virtual";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
@@ -63,9 +64,35 @@ function EventClassificationPage() {
     () => classificationQuery.data?.obdx?.competitors ?? [],
   );
 
+  const [competitorFilterIds, setCompetitorFilterIds] =
+    useSearchParamList("competitors");
+  const competitorFilterIdSet = createMemo(
+    () => new Set(competitorFilterIds()),
+  );
+
+  const competitorOptions = createMemo<AtomComboboxOption[]>(() =>
+    competitors().map((competitor) => ({
+      label: competitor.dog.name,
+      value: competitor.dog.id,
+    })),
+  );
+
+  const selectedCompetitorOptions = createMemo(() =>
+    competitorOptions().filter((option) =>
+      competitorFilterIdSet().has(option.value),
+    ),
+  );
+
+  const filteredCompetitors = createMemo(() => {
+    const ids = competitorFilterIdSet();
+    if (!ids.size) return competitors();
+    return competitors().filter((competitor) => ids.has(competitor.dog.id));
+  });
+
   const rowEls = new Map<number, HTMLDivElement>();
 
   let previousPositions = new Map<string, number>();
+  let previousTrends = new Map<string, TrendDirection>();
   const [trends, setTrends] = createSignal<Map<string, TrendDirection>>(
     new Map(),
   );
@@ -77,14 +104,21 @@ function EventClassificationPage() {
     const nextPositions = new Map<string, number>();
     for (const competitor of list) {
       const id = competitor.dog.id;
+      const previousPosition = previousPositions.get(id);
+      const positionChanged =
+        previousPosition !== undefined &&
+        previousPosition !== competitor.position;
       nextTrends.set(
         id,
-        positionTrend(previousPositions.get(id), competitor.position),
+        positionChanged
+          ? positionTrend(previousPosition, competitor.position)
+          : (previousTrends.get(id) ?? "same"),
       );
       nextPositions.set(id, competitor.position);
     }
     setTrends(nextTrends);
     previousPositions = nextPositions;
+    previousTrends = nextTrends;
   });
 
   const liveIds = createMemo(() => {
@@ -177,7 +211,7 @@ function EventClassificationPage() {
 
   const virtualizer = createVirtualizer({
     get count() {
-      return competitors().length;
+      return filteredCompetitors().length;
     },
     getScrollElement: () => scrollEl() ?? null,
     getItemKey: (index) =>
@@ -287,7 +321,7 @@ function EventClassificationPage() {
       >
         <For each={virtualizer.getVirtualItems()}>
           {(virtualRow) => {
-            const competitor = () => competitors()[virtualRow.index];
+            const competitor = () => filteredCompetitors()[virtualRow.index];
 
             return (
               <Show when={competitor()}>
@@ -343,7 +377,7 @@ function EventClassificationPage() {
   const tableContent = () => (
     <div class="obdx-clf-table" style={{ height: `${listHeight()}px` }}>
       <AtomTable<StageEventClassificationItemResponseDTO>
-        data={competitors()}
+        data={filteredCompetitors()}
         columns={columns()}
         getRowCanExpand={() => true}
         getRowId={(row) => row.dog.id}
@@ -388,22 +422,35 @@ function EventClassificationPage() {
           {(classification) => (
             <>
               <div class="classification__header">
-                <span class="text-heading-sm">
-                  {classification().event.name}
-                </span>
                 <span class="text-caption-md">
                   {t("STAGES.CLASSIFICATION.LAST_UPDATED")}{" "}
                   {formatDateTime(classification().lastUpdated)}
                 </span>
               </div>
               <div class="classification__sub-header">
+                <DisciplineIcon disciplineId={classification().discipline.id} />
                 <span class="text-caption-md">
                   {classification().configuration.name}
                 </span>
-                <span class="text-caption-md">
-                  <DisciplineIcon disciplineId={classification().discipline.id} />
-                </span>
               </div>
+              <Show when={competitorOptions().length}>
+                <div class="obdx-clf__filter">
+                  <AtomCombobox
+                    multiple
+                    label={t("STAGES.CLASSIFICATION.FILTER_COMPETITORS")}
+                    placeholder={t(
+                      "STAGES.CLASSIFICATION.FILTER_COMPETITORS_PLACEHOLDER",
+                    )}
+                    options={competitorOptions()}
+                    value={selectedCompetitorOptions()}
+                    onChange={(options) =>
+                      setCompetitorFilterIds(
+                        options.map((option) => option.value),
+                      )
+                    }
+                  />
+                </div>
+              </Show>
               <Show when={pinnedCompetitors().length}>
                 <div class="obdx-clf__pinned">
                   <For each={pinnedCompetitors()}>
@@ -427,23 +474,30 @@ function EventClassificationPage() {
                 when={classification()?.obdx?.competitors?.length}
                 fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
               >
-                <AtomSegmentedControl
-                  title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
-                  control={controlValue()}
-                  onControlChange={setControlValue}
-                  controls={[
-                    {
-                      value: CONTROLS_KEYS.LIST,
-                      text: t("STAGES.CLASSIFICATION.LIST"),
-                      content: listContent(),
-                    },
-                    {
-                      value: CONTROLS_KEYS.TABLE,
-                      text: t("STAGES.CLASSIFICATION.TABLE"),
-                      content: tableContent(),
-                    },
-                  ]}
-                />
+                <Show
+                  when={filteredCompetitors().length}
+                  fallback={
+                    <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
+                  }
+                >
+                  <AtomSegmentedControl
+                    title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
+                    control={controlValue()}
+                    onControlChange={setControlValue}
+                    controls={[
+                      {
+                        value: CONTROLS_KEYS.LIST,
+                        text: t("STAGES.CLASSIFICATION.LIST"),
+                        content: listContent(),
+                      },
+                      {
+                        value: CONTROLS_KEYS.TABLE,
+                        text: t("STAGES.CLASSIFICATION.TABLE"),
+                        content: tableContent(),
+                      },
+                    ]}
+                  />
+                </Show>
               </Show>
             </>
           )}

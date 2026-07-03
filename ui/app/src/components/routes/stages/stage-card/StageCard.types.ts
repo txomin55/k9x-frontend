@@ -11,4 +11,5 @@ export interface StageCardProps {
   status?: string;
   to: number;
   organizer: string;
+  onEnroll?: (eventId: string) => void;
 }

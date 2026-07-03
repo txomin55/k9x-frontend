@@ -137,7 +137,7 @@ function MyDogsListPage() {
 	};
 
 	return (
-		<Page title={i18n.t("MY.DOGS.LIST.DOGS")}>
+		<Page>
 			<AtomDialog
 				title={
 					editingDogId()

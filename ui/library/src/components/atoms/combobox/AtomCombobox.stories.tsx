@@ -1,7 +1,19 @@
 import { createSignal } from "solid-js";
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import type { AtomComboboxOption, AtomComboboxProps } from "./AtomCombobox";
+import type { AtomComboboxOption } from "./AtomCombobox";
 import { AtomCombobox } from "./AtomCombobox";
+
+type StoryArgs = {
+  label?: string;
+  description?: string;
+  errorMessage?: string;
+  options: AtomComboboxOption[];
+  placeholder?: string;
+  validationState?: "valid" | "invalid";
+  multiple?: boolean;
+  value?: AtomComboboxOption | AtomComboboxOption[] | null;
+  onChange?: (value: any) => void;
+};
 
 const OPTIONS: AtomComboboxOption[] = [
   { label: "Apple", value: "apple" },
@@ -21,13 +33,15 @@ const OPTIONS: AtomComboboxOption[] = [
 
 const meta = {
   title: "Atoms/AtomCombobox",
-  render: (args: AtomComboboxProps) => {
-    const [value, setValue] = createSignal(args.value ?? null);
+  render: (args: StoryArgs) => {
+    const [value, setValue] = createSignal(
+      (args.value as AtomComboboxOption | null) ?? null,
+    );
 
     return renderSolid(() => (
       <AtomCombobox
-        {...args}
-        onChange={(nextValue) => {
+        {...(args as any)}
+        onChange={(nextValue: AtomComboboxOption | null) => {
           setValue(nextValue);
           args.onChange?.(nextValue);
         }}
@@ -74,5 +88,33 @@ export const ErrorMessage = {
     options: OPTIONS,
     placeholder: "Select a fruit",
     validationState: "invalid",
+  },
+};
+
+export const Multiple = {
+  render: (args: StoryArgs) => {
+    const [value, setValue] = createSignal<AtomComboboxOption[]>(
+      (args.value as AtomComboboxOption[]) ?? [],
+    );
+
+    return renderSolid(() => (
+      <AtomCombobox
+        {...(args as any)}
+        multiple
+        onChange={(nextValue: AtomComboboxOption[]) => {
+          setValue(nextValue);
+          args.onChange?.(nextValue);
+        }}
+        value={value()}
+      />
+    ));
+  },
+  args: {
+    label: "Favorite fruits",
+    description: "Pick multiple fruits from the list.",
+    options: OPTIONS,
+    placeholder: "Select fruits",
+    multiple: true,
+    value: [OPTIONS[0], OPTIONS[2]],
   },
 };

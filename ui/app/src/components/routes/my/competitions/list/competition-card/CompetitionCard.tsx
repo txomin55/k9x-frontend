@@ -20,14 +20,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
       topLeft={
         <div class="competition-card__main-info">
           <span class="text-heading-sm">{props.name}</span>
-          <div class="competition-card__country-flag">
-            <CountryFlag
-              country={props.country}
-              alt={`${props.country} flag`}
-              height={32}
-              width={32}
-            />
-          </div>
+          <CountryFlag country={props.country} alt={`${props.country} flag`} />
         </div>
       }
       topRight={

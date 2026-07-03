@@ -37,6 +37,7 @@
     gap: var(--unit-1);
 }
 
+.stage-info__event--classification,
 .stage-info__event--enrollment {
     display: flex;
     flex-direction: column;

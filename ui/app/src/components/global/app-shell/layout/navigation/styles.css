@@ -51,6 +51,21 @@
     color: inherit;
     text-decoration: none;
     padding: var(--unit-1) var(--unit-2);
+    border-radius: var(--radius-md);
+    transition: background 150ms ease, color 150ms ease;
+}
+
+.navigation__sidebar-panel--navigation a:hover {
+    background: var(--surface-hover);
+}
+
+.navigation__sidebar-panel--navigation a.navigation__link--active {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
 }
 
 @media (max-width: 720px) {

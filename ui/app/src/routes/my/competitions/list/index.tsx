@@ -30,7 +30,7 @@ function MyCompetitionsIndexPage() {
 	});
 
 	return (
-		<Page title={i18n.t("MY.COMPETITIONS.LIST.MY_COMPETITIONS")}>
+		<Page>
 			<Suspense
 				fallback={
 					<span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>

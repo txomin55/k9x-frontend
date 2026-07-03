@@ -39,3 +39,16 @@
 .stages-table__expander:hover {
   color: var(--text-primary);
 }
+
+.stage-info__enroll-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-2);
+}
+
+.stage-info__enroll-form-actions {
+  padding-top: var(--unit-1);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}

@@ -1,8 +1,8 @@
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
-import { createFileRoute } from "@tanstack/solid-router";
-import { createEffect, createMemo, For, Show, Suspense } from "solid-js";
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
@@ -10,6 +10,8 @@ import StagesFilters from "@/components/routes/stages/stages-filters/StagesFilte
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
+import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useOffline } from "@/stores/network/network";
@@ -17,6 +19,12 @@ import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isStageLive } from "@/utils/stage";
 import { formatUtcDateOnly } from "@/utils/date";
+import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
+import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -31,9 +39,20 @@ const CONTROLS_KEYS = {
 	MAP: "MAP",
 };
 
+type EnrollDraft = {
+	dogId: string;
+	bih: boolean;
+};
+
+const createEmptyEnrollDraft = (): EnrollDraft => ({
+	dogId: "",
+	bih: false,
+});
+
 function StagesIndexPage() {
 	const { isOffline } = useOffline();
 	const i18n = useI18n();
+	const navigate = useNavigate();
 	const user = useAuthUser();
 	const isLoggedIn = () => !!user();
 
@@ -41,6 +60,77 @@ function StagesIndexPage() {
 		refetchOnMount: !isOffline(),
 		gcTime: 5 * 60 * 1000,
 	});
+
+	const dogsQuery = useDogs({
+		refetchOnMount: !isOfflinePolicy(),
+		gcTime: 5 * 60 * 1000,
+	});
+	const dogOptions = createMemo<AtomSelectOption[]>(() =>
+		(dogsQuery.data ?? []).map((dog) => ({
+			label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
+			value: dog.id,
+		})),
+	);
+	const [selectedStageId, setSelectedStageId] = useSearchParam(
+		"enrollStage",
+		"",
+		"push",
+	);
+	const [selectedEventId, setSelectedEventId] = useSearchParam(
+		"enroll",
+		"",
+		"push",
+	);
+	const enrollDialogOpen = () => !!selectedStageId() && !!selectedEventId();
+	const selectedEventName = createMemo(
+		() =>
+			(fetchedStages.data ?? [])
+				.find((stage) => String(stage.id) === String(selectedStageId()))
+				?.events.find(
+					(event) => String(event.id) === String(selectedEventId()),
+				)?.name ?? "",
+	);
+	const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
+		createEmptyEnrollDraft(),
+	);
+
+	const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
+		setEnrollDraft((current) => updater(current));
+
+	const handleDogChange = (option: AtomSelectOption | null) => {
+		updateEnrollDraft((current) => ({
+			...current,
+			dogId: option?.value ?? "",
+		}));
+	};
+
+	const selectedDog = (dogId: string) =>
+		(dogsQuery.data ?? []).find((dog) => dog.id === dogId);
+
+	const openEnrollDialog = (stageId: string, eventId: string) => {
+		setEnrollDraft(createEmptyEnrollDraft());
+		setSelectedStageId(stageId);
+		setSelectedEventId(eventId);
+	};
+
+	const closeEnrollDialog = () => {
+		setSelectedStageId("");
+		setSelectedEventId("");
+		setEnrollDraft(createEmptyEnrollDraft());
+	};
+
+	const handleEnroll = async () => {
+		if (!selectedStageId() || !selectedEventId()) {
+			return;
+		}
+
+		await enrollStageEvent(selectedStageId(), {
+			...enrollDraft(),
+			eventId: selectedEventId(),
+		});
+
+		closeEnrollDialog();
+	};
 
 	const [nameFilter, setNameFilter] = useSearchParam("name", "");
 	const [countryFilter, setCountryFilter] = useSearchParam("country", "");
@@ -94,8 +184,14 @@ function StagesIndexPage() {
 			organizer={stage.organizer}
 			address={stage?.location?.address}
 			events={stage.events ?? []}
+			onEnroll={(eventId) => openEnrollDialog(stage.id, eventId)}
 		/>
 	);
+
+	const handleGoToDogs = () =>
+		navigate({
+			to: "/my/dogs",
+		});
 
 	const columns = createMemo<ColumnDef<StageSummaryResponseDTO>[]>(() => [
 		{
@@ -174,7 +270,12 @@ function StagesIndexPage() {
 			value: CONTROLS_KEYS.MAP,
 			text: i18n.t("STAGES.INDEX.MAP"),
 			disabled: isOffline(),
-			content: <StagesMap stages={sortedStages()} />,
+			content: (
+				<StagesMap
+					stages={sortedStages()}
+					onEnroll={(stageId, eventId) => openEnrollDialog(stageId, eventId)}
+				/>
+			),
 		},
 	]);
 
@@ -223,6 +324,70 @@ function StagesIndexPage() {
 					controls={controls()}
 				/>
 			</Suspense>
+			<AtomDialog
+				closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}
+				content={
+					<div class="stage-info__enroll-form">
+						<AtomCombobox
+							label={i18n.t("STAGES.INFO.DOG")}
+							onChange={handleDogChange}
+							options={dogOptions()}
+							placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
+							value={
+								dogOptions().find(
+									(option) => option.value === enrollDraft().dogId,
+								) ?? null
+							}
+						>
+							<Show when={dogOptions().length === 0}>
+								<AtomButton
+									type={BUTTON_TYPES.GHOST}
+									onClick={handleGoToDogs}
+								>
+									{i18n.t("STAGES.INFO.CREATE_DOG")}
+								</AtomButton>
+							</Show>
+						</AtomCombobox>
+
+						<Show
+							when={
+								selectedDog(enrollDraft().dogId) &&
+								selectedDog(enrollDraft().dogId)?.sex !== "MALE"
+							}
+						>
+							<AtomCheckbox
+								label={i18n.t("STAGES.INFO.BIH")}
+								checked={enrollDraft().bih}
+								setChecked={(value) =>
+									updateEnrollDraft((current) => ({
+										...current,
+										bih: value,
+									}))
+								}
+							/>
+						</Show>
+
+						<div class="stage-info__enroll-form-actions">
+							<AtomButton
+								type={BUTTON_TYPES.ACCENT}
+								onClick={closeEnrollDialog}
+							>
+								{i18n.t("STAGES.INFO.CANCEL")}
+							</AtomButton>
+							<AtomButton onClick={handleEnroll}>
+								{i18n.t("STAGES.INFO.ENROLL")}
+							</AtomButton>
+						</div>
+					</div>
+				}
+				onOpenChange={(open) => {
+					if (!open) {
+						closeEnrollDialog();
+					}
+				}}
+				open={enrollDialogOpen()}
+				title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${selectedEventName()}`}
+			/>
 		</div>
 	);
 }

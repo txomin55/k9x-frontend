@@ -22,6 +22,7 @@ import "./styles.css";
 
 interface StagesMapProps {
 	stages: StageSummaryResponseDTO[];
+	onEnroll?: (stageId: string, eventId: string) => void;
 }
 
 export default function StagesMap(props: StagesMapProps) {
@@ -71,7 +72,7 @@ export default function StagesMap(props: StagesMapProps) {
 
 			const container = document.createElement("div");
 			const dispose = render(
-				() => <StageMapMarkerPopup stage={stage} />,
+				() => <StageMapMarkerPopup stage={stage} onEnroll={props.onEnroll} />,
 				container,
 			);
 

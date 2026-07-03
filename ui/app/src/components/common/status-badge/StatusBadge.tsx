@@ -8,7 +8,7 @@ type StatusConfig = {
 };
 
 const STATUS_CONFIG: Record<string, StatusConfig> = {
-  CREATED: {},
+  CREATED: { type: BADGE_TYPES.PRIMARY },
   CLOSED_ENROLLMENT: { type: BADGE_TYPES.WARNING },
   TO_START: { type: BADGE_TYPES.WARNING, pulse: true },
   STARTED: { type: BADGE_TYPES.SUCCESS, pulse: true },

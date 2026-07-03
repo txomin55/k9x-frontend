@@ -7,7 +7,7 @@
 
 .classification__sub-header {
     display: flex;
-    gap: var(--unit-1);
+    flex-direction: column;
 }
 
 .obdx-clf-table {
@@ -62,6 +62,11 @@
     gap: var(--unit-1);
     padding: var(--unit-2) 0;
     color: var(--text-secondary);
+}
+
+.obdx-clf__filter {
+    padding-top: var(--unit-1);
+    max-width: 480px;
 }
 
 .obdx-clf__pinned {

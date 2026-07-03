@@ -3,9 +3,7 @@ import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "library/src/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
@@ -16,11 +14,7 @@ import type { AtomSelectOption } from "library/src/components/atoms/select/AtomS
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import {
-  canAcceptCompetitorEnroll,
-  canSeeCompetitorScores,
-  EVENT_STATUS,
-} from "@/utils/event";
+import { canAcceptCompetitorEnroll, canSeeCompetitorScores, EVENT_STATUS } from "@/utils/event";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
@@ -160,6 +154,7 @@ export default function EventCompetitorsSection(
                   content={
                     <div class="event-competitors-section__competitors--competitor">
                       <div class="event-competitors-section__competitors--badges">
+                        <SexIcon sex={details().sex} />
                         <Show when={competitor().notCompeting}>
                           <NotCompetingIndicator />
                         </Show>
@@ -169,7 +164,6 @@ export default function EventCompetitorsSection(
                       </div>
                       <p>
                         {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
-                        <SexIcon sex={details().sex} />
                       </p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>

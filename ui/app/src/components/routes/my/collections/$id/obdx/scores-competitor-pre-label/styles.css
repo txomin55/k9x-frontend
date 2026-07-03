@@ -5,7 +5,15 @@
 }
 
 .scores-competitor-pre-label img {
-    max-width: var(--unit-1);
-    max-height: var(--unit-1);
+    width: auto;
+    height: var(--unit-2);
     flex-shrink: 0;
+}
+
+.scores-competitor-pre-label .country-flag {
+    flex-shrink: 0;
+}
+
+.scores-competitor-pre-label__seen--hidden {
+    visibility: hidden;
 }

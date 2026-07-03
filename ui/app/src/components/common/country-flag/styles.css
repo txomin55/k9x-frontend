@@ -1,4 +1,5 @@
 .country-flag .profile-image .atom-image__img {
-    width: 130%;
-    margin-inline-start: -15%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
