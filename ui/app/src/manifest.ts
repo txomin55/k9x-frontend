@@ -20,12 +20,12 @@ export const createWebManifest = (basePathEnv?: string) => {
     theme_color: "#ffffff",
     icons: [
       {
-        src: `${rootPath}pwa-192x192.png`,
+        src: `${rootPath}k9x-192.png`,
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: `${rootPath}pwa-512x512.png`,
+        src: `${rootPath}k9x-512.png`,
         sizes: "512x512",
         type: "image/png",
         purpose: "any maskable",
