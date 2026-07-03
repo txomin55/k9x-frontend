@@ -1,8 +1,13 @@
-import type { BrowserContext } from "@playwright/test";
+import type { BrowserContext, Page } from "@playwright/test";
 import { test as baseTest } from "@test/utils/testFixture";
 import { mockAccessToken } from "@test/api-mocks/login";
 import { competitorUser, organizerUser } from "@test/api-mocks/user";
+import { setupBreeds } from "@test/api-mocks/breeds";
+import { setupCountries } from "@test/api-mocks/countries";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+
+const seedReferenceData = (page: Page) =>
+  Promise.all([setupBreeds(page), setupCountries(page)]);
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 
@@ -30,11 +35,14 @@ export const organizerTest = baseTest.extend<{ autoOrganizer: void }>({
     async ({ autoTestFixture, context, page }, use) => {
       void autoTestFixture;
       await seedToken(context);
-      await setRouteResponses(page, {
-        method: "GET",
-        payload: organizerUser,
-        pathname: "/secured/user",
-      });
+      await Promise.all([
+        setRouteResponses(page, {
+          method: "GET",
+          payload: organizerUser,
+          pathname: "/secured/user",
+        }),
+        seedReferenceData(page),
+      ]);
       await use();
     },
     { auto: true, scope: "test" },
@@ -50,11 +58,14 @@ export const competitorTest = baseTest.extend<{ autoCompetitor: void }>({
     async ({ autoTestFixture, context, page }, use) => {
       void autoTestFixture;
       await seedToken(context);
-      await setRouteResponses(page, {
-        method: "GET",
-        payload: competitorUser,
-        pathname: "/secured/user",
-      });
+      await Promise.all([
+        setRouteResponses(page, {
+          method: "GET",
+          payload: competitorUser,
+          pathname: "/secured/user",
+        }),
+        seedReferenceData(page),
+      ]);
       await use();
     },
     { auto: true, scope: "test" },

@@ -1,6 +1,8 @@
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useCountries } from "@/services/secured/country-crud/countryCrud";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import i18n from "i18next";
 import type { JSX } from "solid-js";
 
@@ -12,11 +14,13 @@ export const COUNTRY_OPTIONS = [
   { label: "COMMON.COUNTRY_FIELD.UNITED_KINGDOM", value: "gb" },
 ] as const;
 
-const createCountrySelectOptions = (): AtomSelectOption[] =>
-  COUNTRY_OPTIONS.map(({ label, value }) => ({
-    label: i18n.t(label),
-    value,
-    preLabel: <CountryFlag country={value} alt={`${value} flag`} />,
+const createCountrySelectOptions = (
+  countries: IdNameDTO[],
+): AtomSelectOption[] =>
+  countries.map(({ id, name }) => ({
+    label: name,
+    value: id,
+    preLabel: <CountryFlag country={id} alt={`${id} flag`} />,
   }));
 
 export const getCountryOption = (
@@ -36,15 +40,16 @@ type CountryFieldProps = {
 };
 
 export default function CountryField(props: CountryFieldProps) {
-  const options = createCountrySelectOptions();
+  const countriesQuery = useCountries({ refetchOnMount: false });
+  const options = () => createCountrySelectOptions(countriesQuery.data ?? []);
 
   return (
     <AtomSelect
       label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
       placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
       onChange={props.onChange}
-      options={options}
-      value={getCountryOption(props.value, options)}
+      options={options()}
+      value={getCountryOption(props.value, options())}
       disabled={props.disabled}
       errorMessage={props.errorMessage}
       validationState={props.validationState}

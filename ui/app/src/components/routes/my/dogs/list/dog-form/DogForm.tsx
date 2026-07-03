@@ -10,6 +10,7 @@ import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryField from "@/components/common/country-field/CountryField";
+import { useBreeds } from "@/services/secured/breed-crud/breedCrud";
 import {
   MIN_TEXT_LENGTH,
   type TextFieldError,
@@ -29,22 +30,12 @@ type DogFormProps = {
 
 export default function DogForm(props: DogFormProps) {
   const i18n = useI18n();
-  const BREED_SELECT_OPTIONS: AtomSelectOption[] = [
-    { label: i18n.t("MY.DOGS.DOG_FORM.BORDER_COLLIE"), value: "border-collie" },
-    { label: i18n.t("MY.DOGS.DOG_FORM.SPANISH_WATERDOG"), value: "swd" },
-    {
-      label: i18n.t("MY.DOGS.DOG_FORM.BELGIAN_SHEPHERD_MALINOIS"),
-      value: "belgian-malinois",
-    },
-    {
-      label: i18n.t("MY.DOGS.DOG_FORM.LABRADOR_RETRIEVER"),
-      value: "labrador-retriever",
-    },
-    {
-      label: i18n.t("MY.DOGS.DOG_FORM.GOLDEN_RETRIEVER"),
-      value: "golden-retriever",
-    },
-  ];
+  const breedsQuery = useBreeds({ refetchOnMount: false });
+  const BREED_SELECT_OPTIONS = (): AtomSelectOption[] =>
+    (breedsQuery.data ?? []).map(({ id, name }) => ({
+      label: name,
+      value: id,
+    }));
 
   const user = useAuthUser();
 
@@ -81,7 +72,7 @@ export default function DogForm(props: DogFormProps) {
   });
 
   const selectedBreedOption = () =>
-    BREED_SELECT_OPTIONS.find(
+    BREED_SELECT_OPTIONS().find(
       (breedOption) => breedOption.value === props.draft().breed,
     ) ?? null;
 
@@ -170,7 +161,7 @@ export default function DogForm(props: DogFormProps) {
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
         placeholder={i18n.t("MY.DOGS.DOG_FORM.SELECT_BREED")}
         onChange={(option) => updateBreed(option?.value ?? "")}
-        options={BREED_SELECT_OPTIONS}
+        options={BREED_SELECT_OPTIONS()}
         value={selectedBreedOption()}
       />
       <AtomInput
