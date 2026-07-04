@@ -27,6 +27,7 @@ import pencilIcon from "@/assets/pencil.svg";
 import eyeIcon from "@/assets/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import EventConfigurationSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
@@ -777,6 +778,7 @@ function CompetitionObdxEventDetailBody(props: {
             <div class="competition-event-detail__content--header">
               <div class="competition-event-detail__content--header-title">
                 <StatusBadge status={props.event().status} />
+                <DisciplineIcon disciplineId={props.event().discipline.id} />
               </div>
             </div>
           }

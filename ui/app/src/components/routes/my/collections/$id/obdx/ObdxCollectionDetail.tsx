@@ -19,6 +19,7 @@ import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import ScoresCompetitorPreLabel
   from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import CollectionExerciseScore
   from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
 import type {
@@ -286,6 +287,7 @@ export default function ObdxCollectionDetail() {
 
   return (
     <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
+      <DisciplineIcon disciplineId={collectionData.data?.discipline.id} />
       <span class="text-caption-sm">
         {collectionData.data?.configuration?.description}
       </span>

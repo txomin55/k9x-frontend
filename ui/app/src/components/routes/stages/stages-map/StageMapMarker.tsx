@@ -16,6 +16,7 @@ import { formatDateLabel, formatStageDateRange, toDateInputValue } from "@/utils
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import { useAuthUser } from "@/stores/auth/auth";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 
@@ -59,6 +60,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
         {(event) => (
           <div class="stages-map-marker-popup__row">
             <div class="stages-map-marker-popup__row--title">
+              <DisciplineIcon disciplineId={event().discipline.id} />
               <span class="text-caption-sm">{event().name}</span>
               <Show when={isStageLive(event().status)}>
                 <StatusBadge status={event().status} dotMode />

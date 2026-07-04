@@ -8,6 +8,7 @@ export interface CollectionsResponseDTO {
   eventId: string;
   status: string;
   judges: IdNameDTO[];
+  discipline: IdNameDTO;
 }
 
 interface ScoresConfigurationResponseDTO {

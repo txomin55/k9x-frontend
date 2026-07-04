@@ -18,6 +18,7 @@ export const defaultCollectionsList: CollectionsResponseDTO[] = [
     eventId: "event-1",
     status: "STARTED",
     judges: [SINGLE_JUDGE],
+    discipline: { id: "disc-1", name: "Obedience" },
   },
 ];
 

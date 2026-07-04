@@ -5,6 +5,7 @@ import AtomButton, {
 import Card from "@lib/components/molecules/card/Card";
 import { useI18n } from "@/stores/i18n/i18n";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import "./styles.css";
 
 export default function CollectionCard(props: CollectionCardProps) {
@@ -14,6 +15,7 @@ export default function CollectionCard(props: CollectionCardProps) {
       topLeft={
         <div class="collection-card__heading">
           <StatusBadge status={props.collection.status} />
+          <DisciplineIcon disciplineId={props.collection.discipline.id} />
           <span class="collection-card__name">
             {props.collection.eventName}
           </span>
