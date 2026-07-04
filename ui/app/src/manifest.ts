@@ -10,9 +10,9 @@ export const createWebManifest = (basePathEnv?: string) => {
   const rootPath = toManifestPath(basePath);
 
   return {
-    name: "K9X App",
-    short_name: "K9X",
-    description: "K9X PWA",
+    name: "Canine Index App",
+    short_name: "Canine Index",
+    description: "K9X App for canine dogsport events results track",
     start_url: rootPath,
     scope: rootPath,
     display: "standalone",

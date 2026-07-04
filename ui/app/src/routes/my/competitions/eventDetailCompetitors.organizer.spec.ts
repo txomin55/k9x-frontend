@@ -128,7 +128,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         content: ".floating-toggle-circle { pointer-events: none; }",
       });
       await expect(
-        page.getByRole("button", { name: "Did not show" }).first(),
+        page.getByRole("button", { name: "Disqualify" }).first(),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
@@ -136,7 +136,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         entityType: "event",
         performMutation: async () => {
           await page
-            .getByRole("button", { name: "Did not show" })
+            .getByRole("button", { name: "Disqualify" })
             .first()
             .click();
           await page
@@ -146,7 +146,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         },
         assertOptimistic: async () => {
           await expect(
-            page.getByRole("button", { name: "Did not show" }),
+            page.getByRole("button", { name: "Disqualify" }),
           ).toHaveCount(0);
         },
         assertRehydrated: async () => {
@@ -154,7 +154,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
           await page.getByRole("tab", { name: "Competitors" }).click();
           await expect(page.getByText("Dog: Luna", { exact: true })).toBeVisible();
           await expect(
-            page.getByRole("button", { name: "Did not show" }),
+            page.getByRole("button", { name: "Disqualify" }),
           ).toHaveCount(0);
         },
       });

@@ -22,7 +22,7 @@ competitorTest.describe("Collection not-competing (write) - collector", () => {
       };
 
       const didNotShowButton = page
-        .getByRole("button", { name: "Did not show" })
+        .getByRole("button", { name: "Disqualify" })
         .first();
 
       await verifyLocalFirstWrite(page, context, {
