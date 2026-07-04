@@ -4,6 +4,7 @@ import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-s
 import { createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
+import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
 import ObdxExerciseSquares
   from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
@@ -237,7 +238,14 @@ function EventClassificationPage() {
     {
       accessorKey: "position",
       header: t("STAGES.CLASSIFICATION.POSITION"),
-      cell: (info) => info.getValue<number>(),
+      cell: (info) => {
+        const position = info.getValue<number>();
+        return position <= 3 && !info.row.original.tied ? (
+          <PositionMedal position={position as 1 | 2 | 3} />
+        ) : (
+          position
+        );
+      },
     },
     {
       id: "country_dog",

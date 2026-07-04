@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260" width="240" height="260">
+  <defs>
+    <!-- Cambiá estos 3 colores para personalizar la escarapela -->
+    <style>
+      .color1 { fill: #EAB308; } /* borde exterior festoneado + cintas laterales */
+      .color2 { fill: #FFF8DC; } /* pétalos internos */
+      .color3 { fill: #B8860B; } /* centro + cinta frontal */
+    </style>
+  </defs>
+
+  <g transform="translate(120,124)">
+
+    <!-- Cintas -->
+    <g>
+      <path d="M -18,52 L -50,140 L -30,120 L -14,140 L 2,52 Z" class="color1" transform="rotate(-28)"/>
+      <path d="M 18,52 L 50,140 L 30,120 L 14,140 L -2,52 Z" class="color1" transform="rotate(28)"/>
+      <path d="M -13,54 L -26,146 L -3,126 L 19,146 L 13,54 Z" class="color3"/>
+    </g>
+
+    <!-- Borde exterior festoneado (bultos redondeados) -->
+    <g class="color1">
+      <circle cx="0" cy="0" r="54"/>
+      <circle cx="0" cy="-62" r="15"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(20)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(40)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(60)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(80)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(100)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(120)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(140)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(160)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(180)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(200)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(220)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(240)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(260)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(280)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(300)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(320)"/>
+      <circle cx="0" cy="-62" r="15" transform="rotate(340)"/>
+    </g>
+
+    <!-- Pétalos blancos -->
+    <g class="color2">
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(22.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(45)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(67.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(90)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(112.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(135)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(157.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(180)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(202.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(225)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(247.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(270)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(292.5)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(315)"/>
+      <path d="M 0,-60 C 9,-46 9,-30 0,-20 C -9,-30 -9,-46 0,-60 Z" transform="rotate(337.5)"/>
+    </g>
+
+    <!-- Centro -->
+    <circle cx="0" cy="0" r="24" class="color3"/>
+  </g>
+</svg>

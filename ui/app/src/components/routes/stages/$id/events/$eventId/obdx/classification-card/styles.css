@@ -43,6 +43,21 @@
     line-height: var(--text-heading-line-height);
 }
 
+.obdx-clf__position-medal {
+    display: inline-flex;
+    align-items: flex-start;
+    justify-content: center;
+    height: var(--unit-6);
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.obdx-clf__position-medal img {
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
+
 .obdx-clf__trend {
     font-size: var(--text-caption-md);
     font-weight: var(--font-weight-bold);
