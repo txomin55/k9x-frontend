@@ -17,6 +17,7 @@ import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
+import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -142,6 +143,7 @@ function StageInfoPage() {
                     <span>
                       {event().configuration.name}{" "}
                       <DisciplineIcon disciplineId={event().discipline.id} />
+                      <AwardBadges awards={event().awards} />
                     </span>
                   }
                   content={

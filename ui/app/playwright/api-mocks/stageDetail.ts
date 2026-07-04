@@ -17,6 +17,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
       enrollmentDeadline: 1_730_000_000_000,
       discipline: { id: "disc-1", name: "Agility" },
       configuration: { id: "config-1", name: "Standard" },
+      awards: [{ id: "caciob", name: "CACIOB" }],
       competitors: [
         {
           dog: { id: "dog-1", name: "Rex" },

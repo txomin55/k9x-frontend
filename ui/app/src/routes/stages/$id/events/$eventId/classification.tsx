@@ -22,6 +22,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
+import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
@@ -264,6 +265,7 @@ function EventClassificationPage() {
             <Show when={row.notCompeting}>
               <NotCompetingIndicator />
             </Show>
+            <AwardBadges awards={row.awards} />
           </div>
         );
       },

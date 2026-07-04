@@ -8,6 +8,7 @@ export interface StageEventSummaryResponseDTO {
   status: string;
   enrollmentOpened: boolean;
   enrollmentDeadline: number;
+  awards: IdNameDTO[];
 }
 
 export interface StageSummaryResponseDTO {
@@ -59,6 +60,7 @@ export interface StageEventDetailResponseDTO {
   status: string;
   enrollmentOpened: boolean;
   enrollmentDeadline: number;
+  awards: IdNameDTO[];
 }
 
 export interface CompetitionNotificationDetailResponseDTO {
@@ -126,6 +128,7 @@ export interface StageEventClassificationItemResponseDTO {
   startOrder: number;
   bih: boolean;
   notCompeting?: boolean;
+  awards: IdNameDTO[];
 }
 
 export type StageEnrollRollbackPayload = {

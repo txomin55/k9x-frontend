@@ -24,6 +24,7 @@ export const defaultStages: StageSummaryResponseDTO[] = [
         discipline: { id: "disc-1", name: "Agility" },
         enrollmentOpened: false,
         enrollmentDeadline: 0,
+        awards: [],
       },
     ],
   },

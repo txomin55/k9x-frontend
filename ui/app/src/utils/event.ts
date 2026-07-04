@@ -21,6 +21,7 @@ export const toEventEditorDraft = (
   stageId: event.stage.id,
   status: event.status,
   scoreCalculation: event.scoreCalculation,
+  awards: event.awards.map((award) => ({ ...award })),
 });
 
 export const EVENT_STATUS = {

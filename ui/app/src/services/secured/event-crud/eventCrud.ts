@@ -38,6 +38,8 @@ import type {
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { normalizeEventDetailResponse, SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { getCachedAwards } from "@/services/secured/award-crud/awardCrud";
 import { queryClient } from "@/utils/http/query-client";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
@@ -99,6 +101,27 @@ const toApiDiscipline = (
       ? previousDiscipline.name
       : "",
 });
+
+const toApiAwards = (
+  awardIds: string[] | undefined,
+  disciplineId: string | undefined,
+  previousAwards?: IdNameDTO[],
+): IdNameDTO[] => {
+  if (!awardIds) return previousAwards ?? [];
+
+  const catalogById = new Map(
+    (disciplineId ? getCachedAwards(disciplineId) : undefined)?.map(
+      (award) => [award.id, award],
+    ) ?? [],
+  );
+  const previousById = new Map(
+    (previousAwards ?? []).map((award) => [award.id, award]),
+  );
+
+  return awardIds.map(
+    (id) => catalogById.get(id) ?? previousById.get(id) ?? { id, name: "" },
+  );
+};
 
 const findConfigurationDetail = (
   discipline: string | undefined,
@@ -195,7 +218,17 @@ const mergeApiEventWithPayload = (
     : undefined;
   const nextStageName = previousEvent?.stage?.name ?? "";
   const nextStatus = previousEvent?.status ?? "";
+  const nextDiscipline = toApiDiscipline(
+    createPayload?.disciplineId,
+    previousEvent?.discipline,
+  );
+
   const nextCore = {
+    awards: toApiAwards(
+      updatePayload?.awards,
+      nextDiscipline.id,
+      previousEvent?.awards,
+    ),
     competitors:
       updatePayload?.competitors?.map((competitor) =>
         toApiCompetitor(
@@ -211,10 +244,7 @@ const mergeApiEventWithPayload = (
       resolvedConfiguration,
       previousEvent?.configuration,
     ),
-    discipline: toApiDiscipline(
-      createPayload?.disciplineId,
-      previousEvent?.discipline,
-    ),
+    discipline: nextDiscipline,
     enrollmentDeadline:
       updatePayload?.enrollmentDeadline ??
       previousEvent?.enrollmentDeadline ??

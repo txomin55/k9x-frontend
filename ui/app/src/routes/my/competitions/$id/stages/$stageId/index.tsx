@@ -237,6 +237,7 @@ function CompetitionStageDetailBody(props: {
     const draft = props.createDefaultEvent(props.stage().id);
 
     setEventDialogDraft({
+      awards: [],
       competitors: [],
       configuration: {
         federation: EMPTY_FEDERATION_CONFIGURATION,

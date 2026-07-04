@@ -34,8 +34,10 @@ import EventConfigurationSection
 import ObdxCompetitionEventDetailBodyWrapper
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
+import { useAwards } from "@/services/secured/award-crud/awardCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -68,6 +70,22 @@ function CompetitionObdxEventDetailBody(props: {
     createSignal<EventExerciseDetailResponseDTO | null>(null);
   const configurations = useConfigurations(draftEvent().discipline.id, {
     gcTime: 2 * 60 * 1000,
+  });
+  const awardsQuery = useAwards(draftEvent().discipline.id, {
+    refetchOnMount: false,
+    gcTime: 2 * 60 * 1000,
+  });
+
+  const awardOptions = createMemo<AtomComboboxOption[]>(() =>
+    (awardsQuery.data ?? []).map(({ id, name }) => ({
+      label: name,
+      value: id,
+    })),
+  );
+
+  const selectedAwardOptions = createMemo<AtomComboboxOption[]>(() => {
+    const selectedIds = new Set(draftEvent().awards.map((award) => award.id));
+    return awardOptions().filter((option) => selectedIds.has(option.value));
   });
 
   const TABS = {
@@ -142,6 +160,7 @@ function CompetitionObdxEventDetailBody(props: {
     event: EventEditorDraft | EventDetailResponseDTO,
   ) => {
     return JSON.stringify({
+      awards: event.awards.map((award) => award.id),
       competitors: event.competitors.map((competitor) => ({
         dogId: competitor.dogId,
         position: competitor.position,
@@ -275,6 +294,7 @@ function CompetitionObdxEventDetailBody(props: {
     event: EventEditorDraft,
     eventName: string,
   ): UpdateEventRequestDTO => ({
+    awards: event.awards.map((award) => award.id),
     competitors: event.competitors.map((competitor) =>
       mapCompetitorForUpdate(competitor),
     ),
@@ -846,6 +866,44 @@ function CompetitionObdxEventDetailBody(props: {
               (current) => ({
                 ...current,
                 scoreCalculation: option.value,
+              }),
+              { persist: true },
+            )
+          }
+        />
+      </Show>
+
+      <Show
+        when={isEditing()}
+        fallback={
+          <div class="competition-event-detail__content--calculation">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
+            </span>
+            <span class="text-body-md">
+              {draftEvent()
+                .awards.map((award) => award.name)
+                .join(", ") || "-"}
+            </span>
+          </div>
+        }
+      >
+        <AtomCombobox
+          multiple
+          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
+          placeholder={i18n.t(
+            "MY.COMPETITIONS.EVENT_DETAIL.AWARDS_PLACEHOLDER",
+          )}
+          options={awardOptions()}
+          value={selectedAwardOptions()}
+          onChange={(options) =>
+            updateDraftEvent(
+              (current) => ({
+                ...current,
+                awards: options.map((option) => ({
+                  id: option.value,
+                  name: option.label,
+                })),
               }),
               { persist: true },
             )

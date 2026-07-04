@@ -23,6 +23,7 @@ const buildCompetitor = (
   tied: false,
   startOrder: 1,
   bih: false,
+  awards: [],
   ...overrides,
 });
 

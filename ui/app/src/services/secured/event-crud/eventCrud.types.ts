@@ -26,6 +26,7 @@ export interface UpdateEventRequestDTO {
   name: string;
   enrollmentDeadline: number;
   scoreCalculation: string;
+  awards?: string[];
 }
 
 export interface EventCompetitorResponseDTO {
@@ -93,6 +94,7 @@ export interface ObdxEventDetailResponseDTO {
   name: string;
   status: string;
   scoreCalculation: string;
+  awards: IdNameDTO[];
 }
 
 export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
@@ -156,6 +158,7 @@ export interface EventEditorDraft {
   stageId: string;
   status: string;
   scoreCalculation: string;
+  awards: IdNameDTO[];
 }
 
 export interface ApiEventRollbackPayload {

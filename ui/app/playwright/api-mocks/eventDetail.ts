@@ -7,6 +7,7 @@ import type { EventDetailRawResponseDTO } from "@/services/secured/event-crud/ev
 import { COMPETITION_STATUS } from "@/utils/competition";
 import { defaultDogs } from "@test/api-mocks/dogs";
 import { defaultJudges } from "@test/api-mocks/judges";
+import { defaultAwards } from "@test/api-mocks/awards";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 import { COMPETITOR_STATUS } from "@/utils/event";
 
@@ -20,6 +21,7 @@ const CONFIGURATION_ID = "config-1";
 const judgeName = (id: string) =>
   defaultJudges.find((judge) => judge.id === id)?.name ?? id;
 const dogById = (id: string) => defaultDogs.find((dog) => dog.id === id);
+const awardById = (id: string) => defaultAwards.find((award) => award.id === id);
 
 const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
   const [seedDog] = defaultDogs;
@@ -32,6 +34,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
       stage: { id: EVENT_DETAIL_STAGE_ID, name: "Detail Stage" },
       enrollmentDeadline: 1_717_200_000_000,
       scoreCalculation: "AVG",
+      awards: [],
       configuration: {
         federation: FEDERATION,
         id: CONFIGURATION_ID,
@@ -123,6 +126,7 @@ const applyEventUpdate = (
     name: string;
     enrollmentDeadline: number;
     scoreCalculation: string;
+    awards?: string[];
     judges?: { id: string; collectorEmail: string }[];
     exercises?: {
       id: string;
@@ -140,6 +144,10 @@ const applyEventUpdate = (
     name: payload.name,
     enrollmentDeadline: payload.enrollmentDeadline,
     scoreCalculation: payload.scoreCalculation,
+    awards: (payload.awards ?? []).map((id) => ({
+      id,
+      name: awardById(id)?.name ?? id,
+    })),
     judges: (payload.judges ?? []).map((judge) => ({
       id: judge.id,
       collectorEmail: judge.collectorEmail,

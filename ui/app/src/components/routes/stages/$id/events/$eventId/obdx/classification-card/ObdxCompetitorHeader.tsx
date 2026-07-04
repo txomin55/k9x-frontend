@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
+import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import PositionBadge from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-badge/PositionBadge";
 import { isLive } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import type { ObdxCompetitorHeaderProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader.types";
@@ -32,6 +33,7 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
           <Show when={props.competitor.notCompeting}>
             <NotCompetingIndicator />
           </Show>
+          <AwardBadges awards={props.competitor.awards} />
           <Show when={props.competitor.startOrder}>
             <span class="obdx-clf__start-order">
               #{props.competitor.startOrder}

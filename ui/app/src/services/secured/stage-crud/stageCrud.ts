@@ -59,6 +59,7 @@ export const toApiStage = (
   events:
     stage.events.map((rawEvent) => {
       const core = {
+        awards: [],
         competitors: [],
         configuration: {
           federation: EMPTY_FEDERATION_CONFIGURATION,

@@ -14,6 +14,8 @@ import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { prefetchCountries } from "@/services/secured/country-crud/countryCrud";
 import { prefetchBreeds } from "@/services/secured/breed-crud/breedCrud";
+import { prefetchAwards } from "@/services/secured/award-crud/awardCrud";
+import { EVENT_DISCIPLINE_OPTIONS } from "@/components/common/event-discipline-field/EventDisciplineField";
 import { useI18n } from "@/stores/i18n/i18n";
 import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth/auth";
 import { initNetworkStore } from "@/stores/network/network";
@@ -74,6 +76,12 @@ export default function AppShell() {
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
       });
+      for (const discipline of EVENT_DISCIPLINE_OPTIONS) {
+        void prefetchAwards(discipline.value, {
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        });
+      }
     }
   });
 
