@@ -153,6 +153,14 @@ export default function DogForm(props: DogFormProps) {
       ...current,
       withersCm,
     }));
+
+  const updateThreeFciGenerationsConfirmed = (
+    threeFciGenerationsConfirmed: boolean,
+  ) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      threeFciGenerationsConfirmed,
+    }));
   return (
     <div class="dog-form">
       <AtomInput
@@ -205,6 +213,11 @@ export default function DogForm(props: DogFormProps) {
         onRawValueChange={updateWithersCm}
         step={0.1}
         minValue={0}
+      />
+      <AtomCheckbox
+        label={i18n.t("MY.DOGS.DOG_FORM.THREE_FCI_GENERATIONS_CONFIRMED")}
+        checked={props.draft().threeFciGenerationsConfirmed}
+        setChecked={updateThreeFciGenerationsConfirmed}
       />
       <Show when={!!user()?.organizer}>
         <Show when={!props.draft().owned}>

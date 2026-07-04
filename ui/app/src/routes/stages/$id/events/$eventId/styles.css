@@ -10,6 +10,12 @@
     flex-direction: column;
 }
 
+.classification__score-calculation,
+.classification__judges {
+    display: flex;
+    padding-bottom: var(--unit-1);
+}
+
 .obdx-clf-table {
     container-type: inline-size;
 }

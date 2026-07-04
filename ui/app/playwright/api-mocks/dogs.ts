@@ -16,6 +16,7 @@ export const defaultDogs: Dog[] = [
     sex: "FEMALE",
     withersCm: 52,
     owned: true,
+    threeFciGenerationsConfirmed: false,
   },
   {
     id: "dog-2",
@@ -30,6 +31,7 @@ export const defaultDogs: Dog[] = [
     sex: "MALE",
     withersCm: 58,
     owned: true,
+    threeFciGenerationsConfirmed: true,
   },
 ];
 

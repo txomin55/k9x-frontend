@@ -7,4 +7,5 @@ export type ScoreChipProps = {
   sublabel?: string;
   hasYellowCard?: boolean;
   hasRedCard?: boolean;
+  applies?: boolean;
 };

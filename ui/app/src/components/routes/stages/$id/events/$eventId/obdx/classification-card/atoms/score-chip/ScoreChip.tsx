@@ -7,7 +7,9 @@ import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/
 
 export default function ScoreChip(props: ScoreChipProps) {
   const color = () =>
-    props.value === null ? "grey" : ratingColorClass(props.rating);
+    props.value === null || props.applies === false
+      ? "grey"
+      : ratingColorClass(props.rating);
   const display = () => (props.value === null ? "—" : props.value);
 
   return (

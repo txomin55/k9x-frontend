@@ -71,6 +71,7 @@ export interface StageEventClassificationScoreResponseDTO {
   judge: IdNameDTO;
   value: number;
   scoreRating: number;
+  applies: boolean;
 }
 
 export interface StageEventClassificationYellowCardResponseDTO {
@@ -96,6 +97,8 @@ export interface StageEventClassificationExerciseScoresResponseDTO {
 
 interface ObdxStageEventClassificationResponseDTO {
   competitors: StageEventClassificationItemResponseDTO[];
+  scoreCalculation: string;
+  judges: IdNameDTO[];
 }
 export interface StageEventClassificationResponseDTO {
   event: IdNameDTO;

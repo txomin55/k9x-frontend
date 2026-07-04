@@ -438,6 +438,28 @@ function EventClassificationPage() {
                   {classification().configuration.name}
                 </span>
               </div>
+              <Show when={classification().obdx}>
+                {(obdx) => (
+                  <div class="classification__score-calculation">
+                    <span class="text-caption-md">
+                      {t("STAGES.CLASSIFICATION.SCORE_CALCULATION")}{": "}
+                      {t(
+                        `MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_${obdx().scoreCalculation}`,
+                      )}
+                    </span>
+                  </div>
+                )}
+              </Show>
+              <Show when={classification().obdx?.judges?.length}>
+                <div class="classification__judges">
+                  <span class="text-caption-md">
+                    {t("STAGES.CLASSIFICATION.JUDGES")}{": "}
+                    {classification()
+                      .obdx?.judges.map((judge) => judge.name)
+                      .join(", ")}
+                  </span>
+                </div>
+              </Show>
               <Show when={competitorOptions().length}>
                 <div class="obdx-clf__filter">
                   <AtomCombobox

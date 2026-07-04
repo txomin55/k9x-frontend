@@ -13,6 +13,7 @@ export interface Dog {
   sex: DogSex;
   withersCm: number;
   owned: boolean;
+  threeFciGenerationsConfirmed: boolean;
 }
 
 export interface CreateDogRequestDTO {
@@ -27,6 +28,7 @@ export interface CreateDogRequestDTO {
   country: string;
   sex: DogSex;
   withersCm: number;
+  threeFciGenerationsConfirmed: boolean;
 }
 
 export interface UpdateDogRequestDTO {
@@ -40,6 +42,7 @@ export interface UpdateDogRequestDTO {
   country?: string;
   sex?: DogSex;
   withersCm?: number;
+  threeFciGenerationsConfirmed?: boolean;
 }
 
 export interface DogRollbackPayload {

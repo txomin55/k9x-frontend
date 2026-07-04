@@ -62,6 +62,7 @@ export default function ObdxExerciseDetailTable(
                               hasRedCard={
                                 exercise.redCard?.judge.id === judge.id
                               }
+                              applies={score?.applies}
                             />
                           </td>
                         );

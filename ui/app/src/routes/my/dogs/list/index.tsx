@@ -48,6 +48,7 @@ function MyDogsListPage() {
 		country: "",
 		sex: "MALE",
 		withersCm: 0,
+		threeFciGenerationsConfirmed: false,
 	});
 	const dogsQuery = useDogs({
 		refetchOnMount: !isOffline(),
@@ -87,6 +88,7 @@ function MyDogsListPage() {
 		sex: dog.sex,
 		withersCm: dog.withersCm,
 		owned: dog.owned,
+		threeFciGenerationsConfirmed: dog.threeFciGenerationsConfirmed,
 	});
 
 	const openCreateDialog = () => {
@@ -128,6 +130,7 @@ function MyDogsListPage() {
 				country: payload.country,
 				sex: payload.sex,
 				withersCm: payload.withersCm,
+				threeFciGenerationsConfirmed: payload.threeFciGenerationsConfirmed,
 			});
 		} else {
 			createDog(payload);

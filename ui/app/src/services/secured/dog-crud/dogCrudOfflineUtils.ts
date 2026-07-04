@@ -34,6 +34,8 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   sex: dog.sex ?? previousDog?.sex,
   withersCm: dog.withersCm ?? previousDog?.withersCm,
   owned: dog.owned ?? previousDog?.owned,
+  threeFciGenerationsConfirmed:
+    dog.threeFciGenerationsConfirmed ?? previousDog?.threeFciGenerationsConfirmed,
 });
 
 export const buildNextDogs = (previousDogs: Dog[], dog: Dog) => {

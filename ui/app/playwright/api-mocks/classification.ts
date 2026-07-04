@@ -8,6 +8,11 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
   lastUpdated: 1_730_050_000_000,
   status: "COMPLETED",
   obdx: {
+    scoreCalculation: "AVG",
+    judges: [
+      { id: "judge-1", name: "Maria Lopez" },
+      { id: "judge-2", name: "Jean Dupont" },
+    ],
     competitors: [
       {
         position: 1,

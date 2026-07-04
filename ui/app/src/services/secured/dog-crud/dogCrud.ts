@@ -146,6 +146,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   country: draftDog.country,
   sex: draftDog.sex,
   withersCm: draftDog.withersCm,
+  threeFciGenerationsConfirmed: draftDog.threeFciGenerationsConfirmed,
 });
 
 export const createDog = (draftDog: Dog) => {
