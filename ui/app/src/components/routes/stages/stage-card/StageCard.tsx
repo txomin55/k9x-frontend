@@ -2,31 +2,23 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import { createSignal, Index, Show } from "solid-js";
+import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
 import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
+import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import { canSeeClassification } from "@/utils/event";
 import bellIcon from "@/assets/bell.svg";
 import { isStageLive } from "@/utils/stage";
-import { formatDateLabel, formatStageDateRange, toDateInputValue } from "@/utils/date";
-import { useAuthUser } from "@/stores/auth/auth";
-import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
+import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
   const i18n = useI18n();
-  const user = useAuthUser();
   const [notificationsEnabled, setNotificationsEnabled] = createSignal(false);
-  const navigateToClassification = (eventId: string) =>
-    void navigate({
-      params: { id: props.id, eventId },
-      to: "/stages/$id/events/$eventId/classification",
-    });
 
   const navigateToStageInfo = (stageId: string) =>
     void navigate({
@@ -79,49 +71,11 @@ export default function StageCard(props: StageCardProps) {
         ) : undefined
       }
       content={
-        <Index each={props.events}>
-          {(event) => (
-            <div class="stage-card__events-content">
-              <div class="stage-card__events-content--info">
-                <span>{event().name}</span>
-                <span>({event().competitors})</span>
-              </div>
-              <Show
-                when={user()}
-                fallback={
-                  <AtomButton
-                    type={BUTTON_TYPES.GHOST}
-                    onClick={startGoogleInteractiveLogin}
-                  >
-                    {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-                  </AtomButton>
-                }
-              >
-                <Show when={event().enrollmentOpened}>
-                  <div class="stage-card__events-content--enrollment">
-                    <AtomButton onClick={() => props.onEnroll?.(event().id)}>
-                      {i18n.t("STAGES.INFO.ENROLL")}
-                    </AtomButton>
-                    <span class="text-caption-sm">
-                      {i18n.t("STAGES.INFO.UNTIL")}{" "}
-                      {formatDateLabel(
-                        toDateInputValue(event().enrollmentDeadline ?? 0),
-                      )}
-                    </span>
-                  </div>
-                </Show>
-              </Show>
-              <Show when={canSeeClassification(event().status)}>
-                <AtomButton
-                  type={BUTTON_TYPES.PRIMARY}
-                  onClick={() => navigateToClassification(event().id)}
-                >
-                  {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
-                </AtomButton>
-              </Show>
-            </div>
-          )}
-        </Index>
+        <StageCardEventsContent
+          id={props.id}
+          events={props.events}
+          onEnroll={props.onEnroll}
+        />
       }
       actions={
         <div class="stage-card__actions">

@@ -4,6 +4,7 @@ import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-s
 import { createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
+import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
 import ObdxExerciseSquares
   from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
@@ -384,12 +385,8 @@ function EventClassificationPage() {
         expanded={expandedState()}
         onExpandedChange={handleExpandedChange}
         renderSubComponent={(row) => (
-          <ObdxClassificationCard
+          <ObdxClassificationContent
             competitor={row.original}
-            trend={trends().get(row.original.dog.id)}
-            pinned={isPinned(row.original.dog.id)}
-            pinDisabled={liveIds().has(row.original.dog.id)}
-            onTogglePin={() => togglePin(row.original.dog.id)}
             open={isOpen(row.original.dog.id)}
             onOpenChange={(open) => setOpen(row.original.dog.id, open)}
           />

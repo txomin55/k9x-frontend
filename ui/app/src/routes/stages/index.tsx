@@ -6,6 +6,7 @@ import { createEffect, createMemo, createSignal, For, Show, Suspense } from "sol
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
+import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import StagesFilters from "@/components/routes/stages/stages-filters/StagesFilters";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import { useStages } from "@/services/fetch-stages/fetchStages";
@@ -188,6 +189,14 @@ function StagesIndexPage() {
 		/>
 	);
 
+	const renderStageCardContent = (stage: StageSummaryResponseDTO) => (
+		<StageCardEventsContent
+			id={stage.id}
+			events={stage.events ?? []}
+			onEnroll={(eventId) => openEnrollDialog(stage.id, eventId)}
+		/>
+	);
+
 	const handleGoToDogs = () =>
 		navigate({
 			to: "/my/dogs",
@@ -261,7 +270,7 @@ function StagesIndexPage() {
 						data={sortedStages()}
 						columns={columns()}
 						getRowCanExpand={() => true}
-						renderSubComponent={(row) => renderStageCard(row.original)}
+						renderSubComponent={(row) => renderStageCardContent(row.original)}
 					/>
 				</div>
 			),
