@@ -35,14 +35,14 @@ export interface UpdateDogRequestDTO {
   name: string;
   image: string;
   breed: string;
-  identity?: string;
-  owner?: string;
-  handler?: string;
-  team?: string;
-  country?: string;
-  sex?: DogSex;
-  withersCm?: number;
-  threeFciGenerationsConfirmed?: boolean;
+  identity: string;
+  owner: string;
+  handler: string;
+  team: string;
+  country: string;
+  sex: DogSex;
+  withersCm: number;
+  threeFciGenerationsConfirmed: boolean;
 }
 
 export interface DogRollbackPayload {
