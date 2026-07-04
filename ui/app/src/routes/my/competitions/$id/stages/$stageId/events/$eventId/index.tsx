@@ -75,6 +75,12 @@ function CompetitionObdxEventDetailBody(props: {
     COMPETITORS: "COMPETITORS",
   };
 
+  const MID_AVG_MIN_JUDGES = 4;
+
+  const hasEnoughJudgesForMidAvg = createMemo(
+    () => draftEvent().judges.length >= MID_AVG_MIN_JUDGES,
+  );
+
   const scoreCalculationOptions = createMemo<AtomSelectOption[]>(() => [
     {
       label: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_AVG"),
@@ -83,6 +89,7 @@ function CompetitionObdxEventDetailBody(props: {
     {
       label: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_MID_AVG"),
       value: SCORE_CALCULATION.MID_AVG,
+      disabled: !hasEnoughJudgesForMidAvg(),
     },
   ]);
 
@@ -822,6 +829,13 @@ function CompetitionObdxEventDetailBody(props: {
           placeholder={i18n.t(
             "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
           )}
+          description={
+            !hasEnoughJudgesForMidAvg()
+              ? i18n.t(
+                  "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_MID_AVG_DISABLED_HELP",
+                )
+              : undefined
+          }
           options={scoreCalculationOptions()}
           value={selectedScoreCalculationOption()}
           onChange={(option) =>
