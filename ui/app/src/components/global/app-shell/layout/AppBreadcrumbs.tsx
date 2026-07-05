@@ -1,8 +1,10 @@
 import { useMatches, useNavigate } from "@tanstack/solid-router";
-import { createMemo, createSignal, onCleanup } from "solid-js";
+import { Component, createMemo, createSignal, onCleanup } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
 import { resolveBreadcrumb } from "@/utils/router/breadcrumbs";
 import { queryClient } from "@/utils/http/query-client";
+import InfoIcon from "@/components/common/info-icon/InfoIcon";
 
 type BreadcrumbItem = {
   route: string;
@@ -41,11 +43,31 @@ export default function AppBreadcrumbs() {
       );
   });
 
+  const infoComponent = createMemo<Component | null>(() => {
+    const list = matches();
+
+    for (let i = list.length - 1; i >= 0; i--) {
+      const info = list[i].staticData?.breadcrumbInfo;
+      if (info) return info;
+    }
+
+    return null;
+  });
+
+  const info = createMemo(() => {
+    const component = infoComponent();
+
+    return component
+      ? { trigger: <InfoIcon />, content: <Dynamic component={component} /> }
+      : null;
+  });
+
   return (
     <div class="app-layout__breadcrumbs" hidden={breadcrumbs().length === 0}>
       <AtomBreadcrumbs
         crumbs={breadcrumbs()}
         onNavigate={(route) => void navigate({ to: route as never })}
+        info={info()}
       />
     </div>
   );

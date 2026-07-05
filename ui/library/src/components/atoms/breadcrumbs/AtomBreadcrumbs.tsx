@@ -4,6 +4,7 @@ import {
   AtomBreadCrumbLinkProps,
   AtomBreadcrumbsProps,
 } from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs.types";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import "./styles.css";
 
 const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
@@ -30,6 +31,8 @@ const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
 
 export default function (props: AtomBreadcrumbsProps) {
   const isNotLastElement = (idx) => props.crumbs.length !== idx() + 1;
+  const lastCrumbText = () => props.crumbs[props.crumbs.length - 1]?.text;
+
   return (
     <Breadcrumbs class="atom-breadcrumb" separator=">">
       <ol>
@@ -44,6 +47,15 @@ export default function (props: AtomBreadcrumbsProps) {
             </AtomBreadCrumbLink>
           )}
         </For>
+        <Show when={props.info}>
+          <li class="atom-breadcrumbs__info">
+            <AtomDialog
+              trigger={props.info!.trigger}
+              title={lastCrumbText()}
+              content={props.info!.content}
+            />
+          </li>
+        </Show>
       </ol>
     </Breadcrumbs>
   );

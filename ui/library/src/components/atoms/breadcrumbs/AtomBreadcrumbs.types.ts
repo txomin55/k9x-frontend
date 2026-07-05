@@ -4,9 +4,16 @@ interface Crumbs {
   route: string;
   text: string;
 }
+
+export interface AtomBreadcrumbsInfo {
+  trigger: JSX.Element;
+  content: JSX.Element;
+}
+
 export interface AtomBreadcrumbsProps {
   crumbs: Crumbs[];
   onNavigate?: (route: string) => void;
+  info?: AtomBreadcrumbsInfo | null;
 }
 
 export interface AtomBreadCrumbLinkProps {

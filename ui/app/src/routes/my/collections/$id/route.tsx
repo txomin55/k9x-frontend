@@ -1,12 +1,19 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { getCachedCollections } from "@/services/secured/collection-crud/collectionCrud";
 import ObdxCollectionDetail from "@/components/routes/my/collections/$id/obdx/ObdxCollectionDetail";
+import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 type CollectionDetailSearch = {
   competitorId: string;
   judgesIds: string[];
 };
+
+function CollectionDetailBreadcrumbInfo() {
+  const i18n = useI18n();
+
+  return <p>{i18n.t("MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO")}</p>;
+}
 
 export const Route = createFileRoute("/my/collections/$id")({
   component: ObdxCollectionDetail,
@@ -18,6 +25,7 @@ export const Route = createFileRoute("/my/collections/$id")({
 
       return collection?.eventName;
     },
+    breadcrumbInfo: CollectionDetailBreadcrumbInfo,
   },
   validateSearch: (
     search: Record<string, string | string[]>,

@@ -972,8 +972,15 @@ export const Route = createFileRoute(
 
       return event?.name;
     },
+    breadcrumbInfo: CompetitionEventDetailBreadcrumbInfo,
   },
 });
+
+function CompetitionEventDetailBreadcrumbInfo() {
+  const i18n = useI18n();
+
+  return <p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO")}</p>;
+}
 
 function CompetitionEventDetailPage() {
   const i18n = useI18n();
