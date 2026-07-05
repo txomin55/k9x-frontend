@@ -49,3 +49,11 @@ export function canSeeCompetitorScores(eventStatus: string) {
 export function canAcceptCompetitorEnroll(competitorStatus: string) {
   return competitorStatus === COMPETITOR_STATUS.PENDING_ENROLL_ACCEPT;
 }
+
+export function canDeleteEvent(status?: string) {
+  return status === EVENT_STATUS.CREATED;
+}
+
+export function canEditEvent(stageDateTo?: number) {
+  return stageDateTo === undefined || Date.now() <= stageDateTo;
+}

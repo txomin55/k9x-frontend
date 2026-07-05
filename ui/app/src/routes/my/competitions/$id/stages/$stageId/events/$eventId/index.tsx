@@ -18,7 +18,7 @@ import type {
 } from "@/services/secured/event-crud/eventCrud.types";
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { COMPETITOR_STATUS, EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
+import { canDeleteEvent, canEditEvent, COMPETITOR_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
@@ -45,6 +45,7 @@ function CompetitionObdxEventDetailBody(props: {
   event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
+  stageDateTo?: number;
 }) {
   const i18n = useI18n();
   const [isEditing, setIsEditing] = createSignal(false);
@@ -932,15 +933,17 @@ function CompetitionObdxEventDetailBody(props: {
         contents={eventTabsContents()}
       />
 
-      <FloatingToggleCircle
-        onClick={() => toggleEditingMode()}
-        toggled={isEditing()}
-        nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
-        toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
-        nonToggledIcon={pencilIcon}
-        toggledIcon={eyeIcon}
-      />
-      <Show when={isEditing() && props.event().status === EVENT_STATUS.CREATED}>
+      <Show when={canEditEvent(props.stageDateTo)}>
+        <FloatingToggleCircle
+          onClick={() => toggleEditingMode()}
+          toggled={isEditing()}
+          nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
+          toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
+          nonToggledIcon={pencilIcon}
+          toggledIcon={eyeIcon}
+        />
+      </Show>
+      <Show when={isEditing() && canDeleteEvent(props.event().status)}>
         <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
             {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}
@@ -1012,6 +1015,11 @@ function CompetitionEventDetailPage() {
       competitionId: params().id,
     });
 
+  const getStageDateTo = () =>
+    getCachedCompetitions()
+      ?.find((entry) => entry.id === params().id)
+      ?.stages?.find((entry) => entry.id === params().stageId)?.dateTo;
+
   createEffect(() => {
     if (params().eventId !== "new" || hasCreatedDraftEvent) return;
 
@@ -1035,6 +1043,7 @@ function CompetitionEventDetailPage() {
           event={event}
           onDelete={onDelete}
           onUpdate={onUpdate}
+          stageDateTo={getStageDateTo()}
         />
       )}
     </ObdxCompetitionEventDetailBodyWrapper>

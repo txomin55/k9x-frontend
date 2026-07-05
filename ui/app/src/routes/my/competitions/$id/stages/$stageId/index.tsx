@@ -9,8 +9,8 @@ import type {
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
-import { EVENT_STATUS, toEventEditorDraft } from "@/utils/event";
-import { STAGE_STATUS } from "@/utils/stage";
+import { canDeleteEvent, canEditEvent, toEventEditorDraft } from "@/utils/event";
+import { canDeleteStage, canEditStage } from "@/utils/stage";
 import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -435,7 +435,7 @@ function CompetitionStageDetailBody(props: {
                   actions={
                     isEditing() ? (
                       <div class="stage-detail__content--event-actions">
-                        <Show when={event().status === EVENT_STATUS.CREATED}>
+                        <Show when={canDeleteEvent(event().status)}>
                           <ConfirmActionButton
                             text={event().name}
                             onConfirm={deleteEventClick(event)}
@@ -445,31 +445,33 @@ function CompetitionStageDetailBody(props: {
                             </AtomButton>
                           </ConfirmActionButton>
                         </Show>
-                        <AtomDialog
-                          closeButtonText={i18n.t(
-                            "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
-                          )}
-                          content={
-                            <Show when={eventDialogDraft()}>
-                              {(draft) => (
-                                <EventEditorForm
-                                  draft={draft()}
-                                  onCancel={closeEventEditor}
-                                  onChange={setEventDialogDraft}
-                                  onSave={saveEventEditor}
-                                />
-                              )}
-                            </Show>
-                          }
-                          onOpenChange={createEditDialogOpenChange(event)}
-                          open={editingEventId() === event().id}
-                          title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
-                          trigger={
-                            <span>
-                              {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
-                            </span>
-                          }
-                        />
+                        <Show when={canEditEvent(props.stage().dateTo)}>
+                          <AtomDialog
+                            closeButtonText={i18n.t(
+                              "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+                            )}
+                            content={
+                              <Show when={eventDialogDraft()}>
+                                {(draft) => (
+                                  <EventEditorForm
+                                    draft={draft()}
+                                    onCancel={closeEventEditor}
+                                    onChange={setEventDialogDraft}
+                                    onSave={saveEventEditor}
+                                  />
+                                )}
+                              </Show>
+                            }
+                            onOpenChange={createEditDialogOpenChange(event)}
+                            open={editingEventId() === event().id}
+                            title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
+                            trigger={
+                              <span>
+                                {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+                              </span>
+                            }
+                          />
+                        </Show>
                       </div>
                     ) : (
                       <AtomButton
@@ -486,15 +488,17 @@ function CompetitionStageDetailBody(props: {
           </div>
         </Show>
       </section>
-      <FloatingToggleCircle
-        onClick={() => setIsEditing((current) => !current)}
-        toggled={isEditing()}
-        nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
-        toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
-        nonToggledIcon={pencilIcon}
-        toggledIcon={eyeIcon}
-      />
-      <Show when={isEditing() && props.stage().status === STAGE_STATUS.CREATED}>
+      <Show when={canEditStage(props.stage().status)}>
+        <FloatingToggleCircle
+          onClick={() => setIsEditing((current) => !current)}
+          toggled={isEditing()}
+          nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+          toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
+          nonToggledIcon={pencilIcon}
+          toggledIcon={eyeIcon}
+        />
+      </Show>
+      <Show when={isEditing() && canDeleteStage(props.stage().status)}>
         <ConfirmActionButton
           text={props.stage().name}
           onConfirm={props.onDelete}

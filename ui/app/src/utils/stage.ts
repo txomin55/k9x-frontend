@@ -38,3 +38,11 @@ export function getMarkerColorByStatus(status: string) {
 export function isStageLive(status: string) {
   return [STAGE_STATUS.TO_START, STAGE_STATUS.STARTED].includes(status);
 }
+
+export function canEditStage(status?: string) {
+  return status !== STAGE_STATUS.FINISHED;
+}
+
+export function canDeleteStage(status?: string) {
+  return status === STAGE_STATUS.CREATED;
+}

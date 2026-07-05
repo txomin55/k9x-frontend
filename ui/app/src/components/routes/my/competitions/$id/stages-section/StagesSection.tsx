@@ -8,7 +8,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
-import { STAGE_STATUS } from "@/utils/stage";
+import { canDeleteStage } from "@/utils/stage";
 import { useI18n } from "@/stores/i18n/i18n";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import "./styles.css";
@@ -84,7 +84,7 @@ export default function StagesSection(props: StagesSectionProps) {
               actions={
                 props.isEditing ? (
                   <div class="stages-section__stages--actions">
-                    <Show when={stage().status === STAGE_STATUS.CREATED}>
+                    <Show when={canDeleteStage(stage().status)}>
                       <ConfirmActionButton
                         text={stage().name}
                         onConfirm={() => props.onDeleteStage(stage().id)}
