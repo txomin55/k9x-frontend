@@ -19,6 +19,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   entityType,
   method,
   onCommitted,
+  onConflict,
   payload,
   rollbackPayload,
   rollback,
@@ -28,6 +29,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   entityType: string;
   method: PendingTaskMethod;
   onCommitted?: () => Promise<void> | void;
+  onConflict?: () => void;
   payload?: unknown;
   rollbackPayload: TRollbackPayload;
   rollback: (payload: TRollbackPayload) => Promise<void>;
@@ -46,6 +48,11 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
       await rollback(rollbackPayload);
 
       if (error instanceof HttpRequestError) {
+        if (error.status === 409 && onConflict) {
+          onConflict();
+          return;
+        }
+
         showToast(error.message);
         return;
       }

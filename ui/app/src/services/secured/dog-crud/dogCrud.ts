@@ -149,7 +149,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   threeFciGenerationsConfirmed: draftDog.threeFciGenerationsConfirmed,
 });
 
-export const createDog = (draftDog: Dog) => {
+export const createDog = (draftDog: Dog, onConflict?: () => void) => {
   const previousDogs = getVisibleDogs();
 
   applyDogUpsert(draftDog);
@@ -158,6 +158,7 @@ export const createDog = (draftDog: Dog) => {
     await commitDogMutation({
       entityId: draftDog.id,
       method: "POST",
+      onConflict,
       payload: toCreateDogRequest(draftDog),
       rollbackPayload: await createDogRollbackPayload(
         draftDog.id,

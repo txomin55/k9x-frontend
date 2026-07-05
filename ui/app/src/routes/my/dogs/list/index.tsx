@@ -1,4 +1,7 @@
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomButton, {
+	BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { createFileRoute } from "@tanstack/solid-router";
 import {
 	createEffect,
@@ -114,6 +117,15 @@ function MyDogsListPage() {
 		}
 	});
 
+	const [conflictingDogId, setConflictingDogId] = createSignal<string | null>(
+		null,
+	);
+
+	const handleTakeOwnership = () => {
+		alert(`dog own request ${conflictingDogId()} ${user()?.email ?? ""}`);
+		setConflictingDogId(null);
+	};
+
 	const handleSave = () => {
 		const payload = draftDog();
 		const currentEditingDogId = editingDogId();
@@ -133,7 +145,7 @@ function MyDogsListPage() {
 				threeFciGenerationsConfirmed: payload.threeFciGenerationsConfirmed,
 			});
 		} else {
-			createDog(payload);
+			createDog(payload, () => setConflictingDogId(payload.id));
 		}
 
 		handleCloseDialog();
@@ -164,6 +176,30 @@ function MyDogsListPage() {
 				onOpenChange={(isOpen) => {
 					if (!isOpen) {
 						handleCloseDialog();
+					}
+				}}
+				trigger={<span aria-hidden />}
+			/>
+
+			<AtomDialog
+				title={i18n.t("MY.DOGS.LIST.DOG_ALREADY_EXISTS_TITLE")}
+				content={
+					<div class="dogs-list-conflict-dialog__actions">
+						<AtomButton
+							type={BUTTON_TYPES.ACCENT}
+							onClick={() => setConflictingDogId(null)}
+						>
+							{i18n.t("MY.DOGS.LIST.CANCEL")}
+						</AtomButton>
+						<AtomButton onClick={handleTakeOwnership}>
+							{i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
+						</AtomButton>
+					</div>
+				}
+				open={!!conflictingDogId()}
+				onOpenChange={(isOpen) => {
+					if (!isOpen) {
+						setConflictingDogId(null);
 					}
 				}}
 				trigger={<span aria-hidden />}

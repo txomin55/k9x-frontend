@@ -139,6 +139,7 @@ export const commitDogMutation = async ({
   entityId,
   method,
   onCommitted,
+  onConflict,
   payload,
   rollbackPayload,
   url,
@@ -146,6 +147,7 @@ export const commitDogMutation = async ({
   entityId: string;
   method: PendingTaskMethod;
   onCommitted?: () => Promise<void> | void;
+  onConflict?: () => void;
   payload?: unknown;
   rollbackPayload: DogRollbackPayload;
   url: string;
@@ -155,6 +157,7 @@ export const commitDogMutation = async ({
     entityType: "dog",
     method,
     onCommitted,
+    onConflict,
     payload,
     rollback: rollbackDogPayload,
     rollbackPayload,
