@@ -17,6 +17,7 @@ type YellowCardDialogProps = {
   competitors: CompetitorScoresResponseDTO[];
   judgesIds: string[];
   canChooseJudge: boolean;
+  disabled?: boolean;
 };
 
 export default function YellowCardDialog(props: YellowCardDialogProps) {
@@ -149,6 +150,7 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
         title={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
         aria-label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON")}
         onClick={handleOpenClick}
+        disabled={props.disabled}
       >
         <AtomSvgIcon
           src={yellowCardIcon}

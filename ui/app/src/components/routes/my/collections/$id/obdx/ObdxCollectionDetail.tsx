@@ -5,6 +5,7 @@ import {
   useCollections
 } from "@/services/secured/collection-crud/collectionCrud";
 import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
+import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -12,6 +13,7 @@ import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow
 import RedCardDialog from "@/components/routes/my/collections/$id/obdx/red-card/RedCardDialog";
 import Page from "@/components/common/page/Page";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
+import { isDayAfterStageDateTo } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -84,6 +86,17 @@ export default function ObdxCollectionDetail() {
     () =>
       collectionsList.data?.find((entry) => entry.eventId === params()?.id)
         ?.status ?? "",
+  );
+
+  const stageDateTo = createMemo(() =>
+    getCachedCompetitions()
+      ?.flatMap((competition) => competition.stages)
+      .find((stage) => stage.events.some((event) => event.id === params()?.id))
+      ?.dateTo,
+  );
+
+  const isPastStageEditWindow = createMemo(() =>
+    isDayAfterStageDateTo(stageDateTo()),
   );
   const [pendingScores, setPendingScores] = createSignal<
     Record<string, number>
@@ -311,6 +324,7 @@ export default function ObdxCollectionDetail() {
           competitors={collectionData.data?.obdx.competitors ?? []}
           judgesIds={search().judgesIds}
           canChooseJudge={isOrganizer()}
+          disabled={isPastStageEditWindow()}
         />
 
         <RedCardDialog
@@ -323,6 +337,7 @@ export default function ObdxCollectionDetail() {
           competitors={collectionData.data?.obdx.competitors ?? []}
           judgesIds={search().judgesIds}
           canChooseJudge={isOrganizer()}
+          disabled={isPastStageEditWindow()}
         />
       </div>
 
@@ -337,7 +352,10 @@ export default function ObdxCollectionDetail() {
           text={selectedCompetitor()?.label ?? ""}
           onConfirm={handleMarkNotCompeting}
         >
-          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+          <AtomButton
+            type={BUTTON_TYPES.DESTRUCTIVE}
+            disabled={isPastStageEditWindow()}
+          >
             {i18n.t("MY.COLLECTIONS.DETAIL.NOT_PRESENTED")}
           </AtomButton>
         </ConfirmActionButton>
@@ -375,7 +393,10 @@ export default function ObdxCollectionDetail() {
                           filterByEligibleJudges,
                         )}
                         allowedValues={configuration().allowedValues}
-                        disabled={!isSelectedCompetitorScoresAllowed()}
+                        disabled={
+                          !isSelectedCompetitorScoresAllowed() ||
+                          isPastStageEditWindow()
+                        }
                         onCommitScore={handleCommitScore}
                       />
                     )}

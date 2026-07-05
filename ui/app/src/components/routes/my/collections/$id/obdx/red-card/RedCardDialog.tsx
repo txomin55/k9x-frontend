@@ -17,6 +17,7 @@ type RedCardDialogProps = {
   competitors: CompetitorScoresResponseDTO[];
   judgesIds: string[];
   canChooseJudge: boolean;
+  disabled?: boolean;
 };
 
 export default function RedCardDialog(props: RedCardDialogProps) {
@@ -126,6 +127,7 @@ export default function RedCardDialog(props: RedCardDialogProps) {
         title={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.BUTTON")}
         aria-label={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.BUTTON")}
         onClick={handleOpenClick}
+        disabled={props.disabled}
       >
         <AtomSvgIcon
           src={redCardIcon}

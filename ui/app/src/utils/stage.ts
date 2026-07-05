@@ -46,3 +46,16 @@ export function canEditStage(status?: string) {
 export function canDeleteStage(status?: string) {
   return status === STAGE_STATUS.CREATED;
 }
+
+export function isDayAfterStageDateTo(stageDateTo?: number) {
+  if (stageDateTo === undefined) return false;
+
+  const dateTo = new Date(stageDateTo);
+  const nextDayStart = Date.UTC(
+    dateTo.getUTCFullYear(),
+    dateTo.getUTCMonth(),
+    dateTo.getUTCDate() + 1,
+  );
+
+  return Date.now() >= nextDayStart;
+}
