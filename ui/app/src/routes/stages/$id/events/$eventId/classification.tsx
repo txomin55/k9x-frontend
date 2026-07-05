@@ -24,6 +24,7 @@ import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useAuthUser } from "@/stores/auth/auth";
 import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
@@ -45,6 +46,8 @@ function EventClassificationPage() {
   const params = useParams({
     from: "/stages/$id/events/$eventId/classification",
   });
+  const user = useAuthUser();
+  const isLoggedIn = () => Boolean(user());
 
   const classificationQuery = useEventClassification(
     params().id,
@@ -462,7 +465,7 @@ function EventClassificationPage() {
                   </span>
                 </div>
               </Show>
-              <Show when={competitorOptions().length}>
+              <Show when={isLoggedIn() && competitorOptions().length}>
                 <div class="obdx-clf__filter">
                   <AtomCombobox
                     multiple
