@@ -25,20 +25,25 @@
     gap: var(--unit-1);
 }
 
-.collection-detail__exercises-wrapper {
-    position: relative;
-}
-
-.collection-detail__exercises-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
+.collection-detail__scores-banner {
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     padding: var(--unit-2);
-    background: color-mix(in srgb, var(--surface) 70%, transparent);
-    backdrop-filter: blur(1px);
-    color: var(--text-secondary);
+    margin-bottom: var(--unit-2);
+    border-radius: var(--radius-md);
+    border: 1px solid;
+}
+
+.collection-detail__scores-banner--warning {
+    border-color: var(--warning-border);
+    background: var(--warning-bg);
+    color: var(--warning-text);
+}
+
+.collection-detail__scores-banner--info {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary);
 }

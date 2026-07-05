@@ -340,6 +340,7 @@
   "MY.COLLECTIONS.DETAIL.SELECT_EXERCISE": "Select an exercise",
   "MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN": "Allowed values between",
   "MY.COLLECTIONS.DETAIL.SCORES_NOT_ALLOWED": "This competitor cannot receive scores because it is not competing",
+  "MY.COLLECTIONS.DETAIL.EDIT_WINDOW_CLOSED": "This event has already ended, so scores can no longer be modified",
   "MY.COLLECTIONS.DETAIL.READY": "R",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON": "Yellow card",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE": "Register yellow card",

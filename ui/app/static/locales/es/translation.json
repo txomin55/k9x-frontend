@@ -340,6 +340,7 @@
   "MY.COLLECTIONS.DETAIL.SELECT_EXERCISE": "Selecciona un ejercicio",
   "MY.COLLECTIONS.DETAIL.ALLOWED_VALUES_BETWEEN": "Valores permitidos entre",
   "MY.COLLECTIONS.DETAIL.SCORES_NOT_ALLOWED": "Este competidor no puede tener puntuaciones porque no compite",
+  "MY.COLLECTIONS.DETAIL.EDIT_WINDOW_CLOSED": "Este evento ya ha finalizado, por lo que las puntuaciones ya no se pueden modificar",
   "MY.COLLECTIONS.DETAIL.READY": "R",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.BUTTON": "Tarjeta amarilla",
   "MY.COLLECTIONS.DETAIL.YELLOW_CARD.TITLE": "Registrar tarjeta amarilla",
