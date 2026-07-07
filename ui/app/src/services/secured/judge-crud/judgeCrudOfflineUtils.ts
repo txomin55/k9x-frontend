@@ -13,7 +13,6 @@ import {
   saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
-import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import type { JudgeResponseDTO, JudgeRollbackPayload } from "./judgeCrud.types";
 import {
   mergeJudgesWithDrafts,
@@ -22,6 +21,7 @@ import {
   upsertJudgeDraft,
 } from "./judgeDraftStore";
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
+import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
 const JUDGE_SNAPSHOT_PREFIX = "judge:";
 
@@ -116,32 +116,6 @@ export const createJudgeRollbackPayload = async (
     previousJudgesFromCache ?? (await readJudgesSnapshot()) ?? null,
 });
 
-export const commitJudgeMutation = async ({
-  entityId,
-  method,
-  onCommitted,
-  payload,
-  rollbackPayload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  onCommitted?: () => Promise<void> | void;
-  payload?: unknown;
-  rollbackPayload: JudgeRollbackPayload;
-  url: string;
-}) =>
-  commitOptimisticMutation({
-    entityId,
-    entityType: "judge",
-    method,
-    onCommitted,
-    payload,
-    rollback: rollbackJudgePayload,
-    rollbackPayload,
-    url,
-  });
-
 const isJudgeRollbackPayload = (
   rollbackPayload: unknown,
 ): rollbackPayload is JudgeRollbackPayload =>
@@ -169,6 +143,11 @@ const rollbackJudgePayload = async (rollbackPayload: JudgeRollbackPayload) => {
     replaceJudgeDrafts([], getBaseJudgesFromCache());
   }
 };
+
+export const commitJudgeMutation = createCommitEntityMutation<JudgeRollbackPayload>(
+  "judge",
+  rollbackJudgePayload,
+);
 
 const commitJudgeTask = async (task: PendingTask) => {
   await commitJudgeMutationSuccess({

@@ -14,7 +14,6 @@ import {
   CollectionsResponseDTO
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
-import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
@@ -25,6 +24,7 @@ import {
   replaceCollectionByIdDraft,
   upsertCollectionByIdDraft
 } from "@/services/secured/collection-crud/collectionsDrafStore";
+import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
 export const saveCollectionsSnapshot = (collections: CollectionsResponseDTO[]) =>
   saveQuerySnapshot(COLLECTIONS_SNAPSHOT_ID, collections);
@@ -53,32 +53,6 @@ export const createCollectionRollbackPayload = async (
     (await readCollectionSnapshot(collectionId)) ??
     null,
 });
-
-export const commitCollectionMutation = async ({
-  entityId,
-  method,
-  onCommitted,
-  payload,
-  rollbackPayload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  onCommitted?: () => Promise<void> | void;
-  payload?: unknown;
-  rollbackPayload: CollectionRollbackPayload;
-  url: string;
-}) =>
-  commitOptimisticMutation({
-    entityId,
-    entityType: "collection",
-    method,
-    onCommitted,
-    payload,
-    rollback: rollbackCollectionPayload,
-    rollbackPayload,
-    url,
-  });
 
 export const commitCollectionMutationSuccess = async ({
   eventId,
@@ -144,6 +118,12 @@ const rollbackCollectionPayload = async (
     baseCollection,
   );
 };
+
+export const commitCollectionMutation =
+  createCommitEntityMutation<CollectionRollbackPayload>(
+    "collection",
+    rollbackCollectionPayload,
+  );
 
 const isCollectionRollbackPayload = (
   rollbackPayload: unknown,

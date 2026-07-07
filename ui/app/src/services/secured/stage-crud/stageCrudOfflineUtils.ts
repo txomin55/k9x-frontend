@@ -17,7 +17,6 @@ import {
   type PendingTaskMethod,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
-import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
@@ -29,6 +28,7 @@ import {
   StageEditorModel,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { STAGE_STATUS } from "@/utils/stage";
+import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
 const toCompetitionDetailStage = (
   stage: StageEditorModel,
@@ -172,32 +172,6 @@ export const createApiStageRollbackPayload = async ({
   previousStage,
 });
 
-export const commitApiStageMutation = async ({
-  entityId,
-  method,
-  onCommitted,
-  payload,
-  rollbackPayload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  onCommitted?: () => Promise<void> | void;
-  payload?: unknown;
-  rollbackPayload: ApiStageRollbackPayload;
-  url: string;
-}) =>
-  commitOptimisticMutation({
-    entityId,
-    entityType: "stage",
-    method,
-    onCommitted,
-    payload,
-    rollback: rollbackApiStagePayload,
-    rollbackPayload,
-    url,
-  });
-
 const isApiStageRollbackPayload = (
   rollbackPayload: unknown,
 ): rollbackPayload is ApiStageRollbackPayload =>
@@ -228,6 +202,12 @@ const rollbackApiStagePayload = async (
 
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
+
+export const commitApiStageMutation =
+  createCommitEntityMutation<ApiStageRollbackPayload>(
+    "stage",
+    rollbackApiStagePayload,
+  );
 
 export const commitApiStageMutationSuccess = async ({
   competitionId,

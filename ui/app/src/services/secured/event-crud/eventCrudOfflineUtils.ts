@@ -16,13 +16,13 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
-import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   CompetitionStageDetailResponseDTO,
   CompetitionStageEventDetailResponseDTO
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { ApiEventRollbackPayload, EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
+import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
 const buildNextStageDetail = (
   stage: CompetitionStageDetailResponseDTO,
@@ -198,32 +198,6 @@ export const createApiEventRollbackPayload = async ({
   stageId,
 });
 
-export const commitApiEventMutation = async ({
-  entityId,
-  method,
-  onCommitted,
-  payload,
-  rollbackPayload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  onCommitted?: () => Promise<void> | void;
-  payload?: unknown;
-  rollbackPayload: ApiEventRollbackPayload;
-  url: string;
-}) =>
-  commitOptimisticMutation({
-    entityId,
-    entityType: "event",
-    method,
-    onCommitted,
-    payload,
-    rollback: rollbackApiEventPayload,
-    rollbackPayload,
-    url,
-  });
-
 const isApiEventRollbackPayload = (
   rollbackPayload: unknown,
 ): rollbackPayload is ApiEventRollbackPayload =>
@@ -266,6 +240,12 @@ const rollbackApiEventPayload = async (
 
   replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
 };
+
+export const commitApiEventMutation =
+  createCommitEntityMutation<ApiEventRollbackPayload>(
+    "event",
+    rollbackApiEventPayload,
+  );
 
 export const commitApiEventMutationSuccess = async ({
   competitionId,

@@ -140,9 +140,7 @@ Agrupados por tipo de fix sugerido:
   - `ui/app/src/components/routes/stages/stage-card/StageCardEventsContent.tsx:57-73` ↔ `ui/app/src/routes/stages/$id/info.tsx:166-182`
   - `StageCardEventsContent.tsx:57-70` ↔ `ui/app/src/components/routes/stages/stages-map/StageMapMarker.tsx:85-99`
 - **`eventCrudOfflineUtils.ts` / `stageCrudOfflineUtils.ts`** — 36 líneas duplicadas (164-199 / 140-173) — mismo patrón offline entre entidades CRUD, buen candidato a factorizar en un helper genérico de "offline utils" parametrizado por tipo de entidad.
-- **Clon compartido por 5 archivos `*CrudOfflineUtils.ts`** (`dup:5bfa4f07`, 13 líneas) — el de mayor prioridad porque toca 5 sitios a la vez:
-  - `collectionCrudOfflineUtils.ts:57-69`, `competitionCrudOfflineUtils.ts:104-116`, `eventCrudOfflineUtils.ts:201-213`, `judgeCrudOfflineUtils.ts:119-131`, `stageCrudOfflineUtils.ts:175-187`
-  - Extraer una única función compartida (p.ej. en un módulo `crudOfflineShared.ts`) usada por las 5 entidades.
+- [x] **Clon compartido por 5 archivos `*CrudOfflineUtils.ts`** (`dup:5bfa4f07`, 13 líneas) — ✅ resuelto 2026-07-07: extraído `createCommitEntityMutation` en `ui/app/src/services/secured/crudOfflineShared.ts` (factory que envuelve `commitOptimisticMutation` fijando `entityType` y `rollback`). Los 5 `commit*Mutation` (`collection`, `competition`, `event`, `judge`, `stage`) quedan en una línea cada uno: `createCommitEntityMutation<XRollbackPayload>("x", rollbackXPayload)`. Verificado con `npx fallow dupes` (el clon ya no aparece), `tsc --noEmit` limpio y `vitest run` (27/27 tests; los 2 fallos de archivos con Kobalte son el problema preexistente sin relación).
 - **`dogCrud.ts`** duplicado consigo mismo — `ui/app/src/services/secured/dog-crud/dogCrud.ts:79-91` ↔ `:121-135` (15 líneas)
 - **`useSearchParam.ts`** duplicado consigo mismo — `ui/app/src/utils/search-params/useSearchParam.ts:12-22` ↔ `:45-57` (13 líneas)
 - **`routes/my/competitions/$id/stages/$stageId/events/$eventId/index.tsx`** duplicado consigo mismo — líneas 483-493 ↔ 511-521 (11 líneas), archivo ya identificado arriba como candidato a split por tamaño (912 líneas).

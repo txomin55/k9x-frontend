@@ -21,13 +21,13 @@ import type {
   CompetitionResponseDTO,
   CompetitionRollbackPayload,
 } from "@/services/secured/competition-crud/competitionCrud.types";
-import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import {
   mergeCompetitionsWithDrafts,
   removeCompetitionDraft,
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
 } from "@/services/secured/competition-crud/competitionDraftStore";
+import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
 export const buildCompetitionsWithoutEntity = (
   previousCompetitions: CompetitionResponseDTO[],
@@ -101,32 +101,6 @@ export const createCompetitionRollbackPayload = async (
     previousCompetitionsFromCache ?? (await readCompetitionsSnapshot()) ?? null,
 });
 
-export const commitCompetitionMutation = async ({
-  entityId,
-  method,
-  onCommitted,
-  payload,
-  rollbackPayload,
-  url,
-}: {
-  entityId: string;
-  method: PendingTaskMethod;
-  onCommitted?: () => Promise<void> | void;
-  payload?: unknown;
-  rollbackPayload: CompetitionRollbackPayload;
-  url: string;
-}) =>
-  commitOptimisticMutation({
-    entityId,
-    entityType: "competition",
-    method,
-    onCommitted,
-    payload,
-    rollback: rollbackCompetitionPayload,
-    rollbackPayload,
-    url,
-  });
-
 const isCompetitionRollbackPayload = (
   rollbackPayload: unknown,
 ): rollbackPayload is CompetitionRollbackPayload =>
@@ -158,6 +132,12 @@ const rollbackCompetitionPayload = async (
     replaceCompetitionDrafts([], getBaseCompetitionsFromCache());
   }
 };
+
+export const commitCompetitionMutation =
+  createCommitEntityMutation<CompetitionRollbackPayload>(
+    "competition",
+    rollbackCompetitionPayload,
+  );
 
 const commitCompetitionTask = async (task: PendingTask) => {
   await commitCompetitionMutationSuccess({
