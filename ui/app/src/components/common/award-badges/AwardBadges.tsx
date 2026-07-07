@@ -20,10 +20,17 @@ type AwardBadgesProps = {
 
 export default function AwardBadges(props: AwardBadgesProps) {
   return (
-    <For each={props.awards.filter((award) => AWARD_ICONS[award.id])}>
+    <For
+      each={props.awards.filter(
+        (award) => AWARD_ICONS[award.id.toLowerCase()],
+      )}
+    >
       {(award) => (
         <span class="award-badge">
-          <AtomSvgIcon src={AWARD_ICONS[award.id]} alt={award.name} />
+          <AtomSvgIcon
+            src={AWARD_ICONS[award.id.toLowerCase()]}
+            alt={award.name}
+          />
         </span>
       )}
     </For>

@@ -335,6 +335,8 @@ function EventClassificationPage() {
       >
         <For each={virtualizer.getVirtualItems()}>
           {(virtualRow) => {
+            if (!virtualRow) return null;
+
             const competitor = () => filteredCompetitors()[virtualRow.index];
 
             return (
