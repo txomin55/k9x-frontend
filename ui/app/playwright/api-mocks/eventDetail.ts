@@ -48,7 +48,18 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
         },
       ],
       exercises: [
-        { id: "conf-ex-1", name: "Heel work", position: 1, tags: ["base"] },
+        {
+          id: "conf-ex-1",
+          name: "Heel work",
+          position: 1,
+          tags: ["base"],
+          judges: [
+            {
+              id: "judge-1",
+              name: judgeName("judge-1"),
+            },
+          ],
+        },
       ],
       competitors: [
         {
@@ -133,6 +144,7 @@ const applyEventUpdate = (
       name: string;
       position: number;
       tags: string[];
+      judgesIds: string[];
     }[];
     competitors?: { dogId: string; position: number; accepted: boolean }[];
   },
@@ -153,7 +165,13 @@ const applyEventUpdate = (
       collectorEmail: judge.collectorEmail,
       name: judgeName(judge.id),
     })),
-    exercises: payload.exercises ?? [],
+    exercises: (payload.exercises ?? []).map((exercise) => ({
+      id: exercise.id,
+      name: exercise.name,
+      position: exercise.position,
+      tags: exercise.tags,
+      judges: exercise.judgesIds.map((id) => ({ id, name: judgeName(id) })),
+    })),
     competitors: (payload.competitors ?? []).map((competitor) => {
       const existing = previous.competitors.find(
         (entry) => entry.dog.id === competitor.dogId,

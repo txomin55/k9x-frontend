@@ -16,7 +16,7 @@ import type {
   EventJudgeDetailResponseDTO,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
-import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
+import { SCORE_CALCULATION, toEventExerciseRequest } from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { canDeleteEvent, canEditEvent, COMPETITOR_STATUS, toEventEditorDraft } from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
@@ -282,12 +282,14 @@ function CompetitionObdxEventDetailBody(props: {
 
   const createDefaultExercise = (
     order: number,
+    judges: EventJudgeDetailResponseDTO[],
   ): EventExerciseDetailResponseDTO => {
     return {
       id: globalThis.crypto.randomUUID(),
       position: order,
       name: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_EXERCISE"),
       tags: [],
+      judges: judges.map(({ id, name }) => ({ id, name })),
     };
   };
 
@@ -301,7 +303,7 @@ function CompetitionObdxEventDetailBody(props: {
     ),
     configurationId: event.configuration.id,
     enrollmentDeadline: event.enrollmentDeadline,
-    exercises: event.exercises,
+    exercises: event.exercises.map(toEventExerciseRequest),
     judges: event.judges.map((judge) => ({
       collectorEmail: judge.collectorEmail,
       id: judge.id,
@@ -349,6 +351,36 @@ function CompetitionObdxEventDetailBody(props: {
     persistEventEdits(draftEvent(), name());
   };
 
+  const addJudgeToExercises = (
+    exercises: EventExerciseDetailResponseDTO[],
+    judge: EventJudgeDetailResponseDTO,
+  ): EventExerciseDetailResponseDTO[] =>
+    exercises.map((exercise) => ({
+      ...exercise,
+      judges: [...exercise.judges, { id: judge.id, name: judge.name }],
+    }));
+
+  const removeJudgeFromExercises = (
+    exercises: EventExerciseDetailResponseDTO[],
+    judgeId: string,
+  ): EventExerciseDetailResponseDTO[] =>
+    exercises.map((exercise) => ({
+      ...exercise,
+      judges: exercise.judges.filter((entry) => entry.id !== judgeId),
+    }));
+
+  const renameJudgeInExercises = (
+    exercises: EventExerciseDetailResponseDTO[],
+    judgeId: string,
+    name: string,
+  ): EventExerciseDetailResponseDTO[] =>
+    exercises.map((exercise) => ({
+      ...exercise,
+      judges: exercise.judges.map((entry) =>
+        entry.id === judgeId ? { ...entry, name } : entry,
+      ),
+    }));
+
   const createJudge = () => {
     const draft = judgeDialogDraft();
 
@@ -358,6 +390,7 @@ function CompetitionObdxEventDetailBody(props: {
       (current) => ({
         ...current,
         judges: [...current.judges, draft],
+        exercises: addJudgeToExercises(current.exercises, draft),
       }),
       {
         persist: true,
@@ -385,6 +418,11 @@ function CompetitionObdxEventDetailBody(props: {
         ...current,
         judges: current.judges.map((entry) =>
           entry.id === currentEditingJudgeId ? draft : entry,
+        ),
+        exercises: renameJudgeInExercises(
+          current.exercises,
+          currentEditingJudgeId,
+          draft.name,
         ),
       }),
       {
@@ -582,6 +620,10 @@ function CompetitionObdxEventDetailBody(props: {
       (current) => ({
         ...current,
         judges: current.judges.filter((entry) => entry.id !== judgeIdToDelete),
+        exercises: removeJudgeFromExercises(
+          current.exercises,
+          judgeIdToDelete,
+        ),
       }),
       {
         persist: true,
@@ -596,7 +638,10 @@ function CompetitionObdxEventDetailBody(props: {
   };
 
   const handleAddExercise = () => {
-    const draft = createDefaultExercise(draftEvent().exercises.length + 1);
+    const draft = createDefaultExercise(
+      draftEvent().exercises.length + 1,
+      draftEvent().judges,
+    );
 
     setIsCreatingExercise(true);
     setEditingExerciseId(draft.id);
@@ -696,7 +741,9 @@ function CompetitionObdxEventDetailBody(props: {
     setIsEditing((current) => !current);
   };
 
-  const eventTabsTitles = [
+  const hasJudges = createMemo(() => draftEvent().judges.length > 0);
+
+  const eventTabsTitles = createMemo(() => [
     {
       value: TABS.JUDGES,
       content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.JUDGES")}</span>,
@@ -704,6 +751,7 @@ function CompetitionObdxEventDetailBody(props: {
     {
       value: TABS.EXERCISES,
       content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXERCISES")}</span>,
+      disabled: !hasJudges(),
     },
     {
       value: TABS.COMPETITORS,
@@ -711,7 +759,7 @@ function CompetitionObdxEventDetailBody(props: {
         <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")}</span>
       ),
     },
-  ];
+  ]);
 
   const eventTabsContents = () => [
     {
@@ -737,6 +785,7 @@ function CompetitionObdxEventDetailBody(props: {
       content: (
         <EventExercisesSection
           editingExerciseId={editingExerciseId()}
+          eventJudges={draftEvent().judges}
           exerciseDialogDraft={exerciseDialogDraft()}
           exercises={draftEvent().exercises}
           exerciseCandidatesOptions={exerciseSelectOptions()}
@@ -929,7 +978,7 @@ function CompetitionObdxEventDetailBody(props: {
 
       <AtomTabs
         defaultValue={TABS.JUDGES}
-        options={eventTabsTitles}
+        options={eventTabsTitles()}
         contents={eventTabsContents()}
       />
 

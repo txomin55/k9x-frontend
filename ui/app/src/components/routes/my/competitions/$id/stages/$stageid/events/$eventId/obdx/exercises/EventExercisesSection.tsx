@@ -8,7 +8,10 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
-import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import {
+  EventExerciseDetailResponseDTO,
+  EventJudgeDetailResponseDTO
+} from "@/services/secured/event-crud/eventCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
@@ -16,6 +19,7 @@ import "./styles.css";
 type EventExercisesSectionProps = {
   onCommitExercise: () => void;
   editingExerciseId: string | null;
+  eventJudges: EventJudgeDetailResponseDTO[];
   exerciseDialogDraft: EventExerciseDetailResponseDTO | null;
   exercises: EventExerciseDetailResponseDTO[];
   exerciseCandidatesOptions: AtomSelectOption[];
@@ -106,6 +110,11 @@ export default function EventExercisesSection(
                         <AtomBadge textValue={tag()}>{tag()}</AtomBadge>
                       )}
                     </Index>
+                    <p>
+                      {exercise()
+                        .judges.map((judge) => judge.name)
+                        .join(", ")}
+                    </p>
                   </div>
                 }
                 actions={
@@ -142,6 +151,7 @@ export default function EventExercisesSection(
             {(draft) => (
               <ExerciseEditorForm
                 draft={draft}
+                eventJudges={props.eventJudges}
                 onCommit={props.onCommitExercise}
                 onDraftChange={props.onExerciseDraftChange}
                 onCancel={() => {

@@ -8,7 +8,10 @@ import {
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
-import { EventExerciseDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import {
+  EventExerciseDetailResponseDTO,
+  EventJudgeDetailResponseDTO
+} from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -19,6 +22,7 @@ type OrderBounds = {
 
 type ExerciseEditorFormProps = {
   draft: () => EventExerciseDetailResponseDTO;
+  eventJudges: EventJudgeDetailResponseDTO[];
   onCommit: () => void;
   onDraftChange: (
     updater: (
@@ -91,6 +95,34 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
     props.onCommit();
   };
 
+  const judgeOptions = createMemo<AtomComboboxOption[]>(() =>
+    props.eventJudges.map((judge) => ({
+      label: judge.name,
+      value: judge.id,
+    })),
+  );
+
+  const selectedJudgeOptions = createMemo<AtomComboboxOption[]>(() => {
+    const selectedIds = new Set(props.draft().judges.map((judge) => judge.id));
+    return judgeOptions().filter((option) => selectedIds.has(option.value));
+  });
+
+  const setJudges = (options: AtomComboboxOption[]) => {
+    props.onDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            judges: options.map((option) => ({
+              id: option.value,
+              name: option.label,
+            })),
+          }
+        : current,
+    );
+
+    props.onCommit();
+  };
+
   const setTags = (value: string) => {
     props.onDraftChange((current) =>
       current
@@ -104,6 +136,14 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
 
   return (
     <div class="exercise-editor-form">
+      <AtomCombobox
+        multiple
+        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
+        placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
+        options={judgeOptions()}
+        value={selectedJudgeOptions()}
+        onChange={setJudges}
+      />
       <AtomNumberInput
         label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
         value={props.draft().position}

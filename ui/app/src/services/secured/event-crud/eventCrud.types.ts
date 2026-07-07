@@ -124,8 +124,10 @@ export interface EventDetailRawResponseDTO {
   obdx: ObdxEventDetailRawResponseDTO;
 }
 
-export interface EventExerciseDetailResponseDTO extends EventExerciseRequestDTO {
+export interface EventExerciseDetailResponseDTO
+  extends Omit<EventExerciseRequestDTO, "judgesIds"> {
   name: string;
+  judges: IdNameDTO[];
 }
 
 export interface EventExerciseRequestDTO {
@@ -133,6 +135,7 @@ export interface EventExerciseRequestDTO {
   name: string;
   position: number;
   tags: string[];
+  judgesIds: string[];
 }
 
 export interface EventJudgeDetailResponseDTO {
@@ -186,6 +189,16 @@ const normalizeCompetitor = (
   status: competitor.status ?? "",
   notCompeting: competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
   bih: competitor.bih ?? false,
+});
+
+export const toEventExerciseRequest = (
+  exercise: EventExerciseDetailResponseDTO,
+): EventExerciseRequestDTO => ({
+  id: exercise.id,
+  name: exercise.name,
+  position: exercise.position,
+  tags: exercise.tags,
+  judgesIds: exercise.judges.map((judge) => judge.id),
 });
 
 export const normalizeEventDetailResponse = (

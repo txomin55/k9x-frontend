@@ -8,7 +8,7 @@ import type {
   EventEditorDraft,
   UpdateEventRequestDTO
 } from "@/services/secured/event-crud/eventCrud.types";
-import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
+import { SCORE_CALCULATION, toEventExerciseRequest } from "@/services/secured/event-crud/eventCrud.types";
 import { canDeleteEvent, canEditEvent, toEventEditorDraft } from "@/utils/event";
 import { canDeleteStage, canEditStage } from "@/utils/stage";
 import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
@@ -343,7 +343,7 @@ function CompetitionStageDetailBody(props: {
       })),
       configurationId: draft.configuration.id,
       enrollmentDeadline: draft.enrollmentDeadline,
-      exercises: draft.exercises,
+      exercises: draft.exercises.map(toEventExerciseRequest),
       judges: draft.judges,
       name: draft.name,
       scoreCalculation: draft.scoreCalculation,

@@ -71,12 +71,24 @@ const createId = () => globalThis.crypto.randomUUID();
 
 const toApiExercise = (
   exercise: EventExerciseRequestDTO,
+  judgesCatalog: Map<string, IdNameDTO>,
   previousExercise?: EventExerciseDetailResponseDTO,
 ): EventExerciseDetailResponseDTO => ({
   id: exercise.id ?? previousExercise?.id,
   position: exercise.position ?? previousExercise?.position ?? 0,
   name: previousExercise?.name ?? "",
   tags: exercise.tags ?? previousExercise?.tags ?? [],
+  judges:
+    exercise.judgesIds?.map(
+      (judgeId) =>
+        judgesCatalog.get(judgeId) ??
+        previousExercise?.judges.find((judge) => judge.id === judgeId) ?? {
+          id: judgeId,
+          name: "",
+        },
+    ) ??
+    previousExercise?.judges ??
+    [],
 });
 
 const toApiEventConfiguration = (
@@ -222,6 +234,13 @@ const mergeApiEventWithPayload = (
     createPayload?.disciplineId,
     previousEvent?.discipline,
   );
+  const nextJudges =
+    updatePayload?.judges?.map((judge, index) =>
+      toApiJudge(judge, previousEvent?.judges?.[index]),
+    ) ??
+    previousEvent?.judges ??
+    [];
+  const judgesCatalog = new Map(nextJudges.map((judge) => [judge.id, judge]));
 
   const nextCore = {
     awards: toApiAwards(
@@ -253,18 +272,14 @@ const mergeApiEventWithPayload = (
       updatePayload?.exercises?.map((exercise) =>
         toApiExercise(
           exercise,
+          judgesCatalog,
           exercise.id ? previousExercisesById.get(exercise.id) : undefined,
         ),
       ) ??
       previousEvent?.exercises ??
       [],
     id: nextEventId,
-    judges:
-      updatePayload?.judges?.map((judge, index) =>
-        toApiJudge(judge, previousEvent?.judges?.[index]),
-      ) ??
-      previousEvent?.judges ??
-      [],
+    judges: nextJudges,
     name: payload.name ?? previousEvent?.name ?? "",
     scoreCalculation:
       updatePayload?.scoreCalculation ??
