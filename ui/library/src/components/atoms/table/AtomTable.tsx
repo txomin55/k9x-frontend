@@ -8,7 +8,7 @@ import {
   type SortingState,
 } from "@tanstack/solid-table";
 import type { AtomTableProps } from "@lib/components/atoms/table/AtomTable.types";
-import { createEffect, createSignal, onCleanup } from "solid-js";
+import { createEffect, createSignal, For, onCleanup } from "solid-js";
 import "./styles.css";
 
 export default function AtomTable<TData>(props: AtomTableProps<TData>) {
@@ -126,30 +126,34 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
-                <>
-                  <tr class="atom-table__row">
-                    {row.getVisibleCells().map((cell) => (
-                      <td class="atom-table__cell">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
+              <For each={table.getRowModel().rows}>
+                {(row) => (
+                  <>
+                    <tr class="atom-table__row">
+                      <For each={row.getVisibleCells()}>
+                        {(cell) => (
+                          <td class="atom-table__cell">
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </td>
                         )}
-                      </td>
-                    ))}
-                  </tr>
-                  {row.getIsExpanded() && props.renderSubComponent ? (
-                    <tr class="atom-table__row atom-table__row--expanded">
-                      <td
-                        class="atom-table__cell atom-table__expanded-cell"
-                        colSpan={row.getVisibleCells().length}
-                      >
-                        {props.renderSubComponent(row)}
-                      </td>
+                      </For>
                     </tr>
-                  ) : null}
-                </>
-              ))
+                    {row.getIsExpanded() && props.renderSubComponent ? (
+                      <tr class="atom-table__row atom-table__row--expanded">
+                        <td
+                          class="atom-table__cell atom-table__expanded-cell"
+                          colSpan={row.getVisibleCells().length}
+                        >
+                          {props.renderSubComponent(row)}
+                        </td>
+                      </tr>
+                    ) : null}
+                  </>
+                )}
+              </For>
             )}
           </tbody>
         </table>
