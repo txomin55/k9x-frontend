@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-unknown" viewBox="0 0 640 480">
+  <path fill="#CED4DA" d="M0 0h640v480H0z"/>
+  <text x="320" y="340" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="300" fill="#6C757D">?</text>
+</svg>

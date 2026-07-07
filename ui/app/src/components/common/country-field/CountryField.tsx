@@ -4,7 +4,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import i18n from "i18next";
-import type { JSX } from "solid-js";
+import { createMemo, type JSX } from "solid-js";
 
 export const COUNTRY_OPTIONS = [
   { label: "COMMON.COUNTRY_FIELD.PORTUGAL", value: "pt" },
@@ -41,7 +41,9 @@ type CountryFieldProps = {
 
 export default function CountryField(props: CountryFieldProps) {
   const countriesQuery = useCountries({ refetchOnMount: false });
-  const options = () => createCountrySelectOptions(countriesQuery.data ?? []);
+  const options = createMemo(() =>
+    createCountrySelectOptions(countriesQuery.data ?? []),
+  );
 
   return (
     <AtomSelect
