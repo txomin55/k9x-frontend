@@ -24,6 +24,9 @@ import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
+import RotateDeviceHint from "@/components/common/rotate-device-hint/RotateDeviceHint";
+import PinButton
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
 import {useI18n} from "@/stores/i18n/i18n";
 import {useAuthUser} from "@/stores/auth/auth";
 import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
@@ -213,9 +216,18 @@ function EventClassificationPage() {
   const resyncVirtualizer = () => {
     const el = scrollEl();
     if (!el) return;
-    const v = virtualizer as unknown as { _willUpdate: () => void };
+    const v = virtualizer as unknown as {
+      _willUpdate: () => void;
+      scrollOffset: number | null;
+    };
     setScrollEl(undefined);
     v._willUpdate();
+    // The virtualizer keeps its scrollOffset across detach/reattach, so
+    // reattaching to a fresh (scrollTop: 0) container — e.g. after
+    // switching back to the list tab — would jump straight to wherever it
+    // was scrolled before, instead of the top.
+    v.scrollOffset = 0;
+    el.scrollTop = 0;
     setScrollEl(el);
     v._willUpdate();
   };
@@ -242,15 +254,58 @@ function EventClassificationPage() {
     overscan: OVERSCAN,
   });
 
-  let hasResyncedVirtualizer = false;
+  // Each time the list's scroll container (re)mounts — including when
+  // switching back to the list tab — the virtualizer needs a fresh resync,
+  // otherwise it keeps the stale scroll offset/measurements from the
+  // previous (now detached) element.
+  let lastSyncedScrollEl: HTMLDivElement | undefined;
+  createEffect(() => {
+    const el = scrollEl();
+    console.log("[DEBUG] scrollEl effect", el, el === lastSyncedScrollEl);
+    if (!el || el === lastSyncedScrollEl) return;
+    lastSyncedScrollEl = el;
+    queueMicrotask(() => {
+      console.log(
+        "[DEBUG] before resync, virtualItems",
+        virtualizer.getVirtualItems().map((i) => ({
+          index: i.index,
+          start: i.start,
+        })),
+        "scrollOffset",
+        (virtualizer as any).scrollOffset,
+        "totalSize",
+        virtualizer.getTotalSize(),
+      );
+      updateListHeight();
+      resyncVirtualizer();
+      console.log(
+        "[DEBUG] after resync, virtualItems",
+        virtualizer.getVirtualItems().map((i) => ({
+          index: i.index,
+          start: i.start,
+        })),
+        "scrollOffset",
+        (virtualizer as any).scrollOffset,
+        "totalSize",
+        virtualizer.getTotalSize(),
+      );
+      requestAnimationFrame(() => {
+        rowEls.forEach((rowEl) => virtualizer.measureElement(rowEl));
+        console.log(
+          "[DEBUG] after measure, virtualItems",
+          virtualizer.getVirtualItems().map((i) => ({
+            index: i.index,
+            start: i.start,
+          })),
+        );
+      });
+    });
+  });
+
   createEffect(() => {
     if (classificationQuery.data) {
       queueMicrotask(() => {
         updateListHeight();
-        if (!hasResyncedVirtualizer) {
-          hasResyncedVirtualizer = true;
-          resyncVirtualizer();
-        }
         rowEls.forEach((el) => virtualizer.measureElement(el));
       });
     }
@@ -264,10 +319,13 @@ function EventClassificationPage() {
       header: t("STAGES.CLASSIFICATION.POSITION"),
       cell: (info) => {
         const position = info.getValue<number>();
-        return position <= 3 && !info.row.original.tied ? (
-          <PositionMedal position={position as 1 | 2 | 3} />
-        ) : (
-          position
+        return (
+          <div class="obdx-clf-table__position">
+            <span class="text-caption-md">{position}</span>
+            <Show when={position <= 3}>
+              <PositionMedal position={position as 1 | 2 | 3} />
+            </Show>
+          </div>
         );
       },
     },
@@ -280,15 +338,22 @@ function EventClassificationPage() {
         const row = info.getValue<StageEventClassificationItemResponseDTO>();
         return (
           <div class="obdx-clf-table__dog">
-            <CountryFlag country={row.country.id} width={20} height={20} />
-            <span>{row.dog.name}</span>
-            <Show when={row.bih}>
-              <BihIndicator />
+            <span class="obdx-clf-table__dog-name">
+              <CountryFlag country={row.country.id} width={20} height={20} />
+              <span>{row.dog.name}</span>
+              <Show when={row.bih}>
+                <BihIndicator />
+              </Show>
+              <Show when={row.notCompeting}>
+                <NotCompetingIndicator />
+              </Show>
+              <AwardBadges awards={row.awards} />
+            </span>
+            <Show when={row.handler}>
+              <span class="obdx-clf__owner obdx-clf-table__handler">
+                {row.handler}
+              </span>
             </Show>
-            <Show when={row.notCompeting}>
-              <NotCompetingIndicator />
-            </Show>
-            <AwardBadges awards={row.awards} />
           </div>
         );
       },
@@ -315,6 +380,18 @@ function EventClassificationPage() {
       accessorKey: "totalScore",
       header: t("STAGES.CLASSIFICATION.TOTAL"),
       cell: (info) => info.getValue<number>() ?? "-",
+    },
+    {
+      id: "pin",
+      header: () => null,
+      enableSorting: false,
+      cell: (info) => (
+        <PinButton
+          pinned={isPinned(info.row.original.dog.id)}
+          disabled={liveIds().has(info.row.original.dog.id)}
+          onToggle={() => togglePin(info.row.original.dog.id)}
+        />
+      ),
     },
     {
       id: "expander",
@@ -493,7 +570,7 @@ function EventClassificationPage() {
                 </div>
               </Show>
               <Show when={isLoggedIn() && competitorOptions().length}>
-                <div class="obdx-clf__filter">
+                <div class="obdx-clf__filter obdx-clf__filter-row">
                   <AtomCombobox
                     multiple
                     label={t("STAGES.CLASSIFICATION.FILTER_COMPETITORS")}
@@ -508,6 +585,7 @@ function EventClassificationPage() {
                       )
                     }
                   />
+                  <RotateDeviceHint />
                 </div>
               </Show>
               <Show when={pinnedCompetitors().length}>

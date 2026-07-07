@@ -91,14 +91,49 @@ const cacheOfflineUrl = async (scope, requestUrl, cacheName) => {
   }
 
   const request = new Request(url.href, { credentials: "same-origin" });
+  const cache = await caches.open(cacheName);
+  const cachedResponse = await cache.match(request);
+
+  if (cachedResponse) {
+    return;
+  }
+
   const response = await fetch(request);
 
   if (!response.ok) {
     return;
   }
 
-  const cache = await caches.open(cacheName);
   await cache.put(request, response.clone());
+};
+
+const OFFLINE_PRELOAD_CONCURRENCY = 6;
+
+const runWithConcurrencyLimit = async (items, limit, worker) => {
+  const settled = new Array(items.length);
+  let nextIndex = 0;
+
+  const runNext = async () => {
+    const index = nextIndex++;
+
+    if (index >= items.length) {
+      return;
+    }
+
+    try {
+      settled[index] = { status: "fulfilled", value: await worker(items[index]) };
+    } catch (reason) {
+      settled[index] = { status: "rejected", reason };
+    }
+
+    await runNext();
+  };
+
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, runNext),
+  );
+
+  return settled;
 };
 
 const respondToWarmupRequest = (event, payload) => {
@@ -123,8 +158,10 @@ export const registerAppShellCache = (scope) => {
     const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
 
     event.waitUntil(
-      Promise.allSettled(
-        urls.map((url) => cacheOfflineUrl(scope, url, APP_SHELL_CACHE)),
+      runWithConcurrencyLimit(
+        urls,
+        OFFLINE_PRELOAD_CONCURRENCY,
+        (url) => cacheOfflineUrl(scope, url, APP_SHELL_CACHE),
       ).then((results) => {
         const failedUrls = results.flatMap((result, index) =>
           result.status === "rejected" ? [urls[index]] : [],

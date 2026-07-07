@@ -25,8 +25,28 @@
 
 .obdx-clf-table__dog {
     display: flex;
+    flex-direction: column;
+    gap: var(--unit-05);
+}
+
+.obdx-clf-table td:has(.obdx-clf-table__position) {
+    vertical-align: top;
+}
+
+.obdx-clf-table__position {
+    display: flex;
+    gap: var(--unit-05);
+    top: 0;
+}
+
+.obdx-clf-table__dog-name {
+    display: flex;
     gap: var(--unit-05);
     align-items: baseline;
+}
+
+.obdx-clf-table__handler {
+    font-size: var(--text-caption-sm);
 }
 
 .obdx-clf-table__scores {
@@ -64,6 +84,16 @@
     color: var(--text-primary);
 }
 
+.obdx-clf-table th:nth-child(5),
+.obdx-clf-table td:nth-child(5),
+.obdx-clf-table th:nth-child(6),
+.obdx-clf-table td:nth-child(6) {
+    width: var(--unit-4);
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+}
+
 .classification__error {
     display: flex;
     flex-direction: column;
@@ -75,7 +105,17 @@
 
 .obdx-clf__filter {
     padding-top: var(--unit-1);
-    max-width: 480px;
+}
+
+.obdx-clf__filter-row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--unit-2);
+}
+
+.obdx-clf__filter-row > :first-child {
+    flex: 1;
+    min-width: 0;
 }
 
 .obdx-clf__pinned {

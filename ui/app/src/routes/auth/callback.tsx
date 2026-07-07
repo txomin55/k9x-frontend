@@ -13,7 +13,7 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
 import { resolveAppPath } from "@/utils/paths/app-paths";
-import { warmOfflineBundle } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
+import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
 
@@ -65,11 +65,7 @@ function AuthCallbackPage() {
       setUser(await fetchCachedUserData());
       globalThis.sessionStorage.removeItem(GOOGLE_OAUTH_STATE_KEY);
       if (!import.meta.env.DEV) {
-        try {
-          await warmOfflineBundle({ force: true });
-        } catch (error) {
-          console.error("Offline bundle warmup failed", error);
-        }
+        warmOfflineBundleInBackground({ force: true });
       }
 
       setStatus("loaded");

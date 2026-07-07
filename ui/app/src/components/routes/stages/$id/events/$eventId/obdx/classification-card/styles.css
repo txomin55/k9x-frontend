@@ -47,7 +47,7 @@
     display: inline-flex;
     align-items: flex-start;
     justify-content: center;
-    height: var(--unit-6);
+    height: var(--unit-3);
     line-height: 0;
     flex-shrink: 0;
 }

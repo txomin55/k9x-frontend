@@ -1,0 +1,19 @@
+.rotate-device-hint {
+    visibility: hidden;
+    width: var(--unit-4);
+    height: var(--unit-4);
+    line-height: 0;
+    flex-shrink: 0;
+}
+
+.rotate-device-hint img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+@media (max-width: 549px) {
+    .rotate-device-hint {
+        visibility: visible;
+    }
+}
