@@ -1,5 +1,6 @@
 import { Badge } from "@kobalte/core/badge";
 import type { AtomBadgeProps } from "@lib/components/atoms/badge/AtomBadge.types";
+import { getTagColorStyle } from "@lib/utils/tagColor";
 import "./styles.css";
 
 export const BADGE_TYPES = {
@@ -18,7 +19,12 @@ export default function (props: AtomBadgeProps) {
         "atom-badge--pulse": props.pulse,
         "atom-badge--dot": props.dotMode,
       }}
-      data-variant={props.type}
+      data-variant={props.colorByLabel ? "tag" : props.type}
+      style={
+        props.colorByLabel && props.textValue
+          ? getTagColorStyle(props.textValue)
+          : undefined
+      }
       textValue={props.textValue}
     >
       {!props.dotMode && props.children}

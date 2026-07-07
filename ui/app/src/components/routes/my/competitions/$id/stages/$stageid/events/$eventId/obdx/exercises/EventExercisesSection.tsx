@@ -107,7 +107,9 @@ export default function EventExercisesSection(
                     <p>{getExerciseName(exercise())}</p>
                     <Index each={exercise().tags}>
                       {(tag) => (
-                        <AtomBadge textValue={tag()}>{tag()}</AtomBadge>
+                        <AtomBadge textValue={tag()} colorByLabel>
+                          {tag()}
+                        </AtomBadge>
                       )}
                     </Index>
                     <p>

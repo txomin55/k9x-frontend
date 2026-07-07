@@ -6,5 +6,6 @@ export interface AtomBadgeProps {
   textValue?: string;
   pulse?: boolean;
   dotMode?: boolean;
+  colorByLabel?: boolean;
   children: JSX.Element;
 }

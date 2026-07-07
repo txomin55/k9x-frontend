@@ -50,3 +50,16 @@ export const Accent = {
     kind: "accent",
   },
 };
+
+export const ColorByLabel = {
+  render: () =>
+    renderSolid(() => (
+      <div style={{ display: "flex", gap: "4px", "flex-wrap": "wrap" }}>
+        {["1", "2", "1", "3", "2"].map((tag) => (
+          <AtomBadge textValue={tag} colorByLabel>
+            {tag}
+          </AtomBadge>
+        ))}
+      </div>
+    )),
+};

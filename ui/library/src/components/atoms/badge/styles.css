@@ -84,6 +84,18 @@
     border-color: var(--primary-400);
 }
 
+.atom-badge[data-variant="tag"] {
+    background: var(--tag-color-bg-light);
+    color: var(--tag-color-text-light);
+    border: 1px solid var(--tag-color-border-light);
+}
+
+[data-theme="dark"] .atom-badge[data-variant="tag"] {
+    background: var(--tag-color-bg-dark);
+    color: var(--tag-color-text-dark);
+    border-color: var(--tag-color-border-dark);
+}
+
 .atom-badge--dot {
     min-height: unset;
     width: 8px;

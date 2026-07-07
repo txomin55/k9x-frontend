@@ -8,7 +8,11 @@ export default function TagList(props: TagListProps) {
     <Show when={props.tags.length > 0}>
       <div class="obdx-clf__tags">
         <For each={props.tags}>
-          {(tag) => <AtomBadge textValue={tag}>{tag}</AtomBadge>}
+          {(tag) => (
+            <AtomBadge textValue={tag} colorByLabel>
+              {tag}
+            </AtomBadge>
+          )}
         </For>
       </div>
     </Show>
