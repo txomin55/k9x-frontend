@@ -113,7 +113,7 @@ export interface StageEventClassificationResponseDTO {
 }
 
 export interface StageEventClassificationItemResponseDTO {
-  country: string;
+  country: IdNameDTO;
   dog: IdNameDTO;
   exercises: StageEventClassificationExerciseScoresResponseDTO[];
   identity: string;

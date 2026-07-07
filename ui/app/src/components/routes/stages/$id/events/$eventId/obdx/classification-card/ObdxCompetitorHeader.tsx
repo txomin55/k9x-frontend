@@ -21,7 +21,7 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
         <span class="obdx-clf__dog text-heading-xs">
           <Show when={props.competitor.country}>
             <CountryFlag
-              country={props.competitor.country}
+              country={props.competitor.country.id}
               width={16}
               height={16}
             />

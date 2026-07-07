@@ -260,7 +260,7 @@ function EventClassificationPage() {
         const row = info.getValue<StageEventClassificationItemResponseDTO>();
         return (
           <div class="obdx-clf-table__dog">
-            <CountryFlag country={row.country} width={20} height={20} />
+            <CountryFlag country={row.country.id} width={20} height={20} />
             <span>{row.dog.name}</span>
             <Show when={row.bih}>
               <BihIndicator />

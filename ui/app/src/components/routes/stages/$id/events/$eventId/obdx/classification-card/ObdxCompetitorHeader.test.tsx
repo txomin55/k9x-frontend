@@ -9,7 +9,7 @@ vi.mock("@/components/common/country-flag/CountryFlag", () => ({
 const buildCompetitor = (
   overrides: Partial<StageEventClassificationItemResponseDTO> = {},
 ): StageEventClassificationItemResponseDTO => ({
-  country: "es",
+  country: { id: "es", name: "Spain" },
   dog: { id: "dog-1", name: "Koda" },
   exercises: [],
   identity: "identity",

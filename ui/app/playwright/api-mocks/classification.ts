@@ -17,7 +17,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
       {
         position: 1,
         dog: { id: "dog-1", name: "Rex" },
-        country: "ES",
+        country: { id: "ES", name: "Spain" },
         owner: "Ana Perez",
         handler: "Ana Perez",
         team: "Team Alpha",
@@ -34,7 +34,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
       {
         position: 2,
         dog: { id: "dog-2", name: "Luna" },
-        country: "FR",
+        country: { id: "FR", name: "France" },
         owner: "Marc Soler",
         handler: "Marc Soler",
         team: "Team Beta",
