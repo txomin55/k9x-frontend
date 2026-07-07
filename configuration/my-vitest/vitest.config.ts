@@ -46,8 +46,5 @@ export default defineConfig({
     },
     watch: false,
     setupFiles: ["./vitest-setup.ts"],
-    deps: {
-      registerNodeLoader: false,
-    },
   },
 } as any);

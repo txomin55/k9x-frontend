@@ -38,7 +38,7 @@ vi.mock("@lib/components/atoms/select/AtomSelect", () => ({
 }));
 
 vi.mock(
-  "@/components/routes/my/collections/$id/scores-competitor-pre-label/ScoresCompetitorPreLabel",
+  "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel",
   () => ({
     default: () => <div />,
   }),

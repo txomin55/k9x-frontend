@@ -50,3 +50,4 @@ dev-dist
 /scripts/delete_old_workflow_runs.py
 /scripts/delete_package_versions.py
 /test-results/
+.fallow/

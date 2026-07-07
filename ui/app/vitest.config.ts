@@ -23,17 +23,19 @@ export default defineConfig({
     ...restBaseTest,
     environment: "jsdom",
     watch: process.env.CI ? false : undefined,
-    deps: {
-      ...restBaseTest.deps,
-      inline: [
-        /^@lib\//,
-        /\/ui\/library\/src\//,
-        /^@kobalte\/core/,
-        /^@solidjs\//,
-        /^solid-js$/,
-        /^solid-js\//,
-      ],
-      registerNodeLoader: true,
+    server: {
+      ...restBaseTest.server,
+      deps: {
+        ...restBaseTest.server?.deps,
+        inline: [
+          /^@lib\//,
+          /\/ui\/library\/src\//,
+          /^@kobalte\/core/,
+          /^@solidjs\//,
+          /^solid-js$/,
+          /^solid-js\//,
+        ],
+      },
     },
     coverage: {
       ...restBaseTest.coverage,
