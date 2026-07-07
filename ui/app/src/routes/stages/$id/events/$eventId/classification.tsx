@@ -257,57 +257,24 @@ function EventClassificationPage() {
   // Each time the list's scroll container (re)mounts — including when
   // switching back to the list tab — the virtualizer needs a fresh resync,
   // otherwise it keeps the stale scroll offset/measurements from the
-  // previous (now detached) element.
+  // previous (now detached) element. Row sizes are measured individually
+  // by each row's own ref as it mounts, so no bulk remeasure pass is
+  // needed here (and running one against possibly-detached rowEls would
+  // corrupt the size cache for unrelated indices).
   let lastSyncedScrollEl: HTMLDivElement | undefined;
   createEffect(() => {
     const el = scrollEl();
-    console.log("[DEBUG] scrollEl effect", el, el === lastSyncedScrollEl);
     if (!el || el === lastSyncedScrollEl) return;
     lastSyncedScrollEl = el;
     queueMicrotask(() => {
-      console.log(
-        "[DEBUG] before resync, virtualItems",
-        virtualizer.getVirtualItems().map((i) => ({
-          index: i.index,
-          start: i.start,
-        })),
-        "scrollOffset",
-        (virtualizer as any).scrollOffset,
-        "totalSize",
-        virtualizer.getTotalSize(),
-      );
       updateListHeight();
       resyncVirtualizer();
-      console.log(
-        "[DEBUG] after resync, virtualItems",
-        virtualizer.getVirtualItems().map((i) => ({
-          index: i.index,
-          start: i.start,
-        })),
-        "scrollOffset",
-        (virtualizer as any).scrollOffset,
-        "totalSize",
-        virtualizer.getTotalSize(),
-      );
-      requestAnimationFrame(() => {
-        rowEls.forEach((rowEl) => virtualizer.measureElement(rowEl));
-        console.log(
-          "[DEBUG] after measure, virtualItems",
-          virtualizer.getVirtualItems().map((i) => ({
-            index: i.index,
-            start: i.start,
-          })),
-        );
-      });
     });
   });
 
   createEffect(() => {
     if (classificationQuery.data) {
-      queueMicrotask(() => {
-        updateListHeight();
-        rowEls.forEach((el) => virtualizer.measureElement(el));
-      });
+      queueMicrotask(updateListHeight);
     }
   });
 
@@ -379,7 +346,9 @@ function EventClassificationPage() {
     {
       accessorKey: "totalScore",
       header: t("STAGES.CLASSIFICATION.TOTAL"),
-      cell: (info) => info.getValue<number>() ?? "-",
+      cell: (info) => (
+        <span class="text-heading-xs">{info.getValue<number>() ?? "-"}</span>
+      ),
     },
     {
       id: "pin",
@@ -506,6 +475,18 @@ function EventClassificationPage() {
     CONTROLS_KEYS.LIST,
   );
 
+  // Pinning, expanding a card/row, and switching tabs all change how much
+  // vertical space is taken above the list, so the available height needs
+  // recalculating each time. Deferred to the next frame so it reads the
+  // layout after the DOM has actually settled.
+  createEffect(() => {
+    openIds();
+    pinnedOpenIds();
+    pinnedIds();
+    controlValue();
+    requestAnimationFrame(updateListHeight);
+  });
+
   return (
     <div class="page classification">
       <Switch
@@ -625,12 +606,12 @@ function EventClassificationPage() {
                       {
                         value: CONTROLS_KEYS.LIST,
                         text: t("STAGES.CLASSIFICATION.LIST"),
-                        content: listContent(),
+                        content: listContent,
                       },
                       {
                         value: CONTROLS_KEYS.TABLE,
                         text: t("STAGES.CLASSIFICATION.TABLE"),
-                        content: tableContent(),
+                        content: tableContent,
                       },
                     ]}
                   />

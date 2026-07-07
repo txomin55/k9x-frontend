@@ -84,16 +84,15 @@ const netFilters = netRaw === "*" ? null : String(netRaw).split(",").map((s) => 
 const token = resolveToken(args);
 if (!token) {
   console.error(
-    `No token. Pass --token <jwt>, set K9X_TOKEN, or write it to ${resolve(REPO, ".k9x-token")}`,
+    `No token found (checked --token, $K9X_TOKEN, ${resolve(REPO, ".k9x-token")}). Continuing without auth — fine for public pages, but anything behind login will 401.`,
   );
-  process.exit(2);
-}
-
-const exp = decodeExp(token);
-if (exp && exp * 1000 < Date.now()) {
-  console.error(
-    `WARNING: token appears expired (exp ${new Date(exp * 1000).toISOString()}). Continuing anyway.`,
-  );
+} else {
+  const exp = decodeExp(token);
+  if (exp && exp * 1000 < Date.now()) {
+    console.error(
+      `WARNING: token appears expired (exp ${new Date(exp * 1000).toISOString()}). Continuing anyway.`,
+    );
+  }
 }
 
 const matchesNet = (u) => netFilters === null || netFilters.some((f) => u.includes(f));
@@ -126,10 +125,12 @@ page.on("response", async (res) => {
   console.log("RES>", res.status(), res.request().method(), res.url(), body);
 });
 
-await page.addInitScript(
-  ([key, value]) => globalThis.localStorage.setItem(key, value),
-  [TOKEN_KEY, token],
-);
+if (token) {
+  await page.addInitScript(
+    ([key, value]) => globalThis.localStorage.setItem(key, value),
+    [TOKEN_KEY, token],
+  );
+}
 
 console.log(`→ opening ${url}`);
 await page.goto(url, { waitUntil: "networkidle" }).catch((e) => console.log("GOTO>", e.message));

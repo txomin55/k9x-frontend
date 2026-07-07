@@ -1,6 +1,4 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { Index, Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -37,8 +35,8 @@ export default function StageCardEventsContent(
         <div class="stage-card__events-content">
           <div class="stage-card__events-content--info">
             <DisciplineIcon disciplineId={event().discipline.id} />
-            <span>{event().name}</span>
-            <span>({event().competitors})</span>
+            <span class="text-heading-xs">{event().name}</span>
+            <span class="text-caption-sm">({event().competitors})</span>
             <AwardBadges awards={event().awards} />
           </div>
           <Show

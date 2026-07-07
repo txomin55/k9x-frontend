@@ -26,7 +26,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: var(--unit-1);
+    gap: var(--unit-025);
+    align-items: baseline;
 }
 
 .stage-info__event--header {

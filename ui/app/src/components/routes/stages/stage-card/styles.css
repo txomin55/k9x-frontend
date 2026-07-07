@@ -49,7 +49,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: flex-end;
 }
 
 .stage-card__events-content--info {

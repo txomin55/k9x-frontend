@@ -5,7 +5,11 @@ import "./styles.css";
 interface AtomSegmentedControlPropsControl {
   value: string;
   text: string;
-  content: JSX.Element;
+  // Pass a thunk instead of JSX when the content owns refs/effects that
+  // must observe a real, connected element (e.g. a virtualized list) —
+  // Solid treats a function child as a reactive getter, so it's only
+  // invoked (and its DOM created) once this tab is actually selected.
+  content: JSX.Element | (() => JSX.Element);
   disabled?: boolean;
 }
 
@@ -64,8 +68,11 @@ export function AtomSegmentedControl(props: AtomSegmentedControlProps) {
       <Switch>
         <For each={props.controls}>
           {(control) => (
+            // Solid renders a function child as a reactive getter at
+            // runtime, invoking it lazily — Match's types just don't
+            // model a zero-arg thunk, hence the cast.
             <Match when={selectedValue() === control.value}>
-              {control.content}
+              {control.content as JSX.Element}
             </Match>
           )}
         </For>

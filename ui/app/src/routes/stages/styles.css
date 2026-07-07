@@ -15,6 +15,22 @@
   overflow: visible;
 }
 
+.stages-table__name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+}
+
+.stages-table__name-row {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+}
+
+.stages-table__name-caption {
+  color: var(--text-secondary);
+}
+
 .stages-table__expander {
   display: inline-flex;
   align-items: center;

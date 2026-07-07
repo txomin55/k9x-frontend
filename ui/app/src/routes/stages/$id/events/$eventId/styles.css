@@ -53,7 +53,7 @@
     display: none;
 }
 
-@container (min-width: 700px) {
+@container (min-width: 600px) {
     .obdx-clf-table__scores {
         display: block;
     }
