@@ -36,7 +36,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   const emailError = () => validateEmail(props.draft().collectorEmail);
   const emailInvalid = () => emailTouched() && !!emailError();
 
-  const updateField = (field: "id" | "collectorEmail") => (value: string) => {
+  const updateField = (field: "collectorEmail") => (value: string) => {
     props.onDraftChange((current) =>
       current
         ? {
@@ -59,7 +59,15 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
     judgeOptions().find((option) => option.value === props.draft().id) ?? null;
 
   const handleJudgeChange = (option: AtomComboboxOption | null) => {
-    updateField("id")(option?.value ?? "");
+    props.onDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            id: option?.value ?? "",
+            name: option?.label ?? "",
+          }
+        : current,
+    );
   };
 
   const handleGoToJudges = () =>
