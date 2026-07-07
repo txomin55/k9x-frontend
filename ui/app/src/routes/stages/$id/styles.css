@@ -37,6 +37,13 @@
     gap: var(--unit-1);
 }
 
+.stage-info__event--header-info {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+    width: 100%;
+}
+
 .stage-info__event--classification,
 .stage-info__event--enrollment {
     display: flex;

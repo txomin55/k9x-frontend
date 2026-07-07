@@ -4,12 +4,14 @@ import { useI18n } from "@/stores/i18n/i18n";
 import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import ObdxExerciseDetailTable from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable";
 import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
+import { Show } from "solid-js";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 type ObdxClassificationContentProps = {
   competitor: StageEventClassificationItemResponseDTO;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  hideSquaresTotal?: boolean;
 };
 
 export default function ObdxClassificationContent(
@@ -19,10 +21,12 @@ export default function ObdxClassificationContent(
 
   return (
     <div class="obdx-clf__body">
-      <div class="obdx-clf__squares-total">
-        <ObdxExerciseSquares exercises={props.competitor.exercises} />
-        <TotalBlock value={props.competitor.totalScore ?? null} layout="inline" />
-      </div>
+      <Show when={!props.hideSquaresTotal}>
+        <div class="obdx-clf__squares-total">
+          <ObdxExerciseSquares exercises={props.competitor.exercises} />
+          <TotalBlock value={props.competitor.totalScore ?? null} layout="inline" />
+        </div>
+      </Show>
       <AtomCollapsible
         open={props.open}
         onOpenChange={props.onOpenChange}

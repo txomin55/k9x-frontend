@@ -1,33 +1,34 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
-import { useEventClassification } from "@/services/fetch-stages/fetchStages";
-import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
-import { createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import {createFileRoute, useParams} from "@tanstack/solid-router";
+import {useEventClassification} from "@/services/fetch-stages/fetchStages";
+import type {StageEventClassificationItemResponseDTO} from "@/services/fetch-stages/fetchStages.types";
+import {createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch,} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
-import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
+import PositionMedal
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
 import ObdxExerciseSquares
   from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
   isLive,
   positionTrend,
-  type TrendDirection
+  type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import { createVirtualizer } from "@tanstack/solid-virtual";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import {createVirtualizer} from "@tanstack/solid-virtual";
+import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
-import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
+import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
-import { useI18n } from "@/stores/i18n/i18n";
-import { useAuthUser } from "@/stores/auth/auth";
-import { useSearchParam, useSearchParamList } from "@/utils/search-params/useSearchParam";
-import { formatDateTime } from "@/utils/date";
-import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import {useI18n} from "@/stores/i18n/i18n";
+import {useAuthUser} from "@/stores/auth/auth";
+import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
+import {formatDateTime} from "@/utils/date";
+import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -206,7 +207,21 @@ function EventClassificationPage() {
     setListHeight(height);
   };
 
+  // @tanstack/virtual-core only measures the scroll container's rect once,
+  // at attach time. Force a detach/reattach so it captures the real height
+  // instead of the placeholder listHeight had before this measurement ran.
+  const resyncVirtualizer = () => {
+    const el = scrollEl();
+    if (!el) return;
+    const v = virtualizer as unknown as { _willUpdate: () => void };
+    setScrollEl(undefined);
+    v._willUpdate();
+    setScrollEl(el);
+    v._willUpdate();
+  };
+
   onMount(() => {
+    updateListHeight();
     window.addEventListener("resize", updateListHeight);
     window.addEventListener("scroll", updateListHeight, { passive: true });
     onCleanup(() => {
@@ -227,10 +242,15 @@ function EventClassificationPage() {
     overscan: OVERSCAN,
   });
 
+  let hasResyncedVirtualizer = false;
   createEffect(() => {
     if (classificationQuery.data) {
       queueMicrotask(() => {
         updateListHeight();
+        if (!hasResyncedVirtualizer) {
+          hasResyncedVirtualizer = true;
+          resyncVirtualizer();
+        }
         rowEls.forEach((el) => virtualizer.measureElement(el));
       });
     }
@@ -320,7 +340,10 @@ function EventClassificationPage() {
 
   const listContent = () => (
     <div
-      ref={setScrollEl}
+      ref={(el) => {
+        setScrollEl(el);
+        updateListHeight();
+      }}
       style={{
         height: `${listHeight()}px`,
         "overflow-y": "auto",
@@ -349,17 +372,7 @@ function EventClassificationPage() {
                       el.setAttribute("data-index", String(index));
                       rowEls.set(index, el);
                       virtualizer.measureElement(el);
-                      let raf = 0;
-                      const ro = new ResizeObserver(() => {
-                        cancelAnimationFrame(raf);
-                        raf = requestAnimationFrame(() =>
-                          virtualizer.measureElement(el),
-                        );
-                      });
-                      ro.observe(el);
                       onCleanup(() => {
-                        cancelAnimationFrame(raf);
-                        ro.disconnect();
                         if (rowEls.get(index) === el) rowEls.delete(index);
                       });
                     }}
@@ -404,6 +417,7 @@ function EventClassificationPage() {
             competitor={row.original}
             open={isOpen(row.original.dog.id)}
             onOpenChange={(open) => setOpen(row.original.dog.id, open)}
+            hideSquaresTotal
           />
         )}
       />
@@ -434,22 +448,31 @@ function EventClassificationPage() {
           {(classification) => (
             <>
               <div class="classification__header">
-                <span class="text-caption-md">
-                  {t("STAGES.CLASSIFICATION.LAST_UPDATED")}{" "}
-                  {formatDateTime(classification().lastUpdated)}
-                </span>
-              </div>
-              <div class="classification__sub-header">
-                <DisciplineIcon disciplineId={classification().discipline.id} />
-                <span class="text-caption-md">
-                  {classification().configuration.name}
-                </span>
+                <div>
+                  <DisciplineIcon
+                    disciplineId={classification().discipline.id}
+                  />
+                  <span class="text-caption-md">
+                    {classification().configuration.name}
+                  </span>
+                </div>
+
+                <div>
+                  <span class="text-caption-sm">
+                    {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
+                  </span>
+                  <span class="text-caption-md">
+                    {formatDateTime(classification().lastUpdated)}
+                  </span>
+                </div>
               </div>
               <Show when={classification().obdx}>
                 {(obdx) => (
                   <div class="classification__score-calculation">
+                    <span class="text-caption-sm">
+                      {t("STAGES.CLASSIFICATION.SCORE_CALCULATION")}
+                    </span>
                     <span class="text-caption-md">
-                      {t("STAGES.CLASSIFICATION.SCORE_CALCULATION")}{": "}
                       {t(
                         `MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_${obdx().scoreCalculation}`,
                       )}
@@ -459,8 +482,10 @@ function EventClassificationPage() {
               </Show>
               <Show when={classification().obdx?.judges?.length}>
                 <div class="classification__judges">
+                  <span class="text-caption-sm">
+                    {t("STAGES.CLASSIFICATION.JUDGES")}
+                  </span>
                   <span class="text-caption-md">
-                    {t("STAGES.CLASSIFICATION.JUDGES")}{": "}
                     {classification()
                       .obdx?.judges.map((judge) => judge.name)
                       .join(", ")}
