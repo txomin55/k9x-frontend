@@ -1,5 +1,4 @@
 import { createResource, createSignal, Show } from "solid-js";
-import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
 const flagLoaders = import.meta.glob<string>("/src/assets/flags/*.svg", {
@@ -8,8 +7,14 @@ const flagLoaders = import.meta.glob<string>("/src/assets/flags/*.svg", {
   query: "?url",
 });
 
-const normalizeCountry = (country?: string) =>
-  country?.trim().toLowerCase() ?? "";
+const countryAliases: Record<string, string> = {
+  en: "gb",
+};
+
+const normalizeCountry = (country?: string) => {
+  const normalized = country?.trim().toLowerCase() ?? "";
+  return countryAliases[normalized] ?? normalized;
+};
 
 export default function CountryFlag(props: {
   alt?: string;
@@ -17,41 +22,35 @@ export default function CountryFlag(props: {
   height?: number;
   width?: number;
 }) {
-  const i18n = useI18n();
   const country = () => normalizeCountry(props.country);
-  const loadFlag = () => flagLoaders[`/src/assets/flags/${country()}.svg`];
+  const loadFlag = () =>
+    flagLoaders[`/src/assets/flags/${country()}.svg`] ??
+    flagLoaders["/src/assets/flags/unknown.svg"];
 
   const [src] = createResource(loadFlag, (load) => load());
   const [failed, setFailed] = createSignal(false);
 
   return (
-    <Show
-      when={loadFlag()}
-      fallback={<span>{i18n.t("COMMON.COUNTRY_FLAG.NA")}</span>}
+    <div
+      class="country-flag"
+      style={{
+        height: `${props.height ?? 16}px`,
+        width: `${props.width ?? 16}px`,
+      }}
     >
-      <div
-        class="country-flag"
-        style={{
-          height: `${props.height ?? 16}px`,
-          width: `${props.width ?? 16}px`,
-        }}
+      <Show
+        when={src() && !failed()}
+        fallback={
+          <span class="country-flag__fallback">{country().toUpperCase()}</span>
+        }
       >
-        <Show
-          when={src() && !failed()}
-          fallback={
-            <span class="country-flag__fallback">
-              {country().toUpperCase()}
-            </span>
-          }
-        >
-          <img
-            class="country-flag__img"
-            alt={props.alt ?? `${country()} flag`}
-            src={src()}
-            onError={() => setFailed(true)}
-          />
-        </Show>
-      </div>
-    </Show>
+        <img
+          class="country-flag__img"
+          alt={props.alt ?? `${country()} flag`}
+          src={src()}
+          onError={() => setFailed(true)}
+        />
+      </Show>
+    </div>
   );
 }

@@ -33,7 +33,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
     createSignal(false);
 
   const localeOptions: AtomSelectOption[] = i18n.locales.map((locale) => ({
-    label: locale.toUpperCase(),
+    label: locale,
     value: locale,
     preLabel: <CountryFlag country={LOCALE_COUNTRIES[locale]} />,
   }));
