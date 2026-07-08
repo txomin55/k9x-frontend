@@ -18,6 +18,7 @@ import {
 import type { CollectionResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { translate } from "@/stores/i18n/i18n";
 import { COMPETITOR_STATUS } from "@/utils/event";
+import { oneWeekFromNow } from "@/utils/date";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
   getConfigurationsFromCache
@@ -267,7 +268,7 @@ const mergeApiEventWithPayload = (
     enrollmentDeadline:
       updatePayload?.enrollmentDeadline ??
       previousEvent?.enrollmentDeadline ??
-      0,
+      oneWeekFromNow(),
     exercises:
       updatePayload?.exercises?.map((exercise) =>
         toApiExercise(

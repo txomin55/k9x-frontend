@@ -62,6 +62,10 @@ export function dayBefore(timestamp: number) {
   return timestamp - ONE_DAY_IN_MS;
 }
 
+export function oneWeekFromNow() {
+  return Date.now() + 7 * ONE_DAY_IN_MS;
+}
+
 export function formatDateLabel(value: string) {
   if (!value) return translate("COMMON.DATE.NO_DATE");
 

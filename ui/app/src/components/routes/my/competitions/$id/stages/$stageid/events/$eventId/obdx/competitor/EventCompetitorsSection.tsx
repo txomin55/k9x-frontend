@@ -6,6 +6,7 @@ import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
@@ -167,7 +168,10 @@ export default function EventCompetitorsSection(
                       </p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
                       <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
-                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}: ${details().country}`}</p>
+                      <span class="event-competitors-section__competitors--country">
+                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}:
+                        <CountryFlag country={details().country} width={20} height={20} />
+                      </span>
                     </div>
                   }
                   actions={
