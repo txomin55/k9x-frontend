@@ -1,35 +1,29 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
-import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useDogs } from "@/services/secured/dog-crud/dogCrud";
-import { createMemo, createSignal, For, Index, Show } from "solid-js";
-import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
+import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
+import {useStageById} from "@/services/fetch-stages/fetchStages";
+import {useDogs} from "@/services/secured/dog-crud/dogCrud";
+import {createMemo, createSignal, For, Index, Show} from "solid-js";
+import {formatDateLabel, toDateInputValue} from "@/utils/date";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { useAuthUser } from "@/stores/auth/auth";
-import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
-import { useI18n } from "@/stores/i18n/i18n";
+import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
+import {useAuthUser} from "@/stores/auth/auth";
+import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
+import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
+import {useI18n} from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
-import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import {useSearchParam} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
-import { isStageLive } from "@/utils/stage";
-import { canSeeClassification } from "@/utils/event";
-import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import {isStageLive} from "@/utils/stage";
+import {canSeeClassification} from "@/utils/event";
+import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 
 export const Route = createFileRoute("/stages/$id/info")({
@@ -268,6 +262,7 @@ function StageInfoPage() {
       >
         {(stage) => (
           <>
+            <span class="text-body-md">{stage().competitionName}</span>
             <div class="stage-info__title">
               <Show when={stage().status && isStageLive(stage().status!)}>
                 <div class="stage-info__title--status">
@@ -276,9 +271,8 @@ function StageInfoPage() {
               </Show>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
-            <span class="text-body-md">{stage().competitionName}</span>
+            <span class="text-caption-lg">{stage().address}</span>
             <span class="text-caption-md">{stage().organizer}</span>
-            <span class="text-body-md">{stage().address}</span>
 
             <AtomTabs
               defaultValue={TABS.EVENTS}
