@@ -22,10 +22,9 @@ import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { isOrganizer } from "@/stores/auth/auth";
 import { generateEntityId } from "@/utils/id/generateEntityId";
+import { COMPETITION_STATUS } from "@/utils/competition";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-
-const DRAFT_COMPETITION_STATUS = "draft";
 
 export const COMPETITIONS_SNAPSHOT_ID = "competitions";
 
@@ -123,7 +122,7 @@ const mergeCompetitionWithPayload = (
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications ?? [],
     stages: previousCompetition?.stages ?? [],
-    status: previousCompetition?.status ?? DRAFT_COMPETITION_STATUS,
+    status: previousCompetition?.status ?? COMPETITION_STATUS.DRAFT,
   };
 };
 

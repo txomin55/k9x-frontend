@@ -1,12 +1,17 @@
 .classification__header {
     display: flex;
-    gap: var(--unit-1);
+    flex-direction: column;
+    gap: var(--unit-05);
+}
+
+.classification__header--info {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
 
-.classification__header > div {
+.classification__header--info > div {
     display: flex;
     gap: var(--unit-1);
     align-items: center;

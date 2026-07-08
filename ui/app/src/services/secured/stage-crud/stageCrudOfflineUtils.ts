@@ -50,9 +50,27 @@ const toCompetitionDetailStage = (
     })),
     id: stage.id,
     name: stage.name,
-    status: stage.status ?? STAGE_STATUS.CREATED,
+    status: stage.status ?? STAGE_STATUS.DRAFT,
   };
 };
+
+const promoteStageToCreated = (
+  competitions: CompetitionResponseDTO[],
+  competitionId: string,
+  stageId: string,
+): CompetitionResponseDTO[] =>
+  competitions.map((competition) =>
+    String(competition.id) === String(competitionId)
+      ? {
+          ...competition,
+          stages: (competition.stages ?? []).map((stage) =>
+            String(stage.id) === String(stageId)
+              ? { ...stage, status: STAGE_STATUS.CREATED }
+              : stage,
+          ),
+        }
+      : competition,
+  );
 
 const buildNextCompetitionDetail = (
   competition: CompetitionResponseDTO,
@@ -241,7 +259,10 @@ export const commitApiStageMutationSuccess = async ({
     return;
   }
 
-  const visibleCompetitions = getVisibleCompetitions();
+  const visibleCompetitions =
+    method === "POST"
+      ? promoteStageToCreated(getVisibleCompetitions(), competitionId, stageId)
+      : getVisibleCompetitions();
 
   if (method === "DELETE") {
     queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(

@@ -413,25 +413,27 @@ function EventClassificationPage() {
           {(classification) => (
             <>
               <div class="classification__header">
-                <div>
-                  <span class="text-caption-lg">
-                    {classification().competitionName}
-                  </span>
-                  <DisciplineIcon
-                    disciplineId={classification().discipline.id}
-                  />
-                  <span class="text-caption-md">
-                    {classification().configuration.name}
-                  </span>
-                </div>
+                <span class="text-caption-lg">
+                  {classification().competitionName}
+                </span>
+                <div class="classification__header--info">
+                  <div>
+                    <DisciplineIcon
+                      disciplineId={classification().discipline.id}
+                    />
+                    <span class="text-caption-md">
+                      {classification().configuration.name}
+                    </span>
+                  </div>
 
-                <div>
-                  <span class="text-caption-sm">
-                    {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
-                  </span>
-                  <span class="text-caption-md">
-                    {formatDateTime(classification().lastUpdated)}
-                  </span>
+                  <div>
+                    <span class="text-caption-sm">
+                      {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
+                    </span>
+                    <span class="text-caption-md">
+                      {formatDateTime(classification().lastUpdated)}
+                    </span>
+                  </div>
                 </div>
               </div>
               <Show when={classification().obdx}>

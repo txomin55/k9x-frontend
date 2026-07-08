@@ -1,4 +1,5 @@
 export const STAGE_STATUS = {
+  DRAFT: "DRAFT",
   CREATED: "CREATED",
   TO_START: "TO_START",
   STARTED: "STARTED",

@@ -23,6 +23,33 @@ import {
 import { ApiEventRollbackPayload, EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
+import { EVENT_STATUS } from "@/utils/event";
+
+const promoteEventToCreated = (
+  competitions: CompetitionResponseDTO[],
+  competitionId: string,
+  stageId: string,
+  eventId: string,
+): CompetitionResponseDTO[] =>
+  competitions.map((competition) =>
+    String(competition.id) === String(competitionId)
+      ? {
+          ...competition,
+          stages: competition.stages?.map((stage) =>
+            String(stage.id) === String(stageId)
+              ? {
+                  ...stage,
+                  events: stage.events.map((event) =>
+                    String(event.id) === String(eventId)
+                      ? { ...event, status: EVENT_STATUS.CREATED }
+                      : event,
+                  ),
+                }
+              : stage,
+          ),
+        }
+      : competition,
+  );
 
 const buildNextStageDetail = (
   stage: CompetitionStageDetailResponseDTO,
@@ -260,7 +287,15 @@ export const commitApiEventMutationSuccess = async ({
   payload?: unknown;
   stageId: string;
 }) => {
-  const visibleCompetitions = getVisibleCompetitions();
+  const visibleCompetitions =
+    method === "POST"
+      ? promoteEventToCreated(
+          getVisibleCompetitions(),
+          competitionId,
+          stageId,
+          eventId,
+        )
+      : getVisibleCompetitions();
 
   if (method === "DELETE") {
     queryClient.setQueryData<CompetitionResponseDTO[] | undefined>(
@@ -274,6 +309,21 @@ export const commitApiEventMutationSuccess = async ({
         ),
     );
   } else if (method === "POST" || method === "PUT") {
+    if (method === "POST") {
+      const cachedEvent = queryClient.getQueryData<EventDetailResponseDTO>(
+        getEventByIdQueryKey(eventId),
+      );
+
+      if (cachedEvent) {
+        const nextCore = { ...cachedEvent.obdx, status: EVENT_STATUS.CREATED };
+
+        queryClient.setQueryData(getEventByIdQueryKey(eventId), {
+          ...nextCore,
+          obdx: nextCore,
+        });
+      }
+    }
+
     queryClient.setQueryData<CompetitionResponseDTO[]>(
       getCompetitionsQueryKey(),
       visibleCompetitions,

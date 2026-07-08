@@ -22,6 +22,7 @@ import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configuration
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { translate } from "@/stores/i18n/i18n";
 import { generateEntityId } from "@/utils/id/generateEntityId";
+import { STAGE_STATUS } from "@/utils/stage";
 
 const createId = () => generateEntityId("stage");
 
@@ -41,6 +42,7 @@ const mergeApiStageWithPayload = (
     events: previousStage?.events ?? [],
     id: nextStageId,
     name: payload.name ?? previousStage?.name ?? "",
+    status: previousStage?.status ?? STAGE_STATUS.DRAFT,
   };
 };
 

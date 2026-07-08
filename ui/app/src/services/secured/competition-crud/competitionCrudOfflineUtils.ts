@@ -28,6 +28,17 @@ import {
   upsertCompetitionDraft,
 } from "@/services/secured/competition-crud/competitionDraftStore";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
+import { COMPETITION_STATUS } from "@/utils/competition";
+
+const promoteCompetitionToCreated = (
+  competitions: CompetitionResponseDTO[],
+  id: string,
+) =>
+  competitions.map((competition) =>
+    competition.id === id
+      ? { ...competition, status: COMPETITION_STATUS.CREATED }
+      : competition,
+  );
 
 export const buildCompetitionsWithoutEntity = (
   previousCompetitions: CompetitionResponseDTO[],
@@ -64,7 +75,10 @@ export const commitCompetitionMutationSuccess = async ({
   method: PendingTaskMethod;
   payload?: unknown;
 }) => {
-  const visibleCompetitions = getVisibleCompetitions();
+  const visibleCompetitions =
+    method === "POST"
+      ? promoteCompetitionToCreated(getVisibleCompetitions(), entityId)
+      : getVisibleCompetitions();
 
   if (method === "DELETE") {
     syncCompetitionRemovalToCache(entityId);
