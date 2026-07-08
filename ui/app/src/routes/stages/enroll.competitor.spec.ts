@@ -48,7 +48,7 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
             owner: dog.owner,
             team: dog.team,
             country: dog.country,
-            breed: dog.breed,
+            breed: dog.breed.name,
           });
         }
         await route.fulfill({ status: 204, body: "" });

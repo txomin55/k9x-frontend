@@ -85,7 +85,7 @@ export default function CompetitorEditorForm(
             ...current,
             dogId: option?.value ?? "",
             name: dog?.name ?? "",
-            breed: dog?.breed ?? "",
+            breed: dog?.breed.name ?? "",
             identity: dog?.identity ?? "",
             country: dog?.country.id ?? "",
             team: dog?.team ?? "",
@@ -151,7 +151,7 @@ export default function CompetitorEditorForm(
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
-              <span>{selectedDog(draft().dogId)?.breed ?? draft().breed}</span>
+              <span>{selectedDog(draft().dogId)?.breed.name ?? draft().breed}</span>
             </span>
             <div class="competitor-editor-form__info--handler">
               <span class="text-caption-md">

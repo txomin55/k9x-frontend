@@ -41,7 +41,7 @@ const buildOptimisticCompetitor = (
   handler: dog.handler,
   team: dog.team,
   country: dog.country.id,
-  breed: dog.breed,
+  breed: dog.breed.name,
 });
 
 const buildNextStage = (

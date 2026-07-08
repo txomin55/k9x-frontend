@@ -21,6 +21,7 @@ import {
 } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 import { getCachedCountries } from "@/services/secured/country-crud/countryCrud";
+import { getCachedBreeds } from "@/services/secured/breed-crud/breedCrud";
 
 const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
@@ -139,7 +140,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   id: draftDog.id,
   name: draftDog.name,
   image: draftDog.image,
-  breed: draftDog.breed,
+  breed: draftDog.breed.id,
   identity: draftDog.identity,
   owner: draftDog.owner,
   handler: draftDog.handler,
@@ -179,6 +180,9 @@ const updateDogProjection = (
 ): Dog => ({
   ...existingDog,
   ...payload,
+  breed:
+    getCachedBreeds()?.find((breed) => breed.id === payload.breed) ??
+    { ...existingDog.breed, id: payload.breed },
   country:
     getCachedCountries()?.find((country) => country.id === payload.country) ??
     { ...existingDog.country, id: payload.country },

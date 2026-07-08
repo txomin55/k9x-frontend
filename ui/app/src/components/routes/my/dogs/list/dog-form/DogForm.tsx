@@ -81,7 +81,7 @@ export default function DogForm(props: DogFormProps) {
 
   const selectedBreedOption = () =>
     BREED_SELECT_OPTIONS().find(
-      (breedOption) => breedOption.value === props.draft().breed,
+      (breedOption) => breedOption.value === props.draft().breed.id,
     ) ?? null;
 
   const selectedSexOption = () =>
@@ -108,7 +108,7 @@ export default function DogForm(props: DogFormProps) {
       owner: owned ? (user()?.email ?? "") : "",
     }));
 
-  const updateBreed = (breed: string) =>
+  const updateBreed = (breed: IdNameDTO) =>
     props.onDraftChange((current) => ({
       ...current,
       breed,
@@ -193,7 +193,9 @@ export default function DogForm(props: DogFormProps) {
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
         placeholder={i18n.t("MY.DOGS.DOG_FORM.SELECT_BREED")}
-        onChange={(option) => updateBreed(option?.value ?? "")}
+        onChange={(option) =>
+          updateBreed({ id: option?.value ?? "", name: option?.label ?? "" })
+        }
         options={BREED_SELECT_OPTIONS()}
         value={selectedBreedOption()}
       />

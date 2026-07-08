@@ -41,7 +41,7 @@ function MyDogsListPage() {
 	const buildDogDraft = (isOrganizer: boolean): Dog => ({
 		id: "",
 		name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
-		breed: i18n.t("MY.DOGS.LIST.DEFAULT_BREED"),
+		breed: { id: "", name: i18n.t("MY.DOGS.LIST.DEFAULT_BREED") },
 		owned: !isOrganizer,
 		identity: "",
 		image: "",
@@ -134,7 +134,7 @@ function MyDogsListPage() {
 			updateDog(currentEditingDogId, {
 				name: payload.name,
 				image: payload.image,
-				breed: payload.breed,
+				breed: payload.breed.id,
 				identity: payload.identity,
 				owner: payload.owner,
 				handler: payload.handler,

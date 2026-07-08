@@ -6,7 +6,7 @@ export interface Dog {
   id: string;
   name: string;
   image: string;
-  breed: string;
+  breed: IdNameDTO;
   identity: string;
   owner: string;
   handler: string;

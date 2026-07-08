@@ -23,7 +23,7 @@ export default function DogCard(props: DogCardProps) {
           <SexIcon sex={props.dog.sex} />
         </div>
       }
-      topRight={<span class="dog-card__breed">{props.dog.breed}</span>}
+      topRight={<span class="dog-card__breed">{props.dog.breed.name}</span>}
       description={<span class="text-body-md">{props.dog.identity}</span>}
       content={
         <Show when={props.dog.image}>

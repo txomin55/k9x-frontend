@@ -70,7 +70,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
           handler: seedDog.handler,
           country: seedDog.country.id,
           status: "ENROLLED",
-          breed: seedDog.breed,
+          breed: seedDog.breed.name,
         },
       ],
     },
@@ -193,7 +193,7 @@ const applyEventUpdate = (
           (competitor.accepted
             ? COMPETITOR_STATUS.ENROLLED
             : COMPETITOR_STATUS.PENDING_ENROLL_ACCEPT),
-        breed: dog?.breed ?? existing?.breed ?? "",
+        breed: dog?.breed.name ?? existing?.breed ?? "",
       };
     }),
   };

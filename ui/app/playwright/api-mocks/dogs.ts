@@ -1,13 +1,23 @@
 import type { Page } from "@playwright/test";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import { defaultBreeds } from "@test/api-mocks/breeds";
+
+const resolveBreed = (payload: Record<string, unknown>) => {
+  if (typeof payload.breed !== "string") return payload;
+  const breed = defaultBreeds.find(({ id }) => id === payload.breed) ?? {
+    id: payload.breed,
+    name: payload.breed,
+  };
+  return { ...payload, breed };
+};
 
 export const defaultDogs: Dog[] = [
   {
     id: "dog-1",
     name: "Luna",
     image: "https://images.example.test/dogs/dog-1.png",
-    breed: "Border Collie",
+    breed: { id: "border-collie", name: "Border Collie" },
     identity: "ES-DOG-1",
     owner: "Carlos Competitor",
     handler: "Carlos Competitor",
@@ -22,7 +32,7 @@ export const defaultDogs: Dog[] = [
     id: "dog-2",
     name: "Koda",
     image: "https://images.example.test/dogs/dog-2.png",
-    breed: "Labrador",
+    breed: { id: "labrador", name: "Labrador" },
     identity: "ES-DOG-2",
     owner: "Carlos Competitor",
     handler: "Carlos Competitor",
@@ -53,7 +63,7 @@ export const setupDogsCrud = (page: Page) => {
     setRouteResponses(page, {
       method: "POST",
       payload: (_match, request) => {
-        dogs.push(request.postDataJSON());
+        dogs.push(resolveBreed(request.postDataJSON()));
         return "";
       },
       pathname: "/secured/dogs",
@@ -63,7 +73,7 @@ export const setupDogsCrud = (page: Page) => {
       method: "PUT",
       payload: (match, request) => {
         const index = indexOf(match?.[1]);
-        const update = request.postDataJSON();
+        const update = resolveBreed(request.postDataJSON());
         dogs[index] = { ...dogs[index], ...update };
         return "";
       },
