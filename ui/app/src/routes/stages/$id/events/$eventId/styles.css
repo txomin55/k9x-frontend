@@ -118,6 +118,13 @@
     min-width: 0;
 }
 
+.obdx-clf__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+    padding-top: var(--unit-1);
+}
+
 .obdx-clf__pinned {
     padding-top: var(--unit-1);
     display: grid;

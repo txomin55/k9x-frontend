@@ -14,7 +14,6 @@ import {
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import {createVirtualizer} from "@tanstack/solid-virtual";
 import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
@@ -63,7 +62,6 @@ function EventClassificationPage() {
   );
 
   const ITEM_HEIGHT = 220;
-  const OVERSCAN = 5;
   const MAX_VIEWPORT_ITEMS = 6;
 
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
@@ -98,8 +96,6 @@ function EventClassificationPage() {
     if (!ids.size) return competitors();
     return competitors().filter((competitor) => ids.has(competitor.dog.id));
   });
-
-  const rowEls = new Map<number, HTMLDivElement>();
 
   let previousPositions = new Map<string, number>();
   let previousTrends = new Map<string, TrendDirection>();
@@ -210,28 +206,6 @@ function EventClassificationPage() {
     setListHeight(height);
   };
 
-  // @tanstack/virtual-core only measures the scroll container's rect once,
-  // at attach time. Force a detach/reattach so it captures the real height
-  // instead of the placeholder listHeight had before this measurement ran.
-  const resyncVirtualizer = () => {
-    const el = scrollEl();
-    if (!el) return;
-    const v = virtualizer as unknown as {
-      _willUpdate: () => void;
-      scrollOffset: number | null;
-    };
-    setScrollEl(undefined);
-    v._willUpdate();
-    // The virtualizer keeps its scrollOffset across detach/reattach, so
-    // reattaching to a fresh (scrollTop: 0) container — e.g. after
-    // switching back to the list tab — would jump straight to wherever it
-    // was scrolled before, instead of the top.
-    v.scrollOffset = 0;
-    el.scrollTop = 0;
-    setScrollEl(el);
-    v._willUpdate();
-  };
-
   onMount(() => {
     updateListHeight();
     window.addEventListener("resize", updateListHeight);
@@ -239,36 +213,6 @@ function EventClassificationPage() {
     onCleanup(() => {
       window.removeEventListener("resize", updateListHeight);
       window.removeEventListener("scroll", updateListHeight);
-    });
-  });
-
-  const virtualizer = createVirtualizer({
-    get count() {
-      return filteredCompetitors().length;
-    },
-    getScrollElement: () => scrollEl() ?? null,
-    getItemKey: (index) =>
-      `classification_${params().id}_${params().eventId}_${index}`,
-    estimateSize: () => ITEM_HEIGHT,
-    initialRect: { width: 0, height: ITEM_HEIGHT * MAX_VIEWPORT_ITEMS },
-    overscan: OVERSCAN,
-  });
-
-  // Each time the list's scroll container (re)mounts — including when
-  // switching back to the list tab — the virtualizer needs a fresh resync,
-  // otherwise it keeps the stale scroll offset/measurements from the
-  // previous (now detached) element. Row sizes are measured individually
-  // by each row's own ref as it mounts, so no bulk remeasure pass is
-  // needed here (and running one against possibly-detached rowEls would
-  // corrupt the size cache for unrelated indices).
-  let lastSyncedScrollEl: HTMLDivElement | undefined;
-  createEffect(() => {
-    const el = scrollEl();
-    if (!el || el === lastSyncedScrollEl) return;
-    lastSyncedScrollEl = el;
-    queueMicrotask(() => {
-      updateListHeight();
-      resyncVirtualizer();
     });
   });
 
@@ -390,62 +334,25 @@ function EventClassificationPage() {
         setScrollEl(el);
         updateListHeight();
       }}
+      class="obdx-clf__list"
       style={{
         height: `${listHeight()}px`,
         "overflow-y": "auto",
       }}
     >
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          position: "relative",
-          width: "100%",
-        }}
-      >
-        <For each={virtualizer.getVirtualItems()}>
-          {(virtualRow) => {
-            if (!virtualRow) return null;
-
-            const competitor = () => filteredCompetitors()[virtualRow.index];
-
-            return (
-              <Show when={competitor()}>
-                {(item) => (
-                  <div
-                    data-index={virtualRow.index}
-                    ref={(el) => {
-                      const index = virtualRow.index;
-                      el.setAttribute("data-index", String(index));
-                      rowEls.set(index, el);
-                      virtualizer.measureElement(el);
-                      onCleanup(() => {
-                        if (rowEls.get(index) === el) rowEls.delete(index);
-                      });
-                    }}
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      left: "0",
-                      right: "0",
-                      transform: `translateY(${virtualRow.start}px)`,
-                    }}
-                  >
-                    <ObdxClassificationCard
-                      competitor={item()}
-                      trend={trends().get(item().dog.id)}
-                      pinned={isPinned(item().dog.id)}
-                      pinDisabled={liveIds().has(item().dog.id)}
-                      onTogglePin={() => togglePin(item().dog.id)}
-                      open={isOpen(item().dog.id)}
-                      onOpenChange={(open) => setOpen(item().dog.id, open)}
-                    />
-                  </div>
-                )}
-              </Show>
-            );
-          }}
-        </For>
-      </div>
+      <For each={filteredCompetitors()}>
+        {(item) => (
+          <ObdxClassificationCard
+            competitor={item}
+            trend={trends().get(item.dog.id)}
+            pinned={isPinned(item.dog.id)}
+            pinDisabled={liveIds().has(item.dog.id)}
+            onTogglePin={() => togglePin(item.dog.id)}
+            open={isOpen(item.dog.id)}
+            onOpenChange={(open) => setOpen(item.dog.id, open)}
+          />
+        )}
+      </For>
     </div>
   );
 

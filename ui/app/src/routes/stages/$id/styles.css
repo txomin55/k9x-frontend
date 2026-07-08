@@ -66,9 +66,14 @@
 
 .stage-info__competitor {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: row;
     gap: var(--unit-1);
     align-items: baseline;
+}
+
+.stage-info__competitor--info {
+    display: flex;
+    flex-direction: column;
 }
 
 .stage-info__enroll-form {
