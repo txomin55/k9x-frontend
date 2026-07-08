@@ -414,6 +414,9 @@ function EventClassificationPage() {
             <>
               <div class="classification__header">
                 <div>
+                  <span class="text-caption-lg">
+                    {classification().competitionName}
+                  </span>
                   <DisciplineIcon
                     disciplineId={classification().discipline.id}
                   />

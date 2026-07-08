@@ -2,6 +2,7 @@ import type { StageEventClassificationResponseDTO } from "@/services/fetch-stage
 
 export const defaultClassification: StageEventClassificationResponseDTO = {
   event: { id: "stage-latest-event-1", name: "Agility Standard" },
+  competitionName: "Valencia Autumn Trial",
   discipline: { id: "disc-1", name: "Agility" },
   stage: { id: "stage-latest", name: "Valencia Autumn Trial" },
   configuration: { id: "config-1", name: "Standard" },

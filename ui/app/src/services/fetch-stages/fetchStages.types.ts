@@ -107,6 +107,7 @@ interface ObdxStageEventClassificationResponseDTO {
 }
 export interface StageEventClassificationResponseDTO {
   event: IdNameDTO;
+  competitionName: string;
   discipline: IdNameDTO;
   stage: IdNameDTO;
   configuration: IdNameDTO;

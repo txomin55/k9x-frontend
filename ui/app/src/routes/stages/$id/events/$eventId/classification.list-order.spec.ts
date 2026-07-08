@@ -44,6 +44,7 @@ const makeCompetitor = (
 
 const manyCompetitors: StageEventClassificationResponseDTO = {
   event: { id: "evt-1", name: "Qualification 1" },
+  competitionName: "Qualifications",
   discipline: { id: "disc-1", name: "OBDX" },
   stage: { id: "stage-1", name: "Qualifications" },
   configuration: { id: "config-1", name: "FCI Grade 3" },
