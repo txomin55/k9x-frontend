@@ -97,6 +97,12 @@ function CompetitionObdxEventDetailBody(props: {
     COMPETITORS: "COMPETITORS",
   };
 
+  const hasConfiguration = createMemo(() =>
+    Boolean(draftEvent().configuration.id),
+  );
+
+  const canEditDetails = createMemo(() => isEditing() && hasConfiguration());
+
   const MID_AVG_MIN_JUDGES = 4;
 
   const hasEnoughJudgesForMidAvg = createMemo(
@@ -319,6 +325,7 @@ function CompetitionObdxEventDetailBody(props: {
     nextName = name(),
   ) => {
     if (!isEditing()) return;
+    if (!nextDraftEvent.configuration.id) return;
 
     const externalEvent = props.event();
     const nextEvent: EventEditorDraft = {
@@ -699,6 +706,8 @@ function CompetitionObdxEventDetailBody(props: {
   };
 
   const handleAcceptCompetitor = (dogId: string) => {
+    if (!hasConfiguration()) return;
+
     const nextDraftEvent = updateDraftEvent((current) => ({
       ...current,
       competitors: current.competitors.map((entry) =>
@@ -715,6 +724,8 @@ function CompetitionObdxEventDetailBody(props: {
   };
 
   const handleMarkCompetitorNotCompeting = (dogId: string) => {
+    if (!hasConfiguration()) return;
+
     const nextDraftEvent = updateDraftEvent((current) => ({
       ...current,
       competitors: current.competitors.map((entry) =>
@@ -770,7 +781,7 @@ function CompetitionObdxEventDetailBody(props: {
         <EventJudgesSection
           editingJudgeId={editingJudgeId()}
           isCreatingJudge={isCreatingJudge()}
-          isEditing={isEditing()}
+          isEditing={canEditDetails()}
           judgeDialogDraft={judgeDialogDraft()}
           judges={draftEvent().judges}
           onAddJudge={handleAddJudge}
@@ -792,7 +803,7 @@ function CompetitionObdxEventDetailBody(props: {
           exercises={draftEvent().exercises}
           exerciseCandidatesOptions={exerciseSelectOptions()}
           isCreatingExercise={isCreatingExercise()}
-          isEditing={isEditing()}
+          isEditing={canEditDetails()}
           onAddExercise={handleAddExercise}
           onDeleteExercise={handleDeleteExercise}
           onExerciseDraftChange={setExerciseDialogDraft}
@@ -811,7 +822,7 @@ function CompetitionObdxEventDetailBody(props: {
           eventStatus={props.event().status}
           editingCompetitorId={editingCompetitorId()}
           isCreatingCompetitor={isCreatingCompetitor()}
-          isEditing={isEditing()}
+          isEditing={canEditDetails()}
           onAddCompetitor={handleAddCompetitor}
           onCompetitorDraftChange={setCompetitorDialogDraft}
           onDeleteCompetitor={handleDeleteCompetitor}
@@ -866,10 +877,21 @@ function CompetitionObdxEventDetailBody(props: {
         </Show>
       </header>
 
+      <EventConfigurationSection
+        draft={draftEvent()}
+        event={props.event()}
+        isEditing={isEditing()}
+        onDraftChange={(updater) =>
+          updateDraftEvent((current) => updater(current), {
+            persist: true,
+          })
+        }
+      />
+
       <AtomInput
         label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
         type="date"
-        disabled={!isEditing()}
+        disabled={!canEditDetails()}
         value={toDateInputValue(draftEvent().enrollmentDeadline)}
         onChange={(value) =>
           updateDraftEvent(
@@ -885,19 +907,8 @@ function CompetitionObdxEventDetailBody(props: {
         }
       />
 
-      <EventConfigurationSection
-        draft={draftEvent()}
-        event={props.event()}
-        isEditing={isEditing()}
-        onDraftChange={(updater) =>
-          updateDraftEvent((current) => updater(current), {
-            persist: true,
-          })
-        }
-      />
-
       <Show
-        when={isEditing()}
+        when={canEditDetails()}
         fallback={
           <div class="competition-event-detail__content--calculation">
             <span class="text-caption-md">
@@ -937,7 +948,7 @@ function CompetitionObdxEventDetailBody(props: {
       </Show>
 
       <Show
-        when={isEditing()}
+        when={canEditDetails()}
         fallback={
           <div class="competition-event-detail__content--calculation">
             <span class="text-caption-md">
