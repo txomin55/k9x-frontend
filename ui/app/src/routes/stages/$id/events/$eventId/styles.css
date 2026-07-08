@@ -47,7 +47,7 @@
 .obdx-clf-table__dog-name {
     display: flex;
     gap: var(--unit-05);
-    align-items: baseline;
+    align-items: flex-start;
 }
 
 .obdx-clf-table__handler {

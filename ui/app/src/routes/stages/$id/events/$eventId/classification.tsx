@@ -1,36 +1,49 @@
-import {createFileRoute, useParams} from "@tanstack/solid-router";
-import {useEventClassification} from "@/services/fetch-stages/fetchStages";
-import type {StageEventClassificationItemResponseDTO} from "@/services/fetch-stages/fetchStages.types";
-import {createEffect, createMemo, createSignal, For, Match, onCleanup, onMount, Show, Switch,} from "solid-js";
+import { createFileRoute, useParams } from "@tanstack/solid-router";
+import { useEventClassification } from "@/services/fetch-stages/fetchStages";
+import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Match,
+  onCleanup,
+  onMount,
+  Show,
+  Switch,
+} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
-import PositionMedal
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
+import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
-import ObdxExerciseSquares
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
+import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
   isLive,
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import AtomTable from "@lib/components/atoms/table/AtomTable";
-import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "@lib/components/atoms/combobox/AtomCombobox";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RotateDeviceHint from "@/components/common/rotate-device-hint/RotateDeviceHint";
-import PinButton
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
-import {useI18n} from "@/stores/i18n/i18n";
-import {useAuthUser} from "@/stores/auth/auth";
-import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
-import {formatDateTime} from "@/utils/date";
-import {isOffline} from "@/utils/local-first/localFirstPolicy";
+import PinButton from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
+import { useI18n } from "@/stores/i18n/i18n";
+import { useAuthUser } from "@/stores/auth/auth";
+import {
+  useSearchParam,
+  useSearchParamList,
+} from "@/utils/search-params/useSearchParam";
+import { formatDateTime } from "@/utils/date";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -250,7 +263,7 @@ function EventClassificationPage() {
         return (
           <div class="obdx-clf-table__dog">
             <span class="obdx-clf-table__dog-name">
-              <CountryFlag country={row.country.id} width={20} height={20} />
+              <CountryFlag country={row.country.id} />
               <span>{row.dog.name}</span>
               <Show when={row.bih}>
                 <BihIndicator />

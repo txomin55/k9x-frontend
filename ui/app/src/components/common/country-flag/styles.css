@@ -1,5 +1,23 @@
-.country-flag .profile-image .atom-image__img {
+
+.country-flag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.country-flag__img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.country-flag__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 0.6em;
 }

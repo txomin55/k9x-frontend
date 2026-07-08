@@ -1,5 +1,4 @@
-import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
-import { createResource, Show } from "solid-js";
+import { createResource, createSignal, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -23,6 +22,7 @@ export default function CountryFlag(props: {
   const loadFlag = () => flagLoaders[`/src/assets/flags/${country()}.svg`];
 
   const [src] = createResource(loadFlag, (load) => load());
+  const [failed, setFailed] = createSignal(false);
 
   return (
     <Show
@@ -36,11 +36,21 @@ export default function CountryFlag(props: {
           width: `${props.width ?? 16}px`,
         }}
       >
-        <ProfileImage
-          alt={props.alt ?? `${country()} flag`}
-          fallback={country().toUpperCase()}
-          src={src()}
-        />
+        <Show
+          when={src() && !failed()}
+          fallback={
+            <span class="country-flag__fallback">
+              {country().toUpperCase()}
+            </span>
+          }
+        >
+          <img
+            class="country-flag__img"
+            alt={props.alt ?? `${country()} flag`}
+            src={src()}
+            onError={() => setFailed(true)}
+          />
+        </Show>
       </div>
     </Show>
   );

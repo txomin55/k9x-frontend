@@ -35,9 +35,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const localeOptions: AtomSelectOption[] = i18n.locales.map((locale) => ({
     label: locale.toUpperCase(),
     value: locale,
-    preLabel: (
-      <CountryFlag country={LOCALE_COUNTRIES[locale]} height={16} width={16} />
-    ),
+    preLabel: <CountryFlag country={LOCALE_COUNTRIES[locale]} />,
   }));
 
   const selectedLocale = () =>

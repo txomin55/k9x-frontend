@@ -2,7 +2,14 @@ import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/At
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
-import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Show,
+  Suspense,
+} from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
@@ -21,7 +28,9 @@ import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isStageLive } from "@/utils/stage";
 import { formatUtcDateOnly } from "@/utils/date";
 import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
@@ -206,9 +215,7 @@ function StagesIndexPage() {
       accessorKey: "country",
       header: i18n.t("STAGES.INDEX.COUNTRY"),
       enableSorting: false,
-      cell: (info) => (
-        <CountryFlag country={info.getValue<string>()} width={20} height={20} />
-      ),
+      cell: (info) => <CountryFlag country={info.getValue<string>()} />,
     },
     {
       id: "name_status",
