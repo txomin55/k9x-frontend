@@ -3,7 +3,9 @@ import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
-import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -15,7 +17,11 @@ import type { AtomSelectOption } from "library/src/components/atoms/select/AtomS
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import { canAcceptCompetitorEnroll, canSeeCompetitorScores, EVENT_STATUS } from "@/utils/event";
+import {
+  canAcceptCompetitorEnroll,
+  canSeeCompetitorScores,
+  EVENT_STATUS,
+} from "@/utils/event";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
@@ -163,14 +169,13 @@ export default function EventCompetitorsSection(
                           <BihIndicator />
                         </Show>
                       </div>
-                      <p>
+                      <span class="text-body-sm">
                         {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
-                      </p>
-                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</p>
-                      <p>{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}</p>
-                      <span class="event-competitors-section__competitors--country">
-                        {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COUNTRY")}:
-                        <CountryFlag country={details().country} width={20} height={20} />
+                      </span>
+                      <span class="text-body-sm">{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</span>
+                      <span class="text-body-sm">
+                        {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}{" "}
+                        <CountryFlag country={details().country} />
                       </span>
                     </div>
                   }

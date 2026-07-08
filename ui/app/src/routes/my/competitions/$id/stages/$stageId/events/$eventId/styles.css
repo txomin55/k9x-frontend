@@ -16,12 +16,6 @@
     gap: var(--unit-1);
 }
 
-.competition-event-detail__content--header-detail {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
 .competition-event-detail__content--calculation {
     display: flex;
     gap: var(--unit-1);

@@ -1,10 +1,10 @@
-import type {Page} from "@playwright/test";
-import type {CompetitionResponseDTO} from "@/services/secured/competition-crud/competitionCrud.types";
-import type {IdNameDTO} from "@/services/secured/judge-crud/judgeCrud.types";
-import {COMPETITION_STATUS} from "@/utils/competition";
-import {setRouteResponses} from "@test/utils/playwrightMockingUtils";
-import {EVENT_STATUS} from "@/utils/event";
-import {STAGE_STATUS} from "@/utils/stage";
+import type { Page } from "@playwright/test";
+import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { COMPETITION_STATUS } from "@/utils/competition";
+import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import { EVENT_STATUS } from "@/utils/event";
+import { STAGE_STATUS } from "@/utils/stage";
 
 export const defaultCompetitions: CompetitionResponseDTO[] = [
   {
@@ -117,7 +117,7 @@ const competitionWithEvent: CompetitionResponseDTO = {
         {
           id: "event-existing-1",
           name: "Existing Event",
-          discipline: { id: "obdx", name: "FCI OBEDIENCE" },
+          discipline: { id: "obdx", name: "FCI Obedience" },
           status: EVENT_STATUS.CREATED,
           rank: "1",
         },

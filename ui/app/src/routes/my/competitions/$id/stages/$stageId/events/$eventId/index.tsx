@@ -7,6 +7,7 @@ import EventExercisesSection
 import EventJudgesSection
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import { updateApiEventNotCompeting, useApiEvent } from "@/services/secured/event-crud/eventCrud";
+import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   EventCompetitorDetail,
   EventCompetitorRequestDTO,
@@ -754,7 +755,10 @@ function CompetitionObdxEventDetailBody(props: {
     {
       value: TABS.COMPETITORS,
       content: (
-        <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")}</span>
+        <span>
+          {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMPETITORS")} (
+          {props.event().competitors.length})
+        </span>
       ),
     },
   ]);
@@ -881,6 +885,17 @@ function CompetitionObdxEventDetailBody(props: {
         }
       />
 
+      <EventConfigurationSection
+        draft={draftEvent()}
+        event={props.event()}
+        isEditing={isEditing()}
+        onDraftChange={(updater) =>
+          updateDraftEvent((current) => updater(current), {
+            persist: true,
+          })
+        }
+      />
+
       <Show
         when={isEditing()}
         fallback={
@@ -888,7 +903,7 @@ function CompetitionObdxEventDetailBody(props: {
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
             </span>
-            <span class="text-body-md">
+            <span class="text-caption-lg">
               {selectedScoreCalculationOption()?.label}
             </span>
           </div>
@@ -928,7 +943,7 @@ function CompetitionObdxEventDetailBody(props: {
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
             </span>
-            <span class="text-body-md">
+            <span class="text-caption-lg">
               {draftEvent()
                 .awards.map((award) => award.name)
                 .join(", ") || "-"}
@@ -958,21 +973,6 @@ function CompetitionObdxEventDetailBody(props: {
           }
         />
       </Show>
-
-      <EventConfigurationSection
-        draft={draftEvent()}
-        event={props.event()}
-        isEditing={isEditing()}
-        onDraftChange={(updater) =>
-          updateDraftEvent((current) => updater(current), {
-            persist: true,
-          })
-        }
-      />
-
-      <div class="competition-event-detail__content--header-detail">
-        <span class="text-caption-md">{`${i18n.t("MY.COMPETITIONS.EVENT_DETAIL.PARTICIPANTS")}: ${props.event().competitors.length}`}</span>{" "}
-      </div>
 
       <AtomTabs
         defaultValue={TABS.JUDGES}
@@ -1042,6 +1042,8 @@ function CompetitionEventDetailPage() {
     getEvent,
     updateApiEvent,
   } = useApiEvent();
+  const { getStage } = useApiStage();
+  const stage = getStage(params().id, params().stageId);
   let hasCreatedDraftEvent = false;
 
   const createDraftEvent = () => {
@@ -1069,10 +1071,7 @@ function CompetitionEventDetailPage() {
       competitionId: params().id,
     });
 
-  const getStageDateTo = () =>
-    getCachedCompetitions()
-      ?.find((entry) => entry.id === params().id)
-      ?.stages?.find((entry) => entry.id === params().stageId)?.dateTo;
+  const getStageDateTo = () => stage()?.dateTo;
 
   createEffect(() => {
     if (params().eventId !== "new" || hasCreatedDraftEvent) return;

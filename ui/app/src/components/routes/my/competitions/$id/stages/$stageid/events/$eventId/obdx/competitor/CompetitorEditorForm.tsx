@@ -127,7 +127,11 @@ export default function CompetitorEditorForm(
           <div class="competitor-editor-form__info">
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
-              <CountryFlag country={selectedDog(draft().dogId)?.country.id} />
+              <CountryFlag
+                country={
+                  selectedDog(draft().dogId)?.country.id ?? draft().country
+                }
+              />
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SEX")}

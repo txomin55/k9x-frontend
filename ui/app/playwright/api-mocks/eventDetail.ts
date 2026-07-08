@@ -1,8 +1,6 @@
 import type { Page } from "@playwright/test";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-import type {
-  DisciplineFederationConfigurationResponseDTO
-} from "@/services/secured/configurations/configurations.types";
+import type { DisciplineFederationConfigurationResponseDTO } from "@/services/secured/configurations/configurations.types";
 import type { EventDetailRawResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { COMPETITION_STATUS } from "@/utils/competition";
 import { defaultDogs } from "@test/api-mocks/dogs";
@@ -21,7 +19,8 @@ const CONFIGURATION_ID = "config-1";
 const judgeName = (id: string) =>
   defaultJudges.find((judge) => judge.id === id)?.name ?? id;
 const dogById = (id: string) => defaultDogs.find((dog) => dog.id === id);
-const awardById = (id: string) => defaultAwards.find((award) => award.id === id);
+const awardById = (id: string) =>
+  defaultAwards.find((award) => award.id === id);
 
 const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
   const [seedDog] = defaultDogs;
@@ -30,7 +29,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
       id: EVENT_DETAIL_ID,
       name: "Detail Event",
       status: eventStatus,
-      discipline: { id: "obdx", name: "FCI OBEDIENCE" },
+      discipline: { id: "obdx", name: "FCI Obedience" },
       stage: { id: EVENT_DETAIL_STAGE_ID, name: "Detail Stage" },
       enrollmentDeadline: 1_717_200_000_000,
       scoreCalculation: "AVG",
@@ -120,7 +119,7 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
           {
             id: EVENT_DETAIL_ID,
             name: "Detail Event",
-            discipline: { id: "obdx", name: "FCI OBEDIENCE" },
+            discipline: { id: "obdx", name: "FCI Obedience" },
             status: "CREATED",
             rank: "1",
           },

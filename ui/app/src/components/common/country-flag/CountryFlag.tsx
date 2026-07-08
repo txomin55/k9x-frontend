@@ -1,5 +1,5 @@
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
-import { createResource } from "solid-js";
+import { createResource, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -24,23 +24,24 @@ export default function CountryFlag(props: {
 
   const [src] = createResource(loadFlag, (load) => load());
 
-  if (!loadFlag()) {
-    return <span>{i18n.t("COMMON.COUNTRY_FLAG.NA")}</span>;
-  }
-
   return (
-    <div
-      class="country-flag"
-      style={{
-        height: `${props.height ?? 24}px`,
-        width: `${props.width ?? 24}px`,
-      }}
+    <Show
+      when={loadFlag()}
+      fallback={<span>{i18n.t("COMMON.COUNTRY_FLAG.NA")}</span>}
     >
-      <ProfileImage
-        alt={props.alt ?? `${country()} flag`}
-        fallback={country().toUpperCase()}
-        src={src()}
-      />
-    </div>
+      <div
+        class="country-flag"
+        style={{
+          height: `${props.height ?? 16}px`,
+          width: `${props.width ?? 16}px`,
+        }}
+      >
+        <ProfileImage
+          alt={props.alt ?? `${country()} flag`}
+          fallback={country().toUpperCase()}
+          src={src()}
+        />
+      </div>
+    </Show>
   );
 }

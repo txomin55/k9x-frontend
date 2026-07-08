@@ -217,11 +217,7 @@ function StageInfoPage() {
                               <For each={event().competitors}>
                                 {(competitor) => (
                                   <li class="stage-info__competitor">
-                                    <CountryFlag
-                                      country={competitor.country}
-                                      height={16}
-                                      width={16}
-                                    />
+                                    <CountryFlag country={competitor.country} />
                                     <div class="stage-info__competitor--info">
                                       <span class="text-caption-lg">
                                         <b>{competitor.dog.name} (</b>

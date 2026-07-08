@@ -2,22 +2,28 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import i18n from "i18next";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
+import { DISCIPLINES } from "@/utils/disciplines";
 
-export const EVENT_DISCIPLINE_OPTIONS: AtomSelectOption[] = [
+export const getEventDisciplineOptions = (): AtomSelectOption[] => [
   {
     label: i18n.t("COMMON.EVENT_DISCIPLINE_FIELD.FCI_OBEDIENCE"),
-    value: "obdx",
+    value: DISCIPLINES.OBDX,
   },
 ];
 
 const getEventDisciplineOptionsWithIcon = (): AtomSelectOption[] =>
-  EVENT_DISCIPLINE_OPTIONS.map((option) => ({
+  getEventDisciplineOptions().map((option) => ({
     ...option,
-    preLabel: <DisciplineIcon disciplineId={option.value} alt={`${option.value} icon`} />,
+    preLabel: (
+      <DisciplineIcon
+        disciplineId={option.value}
+        alt={`${option.value} icon`}
+      />
+    ),
   }));
 
 export const getEventDisciplineOption = (discipline: string) =>
-  EVENT_DISCIPLINE_OPTIONS.find(
+  getEventDisciplineOptions().find(
     (option) => option.value === discipline || option.label === discipline,
   ) ?? null;
 

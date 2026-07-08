@@ -1,4 +1,5 @@
 import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
+import { oneWeekFromNow } from "@/utils/date";
 
 export const toEventEditorDraft = (
   event: EventDetailResponseDTO,
@@ -13,7 +14,7 @@ export const toEventEditorDraft = (
     id: event.discipline.id,
     name: event.discipline.name,
   },
-  enrollmentDeadline: event.enrollmentDeadline,
+  enrollmentDeadline: event.enrollmentDeadline || oneWeekFromNow(),
   exercises: event.exercises.map((exercise) => ({ ...exercise })),
   id: event.id,
   judges: event.judges.map((judge) => ({ ...judge })),

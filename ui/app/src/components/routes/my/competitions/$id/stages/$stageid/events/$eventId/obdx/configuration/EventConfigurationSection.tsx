@@ -17,28 +17,30 @@ export default function (props: {
   const i18n = useI18n();
   return (
     <section class="event-configuration-section">
-      <span class="text-heading-sm" role="heading" aria-level={3}>
-        {i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.CONFIGURATION")}
-      </span>
       <div class="event-configuration-section__content">
         <Show
           when={props.isEditing}
           fallback={
             <>
-              <div class="event-configuration-section__content--federation">
-                <Show when={props.event.configuration.federation?.country}>
-                  {(country) => (
-                    <CountryFlag
-                      country={country()}
-                      alt={`${country()} flag`}
-                    />
-                  )}
-                </Show>
-                <Show when={props.event.configuration.federation?.name}>
-                  {(name) => <span class="text-caption-md">{name()}</span>}
-                </Show>
+              <span class="text-caption-md">
+                {i18n.t("MY.COMPETITIONS.EVENT_CONFIGURATION.CONFIGURATION")}
+              </span>
+              <div>
+                <span class="text-caption-lg">{`${props.event.configuration.name}`}</span>
+                <div class="event-configuration-section__content--federation">
+                  <Show when={props.event.configuration.federation?.name}>
+                    {(name) => <span class="text-caption-lg">{name()}</span>}
+                  </Show>
+                  <Show when={props.event.configuration.federation?.country}>
+                    {(country) => (
+                      <CountryFlag
+                        country={country()}
+                        alt={`${country()} flag`}
+                      />
+                    )}
+                  </Show>
+                </div>
               </div>
-              <span class="text-caption-sm">{`${props.event.configuration.name}`}</span>
             </>
           }
         >
