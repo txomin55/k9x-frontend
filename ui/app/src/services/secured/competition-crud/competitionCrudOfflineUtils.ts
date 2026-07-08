@@ -22,6 +22,7 @@ import type {
   CompetitionRollbackPayload,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
+  markCompetitionRemoved,
   mergeCompetitionsWithDrafts,
   removeCompetitionDraft,
   replaceCompetitionDrafts,
@@ -91,6 +92,11 @@ export const commitCompetitionMutationSuccess = async ({
   const nextBaseCompetitions = getBaseCompetitionsFromCache();
 
   replaceCompetitionDrafts(visibleCompetitions, nextBaseCompetitions);
+
+  if (method === "DELETE") {
+    markCompetitionRemoved(entityId);
+  }
+
   await saveCompetitionsSnapshot(nextBaseCompetitions);
 };
 

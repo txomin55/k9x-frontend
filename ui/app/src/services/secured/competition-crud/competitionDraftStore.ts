@@ -45,8 +45,24 @@ export const removeCompetitionDraft = (competitionId: string) => {
 
     return nextDrafts;
   });
+  markCompetitionRemoved(competitionId);
+};
+
+export const markCompetitionRemoved = (competitionId: string) => {
   setRemovedCompetitionIds((current) =>
     current.includes(competitionId) ? current : [...current, competitionId],
+  );
+};
+
+export const reconcileRemovedCompetitionIds = (
+  serverCompetitions: CompetitionResponseDTO[],
+) => {
+  const serverIds = new Set(
+    serverCompetitions.map((competition) => competition.id),
+  );
+
+  setRemovedCompetitionIds((current) =>
+    current.filter((id) => serverIds.has(id)),
   );
 };
 

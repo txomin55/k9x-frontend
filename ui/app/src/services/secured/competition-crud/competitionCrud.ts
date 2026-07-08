@@ -18,7 +18,10 @@ import type {
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
+import {
+  mergeCompetitionsWithDrafts,
+  reconcileRemovedCompetitionIds,
+} from "@/services/secured/competition-crud/competitionDraftStore";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { isOrganizer } from "@/stores/auth/auth";
 import { generateEntityId } from "@/utils/id/generateEntityId";
@@ -43,6 +46,8 @@ export const refreshCompetitionsSnapshot = async () => {
   const competitions = await rawRequest<CompetitionResponseDTO[]>({
     path: "/secured/competitions",
   });
+
+  reconcileRemovedCompetitionIds(competitions);
 
   await saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions);
   queryClient.setQueryData(getCompetitionsQueryKey(), competitions);
