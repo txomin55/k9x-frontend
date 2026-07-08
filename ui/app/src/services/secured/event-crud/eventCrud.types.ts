@@ -19,10 +19,10 @@ export const SCORE_CALCULATION = {
 } as const;
 
 export interface UpdateEventRequestDTO {
-  competitors?: EventCompetitorRequestDTO[];
+  competitors: EventCompetitorRequestDTO[];
   configurationId: string;
-  exercises?: EventExerciseRequestDTO[];
-  judges?: EventJudgeDetailRequestDTO[];
+  exercises: EventExerciseRequestDTO[];
+  judges: EventJudgeDetailRequestDTO[];
   name: string;
   enrollmentDeadline: number;
   scoreCalculation: string;
@@ -40,6 +40,7 @@ export interface EventCompetitorResponseDTO {
   status: string;
   breed: string;
   bih?: boolean;
+  notCompeting?: boolean;
   scoresAllowed?: boolean;
 }
 
@@ -187,7 +188,7 @@ const normalizeCompetitor = (
   position: competitor.position ?? 0,
   accepted: competitor.status === COMPETITOR_STATUS.ENROLLED,
   status: competitor.status ?? "",
-  notCompeting: competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
+  notCompeting: competitor.notCompeting ?? false,
   bih: competitor.bih ?? false,
 });
 

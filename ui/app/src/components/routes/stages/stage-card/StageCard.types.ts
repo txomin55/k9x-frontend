@@ -3,7 +3,7 @@ import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetch
 export interface StageCardProps {
   address?: string;
   country: string;
-  description?: string;
+  competitionName?: string;
   events: StageEventSummaryResponseDTO[];
   from: number;
   id: string;

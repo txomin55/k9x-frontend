@@ -82,7 +82,7 @@ export default function EventCompetitorsSection(
       handler: dog?.handler ?? competitor.handler,
       identity: dog?.identity ?? competitor.identity,
       team: dog?.team ?? competitor.team,
-      country: dog?.country ?? competitor.country,
+      country: dog?.country.id ?? competitor.country,
       sex: dog?.sex,
     };
   };

@@ -9,13 +9,14 @@ export interface StageEventSummaryResponseDTO {
   enrollmentOpened: boolean;
   enrollmentDeadline: number;
   awards: IdNameDTO[];
+  rank: string;
 }
 
 export interface StageSummaryResponseDTO {
   country: string;
   dateFrom: number;
   dateTo: number;
-  description: string;
+  competitionName: string;
   events: StageEventSummaryResponseDTO[];
   id: string;
   location: CompetitionLocationDetailResponseDTO;
@@ -33,6 +34,7 @@ export interface CompetitionLocationDetailResponseDTO {
 export interface StageDetailResponseDTO {
   dateFrom: number;
   dateTo: number;
+  competitionName: string;
   events: StageEventDetailResponseDTO[];
   id: string;
   address: string;
@@ -61,6 +63,7 @@ export interface StageEventDetailResponseDTO {
   enrollmentOpened: boolean;
   enrollmentDeadline: number;
   awards: IdNameDTO[];
+  rank: string;
 }
 
 export interface CompetitionNotificationDetailResponseDTO {
@@ -116,7 +119,6 @@ export interface StageEventClassificationItemResponseDTO {
   country: IdNameDTO;
   dog: IdNameDTO;
   exercises: StageEventClassificationExerciseScoresResponseDTO[];
-  identity: string;
   owner: string;
   handler: string;
   position: number;

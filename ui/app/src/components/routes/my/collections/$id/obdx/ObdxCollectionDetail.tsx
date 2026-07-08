@@ -12,7 +12,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
 import RedCardDialog from "@/components/routes/my/collections/$id/obdx/red-card/RedCardDialog";
 import Page from "@/components/common/page/Page";
-import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
+import { EVENT_STATUS } from "@/utils/event";
 import { isDayAfterStageDateTo } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { isOrganizer } from "@/stores/auth/auth";
@@ -139,7 +139,7 @@ export default function ObdxCollectionDetail() {
     () =>
       collectionData.data?.obdx.competitors.find(
         (c) => c.competitor.dog.id === selectedCompetitor()?.value,
-      )?.competitor.status === COMPETITOR_STATUS.NOT_COMPETING,
+      )?.competitor.notCompeting ?? false,
   );
 
   const isSelectedCompetitorScoresAllowed = createMemo(

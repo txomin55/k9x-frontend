@@ -51,7 +51,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
           props.stage.dateTo ?? 0,
         )}
       </span>
-      <span class="text-caption-lg">{props.stage.description}</span>
+      <span class="text-caption-lg">{props.stage.competitionName}</span>
 
       <div class="divider" />
 

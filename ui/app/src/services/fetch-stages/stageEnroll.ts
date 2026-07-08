@@ -40,7 +40,7 @@ const buildOptimisticCompetitor = (
   owner: dog.owner,
   handler: dog.handler,
   team: dog.team,
-  country: dog.country,
+  country: dog.country.id,
   breed: dog.breed,
 });
 

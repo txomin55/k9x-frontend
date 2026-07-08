@@ -180,7 +180,7 @@ function StagesIndexPage() {
       status={stage.status}
       from={stage.dateFrom ?? 0}
       to={stage.dateTo ?? 0}
-      description={stage.description ?? ""}
+      competitionName={stage.competitionName ?? ""}
       organizer={stage.organizer}
       address={stage?.location?.address}
       events={stage.events ?? []}
@@ -224,9 +224,9 @@ function StagesIndexPage() {
                 <StatusBadge status={stage.status!} dotMode />
               </Show>
             </div>
-            <Show when={stage.description}>
+            <Show when={stage.competitionName}>
               <span class="stages-table__name-caption text-caption-md">
-                {stage.description}
+                {stage.competitionName}
               </span>
             </Show>
           </div>

@@ -7,6 +7,7 @@ export interface CompetitionStageEventDetailResponseDTO {
   name: string;
   discipline: IdNameDTO;
   status: string;
+  rank: string;
 }
 
 export interface CompetitionStageDetailResponseDTO {

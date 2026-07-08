@@ -1,4 +1,5 @@
 import type { Dog, DogSex } from "@/services/secured/dog-crud/dogCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -62,7 +63,8 @@ export default function DogForm(props: DogFormProps) {
 
   const idError = () => validateRequiredText(props.draft().id);
   const nameError = () => validateRequiredText(props.draft().name);
-  const countryError = () => validateRequiredSelection(props.draft().country);
+  const countryError = () =>
+    validateRequiredSelection(props.draft().country.id);
   const ownerError = () =>
     ownerFieldVisible() ? validateEmail(props.draft().owner) : null;
 
@@ -136,7 +138,7 @@ export default function DogForm(props: DogFormProps) {
       team,
     }));
 
-  const updateCountry = (country: string) =>
+  const updateCountry = (country: IdNameDTO) =>
     props.onDraftChange((current) => ({
       ...current,
       country,
@@ -244,9 +246,9 @@ export default function DogForm(props: DogFormProps) {
       <CountryField
         onChange={(value) => {
           markTouched("country");
-          updateCountry(value.value);
+          updateCountry({ id: value.value, name: value.label });
         }}
-        value={props.draft().country}
+        value={props.draft().country.id}
         validationState={
           touched().country && countryError() ? "invalid" : undefined
         }

@@ -1,3 +1,5 @@
+import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+
 export type DogSex = "MALE" | "FEMALE";
 
 export interface Dog {
@@ -9,7 +11,7 @@ export interface Dog {
   owner: string;
   handler: string;
   team: string;
-  country: string;
+  country: IdNameDTO;
   sex: DogSex;
   withersCm: number;
   owned: boolean;

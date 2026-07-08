@@ -3,6 +3,7 @@ import type { StageDetailResponseDTO } from "@/services/fetch-stages/fetchStages
 export const defaultStageDetail: StageDetailResponseDTO = {
   id: "stage-older",
   name: "Sevilla Summer Trial",
+  competitionName: "Earlier public trial",
   address: "Calle Betis 1, Sevilla",
   organizer: "Sevilla K9 Club",
   dateFrom: 1_720_000_000_000,
@@ -18,6 +19,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
       discipline: { id: "disc-1", name: "Agility" },
       configuration: { id: "config-1", name: "Standard" },
       awards: [{ id: "caciob", name: "CACIOB" }],
+      rank: "1",
       competitors: [
         {
           dog: { id: "dog-1", name: "Rex" },

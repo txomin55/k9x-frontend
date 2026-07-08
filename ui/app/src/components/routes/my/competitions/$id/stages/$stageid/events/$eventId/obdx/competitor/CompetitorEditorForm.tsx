@@ -87,7 +87,7 @@ export default function CompetitorEditorForm(
             name: dog?.name ?? "",
             breed: dog?.breed ?? "",
             identity: dog?.identity ?? "",
-            country: dog?.country ?? "",
+            country: dog?.country.id ?? "",
             team: dog?.team ?? "",
           }
         : current,
@@ -127,7 +127,7 @@ export default function CompetitorEditorForm(
           <div class="competitor-editor-form__info">
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
-              <CountryFlag country={selectedDog(draft().dogId)?.country} />
+              <CountryFlag country={selectedDog(draft().dogId)?.country.id} />
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SEX")}

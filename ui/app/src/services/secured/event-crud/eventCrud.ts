@@ -237,7 +237,7 @@ const mergeApiEventWithPayload = (
     previousEvent?.discipline,
   );
   const nextJudges =
-    updatePayload?.judges?.map((judge, index) =>
+    updatePayload?.judges.map((judge, index) =>
       toApiJudge(judge, previousEvent?.judges?.[index]),
     ) ??
     previousEvent?.judges ??
@@ -251,7 +251,7 @@ const mergeApiEventWithPayload = (
       previousEvent?.awards,
     ),
     competitors:
-      updatePayload?.competitors?.map((competitor) =>
+      updatePayload?.competitors.map((competitor) =>
         toApiCompetitor(
           competitor,
           competitor.dogId
@@ -271,7 +271,7 @@ const mergeApiEventWithPayload = (
       previousEvent?.enrollmentDeadline ??
       oneWeekFromNow(),
     exercises:
-      updatePayload?.exercises?.map((exercise) =>
+      updatePayload?.exercises.map((exercise) =>
         toApiExercise(
           exercise,
           judgesCatalog,

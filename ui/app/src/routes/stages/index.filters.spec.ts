@@ -10,7 +10,7 @@ const buildStage = (
 ): StageSummaryResponseDTO => ({
   id: "stage",
   name: "Stage",
-  description: "",
+  competitionName: "",
   country: "ES",
   dateFrom: 0,
   dateTo: 0,

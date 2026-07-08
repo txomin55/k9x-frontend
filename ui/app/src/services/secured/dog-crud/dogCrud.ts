@@ -20,6 +20,7 @@ import {
   getDogsQueryKey,
 } from "./dogCrudConstants";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
+import { getCachedCountries } from "@/services/secured/country-crud/countryCrud";
 
 const refreshDogsSnapshot = async () => {
   const dogs = await rawRequest<Dog[]>({
@@ -143,7 +144,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   owner: draftDog.owner,
   handler: draftDog.handler,
   team: draftDog.team,
-  country: draftDog.country,
+  country: draftDog.country.id,
   sex: draftDog.sex,
   withersCm: draftDog.withersCm,
   threeFciGenerationsConfirmed: draftDog.threeFciGenerationsConfirmed,
@@ -178,6 +179,9 @@ const updateDogProjection = (
 ): Dog => ({
   ...existingDog,
   ...payload,
+  country:
+    getCachedCountries()?.find((country) => country.id === payload.country) ??
+    { ...existingDog.country, id: payload.country },
 });
 
 export const updateDog = (id: string, payload: UpdateDogRequestDTO) => {

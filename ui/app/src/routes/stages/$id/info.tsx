@@ -274,6 +274,7 @@ function StageInfoPage() {
               </Show>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
+            <span class="text-body-md">{stage().competitionName}</span>
             <span class="text-caption-md">{stage().organizer}</span>
             <span class="text-body-md">{stage().address}</span>
 

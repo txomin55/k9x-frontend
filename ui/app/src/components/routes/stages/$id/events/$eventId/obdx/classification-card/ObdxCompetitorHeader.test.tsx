@@ -12,7 +12,6 @@ const buildCompetitor = (
   country: { id: "es", name: "Spain" },
   dog: { id: "dog-1", name: "Koda" },
   exercises: [],
-  identity: "identity",
   owner: "owner@example.com",
   handler: "Carlos",
   position: 1,

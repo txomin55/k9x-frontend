@@ -39,7 +39,7 @@ export interface ExerciseResponseDTO {
 
 export interface CollectionScoreResponseDTO {
   judge: IdNameDTO;
-  score: number | null;
+  score: number;
 }
 
 export interface ExerciseScoresResponseDTO {

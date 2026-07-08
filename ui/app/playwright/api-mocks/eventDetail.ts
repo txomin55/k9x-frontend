@@ -69,7 +69,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
           identity: seedDog.identity,
           owner: seedDog.owner,
           handler: seedDog.handler,
-          country: seedDog.country,
+          country: seedDog.country.id,
           status: "ENROLLED",
           breed: seedDog.breed,
         },
@@ -187,7 +187,7 @@ const applyEventUpdate = (
         identity: dog?.identity ?? existing?.identity ?? "",
         owner: dog?.owner ?? existing?.owner ?? "",
         handler: dog?.handler ?? existing?.handler ?? "",
-        country: dog?.country ?? existing?.country ?? "",
+        country: dog?.country.id ?? existing?.country ?? "",
         status:
           existing?.status ??
           (competitor.accepted
@@ -241,6 +241,7 @@ export const setupEventDetailCrud = (
         );
         if (target) {
           target.status = payload.notCompeting ? "NOT_COMPETING" : "ENROLLED";
+          target.notCompeting = payload.notCompeting;
         }
         return "";
       },

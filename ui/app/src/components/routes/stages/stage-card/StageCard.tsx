@@ -64,9 +64,9 @@ export default function StageCard(props: StageCardProps) {
         </div>
       }
       description={
-        props.description ? (
+        props.competitionName ? (
           <span class="stage-card__description text-body-md">
-            {props.description}
+            {props.competitionName}
           </span>
         ) : undefined
       }
