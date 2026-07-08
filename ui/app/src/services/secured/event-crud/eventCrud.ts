@@ -17,7 +17,7 @@ import {
 } from "@/services/secured/collection-crud/collectionCrudOfflineUtils";
 import type { CollectionResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { translate } from "@/stores/i18n/i18n";
-import { COMPETITOR_STATUS } from "@/utils/event";
+import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
 import { oneWeekFromNow } from "@/utils/date";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
@@ -230,7 +230,7 @@ const mergeApiEventWithPayload = (
       )
     : undefined;
   const nextStageName = previousEvent?.stage?.name ?? "";
-  const nextStatus = previousEvent?.status ?? "";
+  const nextStatus = previousEvent?.status ?? EVENT_STATUS.DRAFT;
   const nextDiscipline = toApiDiscipline(
     createPayload?.disciplineId,
     previousEvent?.discipline,

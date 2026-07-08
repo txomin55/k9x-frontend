@@ -25,6 +25,7 @@ export const toEventEditorDraft = (
 });
 
 export const EVENT_STATUS = {
+  DRAFT: "DRAFT",
   CREATED: "CREATED",
   CLOSED_ENROLLMENT: "CLOSED_ENROLLMENT",
   STARTED: "STARTED",
