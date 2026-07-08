@@ -43,7 +43,7 @@ export function canSeeClassification(status: string) {
 }
 
 export function canSeeCompetitorScores(eventStatus: string) {
-  return eventStatus === EVENT_STATUS.STARTED;
+  return [EVENT_STATUS.STARTED, EVENT_STATUS.FINISHED].includes(eventStatus);
 }
 
 export function canAcceptCompetitorEnroll(competitorStatus: string) {
