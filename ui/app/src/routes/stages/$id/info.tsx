@@ -23,6 +23,7 @@ import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
+import RankBadge from "@/components/common/rank-badge/RankBadge";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -151,6 +152,7 @@ function StageInfoPage() {
                       <div class="stage-info__event--header">
                         <div class="stage-info__event--header-info">
                           <span>{event().configuration.name}</span>
+                          <RankBadge rank={event().rank} />
                           <AwardBadges awards={event().awards} />
                         </div>
                         <Show

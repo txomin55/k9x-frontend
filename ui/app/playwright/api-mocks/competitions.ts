@@ -27,6 +27,7 @@ export const defaultCompetitions: CompetitionResponseDTO[] = [
             name: "Agility Standard",
             discipline: { id: "disc-1", name: "Agility" },
             status: EVENT_STATUS.CREATED,
+            rank: "1",
           },
         ],
         status: STAGE_STATUS.CREATED,
@@ -118,6 +119,7 @@ const competitionWithEvent: CompetitionResponseDTO = {
           name: "Existing Event",
           discipline: { id: "obdx", name: "FCI OBEDIENCE" },
           status: EVENT_STATUS.CREATED,
+          rank: "1",
         },
       ],
     },
@@ -244,6 +246,7 @@ export const setupCompetitionsCrud = (page: Page) => {
           name: payload.name,
           discipline: { id: payload.disciplineId, name: "" },
           status: EVENT_STATUS.CREATED,
+          rank: "1",
         });
         return "";
       },

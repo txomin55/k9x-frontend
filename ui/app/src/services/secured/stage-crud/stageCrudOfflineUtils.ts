@@ -32,23 +32,39 @@ import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared
 
 const toCompetitionDetailStage = (
   stage: StageEditorModel,
-): CompetitionStageDetailResponseDTO => ({
-  dateFrom: stage.dateFrom,
-  dateTo: stage.dateTo,
-  events: stage.events,
-  id: stage.id,
-  name: stage.name,
-  status: stage.status ?? STAGE_STATUS.CREATED,
-});
+  previousStage?: CompetitionStageDetailResponseDTO,
+): CompetitionStageDetailResponseDTO => {
+  const previousEventsById = new Map(
+    (previousStage?.events ?? []).map((event) => [event.id, event]),
+  );
+
+  return {
+    dateFrom: stage.dateFrom,
+    dateTo: stage.dateTo,
+    events: stage.events.map((event) => ({
+      id: event.id,
+      name: event.name,
+      discipline: event.discipline,
+      status: event.status,
+      rank: previousEventsById.get(event.id)?.rank ?? "",
+    })),
+    id: stage.id,
+    name: stage.name,
+    status: stage.status ?? STAGE_STATUS.CREATED,
+  };
+};
 
 const buildNextCompetitionDetail = (
   competition: CompetitionResponseDTO,
   stage: StageEditorModel,
 ): CompetitionResponseDTO => {
-  const nextStage = toCompetitionDetailStage(stage);
   const previousStages = competition.stages ?? [];
   const existingIndex = previousStages.findIndex(
     ({ id }) => String(id) === String(stage.id),
+  );
+  const nextStage = toCompetitionDetailStage(
+    stage,
+    existingIndex === -1 ? undefined : previousStages[existingIndex],
   );
 
   return {

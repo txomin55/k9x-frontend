@@ -9,6 +9,7 @@ import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
+import RankBadge from "@/components/common/rank-badge/RankBadge";
 import "./styles.css";
 
 export interface StageCardEventsContentProps {
@@ -37,6 +38,7 @@ export default function StageCardEventsContent(
             <DisciplineIcon disciplineId={event().discipline.id} />
             <span class="text-heading-xs">{event().name}</span>
             <span class="text-caption-sm">({event().competitors})</span>
+            <RankBadge rank={event().rank} />
             <AwardBadges awards={event().awards} />
           </div>
           <Show

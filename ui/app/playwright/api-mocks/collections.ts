@@ -78,6 +78,7 @@ const applyNotCompeting = (
     target.competitor.status = notCompeting
       ? COMPETITOR_STATUS.NOT_COMPETING
       : COMPETITOR_STATUS.ENROLLED;
+    target.competitor.notCompeting = notCompeting;
   }
 };
 

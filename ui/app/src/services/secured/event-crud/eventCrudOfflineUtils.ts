@@ -28,16 +28,17 @@ const buildNextStageDetail = (
   stage: CompetitionStageDetailResponseDTO,
   event: EventDetailResponseDTO,
 ): CompetitionStageDetailResponseDTO => {
+  const previousEvents = stage.events;
+  const existingIndex = previousEvents.findIndex(
+    ({ id }) => String(id) === String(event.id),
+  );
   const lightweightEvent: CompetitionStageEventDetailResponseDTO = {
     id: event.id,
     name: event.name,
     discipline: event.discipline,
     status: event.status,
+    rank: previousEvents[existingIndex]?.rank ?? "",
   };
-  const previousEvents = stage.events;
-  const existingIndex = previousEvents.findIndex(
-    ({ id }) => String(id) === String(event.id),
-  );
 
   return {
     ...stage,

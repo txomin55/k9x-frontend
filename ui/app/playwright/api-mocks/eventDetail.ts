@@ -122,6 +122,7 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
             name: "Detail Event",
             discipline: { id: "obdx", name: "FCI OBEDIENCE" },
             status: "CREATED",
+            rank: "1",
           },
         ],
       },
