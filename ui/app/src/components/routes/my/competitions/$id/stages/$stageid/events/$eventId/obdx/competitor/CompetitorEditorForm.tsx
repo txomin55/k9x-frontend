@@ -1,6 +1,11 @@
-import AtomButton, { BUTTON_TYPES } from "library/src/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "library/src/components/atoms/button/AtomButton";
 import AtomCheckbox from "library/src/components/atoms/checkbox/AtomCheckbox";
-import { AtomCombobox, type AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -151,7 +156,9 @@ export default function CompetitorEditorForm(
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
-              <span>{selectedDog(draft().dogId)?.breed.name ?? draft().breed}</span>
+              <span class="text-label-sm">
+                {selectedDog(draft().dogId)?.breed.name ?? draft().breed}
+              </span>
             </span>
             <div class="competitor-editor-form__info--handler">
               <span class="text-caption-md">
