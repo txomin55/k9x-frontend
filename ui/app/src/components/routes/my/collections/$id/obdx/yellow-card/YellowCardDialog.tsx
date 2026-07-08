@@ -1,14 +1,19 @@
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { fetchYellowCards, registerYellowCard } from "@/services/secured/yellow-card-crud/yellowCardCrud";
+import {
+  fetchYellowCards,
+  registerYellowCard,
+} from "@/services/secured/yellow-card-crud/yellowCardCrud";
 import type { YellowCardResponseDTO } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
-import yellowCardIcon from "@/assets/yellow-card.svg";
+import yellowCardIcon from "@/assets/dogs/yellow-card.svg";
 import "./styles.css";
 
 type YellowCardDialogProps = {
@@ -205,7 +210,9 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
           <div class="yellow-card-dialog__content">
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.JUDGE")}
-              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.YELLOW_CARD.SELECT_JUDGE")}
+              placeholder={i18n.t(
+                "MY.COLLECTIONS.DETAIL.YELLOW_CARD.SELECT_JUDGE",
+              )}
               options={judgeOptions()}
               value={selectedJudge()}
               onChange={setSelectedJudge}

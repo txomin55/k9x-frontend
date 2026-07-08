@@ -193,6 +193,7 @@ const toApiCompetitor = (
       : (previousCompetitor?.status ?? ""),
     notCompeting: previousCompetitor?.notCompeting ?? false,
     bih: competitor.bih ?? previousCompetitor?.bih ?? false,
+    reserve: competitor.reserve ?? previousCompetitor?.reserve ?? false,
   };
 };
 

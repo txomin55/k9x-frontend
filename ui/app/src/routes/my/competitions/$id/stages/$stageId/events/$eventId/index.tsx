@@ -1,12 +1,22 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Show } from "solid-js";
-import EventCompetitorsSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
-import EventExercisesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
-import EventJudgesSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
-import { updateApiEventNotCompeting, useApiEvent } from "@/services/secured/event-crud/eventCrud";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+} from "solid-js";
+import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
+import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
+import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
+import {
+  updateApiEventNotCompeting,
+  useApiEvent,
+} from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   EventCompetitorDetail,
@@ -15,30 +25,41 @@ import type {
   EventEditorDraft,
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
-import { SCORE_CALCULATION, toEventExerciseRequest } from "@/services/secured/event-crud/eventCrud.types";
+import {
+  SCORE_CALCULATION,
+  toEventExerciseRequest,
+} from "@/services/secured/event-crud/eventCrud.types";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { canDeleteEvent, canEditEvent, COMPETITOR_STATUS, toEventEditorDraft } from "@/utils/event";
+import {
+  canDeleteEvent,
+  canEditEvent,
+  COMPETITOR_STATUS,
+  toEventEditorDraft,
+} from "@/utils/event";
 import { parseDateInputValue, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
-import pencilIcon from "@/assets/pencil.svg";
-import eyeIcon from "@/assets/eye.svg";
+import pencilIcon from "@/assets/miscelaneous/pencil.svg";
+import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
-import EventConfigurationSection
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
-import ObdxCompetitionEventDetailBodyWrapper
-  from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
+import EventConfigurationSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/EventConfigurationSection";
+import ObdxCompetitionEventDetailBodyWrapper from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import { useAwards } from "@/services/secured/award-crud/awardCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
+import {
+  AtomCombobox,
+  type AtomComboboxOption,
+} from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
@@ -175,6 +196,7 @@ function CompetitionObdxEventDetailBody(props: {
         position: competitor.position,
         accepted: competitor.accepted,
         bih: competitor.bih,
+        reserve: competitor.reserve,
       })),
       configuration: event.configuration,
       discipline: event.discipline,
@@ -205,6 +227,7 @@ function CompetitionObdxEventDetailBody(props: {
       status: "",
       notCompeting: false,
       bih: false,
+      reserve: false,
     };
   };
 
@@ -279,6 +302,7 @@ function CompetitionObdxEventDetailBody(props: {
       position: competitor.position,
       accepted: competitor.accepted,
       bih: competitor.bih,
+      reserve: competitor.reserve,
     };
   };
 

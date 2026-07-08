@@ -39,6 +39,7 @@ const makeCompetitor = (
   tied: false,
   startOrder: position,
   bih: false,
+  reserve: false,
   awards: position <= 3 ? [{ id: "caciob", name: "CACIOB" }] : [],
 });
 

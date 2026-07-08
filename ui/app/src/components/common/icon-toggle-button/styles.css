@@ -16,7 +16,7 @@
   flex-shrink: 0;
 }
 
-.icon-toggle img {
+.icon-toggle .atom-svg-icon {
   width: var(--unit-2);
   height: var(--unit-2);
   display: block;

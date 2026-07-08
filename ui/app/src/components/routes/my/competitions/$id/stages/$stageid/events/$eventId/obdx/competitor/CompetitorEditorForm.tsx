@@ -72,6 +72,18 @@ export default function CompetitorEditorForm(
 
     props.onCommitCompetitor();
   };
+  const setReserve = (value: boolean) => {
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            reserve: value,
+          }
+        : current,
+    );
+
+    props.onCommitCompetitor();
+  };
 
   const dogOptions = (): AtomComboboxOption[] =>
     props.dogOptions.map((option) => ({
@@ -190,6 +202,11 @@ export default function CompetitorEditorForm(
               setChecked={setBih}
             />
           </Show>
+          <AtomCheckbox
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.RESERVE")}
+            checked={draft().reserve}
+            setChecked={setReserve}
+          />
           <div class="competitor-editor-form__actions">
             <AtomButton
               type={BUTTON_TYPES.ACCENT}

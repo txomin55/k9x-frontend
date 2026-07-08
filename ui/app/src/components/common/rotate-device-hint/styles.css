@@ -4,9 +4,10 @@
     height: var(--unit-4);
     line-height: 0;
     flex-shrink: 0;
+    color: var(--text-secondary);
 }
 
-.rotate-device-hint img {
+.rotate-device-hint .atom-svg-icon {
     width: 100%;
     height: 100%;
     display: block;

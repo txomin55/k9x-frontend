@@ -8,6 +8,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
@@ -167,6 +168,9 @@ export default function EventCompetitorsSection(
                         </Show>
                         <Show when={competitor().bih}>
                           <BihIndicator />
+                        </Show>
+                        <Show when={competitor().reserve}>
+                          <ReserveIndicator />
                         </Show>
                       </div>
                       <span class="text-body-sm">

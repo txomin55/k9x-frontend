@@ -1,6 +1,6 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
-import redCardIcon from "@/assets/red-card.svg";
+import redCardIcon from "@/assets/dogs/red-card.svg";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function RedCardIndicator() {

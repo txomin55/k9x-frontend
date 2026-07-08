@@ -5,7 +5,7 @@
     z-index: 10;
 }
 
-.floating-share-button__icon {
+.floating-share-button .atom-svg-icon {
     width: var(--icon-size-lg);
     height: var(--icon-size-lg);
 }

@@ -1,7 +1,7 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
-import maleIcon from "@/assets/male.svg";
-import femaleIcon from "@/assets/female.svg";
+import maleIcon from "@/assets/dogs/male.svg";
+import femaleIcon from "@/assets/dogs/female.svg";
 import type { DogSex } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import "./styles.css";

@@ -1,6 +1,6 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
-import flameIcon from "@/assets/flame.svg";
+import flameIcon from "@/assets/dogs/bih.svg";
 import "@/components/common/bih-indicator/styles.css";
 
 export default function BihIndicator() {

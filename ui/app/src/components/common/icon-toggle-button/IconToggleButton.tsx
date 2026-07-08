@@ -18,7 +18,7 @@ export default function IconToggleButton(props: IconToggleButtonProps) {
         props.onToggle?.();
       }}
     >
-      <AtomSvgIcon src={props.src} alt={label()} />
+      <AtomSvgIcon src={props.src} alt={label()} tinted />
     </button>
   );
 }

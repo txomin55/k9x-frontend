@@ -32,6 +32,7 @@ import {
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
+import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RotateDeviceHint from "@/components/common/rotate-device-hint/RotateDeviceHint";
@@ -267,6 +268,9 @@ function EventClassificationPage() {
               <span>{row.dog.name}</span>
               <Show when={row.bih}>
                 <BihIndicator />
+              </Show>
+              <Show when={row.reserve}>
+                <ReserveIndicator />
               </Show>
               <Show when={row.notCompeting}>
                 <NotCompetingIndicator />

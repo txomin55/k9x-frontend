@@ -1,4 +1,6 @@
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
@@ -16,8 +18,8 @@ import type { NavigationUserMenuProps } from "@/components/global/app-shell/layo
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import sunIcon from "@/assets/sun.svg";
-import moonIcon from "@/assets/moon.svg";
+import sunIcon from "@/assets/miscelaneous/sun.svg";
+import moonIcon from "@/assets/miscelaneous/moon.svg";
 
 const LOCALE_COUNTRIES: Record<string, string> = {
   en: "gb",
@@ -83,6 +85,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
                   : i18n.t("GLOBAL.NAVIGATION.DARK")
               }
               src={props.isDark ? moonIcon : sunIcon}
+              tinted
             />
           </CircleButton>
         </div>

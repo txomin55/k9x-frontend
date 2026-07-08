@@ -1,9 +1,11 @@
 import { useLocation } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { showToast } from "@/stores/toast/toast";
+import shareIcon from "@/assets/miscelaneous/share.svg";
 import "./styles.css";
 
 export default function FloatingShareButton() {
@@ -32,24 +34,12 @@ export default function FloatingShareButton() {
   return (
     <Show when={isVisible()}>
       <div class="floating-share-button">
-        <CircleButton onClick={handleShare} size="lg">
-          <svg
-            class="floating-share-button__icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2.2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-label={i18n.t("GLOBAL.SHARE.SHARE")}
-            role="img"
-          >
-            <circle cx="18" cy="5" r="3" />
-            <circle cx="6" cy="12" r="3" />
-            <circle cx="18" cy="19" r="3" />
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-          </svg>
+        <CircleButton onClick={handleShare} size="md">
+          <AtomSvgIcon
+            src={shareIcon}
+            alt={i18n.t("GLOBAL.SHARE.SHARE")}
+            tinted
+          />
         </CircleButton>
       </div>
     </Show>

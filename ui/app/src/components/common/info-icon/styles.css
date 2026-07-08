@@ -3,9 +3,10 @@
     height: var(--unit-2);
     line-height: 0;
     flex-shrink: 0;
+    color: var(--text-secondary);
 }
 
-.info-icon img {
+.info-icon .atom-svg-icon {
     width: 100%;
     height: 100%;
     display: block;

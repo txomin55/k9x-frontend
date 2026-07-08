@@ -1,5 +1,7 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -8,7 +10,7 @@ import type { StageCardProps } from "@/components/routes/stages/stage-card/Stage
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
-import bellIcon from "@/assets/bell.svg";
+import bellIcon from "@/assets/miscelaneous/bell.svg";
 import { isStageLive } from "@/utils/stage";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";

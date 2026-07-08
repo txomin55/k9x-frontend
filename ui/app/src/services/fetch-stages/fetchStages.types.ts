@@ -130,6 +130,7 @@ export interface StageEventClassificationItemResponseDTO {
   tied: boolean;
   startOrder: number;
   bih: boolean;
+  reserve: boolean;
   notCompeting?: boolean;
   awards: IdNameDTO[];
 }

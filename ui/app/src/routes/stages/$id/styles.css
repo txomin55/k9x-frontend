@@ -12,8 +12,12 @@
 
 .stage-info__title {
     display: flex;
-    width: 100%;
     justify-content: space-between;
+}
+
+.stage-info__title--name {
+    display: flex;
+    gap: var(--unit-1);
 }
 
 .stage-info__events {

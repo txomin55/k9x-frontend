@@ -29,6 +29,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         tied: false,
         startOrder: 1,
         bih: false,
+        reserve: false,
         awards: [{ id: "caciob", name: "CACIOB" }],
       },
       {
@@ -45,6 +46,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         tied: false,
         startOrder: 2,
         bih: false,
+        reserve: false,
         awards: [],
       },
     ],

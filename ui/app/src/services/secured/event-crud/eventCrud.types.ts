@@ -40,6 +40,7 @@ export interface EventCompetitorResponseDTO {
   status: string;
   breed: string;
   bih?: boolean;
+  reserve?: boolean;
   notCompeting?: boolean;
   scoresAllowed?: boolean;
 }
@@ -49,6 +50,7 @@ export interface EventCompetitorRequestDTO {
   position: number;
   accepted: boolean;
   bih: boolean;
+  reserve: boolean;
 }
 
 export interface UpdateEventNotCompetingRequestDTO {
@@ -70,6 +72,7 @@ export interface EventCompetitorDetail {
   status: string;
   notCompeting: boolean;
   bih: boolean;
+  reserve: boolean;
 }
 
 export interface EventConfigurationDetailResponseDTO {
@@ -190,6 +193,7 @@ const normalizeCompetitor = (
   status: competitor.status ?? "",
   notCompeting: competitor.notCompeting ?? false,
   bih: competitor.bih ?? false,
+  reserve: competitor.reserve ?? false,
 });
 
 export const toEventExerciseRequest = (

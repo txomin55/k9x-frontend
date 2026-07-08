@@ -1,6 +1,6 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
-import yellowCardIcon from "@/assets/yellow-card.svg";
+import yellowCardIcon from "@/assets/dogs/yellow-card.svg";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function YellowCardIndicator() {

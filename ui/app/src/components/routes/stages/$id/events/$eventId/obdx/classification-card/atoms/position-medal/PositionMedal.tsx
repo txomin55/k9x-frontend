@@ -1,9 +1,9 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
 import type { PositionMedalProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal.types";
-import escarapelaOro from "@/assets/escarapela-oro.svg";
-import escarapelaPlata from "@/assets/escarapela-plata.svg";
-import escarapelaBronce from "@/assets/escarapela-bronce.svg";
+import escarapelaOro from "@/assets/awards/escarapela-oro.svg";
+import escarapelaPlata from "@/assets/awards/escarapela-plata.svg";
+import escarapelaBronce from "@/assets/awards/escarapela-bronce.svg";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 const MEDALS = {

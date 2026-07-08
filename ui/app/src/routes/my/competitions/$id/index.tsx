@@ -1,23 +1,45 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createMemo, createSignal, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
 import {
   type CompetitionResponseDTO,
-  type UpdateCompetitionRequestDTO
+  type UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
-import { toApiStage, useApiStage } from "@/services/secured/stage-crud/stageCrud";
+import {
+  toApiStage,
+  useApiStage,
+} from "@/services/secured/stage-crud/stageCrud";
 import { canDeleteCompetition, canEditCompetition } from "@/utils/competition";
 import { toUndefinedIfBlank } from "@/utils/date";
-import { validateRequiredSelection, validateRequiredText } from "@/utils/validation/textField";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {
+  validateRequiredSelection,
+  validateRequiredText,
+} from "@/utils/validation/textField";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
-import pencilIcon from "@/assets/pencil.svg";
-import eyeIcon from "@/assets/eye.svg";
+import pencilIcon from "@/assets/miscelaneous/pencil.svg";
+import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
-import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import {
+  StageEditorModel,
+  UpdateStageRequestDTO,
+} from "@/services/secured/stage-crud/stageCrud.types";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
@@ -349,9 +371,7 @@ function CompetitionDetailBody(props: {
         />
       </Show>
       <Show
-        when={
-          isEditing() && canDeleteCompetition(props.competition()?.status)
-        }
+        when={isEditing() && canDeleteCompetition(props.competition()?.status)}
       >
         <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
           <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>

@@ -1,6 +1,6 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
-import rotateDeviceIcon from "@/assets/rotate-device.svg";
+import rotateDeviceIcon from "@/assets/miscelaneous/rotate-device.svg";
 import "@/components/common/rotate-device-hint/styles.css";
 
 export default function RotateDeviceHint() {
@@ -11,6 +11,7 @@ export default function RotateDeviceHint() {
       <AtomSvgIcon
         src={rotateDeviceIcon}
         alt={t("COMMON.ROTATE_DEVICE_HINT")}
+        tinted
       />
     </span>
   );

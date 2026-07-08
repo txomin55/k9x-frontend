@@ -1,16 +1,10 @@
-import {
-  createFileRoute,
-  useNavigate,
-  useParams,
-} from "@tanstack/solid-router";
+import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -268,13 +262,15 @@ function StageInfoPage() {
       >
         {(stage) => (
           <>
-            <span class="text-body-md">{stage().competitionName}</span>
             <div class="stage-info__title">
-              <Show when={stage().status && isStageLive(stage().status!)}>
-                <div class="stage-info__title--status">
-                  <StatusBadge status={stage().status!} dotMode />
-                </div>
-              </Show>
+              <div class="stage-info__title--name">
+                <span class="text-body-md">{stage().competitionName}</span>
+                <Show when={stage().status && isStageLive(stage().status!)}>
+                  <div class="stage-info__title--status">
+                    <StatusBadge status={stage().status!} dotMode />
+                  </div>
+                </Show>
+              </div>
               <span class="text-caption-sm">{`${formatDateLabel(toDateInputValue(stage().dateFrom ?? 0))} - ${formatDateLabel(toDateInputValue(stage().dateTo ?? 0))}`}</span>
             </div>
             <span class="text-caption-lg">{stage().address}</span>

@@ -1,23 +1,48 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { type Accessor, createEffect, createSignal, Index, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import {
+  type Accessor,
+  createEffect,
+  createSignal,
+  Index,
+  Show,
+  Suspense,
+} from "solid-js";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   CreateEventRequestDTO,
   EventDetailResponseDTO,
   EventEditorDraft,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
-import { SCORE_CALCULATION, toEventExerciseRequest } from "@/services/secured/event-crud/eventCrud.types";
-import { canDeleteEvent, canEditEvent, toEventEditorDraft } from "@/utils/event";
+import {
+  SCORE_CALCULATION,
+  toEventExerciseRequest,
+} from "@/services/secured/event-crud/eventCrud.types";
+import {
+  canDeleteEvent,
+  canEditEvent,
+  toEventEditorDraft,
+} from "@/utils/event";
 import { canDeleteStage, canEditStage } from "@/utils/stage";
-import { dayBefore, formatDateLabel, parseDateInputValue, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {
+  dayBefore,
+  formatDateLabel,
+  parseDateInputValue,
+  toDateInputValue,
+} from "@/utils/date";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
-import pencilIcon from "@/assets/pencil.svg";
-import eyeIcon from "@/assets/eye.svg";
+import pencilIcon from "@/assets/miscelaneous/pencil.svg";
+import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -25,7 +50,10 @@ import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
-import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
+import {
+  StageEditorModel,
+  UpdateStageRequestDTO,
+} from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { generateEntityId } from "@/utils/id/generateEntityId";
@@ -341,6 +369,7 @@ function CompetitionStageDetailBody(props: {
         position: competitor.position,
         accepted: competitor.accepted,
         bih: competitor.bih,
+        reserve: competitor.reserve,
       })),
       configurationId: draft.configuration.id,
       enrollmentDeadline: draft.enrollmentDeadline,

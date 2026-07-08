@@ -51,3 +51,4 @@ dev-dist
 /scripts/delete_package_versions.py
 /test-results/
 .fallow/
+/ui/app/.tanstack/

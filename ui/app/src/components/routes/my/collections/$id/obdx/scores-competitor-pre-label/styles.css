@@ -4,10 +4,11 @@
     gap: var(--unit-1);
 }
 
-.scores-competitor-pre-label img {
-    width: auto;
+.scores-competitor-pre-label .atom-svg-icon {
+    width: var(--unit-2);
     height: var(--unit-2);
     flex-shrink: 0;
+    color: var(--text-secondary);
 }
 
 .scores-competitor-pre-label .country-flag {

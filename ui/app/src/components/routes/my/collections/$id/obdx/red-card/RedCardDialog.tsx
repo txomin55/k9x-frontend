@@ -1,14 +1,19 @@
 import { createEffect, createMemo, createSignal, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { fetchRedCard, registerRedCard } from "@/services/secured/red-card-crud/redCardCrud";
+import {
+  fetchRedCard,
+  registerRedCard,
+} from "@/services/secured/red-card-crud/redCardCrud";
 import type { RedCardResponseDTO } from "@/services/secured/red-card-crud/redCardCrud.types";
 import type { CompetitorScoresResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
-import redCardIcon from "@/assets/red-card.svg";
+import redCardIcon from "@/assets/dogs/red-card.svg";
 import "./styles.css";
 
 type RedCardDialogProps = {
@@ -120,7 +125,9 @@ export default function RedCardDialog(props: RedCardDialogProps) {
   };
 
   return (
-    <div classList={{ "red-card-dialog__trigger--hidden": !props.competitorId }}>
+    <div
+      classList={{ "red-card-dialog__trigger--hidden": !props.competitorId }}
+    >
       <button
         type="button"
         class="red-card-dialog__trigger"
@@ -168,7 +175,9 @@ export default function RedCardDialog(props: RedCardDialogProps) {
           <div class="red-card-dialog__content">
             <AtomSelect
               label={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.JUDGE")}
-              placeholder={i18n.t("MY.COLLECTIONS.DETAIL.RED_CARD.SELECT_JUDGE")}
+              placeholder={i18n.t(
+                "MY.COLLECTIONS.DETAIL.RED_CARD.SELECT_JUDGE",
+              )}
               options={judgeOptions()}
               value={selectedJudge()}
               onChange={setSelectedJudge}

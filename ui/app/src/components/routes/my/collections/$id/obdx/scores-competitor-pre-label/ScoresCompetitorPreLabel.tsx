@@ -1,6 +1,6 @@
 import { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import collectedIcon from "@/assets/collected.svg";
+import collectedIcon from "@/assets/dogs/collected.svg";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import "./styles.css";
 
@@ -17,7 +17,7 @@ export default (props: ScoresCompetitorPreLabelProps) => {
           "scores-competitor-pre-label__seen--hidden": !props.seen,
         }}
       >
-        <AtomSvgIcon src={collectedIcon} alt="" />
+        <AtomSvgIcon src={collectedIcon} alt="" tinted />
       </div>
       <CountryFlag
         country={props.competitor.country}
