@@ -1,7 +1,5 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -51,24 +49,24 @@ export default function StageCard(props: StageCardProps) {
         </div>
       }
       subHeader={
-        <div class="stage-card__meta">
-          <span class="stage-card__address text-caption-md">
-            {props.organizer}
-          </span>
-          <span class="stage-card__address text-caption-md">
-            {props.address}
-          </span>
-          <span class="stage-card__date text-caption-sm">
-            {formatStageDateRange(props.from, props.to)}
-          </span>
-        </div>
-      }
-      description={
         props.competitionName ? (
           <span class="stage-card__description text-body-md">
             {props.competitionName}
           </span>
         ) : undefined
+      }
+      description={
+        <div class="stage-card__meta">
+          <span class="stage-card__address text-caption-md">
+            {formatStageDateRange(props.from, props.to)}
+          </span>
+          <span class="stage-card__address text-caption-md">
+            {props.address}
+          </span>
+          <span class="stage-card__date text-caption-sm">
+            {props.organizer}
+          </span>
+        </div>
       }
       content={
         <StageCardEventsContent

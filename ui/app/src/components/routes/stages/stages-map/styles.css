@@ -73,6 +73,8 @@
     flex-shrink: 0;
     background: var(--border-strong);
     opacity: 0.5;
+    margin-top: var(--unit-05);
+    margin-bottom: var(--unit-05);
 }
 
 .stages-map-marker-popup__row {

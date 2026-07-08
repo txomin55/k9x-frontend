@@ -237,7 +237,11 @@ function StagesIndexPage() {
       id: "dateFrom",
       accessorFn: (stage) => stage.dateFrom ?? 0,
       header: i18n.t("STAGES.INDEX.DATE_FROM"),
-      cell: (info) => formatUtcDateOnly(info.getValue<number>()),
+      cell: (info) => (
+        <span class="text-caption-md">
+          {formatUtcDateOnly(info.getValue<number>())}
+        </span>
+      ),
     },
     {
       id: "expander",
