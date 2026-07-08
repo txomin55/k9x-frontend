@@ -10,6 +10,12 @@
     align-items: center;
 }
 
+.competition-card__content {
+    display: flex;
+    gap: var(--unit-1);
+    flex-direction: column;
+}
+
 .competition-card__stages {
     display: flex;
     justify-content: space-between;

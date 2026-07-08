@@ -363,7 +363,7 @@ function CompetitionStageDetailBody(props: {
               <Show when={props.stage()?.status}>
                 {(status) => <StatusBadge status={status()} />}
               </Show>
-              <span class="text-body-md">{`${formatDateLabel(toDateInputValue(props.stage().dateFrom))} - ${formatDateLabel(toDateInputValue(props.stage().dateTo))}`}</span>
+              <span class="text-caption-lg">{`${formatDateLabel(toDateInputValue(props.stage().dateFrom))} - ${formatDateLabel(toDateInputValue(props.stage().dateTo))}`}</span>
             </div>
           }
         >

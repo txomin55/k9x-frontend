@@ -25,7 +25,7 @@ export default function DisciplineIcon(props: {
       alt={props.alt ?? `${disciplineId()} icon`}
       class="discipline-icon"
       src={src()}
-      style={{ height: "var(--unit-4)", width: "auto" }}
+      style={{ height: "var(--unit-4)", width: "var(--unit-4)" }}
     />
   );
 }

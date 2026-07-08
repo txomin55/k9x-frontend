@@ -621,10 +621,7 @@ function CompetitionObdxEventDetailBody(props: {
       (current) => ({
         ...current,
         judges: current.judges.filter((entry) => entry.id !== judgeIdToDelete),
-        exercises: removeJudgeFromExercises(
-          current.exercises,
-          judgeIdToDelete,
-        ),
+        exercises: removeJudgeFromExercises(current.exercises, judgeIdToDelete),
       }),
       {
         persist: true,
@@ -849,8 +846,8 @@ function CompetitionObdxEventDetailBody(props: {
             <div class="competition-event-detail__content--header">
               <div class="competition-event-detail__content--header-title">
                 <StatusBadge status={props.event().status} />
-                <DisciplineIcon disciplineId={props.event().discipline.id} />
               </div>
+              <DisciplineIcon disciplineId={props.event().discipline.id} />
             </div>
           }
         >

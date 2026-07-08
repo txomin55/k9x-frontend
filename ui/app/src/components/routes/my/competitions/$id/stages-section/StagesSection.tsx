@@ -77,7 +77,7 @@ export default function StagesSection(props: StagesSectionProps) {
                 </Show>
               }
               subHeader={
-                <span class="text-body-md">
+                <span class="text-caption-md">
                   {formatStageDateRange(stage().dateFrom, stage().dateTo)}
                 </span>
               }

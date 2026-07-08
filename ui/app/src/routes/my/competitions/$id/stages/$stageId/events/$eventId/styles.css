@@ -6,15 +6,14 @@
 
 .competition-event-detail__content--header-title {
     display: flex;
+    gap: var(--unit-05);
     justify-content: space-between;
-    padding-bottom: var(--unit-1);
 }
 
 .competition-event-detail__content--header {
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
-    padding-bottom: var(--unit-1);
 }
 
 .competition-event-detail__content--header-detail {

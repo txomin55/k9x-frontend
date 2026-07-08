@@ -1,3 +1,7 @@
+.stage-detail__content--events > :first-child {
+    padding-bottom: var(--unit-1);
+}
+
 .stage-detail__content--events {
     display: flex;
     width: 100%;

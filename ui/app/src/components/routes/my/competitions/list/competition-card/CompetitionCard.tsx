@@ -41,18 +41,20 @@ export default function CompetitionCard(props: CompetitionCardProps) {
         </span>
       }
       content={
-        <For each={props.stages}>
-          {(stage) => (
-            <div class="competition-card__stages">
-              <div class="competition-card__stages--info">
-                <span>{stage.name}</span>
-                <span class="text-caption-sm">
-                  {formatStageDateRange(stage.dateFrom, stage.dateTo)}
-                </span>
+        <div class="competition-card__content">
+          <For each={props.stages}>
+            {(stage) => (
+              <div class="competition-card__stages">
+                <div class="competition-card__stages--info">
+                  <span>{stage.name}</span>
+                  <span class="text-caption-sm">
+                    {formatStageDateRange(stage.dateFrom, stage.dateTo)}
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
-        </For>
+            )}
+          </For>
+        </div>
       }
       actions={
         <AtomButton

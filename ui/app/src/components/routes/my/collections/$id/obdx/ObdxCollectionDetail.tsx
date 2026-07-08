@@ -2,12 +2,14 @@ import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import {
   updateCollectionScore,
   useCollectionById,
-  useCollections
+  useCollections,
 } from "@/services/secured/collection-crud/collectionCrud";
 import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import YellowCardDialog from "@/components/routes/my/collections/$id/obdx/yellow-card/YellowCardDialog";
 import RedCardDialog from "@/components/routes/my/collections/$id/obdx/red-card/RedCardDialog";
@@ -19,15 +21,13 @@ import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import ScoresCompetitorPreLabel
-  from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
+import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
-import CollectionExerciseScore
-  from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
+import CollectionExerciseScore from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";
 import type {
   CollectionScoreResponseDTO,
   ExerciseScoresResponseDTO,
-  UpdateCollectionScoreRequestDTO
+  UpdateCollectionScoreRequestDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import "./styles.css";
 
@@ -88,11 +88,13 @@ export default function ObdxCollectionDetail() {
         ?.status ?? "",
   );
 
-  const stageDateTo = createMemo(() =>
-    getCachedCompetitions()
-      ?.flatMap((competition) => competition.stages)
-      .find((stage) => stage.events.some((event) => event.id === params()?.id))
-      ?.dateTo,
+  const stageDateTo = createMemo(
+    () =>
+      getCachedCompetitions()
+        ?.flatMap((competition) => competition.stages)
+        .find((stage) =>
+          stage.events.some((event) => event.id === params()?.id),
+        )?.dateTo,
   );
 
   const isPastStageEditWindow = createMemo(() =>
@@ -300,10 +302,12 @@ export default function ObdxCollectionDetail() {
 
   return (
     <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
-      <DisciplineIcon disciplineId={collectionData.data?.discipline.id} />
-      <span class="text-caption-sm">
-        {collectionData.data?.configuration?.description}
-      </span>
+      <div class="obdx-collection-detail__discipline">
+        <DisciplineIcon disciplineId={collectionData.data?.discipline.id} />
+        <span class="text-caption-sm">
+          {collectionData.data?.configuration?.description}
+        </span>
+      </div>
 
       <div class="obdx-collection-detail__competitor">
         <AtomSelect
@@ -318,7 +322,7 @@ export default function ObdxCollectionDetail() {
           eventId={params().id}
           competitorId={
             isSelectedCompetitorScoresAllowed()
-              ? selectedCompetitor()?.value ?? ""
+              ? (selectedCompetitor()?.value ?? "")
               : ""
           }
           competitors={collectionData.data?.obdx.competitors ?? []}
@@ -333,7 +337,7 @@ export default function ObdxCollectionDetail() {
           eventId={params().id}
           competitorId={
             isSelectedCompetitorScoresAllowed()
-              ? selectedCompetitor()?.value ?? ""
+              ? (selectedCompetitor()?.value ?? "")
               : ""
           }
           competitors={collectionData.data?.obdx.competitors ?? []}
