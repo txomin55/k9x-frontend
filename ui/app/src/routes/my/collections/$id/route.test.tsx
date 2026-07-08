@@ -31,6 +31,7 @@ vi.mock("@/services/secured/collection-crud/collectionCrud", () => ({
       return mocks.collectionDataAccessor();
     },
   }),
+  useCollections: () => ({ data: [] }),
 }));
 
 vi.mock("@lib/components/atoms/select/AtomSelect", () => ({
