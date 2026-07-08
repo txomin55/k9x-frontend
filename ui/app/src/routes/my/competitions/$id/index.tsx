@@ -19,6 +19,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import { useI18n } from "@/stores/i18n/i18n";
 import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
@@ -149,7 +150,7 @@ function CompetitionDetailBody(props: {
         dateFrom: Date.now(),
         dateTo: Date.now(),
         events: [],
-        id: globalThis.crypto.randomUUID(),
+        id: generateEntityId("stage"),
         name: "",
       });
       return;
@@ -215,7 +216,7 @@ function CompetitionDetailBody(props: {
       dateFrom: Date.now(),
       dateTo: Date.now(),
       events: [],
-      id: draft.id ?? globalThis.crypto.randomUUID(),
+      id: draft.id ?? generateEntityId("stage"),
       name: draft.name ?? "",
     });
     setStageDialogParam("new");

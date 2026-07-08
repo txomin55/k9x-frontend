@@ -20,6 +20,7 @@ import type {
 import { getJudgesQueryKey, JUDGES_SNAPSHOT_ID } from "./judgeCrudConstants";
 import { mergeJudgesWithDrafts } from "./judgeDraftStore";
 import { isOrganizer } from "@/stores/auth/auth";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 
 const refreshJudgesSnapshot = async () => {
   if (!isOrganizer()) {
@@ -83,7 +84,7 @@ const mergeJudgeWithPayload = (
   payload: CreateJudgeRequestDTO,
   existingJudge?: JudgeResponseDTO,
 ): JudgeResponseDTO => ({
-  id: payload.id ?? existingJudge?.id ?? globalThis.crypto.randomUUID(),
+  id: payload.id ?? existingJudge?.id ?? generateEntityId("judge"),
   name: payload.name ?? existingJudge?.name ?? "",
   country: payload.country ?? existingJudge?.country ?? "",
 });

@@ -21,6 +21,7 @@ import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/qu
 import { mergeCompetitionsWithDrafts } from "@/services/secured/competition-crud/competitionDraftStore";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { isOrganizer } from "@/stores/auth/auth";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 
@@ -117,7 +118,7 @@ const mergeCompetitionWithPayload = (
   return {
     country,
     description: description ?? "",
-    id: payloadId ?? previousCompetition?.id ?? globalThis.crypto.randomUUID(),
+    id: payloadId ?? previousCompetition?.id ?? generateEntityId("competition"),
     address: address ?? previousCompetition?.address ?? "",
     name: payload.name ?? previousCompetition?.name ?? "",
     notifications: previousCompetition?.notifications ?? [],
@@ -127,7 +128,7 @@ const mergeCompetitionWithPayload = (
 };
 
 const createDefaultCompetition = (): IdNameDTO => ({
-  id: globalThis.crypto.randomUUID(),
+  id: generateEntityId("competition"),
   name: translate("MY.COMPETITIONS.DETAIL.DEFAULT_COMPETITION"),
 });
 

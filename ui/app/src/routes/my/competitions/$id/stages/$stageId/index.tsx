@@ -28,6 +28,7 @@ import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configuration
 import { StageEditorModel, UpdateStageRequestDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
@@ -250,7 +251,7 @@ function CompetitionStageDetailBody(props: {
       },
       enrollmentDeadline: dayBefore(props.stage().dateFrom),
       exercises: [],
-      id: draft.id ?? globalThis.crypto.randomUUID(),
+      id: draft.id ?? generateEntityId("event"),
       judges: [],
       name: draft.name ?? "",
       scoreCalculation: SCORE_CALCULATION.AVG,

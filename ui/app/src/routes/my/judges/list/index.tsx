@@ -25,6 +25,7 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 
 export const Route = createFileRoute("/my/judges/list/")({
 	component: MyJudgesListPage,
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/my/judges/list/")({
 function MyJudgesListPage() {
 	const i18n = useI18n();
 	const buildJudgeDraft = (): JudgeResponseDTO => ({
-		id: globalThis.crypto.randomUUID(),
+		id: generateEntityId("judge"),
 		name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
 		country: "",
 	});

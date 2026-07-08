@@ -39,6 +39,7 @@ import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import { AtomCombobox, type AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import { useI18n } from "@/stores/i18n/i18n";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
 function CompetitionObdxEventDetailBody(props: {
@@ -277,7 +278,7 @@ function CompetitionObdxEventDetailBody(props: {
   const createDefaultJudge = (): EventJudgeDetailResponseDTO => ({
     collectorEmail: "",
     name: "",
-    id: globalThis.crypto.randomUUID(),
+    id: generateEntityId("judge"),
   });
 
   const createDefaultExercise = (

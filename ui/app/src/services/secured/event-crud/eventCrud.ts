@@ -19,6 +19,7 @@ import type { CollectionResponseDTO } from "@/services/secured/collection-crud/c
 import { translate } from "@/stores/i18n/i18n";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
 import { oneWeekFromNow } from "@/utils/date";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
   getConfigurationsFromCache
@@ -68,7 +69,7 @@ export const useEventById = (id: string, options?: TanstackCreateQuery) =>
     enabled: !!id && id !== "new",
   });
 
-const createId = () => globalThis.crypto.randomUUID();
+const createId = () => generateEntityId("event");
 
 const toApiExercise = (
   exercise: EventExerciseRequestDTO,

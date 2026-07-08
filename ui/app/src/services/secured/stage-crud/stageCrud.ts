@@ -21,8 +21,9 @@ import {
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations.types";
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { translate } from "@/stores/i18n/i18n";
+import { generateEntityId } from "@/utils/id/generateEntityId";
 
-const createId = () => globalThis.crypto.randomUUID();
+const createId = () => generateEntityId("stage");
 
 const mergeApiStageWithPayload = (
   payload: CreateStageRequestDTO | UpdateStageRequestDTO,
