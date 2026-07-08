@@ -9,7 +9,7 @@ export const STAGE_STATUS = {
 export function getMarkerTextColorByStatus(status: string) {
   switch (status) {
     case STAGE_STATUS.CREATED:
-      return "var(--text-primary)";
+      return "var(--primary)";
     case STAGE_STATUS.TO_START:
       return "var(--warning-text)";
     case STAGE_STATUS.STARTED:
@@ -23,7 +23,7 @@ export function getMarkerTextColorByStatus(status: string) {
 export function getMarkerColorByStatus(status: string) {
   switch (status) {
     case STAGE_STATUS.CREATED:
-      return "var(--surface-muted)";
+      return "var(--primary-soft)";
     case STAGE_STATUS.TO_START:
       return "var(--warning-bg)";
     case STAGE_STATUS.STARTED:
