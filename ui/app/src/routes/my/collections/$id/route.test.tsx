@@ -84,7 +84,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
           identity: "",
           country: "",
           status: "",
-          breed: "",
+          breed: { id: "", name: "" },
         } satisfies CollectionResponseDTO["obdx"]["competitors"][number]["competitor"],
         exercises: [
           {

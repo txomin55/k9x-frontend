@@ -50,7 +50,7 @@ export interface StageEventDetailCompetitorResponseDTO {
   handler: string;
   team: string;
   country: string;
-  breed: string;
+  breed: IdNameDTO;
 }
 
 export interface StageEventDetailResponseDTO {

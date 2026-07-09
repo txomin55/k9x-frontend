@@ -38,7 +38,7 @@ export interface EventCompetitorResponseDTO {
   handler: string;
   country: string;
   status: string;
-  breed: string;
+  breed: IdNameDTO;
   bih?: boolean;
   reserve?: boolean;
   notCompeting?: boolean;
@@ -187,7 +187,7 @@ const normalizeCompetitor = (
   identity: competitor.identity ?? "",
   team: competitor.team ?? "",
   country: competitor.country ?? "",
-  breed: competitor.breed ?? "",
+  breed: competitor.breed?.name ?? "",
   position: competitor.position ?? 0,
   accepted: competitor.status === COMPETITOR_STATUS.ENROLLED,
   status: competitor.status ?? "",

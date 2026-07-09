@@ -215,7 +215,7 @@ function StageInfoPage() {
                                     <div class="stage-info__competitor--info">
                                       <span class="text-caption-lg">
                                         <b>{competitor.dog.name} (</b>
-                                        {competitor.breed})
+                                        {competitor.breed.name})
                                       </span>
                                       <span class="text-caption-md">
                                         {competitor.handler} ({competitor.team})

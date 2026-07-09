@@ -27,7 +27,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
           handler: "Ana Perez",
           team: "Team Alpha",
           country: "ES",
-          breed: "Border Collie",
+          breed: { id: "breed-1", name: "Border Collie" },
         },
         {
           dog: { id: "dog-2", name: "Luna" },
@@ -35,7 +35,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
           handler: "Marc Soler",
           team: "Team Beta",
           country: "FR",
-          breed: "Australian Shepherd",
+          breed: { id: "breed-2", name: "Australian Shepherd" },
         },
       ],
     },

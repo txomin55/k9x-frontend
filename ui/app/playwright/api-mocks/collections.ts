@@ -41,7 +41,7 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
           handler: "Ana Perez",
           country: "ES",
           status: "ENROLLED",
-          breed: "Border Collie",
+          breed: { id: "breed-1", name: "Border Collie" },
         },
         exercises: [
           {
