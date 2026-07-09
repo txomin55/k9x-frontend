@@ -61,6 +61,7 @@
 .landing-page__action--primary {
     background: var(--accent);
     color: var(--background);
+    height: fit-content;
 }
 
 .landing-page__action--secondary {

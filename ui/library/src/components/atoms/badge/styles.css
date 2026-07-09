@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: center;
 
-    min-height: 20px;
+    height: fit-content;
     padding: 0 var(--unit-05);
 
     border-radius: 999px;
