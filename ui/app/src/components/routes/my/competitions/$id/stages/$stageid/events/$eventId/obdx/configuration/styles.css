@@ -12,5 +12,5 @@
 .event-configuration-section__content--federation {
     display: flex;
     gap: var(--unit-1);
-    align-items: baseline;
+    align-items: center;
 }

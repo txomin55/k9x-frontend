@@ -144,46 +144,70 @@ export default function CompetitorEditorForm(
           <div class="competitor-editor-form__info">
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
-              <CountryFlag
-                country={
-                  selectedDog(draft().dogId)?.country.id ?? draft().country
-                }
-              />
+              <Show when={selectedDog(draft().dogId)}>
+                {(selected) => (
+                  <CountryFlag
+                    country={selected().country.id ?? draft().country}
+                  />
+                )}
+              </Show>
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SEX")}
-              <SexIcon sex={selectedDog(draft().dogId)?.sex} />
+              <Show when={selectedDog(draft().dogId)}>
+                {(selected) => <SexIcon sex={selected().sex} />}
+              </Show>
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CHIP")}
-              <span class="text-label-sm">
-                {selectedDog(draft().dogId)?.id ?? draft().dogId}
-              </span>
+              <Show when={selectedDog(draft().dogId)}>
+                {(selected) => (
+                  <span class="text-label-sm">
+                    {selected().id ?? draft().dogId}
+                  </span>
+                )}
+              </Show>
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
-              <span class="text-label-sm">
-                {selectedDog(draft().dogId)?.identity ?? draft().identity}
-              </span>
+              <Show when={selectedDog(draft().dogId)}>
+                {(selected) => (
+                  <span class="text-label-sm">
+                    {selected().identity ?? draft().identity}
+                  </span>
+                )}
+              </Show>
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
-              <span class="text-label-sm">
-                {selectedDog(draft().dogId)?.breed.name ?? draft().breed}
-              </span>
+              <Show when={selectedDog(draft().dogId)}>
+                {(selected) => (
+                  <span class="text-label-sm">
+                    {selected().breed.name ?? draft().breed}
+                  </span>
+                )}
+              </Show>
             </span>
             <div class="competitor-editor-form__info--handler">
               <span class="text-caption-md">
                 {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.HANDLER")}
-                <span class="text-label-sm">
-                  {selectedDog(draft().dogId)?.handler ?? draft().handler}
-                </span>
+                <Show when={selectedDog(draft().dogId)}>
+                  {(selected) => (
+                    <span class="text-label-sm">
+                      {selected().handler ?? draft().handler}
+                    </span>
+                  )}
+                </Show>
               </span>
               <span class="text-caption-md">
                 {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
-                <span class="text-label-sm">
-                  ({selectedDog(draft().dogId)?.team ?? draft().team})
-                </span>
+                <Show when={selectedDog(draft().dogId)}>
+                  {(selected) => (
+                    <span class="text-label-sm">
+                      ({selected().team ?? draft().team})
+                    </span>
+                  )}
+                </Show>
               </span>
             </div>
           </div>
