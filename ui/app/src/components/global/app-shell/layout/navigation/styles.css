@@ -68,39 +68,6 @@
     text-underline-offset: 3px;
 }
 
-@media (max-width: 720px) {
-    .navigation__sidebar {
-        position: absolute;
-        top: var(--unit-6);
-        left: var(--unit-2);
-        right: var(--unit-2);
-        z-index: 10;
-        margin: 0;
-        pointer-events: none;
-    }
-
-    .navigation__sidebar-panel {
-        height: auto;
-        box-shadow: 0 20px 45px rgba(15, 23, 32, 0.22);
-    }
-
-    .navigation__sidebar--mobile .navigation__sidebar-panel {
-        opacity: 0;
-        transform: translateY(-12px);
-        transition: transform 220ms ease,
-        opacity 180ms ease;
-    }
-
-    .navigation__sidebar--mobile.navigation__sidebar--open {
-        pointer-events: auto;
-    }
-
-    .navigation__sidebar--mobile.navigation__sidebar--open .navigation__sidebar-panel {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .contact-form {
     display: flex;
     flex-direction: column;

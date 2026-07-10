@@ -7,12 +7,15 @@ import {
   createMemo,
   createSignal,
   For,
+  Match,
   Show,
   Suspense,
+  Switch,
 } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
+import StageCardSkeleton from "@/components/routes/stages/stage-card/StageCardSkeleton";
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import StagesFilters from "@/components/routes/stages/stages-filters/StagesFilters";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
@@ -32,6 +35,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
@@ -49,6 +53,11 @@ const CONTROLS_KEYS = {
   MAP: "MAP",
 };
 
+const SKELETON_ROWS = Array.from(
+  { length: 3 },
+  () => ({}) as StageSummaryResponseDTO,
+);
+
 type EnrollDraft = {
   dogId: string;
   bih: boolean;
@@ -59,10 +68,14 @@ const createEmptyEnrollDraft = (): EnrollDraft => ({
   bih: false,
 });
 
-function StagesIndexPage() {
+type EnrollHandler = (stageId: string, eventId: string) => void;
+
+// Builds the filtered + sorted stages pipeline. Each tab view calls this so it
+// creates and reads its own query under its own <Suspense> (same-owner, so the
+// suspense resolves like the landing does); the parent stays query-free and its
+// tab bar renders immediately.
+function useSortedStages() {
   const { isOffline } = useOffline();
-  const i18n = useI18n();
-  const navigate = useNavigate();
   const user = useAuthUser();
   const isLoggedIn = () => !!user();
 
@@ -71,81 +84,11 @@ function StagesIndexPage() {
     gcTime: 5 * 60 * 1000,
   });
 
-  const dogsQuery = useDogs({
-    refetchOnMount: !isOfflinePolicy(),
-    gcTime: 5 * 60 * 1000,
-  });
-  const dogOptions = createMemo<AtomSelectOption[]>(() =>
-    (dogsQuery.data ?? []).map((dog) => ({
-      label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
-      value: dog.id,
-    })),
-  );
-  const [selectedStageId, setSelectedStageId] = useSearchParam(
-    "enrollStage",
-    "",
-    "push",
-  );
-  const [selectedEventId, setSelectedEventId] = useSearchParam(
-    "enroll",
-    "",
-    "push",
-  );
-  const enrollDialogOpen = () => !!selectedStageId() && !!selectedEventId();
-  const selectedEventName = createMemo(
-    () =>
-      (fetchedStages.data ?? [])
-        .find((stage) => String(stage.id) === String(selectedStageId()))
-        ?.events.find((event) => String(event.id) === String(selectedEventId()))
-        ?.name ?? "",
-  );
-  const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
-    createEmptyEnrollDraft(),
-  );
-
-  const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
-    setEnrollDraft((current) => updater(current));
-
-  const handleDogChange = (option: AtomSelectOption | null) => {
-    updateEnrollDraft((current) => ({
-      ...current,
-      dogId: option?.value ?? "",
-    }));
-  };
-
-  const selectedDog = (dogId: string) =>
-    (dogsQuery.data ?? []).find((dog) => dog.id === dogId);
-
-  const openEnrollDialog = (stageId: string, eventId: string) => {
-    setEnrollDraft(createEmptyEnrollDraft());
-    setSelectedStageId(stageId);
-    setSelectedEventId(eventId);
-  };
-
-  const closeEnrollDialog = () => {
-    setSelectedStageId("");
-    setSelectedEventId("");
-    setEnrollDraft(createEmptyEnrollDraft());
-  };
-
-  const handleEnroll = async () => {
-    if (!selectedStageId() || !selectedEventId()) {
-      return;
-    }
-
-    await enrollStageEvent(selectedStageId(), {
-      ...enrollDraft(),
-      eventId: selectedEventId(),
-    });
-
-    closeEnrollDialog();
-  };
-
-  const [nameFilter, setNameFilter] = useSearchParam("name", "");
-  const [countryFilter, setCountryFilter] = useSearchParam("country", "");
-  const [statusFilter, setStatusFilter] = useSearchParam("status", "");
-  const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
-  const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
+  const [nameFilter] = useSearchParam("name", "");
+  const [countryFilter] = useSearchParam("country", "");
+  const [statusFilter] = useSearchParam("status", "");
+  const [dateFromFilter] = useSearchParam("from", "");
+  const [dateToFilter] = useSearchParam("to", "");
 
   const filteredStages = createMemo(() => {
     const stages = fetchedStages.data ?? [];
@@ -181,34 +124,43 @@ function StagesIndexPage() {
       ) ?? [],
   );
 
-  const renderStageCard = (stage: StageSummaryResponseDTO) => (
-    <StageCard
-      id={stage.id}
-      country={stage.country ?? ""}
-      name={stage.name}
-      status={stage.status}
-      from={stage.dateFrom ?? 0}
-      to={stage.dateTo ?? 0}
-      competitionName={stage.competitionName ?? ""}
-      organizer={stage.organizer}
-      address={stage?.location?.address}
-      events={stage.events ?? []}
-      onEnroll={(eventId) => openEnrollDialog(stage.id, eventId)}
-    />
-  );
+  return { sortedStages, isPending: () => fetchedStages.isPending };
+}
 
-  const renderStageCardContent = (stage: StageSummaryResponseDTO) => (
-    <StageCardEventsContent
-      id={stage.id}
-      events={stage.events ?? []}
-      onEnroll={(eventId) => openEnrollDialog(stage.id, eventId)}
-    />
-  );
+function StagesListView(props: { onEnroll: EnrollHandler }) {
+  const i18n = useI18n();
+  const user = useAuthUser();
+  const { sortedStages } = useSortedStages();
 
-  const handleGoToDogs = () =>
-    navigate({
-      to: "/my/dogs",
-    });
+  return (
+    <Show
+      when={!(!!user() && sortedStages().length === 0)}
+      fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
+    >
+      <For each={sortedStages()}>
+        {(stage) => (
+          <StageCard
+            id={stage.id}
+            country={stage.country ?? ""}
+            name={stage.name}
+            status={stage.status}
+            from={stage.dateFrom ?? 0}
+            to={stage.dateTo ?? 0}
+            competitionName={stage.competitionName ?? ""}
+            organizer={stage.organizer}
+            address={stage?.location?.address}
+            events={stage.events ?? []}
+            onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
+          />
+        )}
+      </For>
+    </Show>
+  );
+}
+
+function StagesTableView(props: { onEnroll: EnrollHandler }) {
+  const i18n = useI18n();
+  const { sortedStages } = useSortedStages();
 
   const columns = createMemo<ColumnDef<StageSummaryResponseDTO>[]>(() => [
     {
@@ -272,36 +224,281 @@ function StagesIndexPage() {
     },
   ]);
 
+  return (
+    <div class="stages-table">
+      <AtomTable<StageSummaryResponseDTO>
+        data={sortedStages()}
+        columns={columns()}
+        getRowCanExpand={() => true}
+        renderSubComponent={(row) => (
+          <StageCardEventsContent
+            id={row.original.id}
+            events={row.original.events ?? []}
+            onEnroll={(eventId) => props.onEnroll(row.original.id, eventId)}
+          />
+        )}
+      />
+    </div>
+  );
+}
+
+function StagesTableSkeleton() {
+  const i18n = useI18n();
+
+  const skeletonColumns = createMemo<ColumnDef<StageSummaryResponseDTO>[]>(
+    () => [
+      {
+        id: "country",
+        header: i18n.t("STAGES.INDEX.COUNTRY"),
+        enableSorting: false,
+        cell: () => (
+          <AtomSkeleton
+            variant="rectangular"
+            width="var(--unit-6)"
+            height="var(--unit-4)"
+            radius="var(--radius-sm)"
+          />
+        ),
+      },
+      {
+        id: "name_status",
+        header: i18n.t("STAGES.INDEX.NAME"),
+        enableSorting: false,
+        cell: () => <AtomSkeleton width="70%" />,
+      },
+      {
+        id: "dateFrom",
+        header: i18n.t("STAGES.INDEX.DATE_FROM"),
+        enableSorting: false,
+        cell: () => <AtomSkeleton width="4rem" />,
+      },
+      {
+        id: "expander",
+        header: () => null,
+        enableSorting: false,
+        cell: () => null,
+      },
+    ],
+  );
+
+  return (
+    <div class="stages-table">
+      <AtomTable<StageSummaryResponseDTO>
+        data={SKELETON_ROWS}
+        columns={skeletonColumns()}
+        getRowCanExpand={() => false}
+      />
+    </div>
+  );
+}
+
+// Reads the query so its fetch is kicked off even when the map tab is the entry
+// point (the map itself only gates on isPending and never reads `.data`). Lives
+// under a null-fallback <Suspense> so it stays invisible while the fetch runs.
+function StagesDataPrimer() {
+  const { isOffline } = useOffline();
+  const query = useStages({
+    refetchOnMount: !isOffline(),
+    gcTime: 5 * 60 * 1000,
+  });
+
+  void query.data;
+
+  return null;
+}
+
+function StagesMapView(props: { onEnroll: EnrollHandler }) {
+  const i18n = useI18n();
+  const { sortedStages, isPending } = useSortedStages();
+
+  return (
+    <div class="stages-map-wrapper">
+      <Suspense fallback={null}>
+        <StagesDataPrimer />
+      </Suspense>
+      <StagesMap
+        stages={isPending() ? [] : sortedStages()}
+        onEnroll={props.onEnroll}
+      />
+      <Show when={isPending()}>
+        <div class="stages-map-loading-overlay">
+          {i18n.t("STAGES.INDEX.LOADING_STAGES")}
+        </div>
+      </Show>
+    </div>
+  );
+}
+
+function EnrollDialog(props: {
+  stageId: string;
+  eventId: string;
+  onClose: () => void;
+}) {
+  const i18n = useI18n();
+  const navigate = useNavigate();
+
+  const fetchedStages = useStages({ gcTime: 5 * 60 * 1000 });
+  const dogsQuery = useDogs({
+    refetchOnMount: !isOfflinePolicy(),
+    gcTime: 5 * 60 * 1000,
+  });
+
+  const dogOptions = createMemo<AtomSelectOption[]>(() =>
+    (dogsQuery.data ?? []).map((dog) => ({
+      label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
+      value: dog.id,
+    })),
+  );
+
+  const eventName = createMemo(
+    () =>
+      (fetchedStages.data ?? [])
+        .find((stage) => String(stage.id) === String(props.stageId))
+        ?.events.find((event) => String(event.id) === String(props.eventId))
+        ?.name ?? "",
+  );
+
+  const [enrollDraft, setEnrollDraft] = createSignal<EnrollDraft>(
+    createEmptyEnrollDraft(),
+  );
+
+  const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
+    setEnrollDraft((current) => updater(current));
+
+  const selectedDog = (dogId: string) =>
+    (dogsQuery.data ?? []).find((dog) => dog.id === dogId);
+
+  const handleEnroll = async () => {
+    await enrollStageEvent(props.stageId, {
+      ...enrollDraft(),
+      eventId: props.eventId,
+    });
+
+    props.onClose();
+  };
+
+  return (
+    <AtomDialog
+      closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}
+      content={
+        <div class="stage-info__enroll-form">
+          <AtomCombobox
+            label={i18n.t("STAGES.INFO.DOG")}
+            onChange={(option) =>
+              updateEnrollDraft((current) => ({
+                ...current,
+                dogId: option?.value ?? "",
+              }))
+            }
+            options={dogOptions()}
+            placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
+            value={
+              dogOptions().find(
+                (option) => option.value === enrollDraft().dogId,
+              ) ?? null
+            }
+          >
+            <Show when={dogOptions().length === 0}>
+              <AtomButton
+                type={BUTTON_TYPES.GHOST}
+                onClick={() => navigate({ to: "/my/dogs" })}
+              >
+                {i18n.t("STAGES.INFO.CREATE_DOG")}
+              </AtomButton>
+            </Show>
+          </AtomCombobox>
+
+          <Show
+            when={
+              selectedDog(enrollDraft().dogId) &&
+              selectedDog(enrollDraft().dogId)?.sex !== "MALE"
+            }
+          >
+            <AtomCheckbox
+              label={i18n.t("STAGES.INFO.BIH")}
+              checked={enrollDraft().bih}
+              setChecked={(value) =>
+                updateEnrollDraft((current) => ({
+                  ...current,
+                  bih: value,
+                }))
+              }
+            />
+          </Show>
+
+          <div class="stage-info__enroll-form-actions">
+            <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onClose}>
+              {i18n.t("STAGES.INFO.CANCEL")}
+            </AtomButton>
+            <AtomButton onClick={handleEnroll}>
+              {i18n.t("STAGES.INFO.ENROLL")}
+            </AtomButton>
+          </div>
+        </div>
+      }
+      onOpenChange={(open) => {
+        if (!open) {
+          props.onClose();
+        }
+      }}
+      open
+      title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${eventName()}`}
+    />
+  );
+}
+
+function StagesIndexPage() {
+  const { isOffline } = useOffline();
+  const i18n = useI18n();
+  const user = useAuthUser();
+  const isLoggedIn = () => !!user();
+
+  const [selectedStageId, setSelectedStageId] = useSearchParam(
+    "enrollStage",
+    "",
+    "push",
+  );
+  const [selectedEventId, setSelectedEventId] = useSearchParam(
+    "enroll",
+    "",
+    "push",
+  );
+  const enrollDialogOpen = () => !!selectedStageId() && !!selectedEventId();
+
+  const openEnrollDialog: EnrollHandler = (stageId, eventId) => {
+    setSelectedStageId(stageId);
+    setSelectedEventId(eventId);
+  };
+
+  const closeEnrollDialog = () => {
+    setSelectedStageId("");
+    setSelectedEventId("");
+  };
+
+  const [nameFilter, setNameFilter] = useSearchParam("name", "");
+  const [countryFilter, setCountryFilter] = useSearchParam("country", "");
+  const [statusFilter, setStatusFilter] = useSearchParam("status", "");
+  const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
+  const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
+
+  // Tab bar only — content is rendered separately below so the segmented
+  // control (and the breadcrumb above it) stay visible while each tab loads.
   const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
       text: i18n.t("STAGES.INDEX.LIST"),
-      content: <For each={sortedStages()}>{renderStageCard}</For>,
+      content: null,
     },
     {
       value: CONTROLS_KEYS.TABLE,
       text: i18n.t("STAGES.INDEX.TABLE"),
-      content: (
-        <div class="stages-table">
-          <AtomTable<StageSummaryResponseDTO>
-            data={sortedStages()}
-            columns={columns()}
-            getRowCanExpand={() => true}
-            renderSubComponent={(row) => renderStageCardContent(row.original)}
-          />
-        </div>
-      ),
+      content: null,
     },
     {
       value: CONTROLS_KEYS.MAP,
       text: i18n.t("STAGES.INDEX.MAP"),
       disabled: isOffline(),
-      content: (
-        <StagesMap
-          stages={sortedStages()}
-          onEnroll={(stageId, eventId) => openEnrollDialog(stageId, eventId)}
-        />
-      ),
+      content: null,
     },
   ]);
 
@@ -325,92 +522,48 @@ function StagesIndexPage() {
 
   return (
     <div class="stages">
-      <Suspense fallback={<span>{i18n.t("STAGES.INDEX.LOADING_STAGES")}</span>}>
-        <Show when={isLoggedIn()}>
-          <StagesFilters
-            name={nameFilter()}
-            country={countryFilter()}
-            status={statusFilter()}
-            dateFrom={dateFromFilter()}
-            dateTo={dateToFilter()}
-            onNameChange={setNameFilter}
-            onCountryChange={setCountryFilter}
-            onStatusChange={setStatusFilter}
-            onDateFromChange={setDateFromFilter}
-            onDateToChange={setDateToFilter}
-          />
-          <Show when={!sortedStages().length}>
-            <p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>
-          </Show>
-        </Show>
-        <AtomSegmentedControl
-          title={i18n.t("STAGES.INDEX.STAGES_BY")}
-          control={controlValue()}
-          onControlChange={setControlValue}
-          controls={controls()}
+      <Show when={isLoggedIn()}>
+        <StagesFilters
+          name={nameFilter()}
+          country={countryFilter()}
+          status={statusFilter()}
+          dateFrom={dateFromFilter()}
+          dateTo={dateToFilter()}
+          onNameChange={setNameFilter}
+          onCountryChange={setCountryFilter}
+          onStatusChange={setStatusFilter}
+          onDateFromChange={setDateFromFilter}
+          onDateToChange={setDateToFilter}
         />
-      </Suspense>
-      <AtomDialog
-        closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}
-        content={
-          <div class="stage-info__enroll-form">
-            <AtomCombobox
-              label={i18n.t("STAGES.INFO.DOG")}
-              onChange={handleDogChange}
-              options={dogOptions()}
-              placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
-              value={
-                dogOptions().find(
-                  (option) => option.value === enrollDraft().dogId,
-                ) ?? null
-              }
-            >
-              <Show when={dogOptions().length === 0}>
-                <AtomButton type={BUTTON_TYPES.GHOST} onClick={handleGoToDogs}>
-                  {i18n.t("STAGES.INFO.CREATE_DOG")}
-                </AtomButton>
-              </Show>
-            </AtomCombobox>
-
-            <Show
-              when={
-                selectedDog(enrollDraft().dogId) &&
-                selectedDog(enrollDraft().dogId)?.sex !== "MALE"
-              }
-            >
-              <AtomCheckbox
-                label={i18n.t("STAGES.INFO.BIH")}
-                checked={enrollDraft().bih}
-                setChecked={(value) =>
-                  updateEnrollDraft((current) => ({
-                    ...current,
-                    bih: value,
-                  }))
-                }
-              />
-            </Show>
-
-            <div class="stage-info__enroll-form-actions">
-              <AtomButton
-                type={BUTTON_TYPES.ACCENT}
-                onClick={closeEnrollDialog}
-              >
-                {i18n.t("STAGES.INFO.CANCEL")}
-              </AtomButton>
-              <AtomButton onClick={handleEnroll}>
-                {i18n.t("STAGES.INFO.ENROLL")}
-              </AtomButton>
-            </div>
-          </div>
-        }
-        onOpenChange={(open) => {
-          if (!open) {
-            closeEnrollDialog();
-          }
-        }}
-        open={enrollDialogOpen()}
-        title={`${i18n.t("STAGES.INFO.ENROLL_IN")} ${selectedEventName()}`}
+      </Show>
+      <AtomSegmentedControl
+        title={i18n.t("STAGES.INDEX.STAGES_BY")}
+        control={controlValue()}
+        onControlChange={setControlValue}
+        controls={controls()}
       />
+      <Switch>
+        <Match when={controlValue() === CONTROLS_KEYS.TABLE}>
+          <Suspense fallback={<StagesTableSkeleton />}>
+            <StagesTableView onEnroll={openEnrollDialog} />
+          </Suspense>
+        </Match>
+        <Match when={controlValue() === CONTROLS_KEYS.MAP}>
+          <StagesMapView onEnroll={openEnrollDialog} />
+        </Match>
+        <Match when={true}>
+          <Suspense fallback={<StageCardSkeleton count={3} />}>
+            <StagesListView onEnroll={openEnrollDialog} />
+          </Suspense>
+        </Match>
+      </Switch>
+      <Show when={enrollDialogOpen()}>
+        <EnrollDialog
+          stageId={selectedStageId()}
+          eventId={selectedEventId()}
+          onClose={closeEnrollDialog}
+        />
+      </Show>
     </div>
   );
 }

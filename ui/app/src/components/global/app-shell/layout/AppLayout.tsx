@@ -76,11 +76,6 @@ export default function AppLayout(props: ParentProps) {
   });
 
   createEffect(() => {
-    const shouldLockScroll = !isDesktop() && isNavOpen();
-    document.body.style.overflow = shouldLockScroll ? "hidden" : "";
-  });
-
-  createEffect(() => {
     const pathname = location().pathname;
     if (!isDesktop() || pathname === "/") {
       setIsNavOpen(false);
@@ -90,7 +85,6 @@ export default function AppLayout(props: ParentProps) {
   onCleanup(() => {
     globalThis.removeEventListener("resize", syncViewport);
     mediaQuery.removeEventListener("change", toggleMode);
-    document.body.style.overflow = "";
   });
 
   return (
@@ -152,14 +146,26 @@ export default function AppLayout(props: ParentProps) {
       </div>
 
       <div class="app-layout__wrapper">
-        <Show when={!isDesktop() && isNavOpen()}>
-          <button
-            class="app-layout__backdrop"
-            onClick={() => setIsNavOpen(false)}
-          />
+        <Show
+          when={isDesktop()}
+          fallback={
+            <AtomDialog
+              closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
+              content={<Navigation />}
+              onOpenChange={setIsNavOpen}
+              open={isNavOpen()}
+            />
+          }
+        >
+          <aside
+            class="navigation__sidebar navigation__sidebar--desktop"
+            classList={{ "navigation__sidebar--open": isNavOpen() }}
+          >
+            <div class="navigation__sidebar-panel">
+              <Navigation />
+            </div>
+          </aside>
         </Show>
-
-        <Navigation isDesktop={isDesktop()} isNavOpen={isNavOpen()} />
 
         <main class="app-layout__content">
           <AppBreadcrumbs />
