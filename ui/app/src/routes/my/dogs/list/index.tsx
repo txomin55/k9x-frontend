@@ -1,28 +1,15 @@
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { createFileRoute } from "@tanstack/solid-router";
-import {
-  createEffect,
-  createMemo,
-  createSignal,
-  For,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
-import {
-  createDog,
-  deleteDog,
-  updateDog,
-  useDogs,
-} from "@/services/secured/dog-crud/dogCrud";
+import OwnDogForm from "@/components/global/app-shell/layout/navigation/OwnDogForm";
+import { createDog, deleteDog, updateDog, useDogs } from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -137,9 +124,10 @@ function MyDogsListPage() {
   const [conflictingDogId, setConflictingDogId] = createSignal<string | null>(
     null,
   );
+  const [ownershipDogId, setOwnershipDogId] = createSignal<string | null>(null);
 
   const handleTakeOwnership = () => {
-    alert(`dog own request ${conflictingDogId()} ${user()?.email ?? ""}`);
+    setOwnershipDogId(conflictingDogId());
     setConflictingDogId(null);
   };
 
@@ -244,6 +232,23 @@ function MyDogsListPage() {
         onOpenChange={(isOpen) => {
           if (!isOpen) {
             setConflictingDogId(null);
+          }
+        }}
+        trigger={<span aria-hidden />}
+      />
+
+      <AtomDialog
+        title={i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
+        content={
+          <OwnDogForm
+            dogId={ownershipDogId() ?? ""}
+            onClose={() => setOwnershipDogId(null)}
+          />
+        }
+        open={!!ownershipDogId()}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setOwnershipDogId(null);
           }
         }}
         trigger={<span aria-hidden />}

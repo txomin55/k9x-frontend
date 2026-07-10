@@ -2,10 +2,11 @@ import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router"
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
 import { useDogs } from "@/services/secured/dog-crud/dogCrud";
-import { createMemo, createSignal, For, Index, Show } from "solid-js";
+import { createMemo, createSignal, For, Index, Show, Suspense } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
@@ -27,8 +28,80 @@ import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 
 export const Route = createFileRoute("/stages/$id/info")({
-  component: StageInfoPage,
+  component: StageInfoRoute,
 });
+
+function StageInfoRoute() {
+  return (
+    <Suspense fallback={<StageInfoSkeleton />}>
+      <StageInfoPage />
+    </Suspense>
+  );
+}
+
+function StageInfoSkeleton() {
+  return (
+    <div class="stage-info">
+      <div class="stage-info__title">
+        <div class="stage-info__title--name">
+          <AtomSkeleton width="12rem" height="var(--text-body-md)" />
+        </div>
+        <AtomSkeleton width="9rem" height="var(--text-caption-sm)" />
+      </div>
+      <AtomSkeleton width="16rem" />
+      <AtomSkeleton width="8rem" />
+
+      <div style={{ display: "flex", gap: "var(--unit-1)" }}>
+        <AtomSkeleton
+          variant="rectangular"
+          width="4rem"
+          height="var(--unit-4)"
+          radius="var(--radius-md)"
+        />
+        <AtomSkeleton
+          variant="rectangular"
+          width="6rem"
+          height="var(--unit-4)"
+          radius="var(--radius-md)"
+        />
+      </div>
+
+      <div class="stage-info__events">
+        <For each={Array.from({ length: 3 })}>
+          {() => (
+            <Card
+              topLeft={
+                <AtomSkeleton width="7rem" height="var(--text-heading-xs)" />
+              }
+              content={
+                <div class="stage-info__event--item">
+                  <div class="stage-info__event--header">
+                    <div class="stage-info__event--header-info">
+                      <AtomSkeleton
+                        variant="rectangular"
+                        width="var(--unit-5)"
+                        height="var(--unit-5)"
+                        radius="var(--radius-md)"
+                      />
+                      <AtomSkeleton width="10rem" />
+                    </div>
+                    <AtomSkeleton
+                      variant="rectangular"
+                      width="5rem"
+                      height="var(--unit-5)"
+                      radius="var(--radius-full)"
+                    />
+                  </div>
+                  <AtomSkeleton width="12rem" />
+                </div>
+              }
+            />
+          )}
+        </For>
+      </div>
+    </div>
+  );
+}
 
 type EnrollDraft = {
   dogId: string;
