@@ -70,10 +70,6 @@ const createEmptyEnrollDraft = (): EnrollDraft => ({
 
 type EnrollHandler = (stageId: string, eventId: string) => void;
 
-// Builds the filtered + sorted stages pipeline. Each tab view calls this so it
-// creates and reads its own query under its own <Suspense> (same-owner, so the
-// suspense resolves like the landing does); the parent stays query-free and its
-// tab bar renders immediately.
 function useSortedStages() {
   const { isOffline } = useOffline();
   const user = useAuthUser();
@@ -292,9 +288,6 @@ function StagesTableSkeleton() {
   );
 }
 
-// Reads the query so its fetch is kicked off even when the map tab is the entry
-// point (the map itself only gates on isPending and never reads `.data`). Lives
-// under a null-fallback <Suspense> so it stays invisible while the fetch runs.
 function StagesDataPrimer() {
   const { isOffline } = useOffline();
   const query = useStages({
@@ -481,8 +474,6 @@ function StagesIndexPage() {
   const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
   const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
 
-  // Tab bar only — content is rendered separately below so the segmented
-  // control (and the breadcrumb above it) stay visible while each tab loads.
   const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,

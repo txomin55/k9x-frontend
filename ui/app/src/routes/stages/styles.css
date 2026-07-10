@@ -5,9 +5,6 @@
   gap: var(--unit-1);
 }
 
-/* The segmented control now only renders the tab bar (its content is rendered
-   as a sibling below); stop it from stretching to full height and pushing the
-   content off-screen. */
 .stages > .atom-segmented-control {
   height: auto;
   flex: none;
