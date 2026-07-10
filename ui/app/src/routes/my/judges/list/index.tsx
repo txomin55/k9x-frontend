@@ -12,6 +12,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
+import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
 import {
 	createJudge,
@@ -28,8 +29,24 @@ import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 
 export const Route = createFileRoute("/my/judges/list/")({
-	component: MyJudgesListPage,
+	component: MyJudgesRoute,
 });
+
+function MyJudgesRoute() {
+	return (
+		<Suspense
+			fallback={
+				<Page>
+					<div class="judges-list">
+						<CardListSkeleton count={6} />
+					</div>
+				</Page>
+			}
+		>
+			<MyJudgesListPage />
+		</Suspense>
+	);
+}
 
 function MyJudgesListPage() {
 	const i18n = useI18n();
@@ -131,36 +148,32 @@ function MyJudgesListPage() {
 				trigger={<span aria-hidden />}
 			/>
 
-			<Suspense
-				fallback={<span>{i18n.t("MY.JUDGES.LIST.LOADING_JUDGES")}</span>}
+			<Show
+				when={judgesQuery.data?.length}
+				fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
 			>
+				<NameFilter
+					label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
+					value={nameFilter()}
+					onChange={setNameFilter}
+				/>
 				<Show
-					when={judgesQuery.data?.length}
-					fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
+					when={filteredJudges().length}
+					fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
 				>
-					<NameFilter
-						label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
-						value={nameFilter()}
-						onChange={setNameFilter}
-					/>
-					<Show
-						when={filteredJudges().length}
-						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
-					>
-						<div class="judges-list">
-							<For each={filteredJudges()}>
-								{(judge) => (
-									<JudgeCard
-										judge={judge}
-										onEdit={() => openEditDialog(judge)}
-										onDelete={() => deleteJudge(judge.id)}
-									/>
-								)}
-							</For>
-						</div>
-					</Show>
+					<div class="judges-list">
+						<For each={filteredJudges()}>
+							{(judge) => (
+								<JudgeCard
+									judge={judge}
+									onEdit={() => openEditDialog(judge)}
+									onDelete={() => deleteJudge(judge.id)}
+								/>
+							)}
+						</For>
+					</div>
 				</Show>
-			</Suspense>
+			</Show>
 
 			<FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
 		</Page>

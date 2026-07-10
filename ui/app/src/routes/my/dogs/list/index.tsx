@@ -15,6 +15,7 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
+import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
 import {
   createDog,
@@ -31,8 +32,24 @@ import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/dogs/list/")({
-  component: MyDogsListPage,
+  component: MyDogsRoute,
 });
+
+function MyDogsRoute() {
+  return (
+    <Suspense
+      fallback={
+        <Page>
+          <div class="dogs-list">
+            <CardListSkeleton count={6} />
+          </div>
+        </Page>
+      }
+    >
+      <MyDogsListPage />
+    </Suspense>
+  );
+}
 
 function MyDogsListPage() {
   const user = useAuthUser();
@@ -153,34 +170,32 @@ function MyDogsListPage() {
 
   return (
     <Page>
-      <Suspense fallback={<span>{i18n.t("MY.DOGS.LIST.LOADING_DOGS")}</span>}>
+      <Show
+        when={dogsQuery.data?.length}
+        fallback={<p>{i18n.t("MY.DOGS.LIST.NO_DOGS_AVAILABLE_YET")}</p>}
+      >
+        <NameFilter
+          label={i18n.t("MY.DOGS.LIST.NAME_FILTER")}
+          value={nameFilter()}
+          onChange={setNameFilter}
+        />
         <Show
-          when={dogsQuery.data?.length}
-          fallback={<p>{i18n.t("MY.DOGS.LIST.NO_DOGS_AVAILABLE_YET")}</p>}
+          when={myDogs().length}
+          fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
         >
-          <NameFilter
-            label={i18n.t("MY.DOGS.LIST.NAME_FILTER")}
-            value={nameFilter()}
-            onChange={setNameFilter}
-          />
-          <Show
-            when={myDogs().length}
-            fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
-          >
-            <div class="dogs-list">
-              <For each={myDogs()}>
-                {(dog) => (
-                  <DogCard
-                    dog={dog}
-                    onEdit={() => openEditDialog(dog)}
-                    onDelete={() => deleteDog(dog.id)}
-                  />
-                )}
-              </For>
-            </div>
-          </Show>
+          <div class="dogs-list">
+            <For each={myDogs()}>
+              {(dog) => (
+                <DogCard
+                  dog={dog}
+                  onEdit={() => openEditDialog(dog)}
+                  onDelete={() => deleteDog(dog.id)}
+                />
+              )}
+            </For>
+          </div>
         </Show>
-      </Suspense>
+      </Show>
 
       <AtomDialog
         title={

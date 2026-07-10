@@ -4,14 +4,29 @@ import FloatingToggleCircle from "@/components/common/floating-toggle-circle/Flo
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
 import CompetitionCard from "@/components/routes/my/competitions/list/competition-card/CompetitionCard";
+import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 export const Route = createFileRoute("/my/competitions/list/")({
-	component: MyCompetitionsIndexPage,
+	component: MyCompetitionsRoute,
 });
+
+function MyCompetitionsRoute() {
+	return (
+		<Suspense
+			fallback={
+				<Page>
+					<CardListSkeleton count={4} />
+				</Page>
+			}
+		>
+			<MyCompetitionsIndexPage />
+		</Suspense>
+	);
+}
 
 function MyCompetitionsIndexPage() {
 	const navigate = useNavigate();
@@ -31,42 +46,36 @@ function MyCompetitionsIndexPage() {
 
 	return (
 		<Page>
-			<Suspense
+			<Show
+				when={fetchedCompetitions.data?.length}
 				fallback={
-					<span>{i18n.t("MY.COMPETITIONS.LIST.LOADING_COMPETITIONS")}</span>
+					<span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>
 				}
 			>
+				<NameFilter
+					label={i18n.t("MY.COMPETITIONS.LIST.NAME_FILTER")}
+					value={nameFilter()}
+					onChange={setNameFilter}
+				/>
 				<Show
-					when={fetchedCompetitions.data?.length}
-					fallback={
-						<span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>
-					}
+					when={filteredCompetitions().length}
+					fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
 				>
-					<NameFilter
-						label={i18n.t("MY.COMPETITIONS.LIST.NAME_FILTER")}
-						value={nameFilter()}
-						onChange={setNameFilter}
-					/>
-					<Show
-						when={filteredCompetitions().length}
-						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
-					>
-						<For each={filteredCompetitions()}>
-							{(competition) => (
-								<CompetitionCard
-									id={competition.id}
-									status={competition.status}
-									name={competition.name}
-									description={competition.description}
-									country={competition.country}
-									stages={competition.stages}
-									address={competition?.address}
-								/>
-							)}
-						</For>
-					</Show>
+					<For each={filteredCompetitions()}>
+						{(competition) => (
+							<CompetitionCard
+								id={competition.id}
+								status={competition.status}
+								name={competition.name}
+								description={competition.description}
+								country={competition.country}
+								stages={competition.stages}
+								address={competition?.address}
+							/>
+						)}
+					</For>
 				</Show>
-			</Suspense>
+			</Show>
 			<FloatingToggleCircle
 				onClick={() =>
 					navigate({
