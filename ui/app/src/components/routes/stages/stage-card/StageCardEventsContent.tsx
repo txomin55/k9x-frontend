@@ -41,18 +41,18 @@ export default function StageCardEventsContent(
             <RankBadge rank={event().rank} />
             <AwardBadges awards={event().awards} />
           </div>
-          <Show
-            when={user()}
-            fallback={
-              <AtomButton
-                type={BUTTON_TYPES.GHOST}
-                onClick={startGoogleInteractiveLogin}
-              >
-                {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-              </AtomButton>
-            }
-          >
-            <Show when={event().enrollmentOpened}>
+          <Show when={event().enrollmentOpened}>
+            <Show
+              when={user()}
+              fallback={
+                <AtomButton
+                  type={BUTTON_TYPES.GHOST}
+                  onClick={startGoogleInteractiveLogin}
+                >
+                  {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                </AtomButton>
+              }
+            >
               <div class="stage-card__events-content--enrollment">
                 <AtomButton onClick={() => props.onEnroll?.(event().id)}>
                   {i18n.t("STAGES.INFO.ENROLL")}

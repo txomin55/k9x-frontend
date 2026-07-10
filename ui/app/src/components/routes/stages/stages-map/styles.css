@@ -81,8 +81,14 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    align-items: baseline;
     gap: var(--unit-1);
+}
+
+.stages-map-marker-popup__row--title {
+    display: flex;
+    gap: var(--unit-05);
+    align-items: center;
+    width: 100%;
 }
 
 .stages-map-marker-popup__enrollment {
@@ -95,6 +101,10 @@
 .leaflet-container a.leaflet-popup-close-button {
     font-size: var(--unit-3);
     padding: var(--unit-1);
+}
+
+.leaflet-popup-content {
+    width: 280px !important;
 }
 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip {

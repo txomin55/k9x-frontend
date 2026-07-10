@@ -149,18 +149,18 @@ function StageInfoPage() {
                           <RankBadge rank={event().rank} />
                           <AwardBadges awards={event().awards} />
                         </div>
-                        <Show
-                          when={user()}
-                          fallback={
-                            <AtomButton
-                              type={BUTTON_TYPES.GHOST}
-                              onClick={startGoogleInteractiveLogin}
-                            >
-                              {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-                            </AtomButton>
-                          }
-                        >
-                          <Show when={event().enrollmentOpened}>
+                        <Show when={event().enrollmentOpened}>
+                          <Show
+                            when={user()}
+                            fallback={
+                              <AtomButton
+                                type={BUTTON_TYPES.GHOST}
+                                onClick={startGoogleInteractiveLogin}
+                              >
+                                {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                              </AtomButton>
+                            }
+                          >
                             <div class="stage-info__event--enrollment">
                               <AtomButton
                                 onClick={() => openEnrollDialog(event().id)}

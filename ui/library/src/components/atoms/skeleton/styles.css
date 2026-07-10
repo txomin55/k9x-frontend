@@ -1,0 +1,81 @@
+.atom-skeleton {
+    display: block;
+
+    width: 100%;
+    background: var(--surface-muted);
+    border-radius: var(--radius-md);
+
+    flex-shrink: 0;
+    pointer-events: none;
+    user-select: none;
+}
+
+.atom-skeleton[data-variant="text"] {
+    height: 1em;
+    border-radius: var(--radius-sm);
+}
+
+.atom-skeleton[data-variant="text"]:not(:last-child) {
+    margin-bottom: var(--unit-05);
+}
+
+.atom-skeleton[data-variant="circular"] {
+    width: var(--unit-6);
+    height: var(--unit-6);
+    border-radius: var(--radius-full);
+}
+
+.atom-skeleton[data-variant="rectangular"] {
+    height: var(--unit-8);
+    border-radius: var(--radius-md);
+}
+
+.atom-skeleton--animated {
+    position: relative;
+    overflow: hidden;
+}
+
+.atom-skeleton--animated::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    transform: translateX(-100%);
+
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--surface-hover) 50%,
+        transparent 100%
+    );
+
+    animation: atom-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes atom-skeleton-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .atom-skeleton--animated::after {
+        animation: none;
+    }
+
+    .atom-skeleton--animated {
+        animation: atom-skeleton-pulse 2s ease-in-out infinite;
+    }
+}
+
+@keyframes atom-skeleton-pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}

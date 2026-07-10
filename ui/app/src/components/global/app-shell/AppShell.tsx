@@ -5,7 +5,6 @@ import AppLayout from "@/components/global/app-shell/layout/AppLayout";
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import Toast from "@/components/global/toast/Toast";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
-
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";

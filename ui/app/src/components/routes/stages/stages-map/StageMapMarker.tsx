@@ -54,24 +54,24 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
           <div class="stages-map-marker-popup__row">
             <div class="stages-map-marker-popup__row--title">
               <DisciplineIcon disciplineId={event().discipline.id} />
-              <span class="text-caption-sm">{event().name}</span>
+              <span class="text-heading-xs">{event().name}</span>
               <Show when={isStageLive(event().status)}>
                 <StatusBadge status={event().status} dotMode />
               </Show>
             </div>
-            <Show
-              when={user()}
-              fallback={
-                <AtomButton
-                  type={BUTTON_TYPES.GHOST}
-                  size={BUTTON_SIZES.SM}
-                  onClick={startGoogleInteractiveLogin}
-                >
-                  {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-                </AtomButton>
-              }
-            >
-              <Show when={event().enrollmentOpened}>
+            <Show when={event().enrollmentOpened}>
+              <Show
+                when={user()}
+                fallback={
+                  <AtomButton
+                    type={BUTTON_TYPES.GHOST}
+                    size={BUTTON_SIZES.SM}
+                    onClick={startGoogleInteractiveLogin}
+                  >
+                    {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                  </AtomButton>
+                }
+              >
                 <div class="stages-map-marker-popup__enrollment">
                   <AtomButton
                     size={BUTTON_SIZES.SM}
