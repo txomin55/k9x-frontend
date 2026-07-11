@@ -47,6 +47,7 @@ import {
   useSearchParamList,
 } from "@/utils/search-params/useSearchParam";
 import { formatDateTime } from "@/utils/date";
+import { exportClassificationPdf } from "@/utils/classification-pdf";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
@@ -479,6 +480,19 @@ function EventClassificationPage() {
     </div>
   );
 
+  const [isExporting, setIsExporting] = createSignal(false);
+
+  const handleExportPdf = async () => {
+    const data = clfData();
+    if (!data || isExporting()) return;
+    setIsExporting(true);
+    try {
+      await exportClassificationPdf(data, filteredCompetitors(), t);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
 
   const classificationControls = createMemo(() => [
@@ -528,9 +542,20 @@ function EventClassificationPage() {
       {(classification) => (
         <div class="page classification">
               <div class="classification__header">
-                <span class="text-caption-lg">
-                  {classification().competitionName}
-                </span>
+                <div class="classification__header--title">
+                  <span class="text-caption-lg">
+                    {classification().competitionName}
+                  </span>
+                  <Show when={competitors().length}>
+                    <AtomButton
+                      type="ghost"
+                      disabled={isExporting()}
+                      onClick={handleExportPdf}
+                    >
+                      {t("STAGES.CLASSIFICATION.EXPORT_PDF")}
+                    </AtomButton>
+                  </Show>
+                </div>
                 <div class="classification__header--info">
                   <div>
                     <DisciplineIcon

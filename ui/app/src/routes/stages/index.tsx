@@ -22,7 +22,7 @@ import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import { useOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useOffline } from "@/stores/network/network";
@@ -331,7 +331,7 @@ function EnrollDialog(props: {
   const navigate = useNavigate();
 
   const fetchedStages = useStages({ gcTime: 5 * 60 * 1000 });
-  const dogsQuery = useDogs({
+  const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOfflinePolicy(),
     gcTime: 5 * 60 * 1000,
   });

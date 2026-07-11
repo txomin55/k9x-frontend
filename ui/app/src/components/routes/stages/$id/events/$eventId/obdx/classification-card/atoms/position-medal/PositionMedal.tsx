@@ -1,3 +1,4 @@
+import { Show } from "solid-js";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
 import type { PositionMedalProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal.types";
@@ -14,11 +15,15 @@ const MEDALS = {
 
 export default function PositionMedal(props: PositionMedalProps) {
   const i18n = useI18n();
-  const medal = MEDALS[props.position];
+  const medal = () => MEDALS[props.position];
 
   return (
-    <span class="obdx-clf__position-medal">
-      <AtomSvgIcon src={medal.src} alt={i18n.t(medal.key)} />
-    </span>
+    <Show when={medal()}>
+      {(m) => (
+        <span class="obdx-clf__position-medal">
+          <AtomSvgIcon src={m().src} alt={i18n.t(m().key)} />
+        </span>
+      )}
+    </Show>
   );
 }

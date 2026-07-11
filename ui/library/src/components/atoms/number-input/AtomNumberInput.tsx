@@ -31,6 +31,7 @@ export default function AtomNumberInput(props: AtomNumberInputProps) {
         <NumberField.Input
           class="atom-number-input__control"
           onBlur={props.onBlur}
+          onWheel={(e) => e.currentTarget.blur()}
           placeholder={props.placeholder}
         />
         <NumberField.HiddenInput />

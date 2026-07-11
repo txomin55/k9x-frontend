@@ -4,6 +4,14 @@
     gap: var(--unit-05);
 }
 
+.classification__header--title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--unit-1);
+    width: 100%;
+}
+
 .classification__header--info {
     display: flex;
     align-items: center;

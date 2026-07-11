@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useDogs } from "@/services/secured/dog-crud/dogCrud";
+import { useOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
 import { createMemo, createSignal, For, Index, Show, Suspense } from "solid-js";
 import { formatDateLabel, toDateInputValue } from "@/utils/date";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
@@ -125,7 +125,7 @@ function StageInfoPage() {
   const params = useParams({ from: "/stages/$id/info" });
 
   const stageInfo = useStageById(params().id);
-  const dogsQuery = useDogs({
+  const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });

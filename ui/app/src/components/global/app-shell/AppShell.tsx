@@ -8,7 +8,7 @@ import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { prefetchAllDogs, prefetchDogs } from "@/services/secured/dog-crud/dogCrud";
+import { prefetchAllDogs, prefetchDogs, prefetchOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { prefetchCountries } from "@/services/secured/country-crud/countryCrud";
@@ -58,6 +58,10 @@ export default function AppShell() {
         });
       }
       void prefetchDogs({
+        refetchOnMount: false,
+        gcTime: 2 * 60 * 1000,
+      });
+      void prefetchOwnedDogs({
         refetchOnMount: false,
         gcTime: 2 * 60 * 1000,
       });
