@@ -12,10 +12,11 @@ import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
+import PendingCollectionsDialog from "@/components/global/app-shell/layout/PendingCollectionsDialog";
 import { isDark, setIsDark } from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
 
-const DESKTOP_BREAKPOINT = 720;
+const DESKTOP_BREAKPOINT = 1080;
 
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
@@ -107,6 +108,7 @@ export default function AppLayout(props: ParentProps) {
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
             <div class="app-layout__actions">
+              <PendingCollectionsDialog />
               <Show when={!currentUser().organizer}>
                 <AtomDialog
                   closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}

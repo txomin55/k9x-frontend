@@ -1,9 +1,27 @@
 import { Link } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import "@/components/global/app-shell/layout/navigation/styles.css";
-import { Show } from "solid-js";
+import { Show, Suspense } from "solid-js";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useCollections } from "@/services/secured/collection-crud/collectionCrud";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
+
+function CollectionsLink() {
+  const i18n = useI18n();
+  const collectionsQuery = useCollections({ refetchOnMount: !isOffline() });
+
+  return (
+    <Show when={collectionsQuery.data?.length}>
+      <Link
+        to={AppRoutePath.MY_COLLECTIONS as never}
+        activeProps={{ class: "navigation__link--active" }}
+      >
+        {i18n.t("GLOBAL.NAVIGATION.COLLECTIONS")}
+      </Link>
+    </Show>
+  );
+}
 
 export default function Navigation() {
   const user = useAuthUser();
@@ -40,12 +58,9 @@ export default function Navigation() {
             {i18n.t("GLOBAL.NAVIGATION.JUDGES")}
           </Link>
         </Show>
-        <Link
-          to={AppRoutePath.MY_COLLECTIONS as never}
-          activeProps={{ class: "navigation__link--active" }}
-        >
-          {i18n.t("GLOBAL.NAVIGATION.COLLECTIONS")}
-        </Link>
+        <Suspense fallback={null}>
+          <CollectionsLink />
+        </Suspense>
         <Link
           to={AppRoutePath.MY_DOGS as never}
           activeProps={{ class: "navigation__link--active" }}

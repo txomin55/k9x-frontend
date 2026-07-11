@@ -8,9 +8,12 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  For,
   Show,
   Suspense,
 } from "solid-js";
+import Card from "@lib/components/molecules/card/Card";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
 import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
@@ -45,8 +48,66 @@ import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
-  component: CompetitionDetailPage,
+  component: CompetitionDetailRoute,
 });
+
+function CompetitionDetailRoute() {
+  return (
+    <Suspense fallback={<CompetitionDetailSkeleton />}>
+      <CompetitionDetailPage />
+    </Suspense>
+  );
+}
+
+function CompetitionDetailSkeleton() {
+  return (
+    <div class="competition-detail">
+      <div class="page competition-detail">
+        <div class="competition-info">
+          <div
+            style={{
+              display: "flex",
+              gap: "var(--unit-1)",
+              "align-items": "center",
+            }}
+          >
+            <AtomSkeleton width="14rem" height="var(--text-heading-md)" />
+            <AtomSkeleton
+              variant="rectangular"
+              width="5rem"
+              height="var(--unit-5)"
+              radius="var(--radius-full)"
+            />
+          </div>
+          <AtomSkeleton width="6rem" />
+          <AtomSkeleton count={2} />
+          <AtomSkeleton width="10rem" />
+        </div>
+
+        <div class="stages-section">
+          <div class="stages-section__title">
+            <AtomSkeleton width="6rem" height="var(--text-heading-sm)" />
+          </div>
+          <div class="stages-section__stages">
+            <For each={Array.from({ length: 3 })}>
+              {() => (
+                <Card
+                  topLeft={
+                    <AtomSkeleton
+                      width="8rem"
+                      height="var(--text-heading-xs)"
+                    />
+                  }
+                  content={<AtomSkeleton width="10rem" />}
+                />
+              )}
+            </For>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CompetitionDetailPage() {
   const i18n = useI18n();

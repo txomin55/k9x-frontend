@@ -5,6 +5,7 @@ import {
   AtomBreadcrumbsProps,
 } from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import "./styles.css";
 
 const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
@@ -39,11 +40,13 @@ export default function (props: AtomBreadcrumbsProps) {
         <For each={props.crumbs}>
           {(crumb, idx) => (
             <AtomBreadCrumbLink
-              onNavigate={props.onNavigate}
+              onNavigate={crumb.loading ? undefined : props.onNavigate}
               route={crumb.route}
               showSeparator={isNotLastElement(idx)}
             >
-              {crumb.text}
+              <Show when={!crumb.loading} fallback={<AtomSkeleton width="6rem" />}>
+                {crumb.text}
+              </Show>
             </AtomBreadCrumbLink>
           )}
         </For>

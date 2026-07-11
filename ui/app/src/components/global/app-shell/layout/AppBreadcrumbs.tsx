@@ -9,6 +9,7 @@ import InfoIcon from "@/components/common/info-icon/InfoIcon";
 type BreadcrumbItem = {
   route: string;
   text: string;
+  loading?: boolean;
 };
 
 export default function AppBreadcrumbs() {
@@ -26,12 +27,19 @@ export default function AppBreadcrumbs() {
 
     return matches()
       .map((match) => {
-        const breadcrumb = resolveBreadcrumb(
-          match.staticData?.breadcrumb,
-          match,
-        );
+        const definition = match.staticData?.breadcrumb;
 
-        if (!breadcrumb) return null;
+        if (!definition) return null;
+
+        const breadcrumb = resolveBreadcrumb(definition, match);
+
+        if (!breadcrumb) {
+          return {
+            route: match.pathname,
+            text: "",
+            loading: true,
+          };
+        }
 
         return {
           route: breadcrumb.route ?? match.pathname,

@@ -4,7 +4,7 @@
     justify-content: center;
 
     height: fit-content;
-    padding: 0 var(--unit-05);
+    padding: var(--unit-05);
 
     border-radius: 999px;
 

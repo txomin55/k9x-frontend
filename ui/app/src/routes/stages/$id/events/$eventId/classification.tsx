@@ -1,18 +1,21 @@
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
-import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import type {
+  StageEventClassificationItemResponseDTO,
+  StageEventClassificationResponseDTO,
+} from "@/services/fetch-stages/fetchStages.types";
 import {
   createEffect,
   createMemo,
   createSignal,
   For,
-  Match,
   onCleanup,
   onMount,
   Show,
-  Switch,
 } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import Card from "@lib/components/molecules/card/Card";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
 import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
@@ -58,6 +61,83 @@ const CONTROLS_KEYS = {
   TABLE: "TABLE",
 };
 
+function ClassificationSkeleton() {
+  return (
+    <div class="page classification">
+      <div class="classification__header">
+        <AtomSkeleton width="12rem" height="var(--text-caption-lg)" />
+        <div class="classification__header--info">
+          <div style={{ display: "flex", gap: "var(--unit-05)", "align-items": "center" }}>
+            <AtomSkeleton
+              variant="rectangular"
+              width="var(--unit-5)"
+              height="var(--unit-5)"
+              radius="var(--radius-md)"
+            />
+            <AtomSkeleton width="8rem" />
+          </div>
+          <div style={{ display: "flex", "flex-direction": "column", gap: "var(--unit-025)" }}>
+            <AtomSkeleton width="5rem" />
+            <AtomSkeleton width="7rem" />
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: "var(--unit-1)" }}>
+        <AtomSkeleton
+          variant="rectangular"
+          width="4rem"
+          height="var(--unit-4)"
+          radius="var(--radius-md)"
+        />
+        <AtomSkeleton
+          variant="rectangular"
+          width="5rem"
+          height="var(--unit-4)"
+          radius="var(--radius-md)"
+        />
+      </div>
+
+      <div class="obdx-clf__list">
+        <For each={Array.from({ length: 6 })}>
+          {() => (
+            <Card
+              topLeft={
+                <div style={{ display: "flex", gap: "var(--unit-1)", "align-items": "center" }}>
+                  <AtomSkeleton
+                    variant="circular"
+                    width="var(--unit-6)"
+                    height="var(--unit-6)"
+                  />
+                  <div style={{ display: "flex", "flex-direction": "column", gap: "var(--unit-025)" }}>
+                    <AtomSkeleton width="8rem" />
+                    <AtomSkeleton width="5rem" />
+                  </div>
+                </div>
+              }
+              topRight={
+                <AtomSkeleton
+                  variant="rectangular"
+                  width="var(--unit-5)"
+                  height="var(--unit-5)"
+                  radius="var(--radius-md)"
+                />
+              }
+              content={
+                <AtomSkeleton
+                  variant="rectangular"
+                  height="var(--unit-5)"
+                  radius="var(--radius-md)"
+                />
+              }
+            />
+          )}
+        </For>
+      </div>
+    </div>
+  );
+}
+
 function EventClassificationPage() {
   const { t } = useI18n();
   const params = useParams({
@@ -75,6 +155,13 @@ function EventClassificationPage() {
     },
   );
 
+  const [clfData, setClfData] =
+    createSignal<StageEventClassificationResponseDTO>();
+  createEffect(() => {
+    const data = classificationQuery.data;
+    if (data) setClfData(data);
+  });
+
   const ITEM_HEIGHT = 220;
   const MAX_VIEWPORT_ITEMS = 6;
 
@@ -82,9 +169,7 @@ function EventClassificationPage() {
   const [listHeight, setListHeight] = createSignal(
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
-  const competitors = createMemo(
-    () => classificationQuery.data?.obdx?.competitors ?? [],
-  );
+  const competitors = createMemo(() => clfData()?.obdx?.competitors ?? []);
 
   const [competitorFilterIds, setCompetitorFilterIds] =
     useSearchParamList("competitors");
@@ -231,7 +316,7 @@ function EventClassificationPage() {
   });
 
   createEffect(() => {
-    if (classificationQuery.data) {
+    if (clfData()) {
       queueMicrotask(updateListHeight);
     }
   });
@@ -394,10 +479,20 @@ function EventClassificationPage() {
     </div>
   );
 
-  const [controlValue, setControlValue] = useSearchParam(
-    "view",
-    CONTROLS_KEYS.LIST,
-  );
+  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+
+  const classificationControls = createMemo(() => [
+    {
+      value: CONTROLS_KEYS.LIST,
+      text: t("STAGES.CLASSIFICATION.LIST"),
+      content: listContent,
+    },
+    {
+      value: CONTROLS_KEYS.TABLE,
+      text: t("STAGES.CLASSIFICATION.TABLE"),
+      content: tableContent,
+    },
+  ]);
 
   // Pinning, expanding a card/row, and switching tabs all change how much
   // vertical space is taken above the list, so the available height needs
@@ -412,23 +507,26 @@ function EventClassificationPage() {
   });
 
   return (
-    <div class="page classification">
-      <Switch
-        fallback={
-          <span>{t("STAGES.CLASSIFICATION.LOADING_CLASSIFICATION")}</span>
-        }
-      >
-        <Match when={classificationQuery.isError && !classificationQuery.data}>
-          <div class="classification__error">
-            <span>{t("STAGES.CLASSIFICATION.ERROR")}</span>
-            <AtomButton onClick={() => classificationQuery.refetch()}>
-              {t("STAGES.CLASSIFICATION.RETRY")}
-            </AtomButton>
+    <Show
+      when={clfData()}
+      fallback={
+        <Show
+          when={classificationQuery.isError}
+          fallback={<ClassificationSkeleton />}
+        >
+          <div class="page classification">
+            <div class="classification__error">
+              <span>{t("STAGES.CLASSIFICATION.ERROR")}</span>
+              <AtomButton onClick={() => classificationQuery.refetch()}>
+                {t("STAGES.CLASSIFICATION.RETRY")}
+              </AtomButton>
+            </div>
           </div>
-        </Match>
-        <Match when={classificationQuery.data}>
-          {(classification) => (
-            <>
+        </Show>
+      }
+    >
+      {(classification) => (
+        <div class="page classification">
               <div class="classification__header">
                 <span class="text-caption-lg">
                   {classification().competitionName}
@@ -531,25 +629,12 @@ function EventClassificationPage() {
                     title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
                     control={controlValue()}
                     onControlChange={setControlValue}
-                    controls={[
-                      {
-                        value: CONTROLS_KEYS.LIST,
-                        text: t("STAGES.CLASSIFICATION.LIST"),
-                        content: listContent,
-                      },
-                      {
-                        value: CONTROLS_KEYS.TABLE,
-                        text: t("STAGES.CLASSIFICATION.TABLE"),
-                        content: tableContent,
-                      },
-                    ]}
+                    controls={classificationControls()}
                   />
                 </Show>
               </Show>
-            </>
+            </div>
           )}
-        </Match>
-      </Switch>
-    </div>
+        </Show>
   );
 }

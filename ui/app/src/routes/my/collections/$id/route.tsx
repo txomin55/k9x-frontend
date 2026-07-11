@@ -1,17 +1,37 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
-import { getCachedCollections } from "@/services/secured/collection-crud/collectionCrud";
+import {
+  getCachedCollections,
+  useCollections,
+} from "@/services/secured/collection-crud/collectionCrud";
 import ObdxCollectionDetail from "@/components/routes/my/collections/$id/obdx/ObdxCollectionDetail";
 import Page from "@/components/common/page/Page";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
+function CollectionsListPrimer() {
+  const collections = useCollections({
+    refetchOnMount: !isOffline(),
+    gcTime: 5 * 60 * 1000,
+  });
+
+  void collections.data;
+
+  return null;
+}
+
 function CollectionDetailRoute() {
   return (
-    <Suspense fallback={<CollectionDetailSkeleton />}>
-      <ObdxCollectionDetail />
-    </Suspense>
+    <>
+      <Suspense fallback={null}>
+        <CollectionsListPrimer />
+      </Suspense>
+      <Suspense fallback={<CollectionDetailSkeleton />}>
+        <ObdxCollectionDetail />
+      </Suspense>
+    </>
   );
 }
 

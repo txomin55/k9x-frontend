@@ -7,10 +7,12 @@ import {
   type Accessor,
   createEffect,
   createSignal,
+  For,
   Index,
   Show,
   Suspense,
 } from "solid-js";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
@@ -60,8 +62,80 @@ import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/stages/$stageId/")({
-  component: CompetitionStageDetailPage,
+  component: CompetitionStageDetailRoute,
 });
+
+function CompetitionStageDetailRoute() {
+  return (
+    <Suspense fallback={<StageDetailSkeleton />}>
+      <CompetitionStageDetailPage />
+    </Suspense>
+  );
+}
+
+function StageDetailSkeleton() {
+  const i18n = useI18n();
+
+  return (
+    <div class="stage-detail">
+      <div class="page stage-detail">
+        <header class="stage-detail__header">
+          <div class="stage-detail__header--info">
+            <AtomSkeleton
+              variant="rectangular"
+              width="6rem"
+              height="var(--unit-5)"
+              radius="var(--radius-full)"
+            />
+            <AtomSkeleton width="12rem" />
+          </div>
+        </header>
+
+        <section class="stage-detail__content">
+          <div class="stage-detail__content--events">
+            <AtomSkeleton width="6rem" height="var(--text-heading-md)" />
+          </div>
+          <div class="stage-detail__content--event">
+            <For each={Array.from({ length: 3 })}>
+              {() => (
+                <Card
+                  topLeft={
+                    <AtomSkeleton
+                      width="8rem"
+                      height="var(--text-heading-xs)"
+                    />
+                  }
+                  content={
+                    <div
+                      style={{
+                        display: "flex",
+                        "align-items": "center",
+                        gap: "var(--unit-1)",
+                      }}
+                    >
+                      <AtomSkeleton
+                        variant="rectangular"
+                        width="var(--unit-5)"
+                        height="var(--unit-5)"
+                        radius="var(--radius-md)"
+                      />
+                      <AtomSkeleton
+                        variant="rectangular"
+                        width="5rem"
+                        height="var(--unit-5)"
+                        radius="var(--radius-full)"
+                      />
+                    </div>
+                  }
+                />
+              )}
+            </For>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
 
 function CompetitionStageDetailPage() {
   const i18n = useI18n();

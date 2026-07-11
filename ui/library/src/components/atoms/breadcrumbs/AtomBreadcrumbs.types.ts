@@ -3,6 +3,7 @@ import { JSX } from "solid-js";
 interface Crumbs {
   route: string;
   text: string;
+  loading?: boolean;
 }
 
 export interface AtomBreadcrumbsInfo {

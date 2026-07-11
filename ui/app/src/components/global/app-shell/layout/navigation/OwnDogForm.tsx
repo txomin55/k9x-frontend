@@ -23,8 +23,7 @@ export default function OwnDogForm(props: OwnDogFormProps) {
       {
         "entry.946948767": user()?.email,
         "entry.897265685": description(),
-        "entry.467584706": props.dogId, //dog id
-        "entry.69339544": "", //image
+        "entry.467584706": props.dogId,
       },
     );
     props.onClose();
