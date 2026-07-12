@@ -125,7 +125,9 @@ function CompetitionObdxEventDetailBody(props: {
     Boolean(draftEvent().configuration.id),
   );
 
-  const canEditDetails = createMemo(() => isEditing() && hasConfiguration());
+  const canEditDetails = createMemo(
+    () => isEditing() && hasConfiguration() && canEditEvent(props.stageDateTo),
+  );
 
   const MID_AVG_MIN_JUDGES = 4;
 

@@ -199,18 +199,12 @@ function StageInfoPage() {
     },
   ];
 
-  const eventsTabsContents = createMemo(() => {
-    const stage = stageInfo.data;
-    if (!stage) {
-      return [];
-    }
-
-    return [
+  const eventsTabsContents = [
       {
         value: TABS.EVENTS,
         content: (
           <div class="stage-info__events">
-            <Index each={stage.events}>
+            <Index each={stageInfo.data?.events ?? []}>
               {(event) => (
                 <Card
                   content={
@@ -315,7 +309,6 @@ function StageInfoPage() {
         content: <div>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</div>,
       },
     ];
-  });
 
   const handleGoToDogs = () =>
     navigate({
@@ -352,7 +345,7 @@ function StageInfoPage() {
             <AtomTabs
               defaultValue={TABS.EVENTS}
               options={stageTabsTitles}
-              contents={eventsTabsContents()}
+              contents={eventsTabsContents}
             />
             <AtomDialog
               closeButtonText={i18n.t("STAGES.INFO.CLOSE_DIALOG")}

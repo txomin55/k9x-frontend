@@ -58,10 +58,6 @@
     align-items: flex-start;
 }
 
-.obdx-clf-table__handler {
-    font-size: var(--text-caption-sm);
-}
-
 .obdx-clf-table__scores {
     display: none;
 }

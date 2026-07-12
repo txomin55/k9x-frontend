@@ -112,8 +112,8 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
       {
         id: EVENT_DETAIL_STAGE_ID,
         name: "Detail Stage",
-        dateFrom: 1_717_200_000_000,
-        dateTo: 1_717_286_400_000,
+        dateFrom: 4_102_444_800_000,
+        dateTo: 4_102_531_200_000,
         status: "CREATED",
         events: [
           {
