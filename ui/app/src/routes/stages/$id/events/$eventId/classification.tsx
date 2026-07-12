@@ -523,7 +523,10 @@ function EventClassificationPage() {
     }
   };
 
-  const [controlValue, setControlValue] = createSignal(CONTROLS_KEYS.LIST);
+  const [controlValue, setControlValue] = useSearchParam(
+    "view",
+    CONTROLS_KEYS.LIST,
+  );
 
   const classificationControls = createMemo(() => [
     {
