@@ -1,4 +1,4 @@
-import { createResource, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import "./styles.css";
 
 const flagLoaders = import.meta.glob<string>("/src/assets/flags/*.svg", {
@@ -6,6 +6,8 @@ const flagLoaders = import.meta.glob<string>("/src/assets/flags/*.svg", {
   import: "default",
   query: "?url",
 });
+
+const resolvedFlagUrls = new Map<string, string>();
 
 const countryAliases: Record<string, string> = {
   en: "gb",
@@ -16,6 +18,11 @@ const normalizeCountry = (country?: string) => {
   return countryAliases[normalized] ?? normalized;
 };
 
+const flagPath = (country: string) =>
+  flagLoaders[`/src/assets/flags/${country}.svg`]
+    ? `/src/assets/flags/${country}.svg`
+    : "/src/assets/flags/unknown.svg";
+
 export default function CountryFlag(props: {
   alt?: string;
   country?: string;
@@ -23,12 +30,29 @@ export default function CountryFlag(props: {
   width?: number;
 }) {
   const country = () => normalizeCountry(props.country);
-  const loadFlag = () =>
-    flagLoaders[`/src/assets/flags/${country()}.svg`] ??
-    flagLoaders["/src/assets/flags/unknown.svg"];
 
-  const [src] = createResource(loadFlag, (load) => load());
+  const [src, setSrc] = createSignal<string | undefined>(
+    resolvedFlagUrls.get(flagPath(country())),
+  );
   const [failed, setFailed] = createSignal(false);
+
+  createEffect(() => {
+    const path = flagPath(country());
+    const cached = resolvedFlagUrls.get(path);
+
+    if (cached) {
+      setSrc(cached);
+      return;
+    }
+
+    setSrc(undefined);
+    void flagLoaders[path]?.().then((url) => {
+      resolvedFlagUrls.set(path, url);
+      if (flagPath(country()) === path) {
+        setSrc(url);
+      }
+    });
+  });
 
   return (
     <div
