@@ -158,15 +158,34 @@ function EventClassificationPage() {
 
   const [clfData, setClfData] =
     createSignal<StageEventClassificationResponseDTO>();
+  const activeScroller = () => {
+    const list = scrollEl();
+    if (list?.isConnected) return list;
+    return (
+      tableEl()?.querySelector<HTMLElement>(".atom-table__scroller") ??
+      undefined
+    );
+  };
   createEffect(() => {
     const data = classificationQuery.data;
-    if (data) setClfData(data);
+    if (!data) return;
+    const el = activeScroller();
+    const prevScroll = el?.scrollTop ?? 0;
+    setClfData(data);
+    if (el && prevScroll) {
+      const restore = () => {
+        el.scrollTop = prevScroll;
+      };
+      restore();
+      requestAnimationFrame(restore);
+    }
   });
 
   const ITEM_HEIGHT = 220;
   const MAX_VIEWPORT_ITEMS = 6;
 
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
+  const [tableEl, setTableEl] = createSignal<HTMLDivElement>();
   const [listHeight, setListHeight] = createSignal(
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
@@ -467,7 +486,11 @@ function EventClassificationPage() {
   );
 
   const tableContent = () => (
-    <div class="obdx-clf-table" style={{ height: `${listHeight()}px` }}>
+    <div
+      ref={setTableEl}
+      class="obdx-clf-table"
+      style={{ height: `${listHeight()}px` }}
+    >
       <AtomTable<StageEventClassificationItemResponseDTO>
         data={filteredCompetitors()}
         columns={columns()}
