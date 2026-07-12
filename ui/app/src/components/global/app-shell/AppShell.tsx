@@ -27,12 +27,6 @@ export default function AppShell() {
   onMount(async () => {
     initNetworkStore();
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        globalThis.location.reload();
-      });
-    }
-
     await i18n.init();
     await fetchUserIfAuthenticated(location().pathname);
 
