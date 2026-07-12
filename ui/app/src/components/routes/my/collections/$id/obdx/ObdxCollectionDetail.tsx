@@ -177,13 +177,27 @@ export default function ObdxCollectionDetail() {
   };
 
   createEffect(() => {
-    if (!selectedCompetitor() && search().competitorId) {
-      const match = collectionCompetitors().find(
-        (option) => option.value === search().competitorId,
-      );
-      if (match) {
-        setSelectedCompetitor(match);
-      }
+    if (selectedCompetitor()) {
+      return;
+    }
+
+    const options = collectionCompetitors();
+    if (options.length === 0) {
+      return;
+    }
+
+    const match = search().competitorId
+      ? options.find((option) => option.value === search().competitorId)
+      : undefined;
+    const next = match ?? options[0];
+
+    setSelectedCompetitor(next);
+
+    if (next.value !== search().competitorId) {
+      void navigate({
+        search: (prev) => ({ ...prev, competitorId: next.value }),
+        replace: true,
+      });
     }
   });
 

@@ -48,16 +48,18 @@ Las queries se crean con `@tanstack/solid-query` (`createQuery`, envuelto en
 
 3. **El resource es perezoso: la query NO hace fetch hasta que se lee `.data`.**
    Si gateas solo con `isPending` y nunca lees `.data`, la petición nunca se lanza
-   → skeleton eterno. Si necesitas gatear sin suspender (p.ej. un mapa), añade un
-   "primer" invisible que lea `.data` bajo un `<Suspense fallback={null}>` para
-   disparar el fetch (ver `StagesDataPrimer`).
+   → skeleton eterno. Un `createMemo` que lea `.data` sirve de disparador porque corre
+   eager al montar (por eso también suspende, ver más abajo). Antes se usaba un
+   "primer" invisible (`StagesDataPrimer`) para disparar el fetch en el mapa; se
+   retiró al pasar a un observer único compartido (ver secciones de tabs).
 
-4. **Bucle infinito de refetch.** Varios observers de la misma query + montar/
-   desmontar la vista + `refetchOnMount` → refetch en bucle. Ocurrió al meter el
-   contenido dentro de `AtomSegmentedControl` (su `<For>`/`<Switch>` de contenido
-   remonta al recomputar `controls()`). **Evítalo** desacoplando el contenido del
-   control (ver stages) y no reconstruyendo el array `controls` en cada render
-   (ver [[atom-segmented-control-remount]]).
+4. **Refetch por montaje (una petición por tab/vista).** `refetchOnMount` (o su
+   default) + `staleTime` sin fijar (⇒ stale al instante) hace que **cada observer
+   nuevo refetch-ee**. Si cada tab crea su propio observer, cada cambio de tab lanza
+   una petición. Solución: **un solo observer compartido por contexto** para toda la
+   pantalla (ver "Una sola petición para toda una pantalla con tabs"). Ojo aparte con
+   remontar el contenido dentro de `AtomSegmentedControl` (su `<For>`/`<Switch>`
+   remonta al recomputar `controls()`) → ver [[atom-segmented-control-remount]].
 
 ## Un "blink de recarga de toda la página" NO es Suspense (crítico)
 
@@ -141,7 +143,8 @@ tenían su Suspense; el mapa no, y por eso al recargar en `view=MAP` no se pinta
 controles.
 
 Con el observer único compartido, el **mapa ya no necesita el truco de `isPending` +
-primer** (estrategia B, ahora retirada): usa la misma estrategia A que list/table —
+primer** (el viejo enfoque de "gating sin suspender", ahora retirado): usa la misma
+estrategia base que list/table (Suspense local + skeleton) —
 `<Suspense fallback={<StagesMapSkeleton />}>` + leer `sortedStages()` directamente.
 Solo suspende en la primera carga (no hay refetch por tab ni por filtro cliente), así
 que leaflet no se remonta por datos.
