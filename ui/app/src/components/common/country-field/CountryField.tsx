@@ -6,14 +6,6 @@ import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import i18n from "i18next";
 import { createMemo, type JSX } from "solid-js";
 
-export const COUNTRY_OPTIONS = [
-  { label: "COMMON.COUNTRY_FIELD.PORTUGAL", value: "pt" },
-  { label: "COMMON.COUNTRY_FIELD.SPAIN", value: "es" },
-  { label: "COMMON.COUNTRY_FIELD.FRANCE", value: "fr" },
-  { label: "COMMON.COUNTRY_FIELD.ITALY", value: "it" },
-  { label: "COMMON.COUNTRY_FIELD.UNITED_KINGDOM", value: "gb" },
-] as const;
-
 const createCountrySelectOptions = (
   countries: IdNameDTO[],
 ): AtomSelectOption[] =>

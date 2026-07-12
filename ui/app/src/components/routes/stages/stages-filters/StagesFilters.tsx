@@ -1,8 +1,8 @@
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { COUNTRY_OPTIONS } from "@/components/common/country-field/CountryField";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import { useI18n } from "@/stores/i18n/i18n";
 import { STAGE_STATUS } from "@/utils/stage";
 import "./styles.css";
@@ -20,6 +20,7 @@ type StagesFiltersProps = {
   status: string;
   dateFrom: string;
   dateTo: string;
+  availableCountries: string[];
   onNameChange: (value: string) => void;
   onCountryChange: (value: string) => void;
   onStatusChange: (value: string) => void;
@@ -30,18 +31,34 @@ type StagesFiltersProps = {
 export default function StagesFilters(props: StagesFiltersProps) {
   const i18n = useI18n();
 
-  const countryOptions: AtomSelectOption[] = [
-    { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: "" },
-    ...COUNTRY_OPTIONS.map(({ label, value }) => ({
-      label: i18n.t(label),
-      value,
-      preLabel: <CountryFlag country={value} alt={`${value} flag`} />,
-    })),
-  ];
+  const countriesQuery = useCountries({ refetchOnMount: false });
+
+  const countryOptions = (): AtomSelectOption[] => {
+    const nameByCode = new Map(
+      (countriesQuery.data ?? []).map(({ id, name }) => [
+        id.toLowerCase(),
+        name,
+      ]),
+    );
+    const options = [
+      ...new Set(
+        props.availableCountries
+          .map((code) => code.toLowerCase())
+          .filter(Boolean),
+      ),
+    ]
+      .map((code) => ({
+        label: nameByCode.get(code) ?? code.toUpperCase(),
+        value: code,
+        preLabel: <CountryFlag country={code} alt={`${code} flag`} />,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+    return [{ label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: "" }, ...options];
+  };
 
   const selectedCountry = () =>
-    countryOptions.find((option) => option.value === props.country) ??
-    countryOptions[0];
+    countryOptions().find((option) => option.value === props.country) ??
+    countryOptions()[0];
 
   const statusOptions: AtomSelectOption[] = [
     { label: i18n.t("STAGES.FILTERS.ALL_STATUSES"), value: "" },
@@ -67,7 +84,7 @@ export default function StagesFilters(props: StagesFiltersProps) {
         <AtomSelect
           label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
           placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
-          options={countryOptions}
+          options={countryOptions()}
           value={selectedCountry()}
           onChange={(option) => props.onCountryChange(option?.value ?? "")}
         />

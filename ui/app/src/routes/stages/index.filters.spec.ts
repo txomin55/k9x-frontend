@@ -50,12 +50,26 @@ const filterStages: StageSummaryResponseDTO[] = [
   }),
 ];
 
-const setupFilterStages = (page: Page) =>
-  setRouteResponses(page, {
+const countries = [
+  { id: "es", name: "Spain" },
+  { id: "pt", name: "Portugal" },
+  { id: "fr", name: "France" },
+  { id: "it", name: "Italy" },
+  { id: "gb", name: "United Kingdom" },
+];
+
+const setupFilterStages = async (page: Page) => {
+  await setRouteResponses(page, {
+    method: "GET",
+    pathname: "/secured/countries",
+    payload: countries,
+  });
+  await setRouteResponses(page, {
     method: "GET",
     pathname: "/stages",
     payload: filterStages,
   });
+};
 
 const selectCountry = async (page: Page, country: string) => {
   await page.getByRole("button", { name: "Country" }).click();
@@ -107,6 +121,27 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
       page.getByText("Lisbon Winter Cup", { exact: true }),
     ).toHaveCount(0);
   });
+
+  competitorTest(
+    "only lists countries present in the stages",
+    async ({ page }) => {
+      await setupFilterStages(page);
+      await page.goto(AppRoutePath.STAGES);
+      await expect(
+        page.getByText("Paris Autumn Open", { exact: true }),
+      ).toBeVisible();
+
+      await page.getByRole("button", { name: "Country" }).click();
+
+      await expect(page.getByRole("option", { name: "Spain" })).toBeVisible();
+      await expect(page.getByRole("option", { name: "Portugal" })).toBeVisible();
+      await expect(page.getByRole("option", { name: "France" })).toBeVisible();
+      await expect(page.getByRole("option", { name: "Italy" })).toHaveCount(0);
+      await expect(
+        page.getByRole("option", { name: "United Kingdom" }),
+      ).toHaveCount(0);
+    },
+  );
 
   competitorTest("filters the trials by date range", async ({ page }) => {
     await setupFilterStages(page);

@@ -2,6 +2,7 @@ import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/At
 import AtomTable from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import type { ParentProps } from "solid-js";
 import {
   createContext,
   createEffect,
@@ -12,9 +13,8 @@ import {
   Show,
   Suspense,
   Switch,
-  useContext,
+  useContext
 } from "solid-js";
-import type { ParentProps } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
@@ -34,9 +34,7 @@ import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isStageLive } from "@/utils/stage";
 import { formatUtcDateOnly } from "@/utils/date";
 import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
@@ -140,6 +138,48 @@ function useFilteredStages() {
   });
 
   return { filteredStages, isPending: () => fetchedStages.isPending };
+}
+
+function StagesFiltersConnected(props: {
+  name: string;
+  country: string;
+  status: string;
+  dateFrom: string;
+  dateTo: string;
+  onNameChange: (value: string) => void;
+  onCountryChange: (value: string) => void;
+  onStatusChange: (value: string) => void;
+  onDateFromChange: (value: string) => void;
+  onDateToChange: (value: string) => void;
+}) {
+  const fetchedStages = useStagesQuery();
+
+  const availableCountries = createMemo(() => {
+    const stages = fetchedStages.data ?? [];
+    return [
+      ...new Set(
+        stages
+          .map((stage) => (stage.country ?? "").toLowerCase())
+          .filter(Boolean),
+      ),
+    ];
+  });
+
+  return (
+    <StagesFilters
+      name={props.name}
+      country={props.country}
+      status={props.status}
+      dateFrom={props.dateFrom}
+      dateTo={props.dateTo}
+      availableCountries={availableCountries()}
+      onNameChange={props.onNameChange}
+      onCountryChange={props.onCountryChange}
+      onStatusChange={props.onStatusChange}
+      onDateFromChange={props.onDateFromChange}
+      onDateToChange={props.onDateToChange}
+    />
+  );
 }
 
 function StagesListView(props: { onEnroll: EnrollHandler }) {
@@ -523,7 +563,7 @@ function StagesIndexPage() {
     <StagesDataProvider>
       <div class="stages">
         <Show when={isLoggedIn()}>
-          <StagesFilters
+          <StagesFiltersConnected
             name={nameFilter()}
             country={countryFilter()}
             status={statusFilter()}
