@@ -82,6 +82,7 @@ export async function exportClassificationPdf(
       t("STAGES.CLASSIFICATION.CLUB"),
       t("STAGES.CLASSIFICATION.TOTAL"),
       t("STAGES.CLASSIFICATION.PERCENTAGE"),
+      t("STAGES.CLASSIFICATION.QUALIFICATION"),
     ],
   ];
 
@@ -93,6 +94,7 @@ export async function exportClassificationPdf(
     competitor.team ?? "",
     formatNumber(competitor.totalScore),
     `${formatNumber(competitor.scoreRating)}%`,
+    competitor.qualification ?? "",
   ]);
 
   autoTable(doc, {

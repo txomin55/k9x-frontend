@@ -127,6 +127,7 @@ describe("exportClassificationPdf", () => {
       "Club A",
       "195",
       "90%",
+      "Excellent",
     ]);
     expect(save).toHaveBeenCalledWith("clasificacion-trofeo-test-clase-1.pdf");
   });
