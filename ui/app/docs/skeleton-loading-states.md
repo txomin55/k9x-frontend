@@ -59,29 +59,111 @@ Las queries se crean con `@tanstack/solid-query` (`createQuery`, envuelto en
    control (ver stages) y no reconstruyendo el array `controls` en cada render
    (ver [[atom-segmented-control-remount]]).
 
-## Dos estrategias según el caso
+## Un "blink de recarga de toda la página" NO es Suspense (crítico)
 
-### A) Suspense local + componente hijo (para contenido que puede desaparecer bajo el skeleton)
-Usado en **landing** (bloque "latest stages") y en list/table de **stages**.
-- La vista crea su propia query y la lee bajo su propio `<Suspense>`.
-- El fallback es el skeleton. Al resolver, muestra datos. Same-owner ⇒ resuelve
-  bien (a diferencia de crear la query en el padre y leerla en el hijo, que puede
-  quedarse colgado).
+Síntoma: la landing pinta bien (hero + skeleton, o incluso ya con datos) y **de
+golpe parpadea toda la página como si recargara**. Es fácil perder el tiempo mirando
+Suspense/skeleton — **no es eso**. Verificado muestreando el DOM por `requestAnimationFrame`:
+el árbol nunca se queda en blanco; el único cambio es el swap skeleton→datos. Un blink
+de página entera **siempre es un `location.reload()`** (o una navegación). Regla:
+si ves un blink, busca quién recarga, no toques el Suspense.
 
-### B) Gating con `isPending` (para contenido que debe seguir visible mientras carga)
-Usado en el **mapa** de stages: se pinta el mapa real (con `[]`) + un overlay
-pequeño mientras `isPending()`, sin suspender (evita re-montar leaflet). Requiere
-el primer del punto 3 para disparar el fetch si es el tab de entrada.
+Dos fuentes de reload que causaban esto (ambas ya eliminadas/entendidas):
+
+1. **Service worker (afecta a producción).** El SW hace `skipWaiting()` en `install`
+   + `clients.claim()` en `activate`
+   (`src/utils/service-worker/events/setup.ts`). Al reclamar la página se dispara
+   `controllerchange`, y `AppShell` llamaba `globalThis.location.reload()` en ese
+   evento → recarga completa. Salta en la **primera visita** (primer claim de una
+   página sin controlador) y en **cada update del SW**. **Se quitó el auto-reload por
+   completo**: el SW nuevo toma control en silencio y los assets frescos se sirven en
+   la siguiente navegación (patrón estándar). NO reintroducir el
+   `controllerchange → location.reload()`: es exactamente lo que parpadea. Si algún
+   día hace falta avisar de una versión nueva, usar un toast "recargar", nunca un
+   reload automático.
+
+2. **Vite HMR (solo dev).** Un trace de DevTools del blink mostró el reload disparado
+   por `@vite/client` (full-reload de HMR / reconexión del socket), pasando por un
+   `beforeunload` de `@tanstack/history`. `// @refresh reload` en `entry-client.tsx`
+   hace que Solid recargue entero en updates de HMR. Es el servidor de desarrollo, no
+   la app, y **no ocurre en preview/producción**. No perseguirlo desde el código de la
+   app.
+
+Cómo diagnosticar un blink (rápido, sin token): abrir en contexto limpio / incógnito,
+trapear `location.reload` (`Object.defineProperty(location,"reload",...)`) para ver el
+stack, y contar navegaciones de documento (cada full-reload crea un `performance.timeOrigin`
+nuevo). En un trace: `browser_initiated:true` + `BeforeUnloadDialog` = recarga
+manual/HMR; una llamada JS a `location.reload()` sale como renderer-initiated.
+
+## Una sola petición para toda una pantalla con tabs (SOT compartida) — crítico
+
+Síntoma que hubo en **stages**: **cada cambio de tab lanzaba un GET a `/stages`**
+(medido: carga + 9 cambios de tab = 7 peticiones). Causa: cada vista de tab
+(`StagesListView`, `StagesTableView`, `StagesMapView`) llamaba a `useSortedStages()`,
+que **creaba su propio observer** con `useStages({ refetchOnMount: !isOffline() })`.
+Al no fijar `staleTime`, los datos quedan *stale* al instante, así que **cada montaje
+de observer (cada tab) refetch-ea**. (El mapa además creaba un `StagesDataPrimer`
+extra y `EnrollDialog` otro.)
+
+**Patrón correcto: un único observer a nivel de pantalla, compartido por contexto.**
+
+```tsx
+const StagesDataContext = createContext<ReturnType<typeof useStages>>();
+
+function StagesDataProvider(props: ParentProps) {
+  const { isOffline } = useOffline();
+  const query = useStages({ refetchOnMount: !isOffline(), gcTime: 5 * 60 * 1000 });
+  return <StagesDataContext.Provider value={query}>{props.children}</StagesDataContext.Provider>;
+}
+const useStagesQuery = () => { const q = useContext(StagesDataContext); if (!q) throw …; return q; };
+```
+
+- El **provider** crea el observer **una vez** (crear NO lee `.data` ⇒ NO suspende ⇒
+  no blanquea la ruta). Se pone envolviendo el contenido de la página.
+- Cada vista (`useSortedStages`, primer, dialog) hace `useStagesQuery()` y **lee** de
+  ese observer compartido, en vez de crear el suyo.
+- Como el observer vive en la página y **no se remonta al cambiar de tab**, no hay
+  refetch por tab: 1 petición por visita, y todos los tabs comparten el mismo dato.
+- **La lectura sigue en el hijo** (bajo su `<Suspense>` local), así se respeta la
+  atribución de owner del punto 2 (skeleton local, no blanqueo de ruta).
+- No hace falta `StagesDataPrimer`: la primera vista que lee `.data` dispara el fetch.
+
+## Cada tab necesita su PROPIO `<Suspense>` (incluido el mapa) — crítico
+
+`useSortedStages()` crea `createMemo(() => { const s = fetchedStages.data ?? []; … })`.
+`createMemo` corre **eager** al montar la vista, así que **lee `.data` al instante y
+suspende** — no basta con gatearlo en el JSX (`isPending() ? [] : sortedStages()`),
+porque el memo ya leyó al crearse. Por eso **cada `<Match>` de tab debe ir envuelto en
+su propio `<Suspense fallback={skeleton}>`**. Si a un tab le falta (le pasó al mapa),
+la suspensión sube hasta el boundary de la ruta y **blanquea toda la pantalla,
+incluidos los controles**, hasta que resuelve la query. List/Table iban bien porque ya
+tenían su Suspense; el mapa no, y por eso al recargar en `view=MAP` no se pintaban los
+controles.
+
+Con el observer único compartido, el **mapa ya no necesita el truco de `isPending` +
+primer** (estrategia B, ahora retirada): usa la misma estrategia A que list/table —
+`<Suspense fallback={<StagesMapSkeleton />}>` + leer `sortedStages()` directamente.
+Solo suspende en la primera carga (no hay refetch por tab ni por filtro cliente), así
+que leaflet no se remonta por datos.
+
+## Estrategia base: Suspense local + lectura en el hijo
+
+Usado en **landing** (bloque "latest stages") y en list/table/mapa de **stages**.
+- La query se crea en el hijo, **o** en un provider de pantalla (ver sección de SOT
+  compartida); lo que importa es que la **lectura** de `.data` ocurra en el hijo que
+  vive bajo su `<Suspense>`. Same-owner-para-la-lectura ⇒ resuelve bien (a diferencia
+  de leerla en el padre/owner del Outlet, que blanquea la ruta).
+- El fallback es el skeleton. Al resolver, muestra datos.
 
 ## Tab bar / breadcrumb visibles durante la carga
 
 Para que la barra de tabs y el breadcrumb se vean mientras cada tab carga
 (requisito en stages):
-- El componente de ruta **no crea ninguna query** (crear no suspende, pero mejor
-  mantenerlo limpio) → su chrome pinta al instante.
+- El componente de ruta **no lee** ninguna query (crear el observer en un provider no
+  suspende; solo leer `.data` suspende) → su chrome pinta al instante.
 - `AtomSegmentedControl` se usa **solo como barra de tabs** (`content: null`).
 - El contenido se renderiza en un `<Switch>` **propio y estable** debajo, donde
-  cada tab es una vista que sigue la estrategia A o B.
+  cada tab es una vista con su **propio `<Suspense>`** (ver secciones anteriores).
 
 ## Layout
 
@@ -103,8 +185,14 @@ vacío se come toda la altura y empuja el contenido fuera de pantalla. Fix:
 Se dispara en cada carga aunque estés deslogueado (`recoverSessionFromRefresh` en
 `stores/auth/auth.ts` intenta recuperar sesión por cookie). Es **concurrente**, no
 bloquea el render (está en `AppShell.onMount`, async). El shell solo gatea por
-`<Show when={i18n.ready()}>`. Si ves toda la app en blanco al cargar, mira i18n,
-no `/refresh`.
+`<Show when={i18n.ready()}>`. Si ves toda la app **en blanco fijo** al cargar, mira
+i18n, no `/refresh`. Si es un **blink/parpadeo** (aparece y desaparece), es un reload:
+ver la sección "Un blink de recarga… NO es Suspense".
+
+Ojo con el token de pruebas: un `.k9x-token` caducado provoca un **bucle de
+redirecciones de auth** (varias cargas de documento seguidas) que parece un
+reload-loop pero no lo es. Para diagnosticar un blink, prueba la landing pública
+**sin token**.
 
 ## Cómo testear (evita perder el tiempo)
 

@@ -16,26 +16,6 @@
   min-height: calc(var(--unit-10) * 4);
 }
 
-.stages-map-loading-overlay {
-  position: absolute;
-  top: var(--unit-2);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-
-  padding: var(--unit-05) var(--unit-15);
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius-full);
-
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
-  color: var(--text-secondary);
-  font-size: var(--text-caption-md);
-
-  backdrop-filter: blur(4px);
-  pointer-events: none;
-}
-
 .stages-table {
   max-height: calc(100dvh - 12rem);
   overflow: auto;

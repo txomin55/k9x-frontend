@@ -3,6 +3,7 @@ import AtomTable from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import {
+  createContext,
   createEffect,
   createMemo,
   createSignal,
@@ -11,7 +12,9 @@ import {
   Show,
   Suspense,
   Switch,
+  useContext,
 } from "solid-js";
+import type { ParentProps } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
@@ -70,15 +73,38 @@ const createEmptyEnrollDraft = (): EnrollDraft => ({
 
 type EnrollHandler = (stageId: string, eventId: string) => void;
 
-function useSortedStages() {
-  const { isOffline } = useOffline();
-  const user = useAuthUser();
-  const isLoggedIn = () => !!user();
+type StagesQuery = ReturnType<typeof useStages>;
 
-  const fetchedStages = useStages({
+const StagesDataContext = createContext<StagesQuery>();
+
+function StagesDataProvider(props: ParentProps) {
+  const { isOffline } = useOffline();
+
+  const query = useStages({
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
+
+  return (
+    <StagesDataContext.Provider value={query}>
+      {props.children}
+    </StagesDataContext.Provider>
+  );
+}
+
+function useStagesQuery(): StagesQuery {
+  const query = useContext(StagesDataContext);
+  if (!query) {
+    throw new Error("useStagesQuery must be used within StagesDataProvider");
+  }
+  return query;
+}
+
+function useSortedStages() {
+  const user = useAuthUser();
+  const isLoggedIn = () => !!user();
+
+  const fetchedStages = useStagesQuery();
 
   const [nameFilter] = useSearchParam("name", "");
   const [countryFilter] = useSearchParam("country", "");
@@ -288,36 +314,25 @@ function StagesTableSkeleton() {
   );
 }
 
-function StagesDataPrimer() {
-  const { isOffline } = useOffline();
-  const query = useStages({
-    refetchOnMount: !isOffline(),
-    gcTime: 5 * 60 * 1000,
-  });
-
-  void query.data;
-
-  return null;
+function StagesMapSkeleton() {
+  return (
+    <div class="stages-map-wrapper">
+      <AtomSkeleton
+        variant="rectangular"
+        width="100%"
+        height="100%"
+        radius="var(--radius-sm)"
+      />
+    </div>
+  );
 }
 
 function StagesMapView(props: { onEnroll: EnrollHandler }) {
-  const i18n = useI18n();
-  const { sortedStages, isPending } = useSortedStages();
+  const { sortedStages } = useSortedStages();
 
   return (
     <div class="stages-map-wrapper">
-      <Suspense fallback={null}>
-        <StagesDataPrimer />
-      </Suspense>
-      <StagesMap
-        stages={isPending() ? [] : sortedStages()}
-        onEnroll={props.onEnroll}
-      />
-      <Show when={isPending()}>
-        <div class="stages-map-loading-overlay">
-          {i18n.t("STAGES.INDEX.LOADING_STAGES")}
-        </div>
-      </Show>
+      <StagesMap stages={sortedStages()} onEnroll={props.onEnroll} />
     </div>
   );
 }
@@ -330,7 +345,7 @@ function EnrollDialog(props: {
   const i18n = useI18n();
   const navigate = useNavigate();
 
-  const fetchedStages = useStages({ gcTime: 5 * 60 * 1000 });
+  const fetchedStages = useStagesQuery();
   const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOfflinePolicy(),
     gcTime: 5 * 60 * 1000,
@@ -512,49 +527,53 @@ function StagesIndexPage() {
   });
 
   return (
-    <div class="stages">
-      <Show when={isLoggedIn()}>
-        <StagesFilters
-          name={nameFilter()}
-          country={countryFilter()}
-          status={statusFilter()}
-          dateFrom={dateFromFilter()}
-          dateTo={dateToFilter()}
-          onNameChange={setNameFilter}
-          onCountryChange={setCountryFilter}
-          onStatusChange={setStatusFilter}
-          onDateFromChange={setDateFromFilter}
-          onDateToChange={setDateToFilter}
+    <StagesDataProvider>
+      <div class="stages">
+        <Show when={isLoggedIn()}>
+          <StagesFilters
+            name={nameFilter()}
+            country={countryFilter()}
+            status={statusFilter()}
+            dateFrom={dateFromFilter()}
+            dateTo={dateToFilter()}
+            onNameChange={setNameFilter}
+            onCountryChange={setCountryFilter}
+            onStatusChange={setStatusFilter}
+            onDateFromChange={setDateFromFilter}
+            onDateToChange={setDateToFilter}
+          />
+        </Show>
+        <AtomSegmentedControl
+          title={i18n.t("STAGES.INDEX.STAGES_BY")}
+          control={controlValue()}
+          onControlChange={setControlValue}
+          controls={controls()}
         />
-      </Show>
-      <AtomSegmentedControl
-        title={i18n.t("STAGES.INDEX.STAGES_BY")}
-        control={controlValue()}
-        onControlChange={setControlValue}
-        controls={controls()}
-      />
-      <Switch>
-        <Match when={controlValue() === CONTROLS_KEYS.TABLE}>
-          <Suspense fallback={<StagesTableSkeleton />}>
-            <StagesTableView onEnroll={openEnrollDialog} />
-          </Suspense>
-        </Match>
-        <Match when={controlValue() === CONTROLS_KEYS.MAP}>
-          <StagesMapView onEnroll={openEnrollDialog} />
-        </Match>
-        <Match when={true}>
-          <Suspense fallback={<StageCardSkeleton count={3} />}>
-            <StagesListView onEnroll={openEnrollDialog} />
-          </Suspense>
-        </Match>
-      </Switch>
-      <Show when={enrollDialogOpen()}>
-        <EnrollDialog
-          stageId={selectedStageId()}
-          eventId={selectedEventId()}
-          onClose={closeEnrollDialog}
-        />
-      </Show>
-    </div>
+        <Switch>
+          <Match when={controlValue() === CONTROLS_KEYS.TABLE}>
+            <Suspense fallback={<StagesTableSkeleton />}>
+              <StagesTableView onEnroll={openEnrollDialog} />
+            </Suspense>
+          </Match>
+          <Match when={controlValue() === CONTROLS_KEYS.MAP}>
+            <Suspense fallback={<StagesMapSkeleton />}>
+              <StagesMapView onEnroll={openEnrollDialog} />
+            </Suspense>
+          </Match>
+          <Match when={true}>
+            <Suspense fallback={<StageCardSkeleton count={3} />}>
+              <StagesListView onEnroll={openEnrollDialog} />
+            </Suspense>
+          </Match>
+        </Switch>
+        <Show when={enrollDialogOpen()}>
+          <EnrollDialog
+            stageId={selectedStageId()}
+            eventId={selectedEventId()}
+            onClose={closeEnrollDialog}
+          />
+        </Show>
+      </div>
+    </StagesDataProvider>
   );
 }
