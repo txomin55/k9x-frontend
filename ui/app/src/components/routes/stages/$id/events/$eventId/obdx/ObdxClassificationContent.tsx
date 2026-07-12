@@ -24,7 +24,11 @@ export default function ObdxClassificationContent(
       <Show when={!props.hideSquaresTotal}>
         <div class="obdx-clf__squares-total">
           <ObdxExerciseSquares exercises={props.competitor.exercises} />
-          <TotalBlock value={props.competitor.totalScore ?? null} layout="inline" />
+          <TotalBlock
+            value={props.competitor.totalScore ?? null}
+            qualification={props.competitor.qualification}
+            layout="inline"
+          />
         </div>
       </Show>
       <AtomCollapsible

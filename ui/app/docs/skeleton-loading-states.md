@@ -2,7 +2,8 @@
 
 Cómo añadir estados de carga con skeleton en pantallas que dependen de una API,
 sin que la app "parezca muerta" con red lenta. Extraído del trabajo en **landing**
-(`src/routes/index.tsx`) y **stages públicos** (`src/routes/stages/index.tsx`).
+(`src/routes/index.tsx`), **stages públicos** (`src/routes/stages/index.tsx`) y
+**collection detail** (`src/components/routes/my/collections/$id/obdx/`).
 
 ## Componente base: `AtomSkeleton`
 
@@ -61,6 +62,12 @@ Las queries se crean con `@tanstack/solid-query` (`createQuery`, envuelto en
    remontar el contenido dentro de `AtomSegmentedControl` (su `<For>`/`<Switch>`
    remonta al recomputar `controls()`) → ver [[atom-segmented-control-remount]].
 
+5. **El fallback lo dispara CUALQUIER resource bajo la `<Suspense>`, no solo tus
+   queries.** `<Suspense>` muestra su fallback mientras haya *cualquier* resource en
+   loading en su subárbol — incluido uno creado en un hijo al re-renderizar. El
+   fallback mostrado es siempre el mismo skeleton, así que su forma NO indica quién
+   suspendió. Ver la sección "Skeleton que reaparece al mutar".
+
 ## Un "blink de recarga de toda la página" NO es Suspense (crítico)
 
 Síntoma: la landing pinta bien (hero + skeleton, o incluso ya con datos) y **de
@@ -96,6 +103,38 @@ trapear `location.reload` (`Object.defineProperty(location,"reload",...)`) para 
 stack, y contar navegaciones de documento (cada full-reload crea un `performance.timeOrigin`
 nuevo). En un trace: `browser_initiated:true` + `BeforeUnloadDialog` = recarga
 manual/HMR; una llamada JS a `location.reload()` sale como renderer-initiated.
+
+## Skeleton que reaparece al mutar (no solo en carga) — crítico
+
+Síntoma (fue en **collection detail**, al editar cada puntuación): la pantalla ya
+tiene datos y, **al mutar**, parpadea el skeleton entero de la ruta. El requisito es
+que el skeleton salga **solo en la carga inicial**, nunca al mutar.
+
+Diagnóstico (verificado): NO era la query de datos. El componente **no se re-montaba**
+(un `console.log` en el body corría una sola vez) y el `status`/`isFetching` de las
+queries **no cambiaba** (`success`/`false`); no había refetch en red (solo el PUT
+optimista). Y aun así aparecía el skeleton de ruta completo. Causa: **un resource de un
+componente HIJO re-creado durante la mutación**. `CountryFlag` usaba `createResource`
+(import dinámico del SVG); en el detalle, el `<AtomSelect>` de competidores pinta un
+`CountryFlag` por opción vía `ScoresCompetitorPreLabel`. Al puntuar, `collectionData.data`
+cambia (setQueryData optimista) y `seenCompetitors` se recomputa → el memo de opciones
+se reconstruye con **nuevos** `CountryFlag` → cada `createResource` nuevo entra en
+loading un frame → como cuelga de la `<Suspense>` de la ruta, parpadea el skeleton
+entero (ver punto 5 de la sección de Suspense).
+
+Reglas que salen de aquí:
+
+- **No pongas `createResource` en componentes hoja reutilizables** (iconos, banderas,
+  avatares) que se re-crean con cada cambio de lista/datos: cualquier re-creación los
+  mete en loading y hacen parpadear el `<Suspense>` del padre. Resuélvelos con
+  `createSignal` + **caché a nivel de módulo** de lo ya resuelto, mostrando un fallback
+  propio (texto/placeholder) mientras cargan la 1ª vez. Así **no suspenden** y, ya
+  cacheados, se pintan síncronos. (Es lo que se hizo en `CountryFlag`: se mantiene el
+  glob `eager:false` → sigue siendo lazy por país; solo dejó de suspender.)
+- Si un skeleton reaparece al mutar, **no mires la query de datos primero**: busca qué
+  resource hijo se re-crea (banderas/iconos/lazy) bajo esa `<Suspense>`.
+- Las mutaciones deben ser **optimistas con `setQueryData`** (nunca dejar `.data` en
+  `undefined`) para no re-suspender por la propia data.
 
 ## Una sola petición para toda una pantalla con tabs (SOT compartida) — crítico
 

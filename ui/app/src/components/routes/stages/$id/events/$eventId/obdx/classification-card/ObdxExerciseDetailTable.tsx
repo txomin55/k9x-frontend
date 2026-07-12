@@ -91,6 +91,7 @@ export default function ObdxExerciseDetailTable(
             <td colSpan={judges().length + 2}>
               <TotalBlock
                 value={props.competitor.totalScore ?? null}
+                qualification={props.competitor.qualification}
                 layout="row"
               />
             </td>

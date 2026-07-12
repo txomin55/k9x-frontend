@@ -31,6 +31,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         bih: false,
         reserve: false,
         awards: [{ id: "caciob", name: "CACIOB" }],
+        qualification: "Excellent",
       },
       {
         position: 2,
@@ -48,6 +49,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
         bih: false,
         reserve: false,
         awards: [],
+        qualification: "Very Good",
       },
     ],
   },

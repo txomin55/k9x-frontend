@@ -133,6 +133,7 @@ export interface StageEventClassificationItemResponseDTO {
   reserve: boolean;
   notCompeting?: boolean;
   awards: IdNameDTO[];
+  qualification: string;
 }
 
 export type StageEnrollRollbackPayload = {

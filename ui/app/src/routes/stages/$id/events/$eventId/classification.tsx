@@ -394,7 +394,14 @@ function EventClassificationPage() {
       accessorKey: "totalScore",
       header: t("STAGES.CLASSIFICATION.TOTAL"),
       cell: (info) => (
-        <span class="text-heading-xs">{info.getValue<number>() ?? "-"}</span>
+        <span class="text-heading-xs">
+          {info.getValue<number>() ?? "-"}
+          <Show when={info.row.original.qualification}>
+            <span class="obdx-clf__qualification text-caption-sm">
+              {info.row.original.qualification}
+            </span>
+          </Show>
+        </span>
       ),
     },
     {

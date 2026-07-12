@@ -66,6 +66,12 @@
     display: none;
 }
 
+.obdx-clf__qualification {
+    margin-left: var(--unit-05);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-muted);
+}
+
 @container (min-width: 600px) {
     .obdx-clf-table__scores {
         display: block;

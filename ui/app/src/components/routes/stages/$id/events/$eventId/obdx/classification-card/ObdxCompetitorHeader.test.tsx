@@ -24,6 +24,7 @@ const buildCompetitor = (
   bih: false,
   reserve: false,
   awards: [],
+  qualification: "",
   ...overrides,
 });
 

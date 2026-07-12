@@ -58,6 +58,7 @@ function makeCompetitor(
     bih: false,
     reserve: false,
     awards: [],
+    qualification: "Excellent",
     ...overrides,
   };
 }
