@@ -1,12 +1,5 @@
 import { createFileRoute, Link, useLocation, useNavigate } from "@tanstack/solid-router";
-import {
-  createMemo,
-  createSignal,
-  For,
-  onMount,
-  Show,
-  Suspense,
-} from "solid-js";
+import { createMemo, createSignal, For, onMount, Show, Suspense } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -38,13 +31,7 @@ function LatestStagesSkeleton(props: { title: string }) {
         <For each={Array.from({ length: 3 })}>
           {() => (
             <li class="landing-page__latest-item">
-              <div class="landing-page__latest-item-link">
-                <AtomSkeleton
-                  variant="rectangular"
-                  width="60%"
-                  height="calc(var(--unit-2) + var(--unit-025))"
-                />
-              </div>
+              <AtomSkeleton variant="rectangular" />
             </li>
           )}
         </For>
