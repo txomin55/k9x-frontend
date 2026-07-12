@@ -100,7 +100,7 @@ function useStagesQuery(): StagesQuery {
   return query;
 }
 
-function useSortedStages() {
+function useFilteredStages() {
   const user = useAuthUser();
   const isLoggedIn = () => !!user();
 
@@ -139,27 +139,20 @@ function useSortedStages() {
     });
   });
 
-  const sortedStages = createMemo(
-    () =>
-      filteredStages().toSorted(
-        (left, right) => (left.dateFrom ?? 0) - (right.dateFrom ?? 0),
-      ) ?? [],
-  );
-
-  return { sortedStages, isPending: () => fetchedStages.isPending };
+  return { filteredStages, isPending: () => fetchedStages.isPending };
 }
 
 function StagesListView(props: { onEnroll: EnrollHandler }) {
   const i18n = useI18n();
   const user = useAuthUser();
-  const { sortedStages } = useSortedStages();
+  const { filteredStages } = useFilteredStages();
 
   return (
     <Show
-      when={!(!!user() && sortedStages().length === 0)}
+      when={!(!!user() && filteredStages().length === 0)}
       fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
     >
-      <For each={sortedStages()}>
+      <For each={filteredStages()}>
         {(stage) => (
           <StageCard
             id={stage.id}
@@ -182,7 +175,7 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
 
 function StagesTableView(props: { onEnroll: EnrollHandler }) {
   const i18n = useI18n();
-  const { sortedStages } = useSortedStages();
+  const { filteredStages } = useFilteredStages();
 
   const columns = createMemo<ColumnDef<StageSummaryResponseDTO>[]>(() => [
     {
@@ -249,7 +242,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
   return (
     <div class="stages-table">
       <AtomTable<StageSummaryResponseDTO>
-        data={sortedStages()}
+        data={filteredStages()}
         columns={columns()}
         getRowCanExpand={() => true}
         renderSubComponent={(row) => (
@@ -328,11 +321,11 @@ function StagesMapSkeleton() {
 }
 
 function StagesMapView(props: { onEnroll: EnrollHandler }) {
-  const { sortedStages } = useSortedStages();
+  const { filteredStages } = useFilteredStages();
 
   return (
     <div class="stages-map-wrapper">
-      <StagesMap stages={sortedStages()} onEnroll={props.onEnroll} />
+      <StagesMap stages={filteredStages()} onEnroll={props.onEnroll} />
     </div>
   );
 }
