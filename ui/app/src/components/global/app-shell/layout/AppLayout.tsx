@@ -13,6 +13,7 @@ import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
 import PendingCollectionsDialog from "@/components/global/app-shell/layout/PendingCollectionsDialog";
+import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import { isDark, setIsDark } from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -123,6 +124,7 @@ export default function AppLayout(props: ParentProps) {
                   }
                 />
               </Show>
+              <FloatingShareButton />
               <AtomPopover
                 trigger={
                   <div class="app-layout__user-img">

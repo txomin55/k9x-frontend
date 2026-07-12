@@ -1,11 +1,15 @@
 .floating-share-button {
-    position: fixed;
-    right: var(--unit-2);
-    bottom: var(--unit-2);
-    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
 }
 
 .floating-share-button .atom-svg-icon {
-    width: var(--icon-size-lg);
-    height: var(--icon-size-lg);
+    width: var(--icon-size-md);
+    height: var(--icon-size-md);
 }

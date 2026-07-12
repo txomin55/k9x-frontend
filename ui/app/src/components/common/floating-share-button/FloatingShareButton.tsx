@@ -1,6 +1,5 @@
 import { useLocation } from "@tanstack/solid-router";
 import { Show } from "solid-js";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -33,15 +32,18 @@ export default function FloatingShareButton() {
 
   return (
     <Show when={isVisible()}>
-      <div class="floating-share-button">
-        <CircleButton onClick={handleShare} size="md">
-          <AtomSvgIcon
-            src={shareIcon}
-            alt={i18n.t("GLOBAL.SHARE.SHARE")}
-            tinted
-          />
-        </CircleButton>
-      </div>
+      <button
+        type="button"
+        class="floating-share-button"
+        onClick={handleShare}
+        aria-label={i18n.t("GLOBAL.SHARE.SHARE")}
+      >
+        <AtomSvgIcon
+          src={shareIcon}
+          alt={i18n.t("GLOBAL.SHARE.SHARE")}
+          tinted
+        />
+      </button>
     </Show>
   );
 }
