@@ -192,23 +192,25 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
       when={!(!!user() && filteredStages().length === 0)}
       fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
     >
-      <For each={filteredStages()}>
-        {(stage) => (
-          <StageCard
-            id={stage.id}
-            country={stage.country ?? ""}
-            name={stage.name}
-            status={stage.status}
-            from={stage.dateFrom ?? 0}
-            to={stage.dateTo ?? 0}
-            competitionName={stage.competitionName ?? ""}
-            organizer={stage.organizer}
-            address={stage?.location?.address}
-            events={stage.events ?? []}
-            onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
-          />
-        )}
-      </For>
+      <div class="card-list">
+        <For each={filteredStages()}>
+          {(stage) => (
+            <StageCard
+              id={stage.id}
+              country={stage.country ?? ""}
+              name={stage.name}
+              status={stage.status}
+              from={stage.dateFrom ?? 0}
+              to={stage.dateTo ?? 0}
+              competitionName={stage.competitionName ?? ""}
+              organizer={stage.organizer}
+              address={stage?.location?.address}
+              events={stage.events ?? []}
+              onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
+            />
+          )}
+        </For>
+      </div>
     </Show>
   );
 }

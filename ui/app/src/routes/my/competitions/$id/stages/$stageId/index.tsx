@@ -476,20 +476,22 @@ function CompetitionStageDetailBody(props: {
             onBlur={commitStageEdits}
             onChange={setTitle}
           />
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_FROM")}
-            type="date"
-            value={dateFrom()}
-            onBlur={commitStageEdits}
-            onChange={setDateFrom}
-          />
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_TO")}
-            type="date"
-            value={dateTo()}
-            onBlur={commitStageEdits}
-            onChange={setDateTo}
-          />
+          <div class="stage-detail__dates">
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_FROM")}
+              type="date"
+              value={dateFrom()}
+              onBlur={commitStageEdits}
+              onChange={setDateFrom}
+            />
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_TO")}
+              type="date"
+              value={dateTo()}
+              onBlur={commitStageEdits}
+              onChange={setDateTo}
+            />
+          </div>
         </Show>
       </header>
 

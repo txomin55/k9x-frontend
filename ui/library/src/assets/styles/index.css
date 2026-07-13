@@ -1,6 +1,8 @@
 @import "colors/tokens.css";
 @import "sizes/primitives.css";
 @import "text/index.css";
+@import "forms/layout.css";
+@import "cards/layout.css";
 
 html {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",

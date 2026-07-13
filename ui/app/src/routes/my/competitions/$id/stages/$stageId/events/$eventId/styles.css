@@ -4,6 +4,14 @@
     gap: var(--unit-1);
 }
 
+.competition-event-detail__content > .atom-input,
+.competition-event-detail__content > .atom-select,
+.competition-event-detail__content > .atom-combobox,
+.competition-event-detail__content > .atom-text-area,
+.competition-event-detail__content > header .atom-input {
+    max-width: calc(var(--unit-10) * 4);
+}
+
 .competition-event-detail__content--header-title {
     display: flex;
     gap: var(--unit-05);

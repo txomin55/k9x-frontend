@@ -135,15 +135,17 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
   };
 
   return (
-    <div class="exercise-editor-form">
-      <AtomCombobox
-        multiple
-        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
-        placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
-        options={judgeOptions()}
-        value={selectedJudgeOptions()}
-        onChange={setJudges}
-      />
+    <div class="form-grid">
+      <div class="form-grid__full">
+        <AtomCombobox
+          multiple
+          label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
+          placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
+          options={judgeOptions()}
+          value={selectedJudgeOptions()}
+          onChange={setJudges}
+        />
+      </div>
       <AtomNumberInput
         label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
         value={props.draft().position}
@@ -152,31 +154,35 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
         minValue={minOrder}
         maxValue={maxOrder}
       />
-      <AtomCombobox
-        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.EXERCISE")}
-        options={exerciseOptions()}
-        value={selectedExerciseOption()}
-        onChange={setExercise}
-        disabled={exerciseOptions().length === 0}
-        description={
-          exerciseOptions().length === 0
-            ? i18n.t(
-                "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST",
-              )
-            : undefined
-        }
-        placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE")}
-      />
-      <AtomInput
-        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.TAGS")}
-        value={props.draft().tags.join(", ")}
-        onBlur={props.onCommit}
-        onChange={setTags}
-        description={i18n.t(
-          "MY.COMPETITIONS.EXERCISE_EDITOR.COMMA_SEPARATED_TEXT",
-        )}
-      />
-      <div class="exercise-editor-form__actions">
+      <div class="form-grid__full">
+        <AtomCombobox
+          label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.EXERCISE")}
+          options={exerciseOptions()}
+          value={selectedExerciseOption()}
+          onChange={setExercise}
+          disabled={exerciseOptions().length === 0}
+          description={
+            exerciseOptions().length === 0
+              ? i18n.t(
+                  "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST",
+                )
+              : undefined
+          }
+          placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE")}
+        />
+      </div>
+      <div class="form-grid__full">
+        <AtomInput
+          label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.TAGS")}
+          value={props.draft().tags.join(", ")}
+          onBlur={props.onCommit}
+          onChange={setTags}
+          description={i18n.t(
+            "MY.COMPETITIONS.EXERCISE_EDITOR.COMMA_SEPARATED_TEXT",
+          )}
+        />
+      </div>
+      <div class="form-grid__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CLOSE")}
         </AtomButton>

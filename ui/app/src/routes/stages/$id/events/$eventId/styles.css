@@ -113,6 +113,13 @@
     text-align: center;
 }
 
+@media (max-width: 900px) {
+    .obdx-clf-table th:nth-child(3),
+    .obdx-clf-table td:nth-child(3) {
+        display: none;
+    }
+}
+
 .classification__error {
     display: flex;
     flex-direction: column;
@@ -126,14 +133,20 @@
     padding-top: var(--unit-1);
 }
 
+.obdx-clf__list > .card,
+.obdx-clf__pinned > .card {
+    max-width: none;
+}
+
 .obdx-clf__filter-row {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-end;
     gap: var(--unit-2);
 }
 
 .obdx-clf__filter-row > :first-child {
-    flex: 1;
+    flex: 1 1 16rem;
     min-width: 0;
 }
 

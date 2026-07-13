@@ -61,19 +61,21 @@ function MyCompetitionsIndexPage() {
 					when={filteredCompetitions().length}
 					fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
 				>
-					<For each={filteredCompetitions()}>
-						{(competition) => (
-							<CompetitionCard
-								id={competition.id}
-								status={competition.status}
-								name={competition.name}
-								description={competition.description}
-								country={competition.country}
-								stages={competition.stages}
-								address={competition?.address}
-							/>
-						)}
-					</For>
+					<div class="card-list">
+						<For each={filteredCompetitions()}>
+							{(competition) => (
+								<CompetitionCard
+									id={competition.id}
+									status={competition.status}
+									name={competition.name}
+									description={competition.description}
+									country={competition.country}
+									stages={competition.stages}
+									address={competition?.address}
+								/>
+							)}
+						</For>
+					</div>
 				</Show>
 			</Show>
 			<FloatingToggleCircle

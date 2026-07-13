@@ -20,6 +20,22 @@
     gap: var(--unit-1);
 }
 
+.stage-detail__header > .atom-input {
+    max-width: calc(var(--unit-10) * 4);
+}
+
+.stage-detail__dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-1);
+    max-width: calc(var(--unit-10) * 8);
+}
+
+.stage-detail__dates > * {
+    flex: 1 1 calc(var(--unit-10) * 3);
+    min-width: 0;
+}
+
 .stage-detail__header--info {
     display: flex;
     flex-direction: column;

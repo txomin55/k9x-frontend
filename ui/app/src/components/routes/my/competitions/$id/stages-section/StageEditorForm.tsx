@@ -78,17 +78,19 @@ export default function StageEditorForm(props: StageDialogProps) {
   return (
     <Show when={props.draft()}>
       {(draft) => (
-        <div class="stage-editor-form">
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.STAGE_TITLE")}
-            value={draft().name}
-            onChange={updateTitle}
-            onBlur={() => setNameTouched(true)}
-            validationState={
-              nameTouched() && nameError() ? "invalid" : undefined
-            }
-            errorMessage={nameTouched() ? nameErrorMessage() : undefined}
-          />
+        <div class="form-grid form-grid--2col">
+          <div class="form-grid__full">
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.STAGE_TITLE")}
+              value={draft().name}
+              onChange={updateTitle}
+              onBlur={() => setNameTouched(true)}
+              validationState={
+                nameTouched() && nameError() ? "invalid" : undefined
+              }
+              errorMessage={nameTouched() ? nameErrorMessage() : undefined}
+            />
+          </div>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.DATE_FROM")}
             type="date"
@@ -108,7 +110,7 @@ export default function StageEditorForm(props: StageDialogProps) {
                 : undefined
             }
           />
-          <div class="stage-editor-form__actions">
+          <div class="form-grid__actions">
             <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
               {i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.CANCEL")}
             </AtomButton>

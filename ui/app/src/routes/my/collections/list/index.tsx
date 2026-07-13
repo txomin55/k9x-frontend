@@ -17,7 +17,7 @@ function MyCollectionsRoute() {
     <Suspense
       fallback={
         <Page>
-          <div class="collections-list">
+          <div class="collections-list card-list">
             <CardListSkeleton count={6} />
           </div>
         </Page>
@@ -60,7 +60,7 @@ function MyCollectionsListPage() {
           <p>{i18n.t("MY.COLLECTIONS.LIST.NO_COLLECTIONS_AVAILABLE_YET")}</p>
         }
       >
-        <div class="collections-list">
+        <div class="collections-list card-list">
           <For each={collectionsQuery.data}>
             {(collection) => (
               <CollectionCard

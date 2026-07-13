@@ -15,7 +15,9 @@ export default function AtomDialog(props: AtomDialogProps) {
       </Show>
       <Dialog.Portal>
         <Dialog.Overlay class="atom-dialog__overlay" />
-        <Dialog.Content class="atom-dialog__content">
+        <Dialog.Content
+          class={`atom-dialog__content${props.size === "wide" ? " atom-dialog__content--wide" : ""}`}
+        >
           <div class="atom-dialog__header">
             <Show when={props.title}>
               <Dialog.Title class="atom-dialog__title">

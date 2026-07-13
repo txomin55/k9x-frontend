@@ -7,15 +7,11 @@
 
 .stages-filters__inline {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--unit-1);
 }
 
 .stages-filters__inline > * {
-    flex: 1;
-}
-
-@media (max-width: 400px) {
-    .stages-filters__inline {
-        flex-direction: column;
-    }
+    flex: 1 1 12rem;
+    min-width: 0;
 }

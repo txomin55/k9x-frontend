@@ -37,7 +37,7 @@ function MyJudgesRoute() {
 		<Suspense
 			fallback={
 				<Page>
-					<div class="judges-list">
+					<div class="judges-list card-list">
 						<CardListSkeleton count={6} />
 					</div>
 				</Page>
@@ -161,7 +161,7 @@ function MyJudgesListPage() {
 					when={filteredJudges().length}
 					fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
 				>
-					<div class="judges-list">
+					<div class="judges-list card-list">
 						<For each={filteredJudges()}>
 							{(judge) => (
 								<JudgeCard

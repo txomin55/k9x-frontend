@@ -1,0 +1,24 @@
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--unit-15) var(--unit-2);
+    align-items: start;
+}
+
+@container (min-width: 30rem) {
+    .form-grid--2col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.form-grid__full {
+    grid-column: 1 / -1;
+}
+
+.form-grid__actions {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--unit-1);
+}

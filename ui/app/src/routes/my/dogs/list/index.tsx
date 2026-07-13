@@ -27,7 +27,7 @@ function MyDogsRoute() {
     <Suspense
       fallback={
         <Page>
-          <div class="dogs-list">
+          <div class="dogs-list card-list">
             <CardListSkeleton count={6} />
           </div>
         </Page>
@@ -171,7 +171,7 @@ function MyDogsListPage() {
           when={myDogs().length}
           fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
         >
-          <div class="dogs-list">
+          <div class="dogs-list card-list">
             <For each={myDogs()}>
               {(dog) => (
                 <DogCard
@@ -186,6 +186,7 @@ function MyDogsListPage() {
       </Show>
 
       <AtomDialog
+        size="wide"
         title={
           editingDogId()
             ? i18n.t("MY.DOGS.LIST.EDIT_DOG")

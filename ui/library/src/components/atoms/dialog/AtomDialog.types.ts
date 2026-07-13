@@ -8,4 +8,5 @@ export type AtomDialogProps = {
   closeButtonText?: string;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
+  size?: "md" | "wide";
 };

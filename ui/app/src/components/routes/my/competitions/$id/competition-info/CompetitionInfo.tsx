@@ -48,7 +48,7 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
   return (
     <div class="competition-info">
       <Show when={props.isEditing}>
-        <div class="competition-info__form">
+        <div class="form-grid form-grid--2col">
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.TITLE")}
             name="name"
@@ -79,23 +79,27 @@ export default function CompetitionInfo(props: CompetitionInfoProps) {
               countryTouched() ? errorMessage(countryError()) : undefined
             }
           />
-          <AtomTextArea
-            label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")}
-            name="description"
-            value={props.description}
-            onBlur={props.onCommit}
-            onChange={props.onDescriptionChange}
-          />
-          <AtomInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")}
-            name="address"
-            value={props.address}
-            onBlur={props.onCommit}
-            onChange={props.onAddressChange}
-            description={i18n.t(
-              "MY.COMPETITIONS.COMPETITION_INFO.ADDRESS_HINT",
-            )}
-          />
+          <div class="form-grid__full">
+            <AtomTextArea
+              label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.DESCRIPTION")}
+              name="description"
+              value={props.description}
+              onBlur={props.onCommit}
+              onChange={props.onDescriptionChange}
+            />
+          </div>
+          <div class="form-grid__full">
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.COMPETITION_INFO.ADDRESS")}
+              name="address"
+              value={props.address}
+              onBlur={props.onCommit}
+              onChange={props.onAddressChange}
+              description={i18n.t(
+                "MY.COMPETITIONS.COMPETITION_INFO.ADDRESS_HINT",
+              )}
+            />
+          </div>
         </div>
       </Show>
       <Show when={!props.isEditing}>

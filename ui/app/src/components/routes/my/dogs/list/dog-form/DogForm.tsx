@@ -20,7 +20,6 @@ import {
   validateRequiredSelection,
   validateRequiredText,
 } from "@/utils/validation/textField";
-import "./styles.css";
 
 type DogFormProps = {
   draft: () => Dog;
@@ -164,7 +163,7 @@ export default function DogForm(props: DogFormProps) {
       threeFciGenerationsConfirmed,
     }));
   return (
-    <div class="dog-form">
+    <div class="form-grid form-grid--2col">
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.CHIP")}
         value={props.draft().id}
@@ -179,17 +178,21 @@ export default function DogForm(props: DogFormProps) {
         {...fieldProps("name", nameError)}
       />
       <Show when={!!user()?.organizer}>
-        <AtomCheckbox
-          label={i18n.t("MY.DOGS.DOG_FORM.OWNED")}
-          checked={props.draft().owned}
-          setChecked={updateOwned}
-        />
+        <div class="form-grid__full">
+          <AtomCheckbox
+            label={i18n.t("MY.DOGS.DOG_FORM.OWNED")}
+            checked={props.draft().owned}
+            setChecked={updateOwned}
+          />
+        </div>
       </Show>
-      <AtomInput
-        label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")}
-        value={props.draft().image}
-        disabled
-      />
+      <div class="form-grid__full">
+        <AtomInput
+          label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")}
+          value={props.draft().image}
+          disabled
+        />
+      </div>
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.BREED")}
         placeholder={i18n.t("MY.DOGS.DOG_FORM.SELECT_BREED")}
@@ -218,21 +221,25 @@ export default function DogForm(props: DogFormProps) {
         step={0.1}
         minValue={0}
       />
-      <AtomCheckbox
-        label={i18n.t("MY.DOGS.DOG_FORM.THREE_FCI_GENERATIONS_CONFIRMED")}
-        checked={props.draft().threeFciGenerationsConfirmed}
-        setChecked={updateThreeFciGenerationsConfirmed}
-      />
+      <div class="form-grid__full">
+        <AtomCheckbox
+          label={i18n.t("MY.DOGS.DOG_FORM.THREE_FCI_GENERATIONS_CONFIRMED")}
+          checked={props.draft().threeFciGenerationsConfirmed}
+          setChecked={updateThreeFciGenerationsConfirmed}
+        />
+      </div>
       <Show when={!!user()?.organizer}>
         <Show when={!props.draft().owned}>
-          <AtomInput
-            label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
-            type="email"
-            description={i18n.t("MY.DOGS.DOG_FORM.OWNER_HINT")}
-            value={props.draft().owner}
-            onChange={updateOwner}
-            {...fieldProps("owner", ownerError)}
-          />
+          <div class="form-grid__full">
+            <AtomInput
+              label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
+              type="email"
+              description={i18n.t("MY.DOGS.DOG_FORM.OWNER_HINT")}
+              value={props.draft().owner}
+              onChange={updateOwner}
+              {...fieldProps("owner", ownerError)}
+            />
+          </div>
         </Show>
         <AtomInput
           label={i18n.t("MY.DOGS.DOG_FORM.HANDLER")}
@@ -258,7 +265,7 @@ export default function DogForm(props: DogFormProps) {
           touched().country ? errorMessage(countryError()) : undefined
         }
       />
-      <div class="dog-form__actions">
+      <div class="form-grid__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.DOGS.DOG_FORM.CANCEL")}
         </AtomButton>

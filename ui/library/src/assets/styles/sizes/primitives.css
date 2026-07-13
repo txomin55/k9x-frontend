@@ -20,4 +20,6 @@
     --radius-lg: var(--unit-1);
     --radius-xl: var(--unit-2);
     --radius-full: 999px;
+
+    --control-height-md: 44px;
 }

@@ -342,6 +342,17 @@
     border-collapse: collapse;
 }
 
+.obdx-clf__table th:first-child,
+.obdx-clf__table td:first-child {
+    width: 100%;
+}
+
+.obdx-clf__table th:not(:first-child),
+.obdx-clf__ex-row td:not(:first-child) {
+    width: 1%;
+    white-space: nowrap;
+}
+
 .obdx-clf__table thead th {
     padding: var(--unit-05) var(--unit-1);
     font-size: var(--text-caption-md);

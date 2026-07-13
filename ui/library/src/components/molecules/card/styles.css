@@ -3,7 +3,7 @@
     border: 1px solid var(--border);
     border-radius: var(--unit-1);
     padding: var(--unit-2);
-    max-width: 100%;
+    max-width: calc(var(--unit-10) * 6);
     margin-bottom: var(--unit-2);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     transition: transform 160ms ease,
