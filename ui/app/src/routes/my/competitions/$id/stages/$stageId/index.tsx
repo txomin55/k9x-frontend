@@ -138,7 +138,6 @@ function StageDetailSkeleton() {
 }
 
 function CompetitionStageDetailPage() {
-  const i18n = useI18n();
   const navigate = useNavigate();
   const params = useParams({ from: "/my/competitions/$id/stages/$stageId/" });
   const {
@@ -187,7 +186,7 @@ function CompetitionStageDetailPage() {
   });
 
   return params().stageId === "new" ? (
-    <span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CREATING_STAGE")}</span>
+    <StageDetailSkeleton />
   ) : (
     <CompetitionStageDetailContentContainer
       competitionId={params().id}
@@ -237,13 +236,7 @@ function CompetitionStageDetailContentContainer(props: {
 
   return (
     <div class="stage-detail">
-      <Suspense
-        fallback={
-          <span>
-            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LOADING_STAGE_DETAIL")}
-          </span>
-        }
-      >
+      <Suspense fallback={<StageDetailSkeleton />}>
         <Show
           when={props.stage()}
           fallback={

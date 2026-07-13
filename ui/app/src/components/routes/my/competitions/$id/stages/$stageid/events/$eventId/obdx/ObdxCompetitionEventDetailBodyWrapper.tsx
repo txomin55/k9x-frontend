@@ -8,6 +8,7 @@ import {
   Suspense,
 } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
+import EventDetailSkeleton from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/EventDetailSkeleton";
 import type {
   EventDetailResponseDTO,
   UpdateEventRequestDTO,
@@ -56,13 +57,7 @@ export default function ObdxCompetitionEventDetailBodyWrapper(
 
   return (
     <div class="competition-event-detail">
-      <Suspense
-        fallback={
-          <span>
-            {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.LOADING_EVENT_DETAIL")}
-          </span>
-        }
-      >
+      <Suspense fallback={<EventDetailSkeleton />}>
         <Show
           when={resolvedEvent()}
           fallback={

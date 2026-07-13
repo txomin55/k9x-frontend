@@ -110,7 +110,6 @@ function CompetitionDetailSkeleton() {
 }
 
 function CompetitionDetailPage() {
-  const i18n = useI18n();
   const navigate = useNavigate();
   const params = useParams({ from: "/my/competitions/$id/" });
   const { createCompetition, createDefaultCompetition } = useCompetition();
@@ -131,7 +130,7 @@ function CompetitionDetailPage() {
   });
 
   return params().id === "new" ? (
-    <span>{i18n.t("MY.COMPETITIONS.DETAIL.CREATING_COMPETITION")}</span>
+    <CompetitionDetailSkeleton />
   ) : (
     <CompetitionDetailContent id={params().id} />
   );
@@ -147,11 +146,7 @@ function CompetitionDetailContent(props: { id: string }) {
 
   return (
     <div class="competition-detail">
-      <Suspense
-        fallback={
-          <span>{i18n.t("MY.COMPETITIONS.DETAIL.LOADING_COMPETITION")}</span>
-        }
-      >
+      <Suspense fallback={<CompetitionDetailSkeleton />}>
         <Show
           when={competition()}
           fallback={

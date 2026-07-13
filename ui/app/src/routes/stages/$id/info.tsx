@@ -325,7 +325,7 @@ function StageInfoPage() {
     <div class="stage-info">
       <Show
         when={stageInfo.data}
-        fallback={<span>{i18n.t("STAGES.INFO.LOADING_STAGE_DATA")}</span>}
+        fallback={<StageInfoSkeleton />}
       >
         {(stage) => (
           <>

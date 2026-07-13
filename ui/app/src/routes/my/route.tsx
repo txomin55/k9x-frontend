@@ -2,7 +2,7 @@ import { createFileRoute, Navigate, Outlet } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
-import { useI18n } from "@/stores/i18n/i18n";
+import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 
 export const Route = createFileRoute("/my")({
   component: MyLayoutPage,
@@ -11,12 +11,15 @@ export const Route = createFileRoute("/my")({
 function MyLayoutPage() {
   const user = useAuthUser();
   const loading = useAuthLoading();
-  const i18n = useI18n();
 
   return (
     <Show
       when={!loading()}
-      fallback={<span>{i18n.t("MY.LOADING_USER_DATA")}</span>}
+      fallback={
+        <div class="page">
+          <CardListSkeleton />
+        </div>
+      }
     >
       <Show
         when={user()}
