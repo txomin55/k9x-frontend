@@ -1,4 +1,6 @@
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { Index, Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -41,39 +43,40 @@ export default function StageCardEventsContent(
             <RankBadge rank={event().rank} />
             <AwardBadges awards={event().awards} />
           </div>
-          <Show when={event().enrollmentOpened}>
-            <Show
-              when={user()}
-              fallback={
-                <AtomButton
-                  type={BUTTON_TYPES.GHOST}
-                  onClick={startGoogleInteractiveLogin}
-                >
-                  {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
-                </AtomButton>
-              }
-            >
-              <div class="stage-card__events-content--enrollment">
-                <AtomButton onClick={() => props.onEnroll?.(event().id)}>
-                  {i18n.t("STAGES.INFO.ENROLL")}
-                </AtomButton>
-                <span class="text-caption-sm">
-                  {i18n.t("STAGES.INFO.UNTIL")}{" "}
-                  {formatDateLabel(
-                    toDateInputValue(event().enrollmentDeadline ?? 0),
-                  )}
-                </span>
-              </div>
+          <div class="stage-card__events-actions">
+            <Show when={event().enrollmentOpened}>
+              <Show
+                when={user()}
+                fallback={
+                  <AtomButton
+                    type={BUTTON_TYPES.GHOST}
+                    onClick={startGoogleInteractiveLogin}
+                  >
+                    {i18n.t("STAGES.INFO.LOGIN_TO_ENROLL")}
+                  </AtomButton>
+                }
+              >
+                <div class="stage-card__events-content--enrollment">
+                  <AtomButton onClick={() => props.onEnroll?.(event().id)}>
+                    {i18n.t("STAGES.INFO.ENROLL")}
+                  </AtomButton>
+                  <span class="text-caption-sm">
+                    {formatDateLabel(
+                      toDateInputValue(event().enrollmentDeadline ?? 0),
+                    )}
+                  </span>
+                </div>
+              </Show>
             </Show>
-          </Show>
-          <Show when={canSeeClassification(event().status)}>
-            <AtomButton
-              type={BUTTON_TYPES.PRIMARY}
-              onClick={() => navigateToClassification(event().id)}
-            >
-              {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
-            </AtomButton>
-          </Show>
+            <Show when={canSeeClassification(event().status)}>
+              <AtomButton
+                type={BUTTON_TYPES.PRIMARY}
+                onClick={() => navigateToClassification(event().id)}
+              >
+                {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
+              </AtomButton>
+            </Show>
+          </div>
         </div>
       )}
     </Index>

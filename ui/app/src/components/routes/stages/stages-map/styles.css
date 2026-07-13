@@ -91,6 +91,12 @@
     width: 100%;
 }
 
+.stages-map-marker-popup__row--actions {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: baseline;
+}
+
 .stages-map-marker-popup__enrollment {
     display: flex;
     flex-direction: column;

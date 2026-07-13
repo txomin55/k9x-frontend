@@ -28,6 +28,12 @@
     align-items: flex-end;
 }
 
+.stage-card__events-actions {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: baseline;
+}
+
 .stage-card__events-content--info {
     display: flex;
     gap: var(--unit-1);

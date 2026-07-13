@@ -1,30 +1,30 @@
-import { createFileRoute, useNavigate, useParams } from "@tanstack/solid-router";
-import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
-import { useStageById } from "@/services/fetch-stages/fetchStages";
-import { useOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
-import { createMemo, createSignal, For, Index, Show, Suspense } from "solid-js";
-import { formatDateLabel, toDateInputValue } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
+import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
+import {useStageById} from "@/services/fetch-stages/fetchStages";
+import {useOwnedDogs} from "@/services/secured/dog-crud/dogCrud";
+import {createMemo, createSignal, For, Index, Show, Suspense} from "solid-js";
+import {formatDateLabel, toDateInputValue} from "@/utils/date";
+import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
-import { useAuthUser } from "@/stores/auth/auth";
-import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
-import { useI18n } from "@/stores/i18n/i18n";
+import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect.types";
+import {useAuthUser} from "@/stores/auth/auth";
+import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
+import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
+import {useI18n} from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
-import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import {useSearchParam} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
-import { isStageLive } from "@/utils/stage";
-import { canSeeClassification } from "@/utils/event";
-import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import {isStageLive} from "@/utils/stage";
+import {canSeeClassification} from "@/utils/event";
+import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 
 export const Route = createFileRoute("/stages/$id/info")({
@@ -200,22 +200,25 @@ function StageInfoPage() {
   ];
 
   const eventsTabsContents = [
-      {
-        value: TABS.EVENTS,
-        content: (
-          <div class="stage-info__events">
-            <Index each={stageInfo.data?.events ?? []}>
-              {(event) => (
-                <Card
-                  content={
-                    <div class="stage-info__event--item">
-                      <DisciplineIcon disciplineId={event().discipline.id} />
-                      <div class="stage-info__event--header">
-                        <div class="stage-info__event--header-info">
-                          <span>{event().configuration.name}</span>
-                          <RankBadge rank={event().rank} />
-                          <AwardBadges awards={event().awards} />
-                        </div>
+    {
+      value: TABS.EVENTS,
+      content: (
+        <div class="stage-info__events">
+          <Index each={stageInfo.data?.events ?? []}>
+            {(event) => (
+              <Card
+                content={
+                  <div class="stage-info__event--item">
+                    <DisciplineIcon disciplineId={event().discipline.id} />
+                    <div class="stage-info__event--header">
+                      <div class="stage-info__event--header-info">
+                        <span class="text-heading-xs">
+                          {event().configuration.name}
+                        </span>
+                        <RankBadge rank={event().rank} />
+                        <AwardBadges awards={event().awards} />
+                      </div>
+                      <div class="stage-info__event--actions">
                         <Show when={event().enrollmentOpened}>
                           <Show
                             when={user()}
@@ -235,7 +238,6 @@ function StageInfoPage() {
                                 {i18n.t("STAGES.INFO.ENROLL")}
                               </AtomButton>
                               <span class="text-caption-sm">
-                                {i18n.t("STAGES.INFO.UNTIL")}{" "}
                                 {formatDateLabel(
                                   toDateInputValue(
                                     event().enrollmentDeadline ?? 0,
@@ -258,57 +260,56 @@ function StageInfoPage() {
                           </div>
                         </Show>
                       </div>
-                      <AtomCollapsible
-                        trigger={
-                          <span>
-                            {i18n.t("STAGES.INFO.COMPETITORS_ENROLLED")} (
-                            {event().competitors.length})
-                          </span>
-                        }
-                        content={
-                          <Show
-                            when={event().competitors.length > 0}
-                            fallback={
-                              <span>
-                                {i18n.t("STAGES.INFO.NO_COMPETITORS")}
-                              </span>
-                            }
-                          >
-                            <ul class="stage-info__competitors">
-                              <For each={event().competitors}>
-                                {(competitor) => (
-                                  <li class="stage-info__competitor">
-                                    <CountryFlag country={competitor.country} />
-                                    <div class="stage-info__competitor--info">
-                                      <span class="text-caption-lg">
-                                        <b>{competitor.dog.name} (</b>
-                                        {competitor.breed.name})
-                                      </span>
-                                      <span class="text-caption-md">
-                                        {competitor.handler} ({competitor.team})
-                                      </span>
-                                    </div>
-                                  </li>
-                                )}
-                              </For>
-                            </ul>
-                          </Show>
-                        }
-                      />
                     </div>
-                  }
-                  topLeft={<span class="text-heading-xs">{event().name}</span>}
-                />
-              )}
-            </Index>
-          </div>
-        ),
-      },
-      {
-        value: TABS.NOTIFICATIONS,
-        content: <div>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</div>,
-      },
-    ];
+                    <AtomCollapsible
+                      trigger={
+                        <span>
+                          {i18n.t("STAGES.INFO.COMPETITORS_ENROLLED")} (
+                          {event().competitors.length})
+                        </span>
+                      }
+                      content={
+                        <Show
+                          when={event().competitors.length > 0}
+                          fallback={
+                            <span>{i18n.t("STAGES.INFO.NO_COMPETITORS")}</span>
+                          }
+                        >
+                          <ul class="stage-info__competitors">
+                            <For each={event().competitors}>
+                              {(competitor) => (
+                                <li class="stage-info__competitor">
+                                  <CountryFlag country={competitor.country} />
+                                  <div class="stage-info__competitor--info">
+                                    <span class="text-caption-lg">
+                                      <b>{competitor.dog.name} (</b>
+                                      {competitor.breed.name})
+                                    </span>
+                                    <span class="text-caption-md">
+                                      {competitor.handler} ({competitor.team})
+                                    </span>
+                                  </div>
+                                </li>
+                              )}
+                            </For>
+                          </ul>
+                        </Show>
+                      }
+                    />
+                  </div>
+                }
+                topLeft={<span class="text-heading-xs">{event().name}</span>}
+              />
+            )}
+          </Index>
+        </div>
+      ),
+    },
+    {
+      value: TABS.NOTIFICATIONS,
+      content: <div>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</div>,
+    },
+  ];
 
   const handleGoToDogs = () =>
     navigate({

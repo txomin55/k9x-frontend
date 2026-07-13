@@ -49,6 +49,12 @@
     width: 100%;
 }
 
+.stage-info__event--actions {
+    display: flex;
+    gap: var(--unit-1);
+    align-items: baseline;
+}
+
 .stage-info__event--classification,
 .stage-info__event--enrollment {
     display: flex;
