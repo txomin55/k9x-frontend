@@ -19,19 +19,21 @@ const { getState, setState, useAppStore } = createAppStore<I18nState>({
 
 let initPromise: Promise<void> | undefined;
 
-const normalizeLocale = (inputLocale: unknown): Locale => {
-  if (!inputLocale) return TranslationLocale.EN;
+export const normalizeLocale = (inputLocale: unknown): Locale => {
+  const candidates = (Array.isArray(inputLocale) ? inputLocale : [inputLocale])
+    .filter(Boolean)
+    .map((locale) => String(locale).trim().toLowerCase());
 
-  const canonicalLocale = String(inputLocale).trim().toLowerCase();
+  for (const candidate of candidates) {
+    if (supportedLocales.includes(candidate as Locale)) {
+      return candidate as Locale;
+    }
 
-  if (supportedLocales.includes(canonicalLocale as Locale)) {
-    return canonicalLocale as Locale;
-  }
+    const [baseLocale] = candidate.split("-");
 
-  const [baseLocale] = canonicalLocale.split("-");
-
-  if (baseLocale && supportedLocales.includes(baseLocale as Locale)) {
-    return baseLocale as Locale;
+    if (baseLocale && supportedLocales.includes(baseLocale as Locale)) {
+      return baseLocale as Locale;
+    }
   }
 
   return TranslationLocale.EN;
