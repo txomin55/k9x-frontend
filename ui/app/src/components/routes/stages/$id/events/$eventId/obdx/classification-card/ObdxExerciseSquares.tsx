@@ -10,18 +10,20 @@ import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/
 export default function ObdxExerciseSquares(props: ObdxExerciseSquaresProps) {
   return (
     <div class="obdx-clf__squares">
-      <For each={props.exercises}>
-        {(exercise) => (
-          <ScoreChip
-            shape="square"
-            value={averageValue(exercise.scores)}
-            rating={exercise.scoreRating}
-            sublabel={exerciseShortCode(exercise.exercise.name)}
-            hasYellowCard={exercise.yellowCards.length > 0}
-            hasRedCard={exercise.redCard != null}
-          />
-        )}
-      </For>
+      <div class="obdx-clf__squares-grid">
+        <For each={props.exercises}>
+          {(exercise) => (
+            <ScoreChip
+              shape="square"
+              value={averageValue(exercise.scores)}
+              rating={exercise.scoreRating}
+              sublabel={exerciseShortCode(exercise.exercise.name)}
+              hasYellowCard={exercise.yellowCards.length > 0}
+              hasRedCard={exercise.redCard != null}
+            />
+          )}
+        </For>
+      </div>
     </div>
   );
 }

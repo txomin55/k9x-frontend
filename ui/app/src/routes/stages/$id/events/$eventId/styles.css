@@ -32,6 +32,10 @@
     align-items: center;
 }
 
+.classification {
+    container: classification-page / inline-size;
+}
+
 .obdx-clf-table {
     container-type: inline-size;
 }
@@ -68,7 +72,7 @@
     color: var(--text-muted);
 }
 
-@container (min-width: 600px) {
+@container classification-page (min-width: 640px) {
     .obdx-clf-table__scores {
         display: block;
     }

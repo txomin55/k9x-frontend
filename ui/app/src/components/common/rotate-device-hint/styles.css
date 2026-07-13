@@ -13,7 +13,7 @@
     display: block;
 }
 
-@media (max-width: 549px) {
+@container classification-page (max-width: 639.98px) {
     .rotate-device-hint {
         visibility: visible;
     }

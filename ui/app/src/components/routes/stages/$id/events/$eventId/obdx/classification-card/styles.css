@@ -194,7 +194,7 @@
 .obdx-clf__chip--square {
     flex-direction: column;
     gap: var(--unit-025);
-    min-width: calc(var(--unit-3) + var(--unit-05));
+    width: var(--obdx-chip-square-size, calc(var(--unit-3) + var(--unit-05)));
     height: calc(var(--unit-3) + var(--unit-05));
     padding: 0 var(--unit-025);
     border-radius: var(--radius-md);
@@ -251,6 +251,7 @@
     display: flex;
     align-items: center;
     line-height: 0;
+    z-index: 1;
 }
 
 .obdx-clf__yellow-card-indicator,
@@ -279,13 +280,28 @@
 }
 
 .obdx-clf__squares-total .obdx-clf__squares {
-    flex: 1;
+    flex: 0 0 auto;
 }
 
-.obdx-clf__squares {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--unit-05);
+.obdx-clf__squares-total .obdx-clf__total--inline {
+    flex: 1;
+    min-width: 0;
+}
+
+.obdx-clf__squares-grid {
+    --obdx-chip-square-size: calc(var(--unit-4) + var(--unit-1));
+
+    padding-right: var(--unit-2);
+    display: grid;
+    grid-template-columns: repeat(5, var(--obdx-chip-square-size));
+    gap: var(--unit-1);
+    justify-content: start;
+}
+
+@container classification-page (min-width: 640px) {
+    .obdx-clf__squares-grid {
+        grid-template-columns: repeat(10, var(--obdx-chip-square-size));
+    }
 }
 
 .obdx-clf__fraction {
