@@ -5,6 +5,12 @@
     gap: var(--unit-2);
 }
 
+.obdx-collection-detail__names {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-05);
+}
+
 .obdx-collection-detail__discipline {
     display: flex;
     gap: var(--unit-05);

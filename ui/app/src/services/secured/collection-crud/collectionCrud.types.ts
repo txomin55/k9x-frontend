@@ -21,6 +21,8 @@ interface ObdxCompetitorsScoresResponseDTO {
 }
 
 export interface CollectionResponseDTO {
+  competitionName: string;
+  eventName: string;
   obdx: ObdxCompetitorsScoresResponseDTO;
   configuration: ScoresConfigurationResponseDTO;
   discipline: IdNameDTO;

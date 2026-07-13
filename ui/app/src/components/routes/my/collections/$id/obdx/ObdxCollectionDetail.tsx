@@ -328,6 +328,15 @@ export default function ObdxCollectionDetail() {
 
   return (
     <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
+      <Show when={collectionData.data}>
+        {(collection) => (
+          <div class="obdx-collection-detail__names">
+            <span class="text-heading-sm">{collection().competitionName}</span>
+            <span class="text-caption-sm">{collection().eventName}</span>
+          </div>
+        )}
+      </Show>
+
       <div class="obdx-collection-detail__discipline">
         <DisciplineIcon disciplineId={collectionData.data?.discipline.id} />
         <span class="text-caption-sm">
