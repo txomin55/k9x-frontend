@@ -14,7 +14,7 @@
     position: sticky;
     top: 0;
     z-index: 20;
-    height: var(--unit-6);
+    height: var(--unit-5);
     background: var(--surface-muted);
     color: var(--text-secondary);
     border-bottom: 1px solid var(--border-strong);
@@ -155,16 +155,4 @@
 
 .app-layout__user-img--menu .navigation-tools__logout {
     align-self: flex-start;
-}
-
-@media (max-width: 1024px) {
-    .app-layout__navigation {
-        padding: var(--unit-1);
-    }
-
-    .app-layout__user-img {
-        display: flex;
-        height: var(--unit-6);
-        width: var(--unit-6);
-    }
 }
