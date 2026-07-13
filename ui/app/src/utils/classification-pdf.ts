@@ -2,7 +2,6 @@ import type {
   StageEventClassificationItemResponseDTO,
   StageEventClassificationResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
-import { formatDateTime } from "@/utils/date";
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -52,9 +51,7 @@ export async function exportClassificationPdf(
 
   cursorY += 8;
   doc.setFontSize(9);
-  const metaLines: string[] = [
-    `${t("STAGES.CLASSIFICATION.DISCIPLINE")}: ${classification.discipline.name}`,
-  ];
+  const metaLines: string[] = [];
   const judges = classification.obdx?.judges ?? [];
   if (judges.length) {
     metaLines.push(
@@ -63,11 +60,6 @@ export async function exportClassificationPdf(
         .join(", ")}`,
     );
   }
-  metaLines.push(
-    `${t("STAGES.CLASSIFICATION.LAST_UPDATED")}: ${formatDateTime(
-      classification.lastUpdated,
-    )}`,
-  );
   for (const line of metaLines) {
     doc.text(line, 14, cursorY);
     cursorY += 5;
