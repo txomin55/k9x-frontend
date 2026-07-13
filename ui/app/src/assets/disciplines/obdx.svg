@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
   <text
-    x="5" y="350"
+    x="43" y="318"
     font-family="'Barlow Condensed', 'Arial Narrow', Impact, sans-serif"
     font-weight="900"
     font-size="190"
@@ -8,7 +8,7 @@
     letter-spacing="-8"
   >OBD</text>
   <text
-    x="345" y="360"
+    x="383" y="328"
     font-family="'Barlow Condensed', 'Arial Narrow', Impact, sans-serif"
     font-weight="900"
     font-size="120"

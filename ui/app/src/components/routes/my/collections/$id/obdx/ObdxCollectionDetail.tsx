@@ -31,6 +31,18 @@ import type {
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import "./styles.css";
 
+const getJudgeShortName = (name: string) => {
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length < 2) {
+    return name.trim();
+  }
+
+  const [firstName, ...lastNames] = parts;
+
+  return `${firstName.charAt(0)}. ${lastNames.join(" ")}`;
+};
+
 const getPendingScoreKey = ({
   dogId,
   exerciseId,
@@ -409,7 +421,7 @@ export default function ObdxCollectionDetail() {
           <div class="collection-detail__exercises--headers">
             <span>{i18n.t("MY.COLLECTIONS.DETAIL.EXERCISE")}</span>
             <For each={collectionJudges()}>
-              {(score) => <span>{score.judge.name}</span>}
+              {(score) => <span>{getJudgeShortName(score.judge.name)}</span>}
             </For>
           </div>
           <div class="collection-detail__exercises--rows">

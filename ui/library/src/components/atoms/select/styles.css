@@ -179,6 +179,7 @@
 
 .atom-select__item-option {
     display: flex;
+    align-items: center;
     gap: var(--unit-05);
 }
 
