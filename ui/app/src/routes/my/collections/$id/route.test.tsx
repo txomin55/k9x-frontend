@@ -64,6 +64,8 @@ vi.mock("@lib/components/atoms/number-input/AtomNumberInput", () => ({
 }));
 
 const createCollection = (score: number): CollectionResponseDTO => ({
+  competitionName: "competition",
+  eventName: "event",
   configuration: {
     allowedValues: [1, 2, 3],
     description: "allowed values",

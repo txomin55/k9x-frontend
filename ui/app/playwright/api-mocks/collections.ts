@@ -24,6 +24,8 @@ export const defaultCollectionsList: CollectionsResponseDTO[] = [
 
 // Detail returns data for a single judge (one column to fill).
 export const defaultCollectionDetail: CollectionResponseDTO = {
+  competitionName: "Spring Trial",
+  eventName: "Obedience Class A",
   discipline: { id: "disc-1", name: "Obedience" },
   configuration: {
     allowedValues: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
