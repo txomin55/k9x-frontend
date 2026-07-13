@@ -9,6 +9,7 @@ export type TanstackCreateQuery = {
   staleTime?: number;
   gcTime?: number;
   refetchOnMount?: boolean;
+  enabled?: () => boolean;
 };
 
 export type QueryFactoryOptions<TData, TKey extends QueryKey> = {

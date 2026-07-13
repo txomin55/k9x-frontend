@@ -150,8 +150,7 @@ const rawRequest = async <TResponse>({
         retryOnUnauthorized: false,
       });
     } catch (error) {
-      globalThis.localStorage.removeItem(ACCESS_TOKEN_KEY);
-      startGoogleInteractiveLogin();
+      triggerInteractiveLogin();
       throw error;
     }
   }
@@ -209,6 +208,15 @@ const refreshAccessToken = () => {
   }
 
   return refreshPromise;
+};
+
+let interactiveLoginTriggered = false;
+
+const triggerInteractiveLogin = () => {
+  if (interactiveLoginTriggered) return;
+  interactiveLoginTriggered = true;
+  globalThis.localStorage.removeItem(ACCESS_TOKEN_KEY);
+  startGoogleInteractiveLogin();
 };
 
 const shouldAttemptSilentLogin = (path: string) => {

@@ -107,9 +107,14 @@ const useAuthLoading = () => useAuth((state) => state.loading);
 
 const isOrganizer = () => Boolean(getState().user?.organizer);
 
+const hasAccessToken = () =>
+  typeof globalThis !== "undefined" &&
+  Boolean(globalThis.localStorage?.getItem(ACCESS_TOKEN_KEY));
+
 export {
   clearAuth,
   fetchUserIfAuthenticated,
+  hasAccessToken,
   isOrganizer,
   setUser,
   useAuthLoading,

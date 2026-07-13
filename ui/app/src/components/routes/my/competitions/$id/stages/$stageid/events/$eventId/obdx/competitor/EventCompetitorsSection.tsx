@@ -13,6 +13,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
+import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
@@ -55,9 +56,11 @@ export default function EventCompetitorsSection(
     from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
   });
 
+  const user = useAuthUser();
   const dogsQuery = useAllDogs({
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
+    enabled: () => Boolean(user()),
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() => {
     const addedDogIds = new Set(

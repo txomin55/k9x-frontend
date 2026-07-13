@@ -247,6 +247,122 @@ reload-loop pero no lo es. Para diagnosticar un blink, prueba la landing públic
 - En Playwright: `serviceWorkers: "block"` + `page.route` que solo retrasa la URL
   del dato, e inyecta el token en `localStorage["k9x_access_token"]`.
 
+## Empty-state que parpadea antes de cargar el user (crítico)
+
+Síntoma (fue en **my/competitions/list** y **my/judges/list**): al entrar/F5, la lista
+enseña un instante el label de vacío ("No competitions created" / "No judges available yet")
+y luego aparecen las cards. Con red rápida es un flash; con user lento se ve claramente.
+
+Causa (verificada con traza + repro retrasando `/secured/user`): **no es Suspense**, es una
+**race destapada por el render optimista de `/my`**. `routes/my/route.tsx` renderiza el
+`<Outlet>` en cuanto hay token, **antes** de que `user()` resuelva. La ruta hoja monta y su
+query dispara el fetch mientras `user()` es aún `null`. Los CRUD de organizer resuelven
+**vacío en local, sin ir a red** cuando aún no saben que eres organizer:
+
+```ts
+// competitionCrud / judgeCrud
+export const refreshCompetitionsSnapshot = async () => {
+  if (!isOrganizer()) {                                    // user aún sin cargar ⇒ false
+    return queryClient.getQueryData(getCompetitionsQueryKey()) ?? [];  // ⇒ []  (¡sin fetch!)
+  }
+  const competitions = await rawRequest({ path: "/secured/competitions" });
+  ...
+```
+
+La query queda `success` con `data=[]` ⇒ sale el label. Luego `user()` resuelve, el
+`createEffect` de `AppShell` re-hace prefetch ya como organizer y llegan los datos reales.
+En la traza se ve clarísimo: **no hay petición temprana** a `/secured/competitions` (el `[]`
+se sirve en local) y la de verdad no sale hasta después de `/secured/user`.
+
+**Fix: gatear la query hasta conocer al user** (mismo patrón que evita fetchear owned dogs
+deslogueado). Se enhebra un `enabled` **reactivo** vía `TanstackCreateQuery.enabled: () => boolean`,
+que el wrapper reenvía con un **getter** para que se re-evalúe dentro del thunk reactivo de
+`createQuery` (un valor plano se captura una vez y no reacciona al login):
+
+```ts
+// createXQuery(...)
+.useQuery({
+  staleTime, gcTime, networkMode: "always", refetchOnMount,
+  get enabled() { return options?.enabled ? options.enabled() : true; },
+})
+
+// en la ruta
+const user = useAuthUser();
+const q = useCompetitions({ ..., enabled: () => Boolean(user()) });
+```
+
+Disabled + sin datos ⇒ `isPending` true, `isFetching` false ⇒ skeleton (no label) hasta que
+`user()` llega y arranca el fetch real. Afecta a los CRUD con el short-circuit `!isOrganizer() → []`
+(**competitions**, **judges**). `allDogs` **no** lo tiene (`refreshAllDogsSnapshot` siempre
+hace fetch real) ⇒ no parpadea; ahí el `enabled` es solo defensivo. Ver [[optimistic-render-organizer-empty-flash]].
+
+## El label de vacío debe exigir estado RESUELTO, no solo `!isFetching` (crítico)
+
+El proxy de datos colapsa `undefined` (cargando) y `[]` (vacío real) al mismo `[]` (el merge
+hace `baseData ?? []`), así que `data?.length` **no distingue** "cargando" de "vacío". Gatear
+el label solo con `!isFetching` **no basta**: en el primer tick la query está `pending` con
+`fetchStatus: 'idle'` (aún no arrancó el fetch) ⇒ `isFetching` es `false` y `data` es `[]`
+⇒ parpadea el label un frame. Hay que contar también `isPending`:
+
+```tsx
+<Show
+  when={q.data?.length || (!q.isPending && !q.isFetching)}   // contenido/label solo si RESUELTO
+  fallback={<CardListSkeleton count={4} />}                  // si no, skeleton
+>
+  <Show when={q.data?.length} fallback={<span>{t("...NO_X")}</span>}>
+    ...cards
+  </Show>
+</Show>
+```
+
+Leer `.isPending`/`.isFetching` **no suspende** (solo `.data`), así que el guard es seguro.
+Resultado: skeleton en carga (inicial y refetch-sin-datos), cards si hay refetch con datos
+(sin flicker), y el label **solo** cuando el endpoint devuelve `[]` ya resuelto. Verificado en
+navegador con `page.route` (retrasar `/secured/user` para la race; `fulfill([])` para el vacío real).
+
+## Páginas de detalle: "X not found" mientras carga (crítico)
+
+Síntoma (fue en **competition detail** `/my/competitions/$id` y **stage detail**
+`/my/competitions/$id/stages/$stageId`, entrando directo / F5): sale "Competition not found" /
+"Trial not found" un instante y luego aparece el detalle.
+
+Causa: es la **misma race organizer** de la sección anterior, pero en páginas de entidad única.
+El detalle no tiene su propia query: deriva la entidad de la **lista de competiciones**
+(`getCompetition(id)` → `createCompetitionsQuery`; `getStage` → `getCompetition`). Si esa query
+resuelve `[]` antes de cargar el user (organizer aún desconocido), `find(id)` da `undefined` y
+el `<Show when={entity()} fallback={<p>NOT_FOUND</p>}>` enseña el "not found".
+
+**Agravante `staleTime: Infinity`:** `getCompetition` usa `staleTime` infinito (no auto-refetch,
+confía en el prefetch de la lista). Si el `[]` de la race entra en caché, se queda **pegado**
+(fresco para siempre) y ni un observer nuevo lo refresca; solo lo sobrescribe el
+`prefetchCompetitions` del `AppShell` (que corre con `staleTime: 0`) cuando el user ya es organizer.
+
+**Fix (dos partes):**
+1. **Gatear la query derivada en `user()`** para que el `[]` **nunca** se escriba en caché
+   (`enabled: () => Boolean(user())` en la `createCompetitionsQuery` interna de `getCompetition`).
+   Con la query deshabilitada no hay `[]`; al llegar el user, fetch limpio ⇒ datos reales.
+2. **Guardar el fallback "not found" con estado resuelto**, porque una query deshabilitada/cargando
+   devuelve `undefined` **sin suspender** ⇒ el `<Show>` caería al "not found". Se envuelve con un
+   check de resuelto (otro observer barato de `useCompetitions` gateado, comparte caché):
+
+   ```tsx
+   const user = useAuthUser();
+   const q = useCompetitions({ staleTime: Number.POSITIVE_INFINITY, enabled: () => Boolean(user()) });
+   const isResolved = () => !q.isPending && !q.isFetching;
+   const entity = createMemo(() => (q.data ?? []).find((e) => e.id === props.id));
+   // ...
+   <Suspense fallback={<DetailSkeleton />}>
+     <Show when={entity() || isResolved()} fallback={<DetailSkeleton />}>   {/* cargando ⇒ skeleton */}
+       <Show when={entity()} fallback={<p>{t("...NOT_FOUND")}</p>}>          {/* resuelto sin id ⇒ not found */}
+         <DetailBody entity={entity} />
+       </Show>
+     </Show>
+   </Suspense>
+   ```
+
+   El "not found" solo sale con la lista **resuelta** y el id ausente de verdad. Verificado con
+   `page.route` retrasando `/secured/user`: `sawNotFound=false, sawSkeleton=true`.
+
 ## Pantallas pendientes (mismo criterio)
 
 public/private stage detail, classification, my competitions/dogs/judges/

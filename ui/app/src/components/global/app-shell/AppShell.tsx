@@ -14,7 +14,7 @@ import { prefetchCollections } from "@/services/secured/collection-crud/collecti
 import { prefetchCountries } from "@/services/secured/country-crud/countryCrud";
 import { prefetchBreeds } from "@/services/secured/breed-crud/breedCrud";
 import { useI18n } from "@/stores/i18n/i18n";
-import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth/auth";
+import { fetchUserIfAuthenticated, hasAccessToken, useAuthUser } from "@/stores/auth/auth";
 import { initNetworkStore } from "@/stores/network/network";
 import "./styles.css";
 
@@ -28,6 +28,16 @@ export default function AppShell() {
     initNetworkStore();
 
     await i18n.init();
+
+    if (hasAccessToken()) {
+      const prefetchOptions = { refetchOnMount: false, gcTime: 2 * 60 * 1000 };
+      void prefetchDogs(prefetchOptions);
+      void prefetchOwnedDogs(prefetchOptions);
+      void prefetchCollections(prefetchOptions);
+      void prefetchCountries(prefetchOptions);
+      void prefetchBreeds(prefetchOptions);
+    }
+
     await fetchUserIfAuthenticated(location().pathname);
 
     if (user()) {

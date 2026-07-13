@@ -22,6 +22,7 @@ import {
 } from "@/services/secured/judge-crud/judgeCrud";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
+import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -55,9 +56,11 @@ function MyJudgesListPage() {
 		name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
 		country: "",
 	});
+	const user = useAuthUser();
 	const judgesQuery = useJudges({
 		refetchOnMount: !isOffline(),
 		gcTime: 2 * 60 * 1000,
+		enabled: () => Boolean(user()),
 	});
 
 	const [judgeParam, setJudgeParam] = useSearchParam("judge", "", "push");
@@ -149,29 +152,41 @@ function MyJudgesListPage() {
 			/>
 
 			<Show
-				when={judgesQuery.data?.length}
-				fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
-			>
-				<NameFilter
-					label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
-					value={nameFilter()}
-					onChange={setNameFilter}
-				/>
-				<Show
-					when={filteredJudges().length}
-					fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
-				>
+				when={
+					judgesQuery.data?.length ||
+					(!judgesQuery.isPending && !judgesQuery.isFetching)
+				}
+				fallback={
 					<div class="judges-list card-list">
-						<For each={filteredJudges()}>
-							{(judge) => (
-								<JudgeCard
-									judge={judge}
-									onEdit={() => openEditDialog(judge)}
-									onDelete={() => deleteJudge(judge.id)}
-								/>
-							)}
-						</For>
+						<CardListSkeleton count={6} />
 					</div>
+				}
+			>
+				<Show
+					when={judgesQuery.data?.length}
+					fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
+				>
+					<NameFilter
+						label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
+						value={nameFilter()}
+						onChange={setNameFilter}
+					/>
+					<Show
+						when={filteredJudges().length}
+						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
+					>
+						<div class="judges-list card-list">
+							<For each={filteredJudges()}>
+								{(judge) => (
+									<JudgeCard
+										judge={judge}
+										onEdit={() => openEditDialog(judge)}
+										onDelete={() => deleteJudge(judge.id)}
+									/>
+								)}
+							</For>
+						</div>
+					</Show>
 				</Show>
 			</Show>
 

@@ -120,6 +120,7 @@
 .obdx-clf__total--row {
     justify-content: flex-end;
     width: 100%;
+    padding-top: var(--unit-1);
 }
 
 .obdx-clf__total-label {
@@ -402,6 +403,13 @@
     background: var(--surface-muted);
     background-clip: padding-box;
     border-top: var(--unit-2) solid transparent;
+    border-radius: var(--unit-05);
+}
+
+.atom-table__expanded-cell .obdx-clf__table thead th:first-child,
+.atom-table__expanded-cell .obdx-clf__ex-row td:first-child {
+    background: var(--surface-muted);
+    border-radius: var(--unit-05);
 }
 
 @media (max-width: 500px) {
@@ -419,11 +427,6 @@
         min-width: calc(var(--unit-10) + var(--unit-4));
         overflow-wrap: anywhere;
         background: var(--surface);
-    }
-
-    .atom-table__expanded-cell .obdx-clf__table thead th:first-child,
-    .atom-table__expanded-cell .obdx-clf__ex-row td:first-child {
-        background: var(--surface-muted);
     }
 
     .obdx-clf__tags-row .obdx-clf__tags {

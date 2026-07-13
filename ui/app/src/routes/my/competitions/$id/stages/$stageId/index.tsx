@@ -15,6 +15,8 @@ import {
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { useApiEvent } from "@/services/secured/event-crud/eventCrud";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
+import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
+import { useAuthUser } from "@/stores/auth/auth";
 import type {
   CreateEventRequestDTO,
   EventDetailResponseDTO,
@@ -223,6 +225,13 @@ function CompetitionStageDetailContentContainer(props: {
 }) {
   const i18n = useI18n();
   const navigate = useNavigate();
+  const user = useAuthUser();
+  const competitionsQuery = useCompetitions({
+    staleTime: Number.POSITIVE_INFINITY,
+    enabled: () => Boolean(user()),
+  });
+  const isResolved = () =>
+    !competitionsQuery.isPending && !competitionsQuery.isFetching;
   const handleDelete = () => {
     props.onDeleteStage(props.stageId);
     void navigate({
@@ -238,12 +247,16 @@ function CompetitionStageDetailContentContainer(props: {
     <div class="stage-detail">
       <Suspense fallback={<StageDetailSkeleton />}>
         <Show
-          when={props.stage()}
-          fallback={
-            <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STAGE_NOT_FOUND")}</p>
-          }
+          when={props.stage() || isResolved()}
+          fallback={<StageDetailSkeleton />}
         >
-          <CompetitionStageDetailBody
+          <Show
+            when={props.stage()}
+            fallback={
+              <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STAGE_NOT_FOUND")}</p>
+            }
+          >
+            <CompetitionStageDetailBody
             createDefaultEvent={props.createDefaultEvent}
             onCreateEvent={props.onCreateEvent}
             onDelete={handleDelete}
@@ -252,6 +265,7 @@ function CompetitionStageDetailContentContainer(props: {
             onUpdateStage={props.onUpdateStage}
             stage={stageAccessor}
           />
+          </Show>
         </Show>
       </Suspense>
     </div>

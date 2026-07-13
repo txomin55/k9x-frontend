@@ -16,7 +16,10 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
-import { useCompetition } from "@/services/secured/competition-crud/competitionCrud";
+import {
+  useCompetition,
+  useCompetitions,
+} from "@/services/secured/competition-crud/competitionCrud";
 import {
   type CompetitionResponseDTO,
   type UpdateCompetitionRequestDTO,
@@ -45,6 +48,7 @@ import {
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { generateEntityId } from "@/utils/id/generateEntityId";
+import { useAuthUser } from "@/stores/auth/auth";
 import "./styles.css";
 
 export const Route = createFileRoute("/my/competitions/$id/")({
@@ -139,21 +143,33 @@ function CompetitionDetailPage() {
 function CompetitionDetailContent(props: { id: string }) {
   const i18n = useI18n();
   const navigate = useNavigate();
-  const { deleteCompetition, updateCompetition, getCompetition } =
-    useCompetition();
+  const user = useAuthUser();
+  const { deleteCompetition, updateCompetition } = useCompetition();
 
-  const competition = getCompetition(props.id);
+  const competitionsQuery = useCompetitions({
+    staleTime: Number.POSITIVE_INFINITY,
+    enabled: () => Boolean(user()),
+  });
+  const competition = createMemo(() =>
+    (competitionsQuery.data ?? []).find((entry) => entry.id === props.id),
+  );
+  const isResolved = () =>
+    !competitionsQuery.isPending && !competitionsQuery.isFetching;
 
   return (
     <div class="competition-detail">
       <Suspense fallback={<CompetitionDetailSkeleton />}>
         <Show
-          when={competition()}
-          fallback={
-            <p>{i18n.t("MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND")}</p>
-          }
+          when={competition() || isResolved()}
+          fallback={<CompetitionDetailSkeleton />}
         >
-          <CompetitionDetailBody
+          <Show
+            when={competition()}
+            fallback={
+              <p>{i18n.t("MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND")}</p>
+            }
+          >
+            <CompetitionDetailBody
             competition={competition}
             onDelete={() => {
               const currentCompetition = competition();
@@ -167,6 +183,7 @@ function CompetitionDetailContent(props: { id: string }) {
             }}
             onUpdate={updateCompetition}
           />
+          </Show>
         </Show>
       </Suspense>
     </div>

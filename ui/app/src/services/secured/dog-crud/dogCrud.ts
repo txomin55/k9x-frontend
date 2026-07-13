@@ -132,6 +132,9 @@ const createAllDogsQuery = (options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
+    get enabled() {
+      return options?.enabled ? options.enabled() : true;
+    },
   } as any);
 
 export const useAllDogs = (options?: TanstackCreateQuery) => {
@@ -176,6 +179,9 @@ const createOwnedDogsQuery = (options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
+    get enabled() {
+      return options?.enabled ? options.enabled() : true;
+    },
   } as any);
 
 export const useOwnedDogs = (options?: TanstackCreateQuery) => {

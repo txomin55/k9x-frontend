@@ -128,9 +128,11 @@ function StageInfoPage() {
   const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
+    enabled: () => Boolean(user()),
   });
+  const ownedDogs = () => (user() ? (dogsQuery.data ?? []) : []);
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
-    (dogsQuery.data ?? []).map((dog) => ({
+    ownedDogs().map((dog) => ({
       label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
       value: dog.id,
     })),
@@ -162,7 +164,7 @@ function StageInfoPage() {
   };
 
   const selectedDog = (dogId: string) =>
-    (dogsQuery.data ?? []).find((dog) => dog.id === dogId);
+    ownedDogs().find((dog) => dog.id === dogId);
 
   const openEnrollDialog = (eventId: string) => {
     setEnrollDraft(createEmptyEnrollDraft());

@@ -23,7 +23,7 @@ import {
   reconcileRemovedCompetitionIds,
 } from "@/services/secured/competition-crud/competitionDraftStore";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import { isOrganizer } from "@/stores/auth/auth";
+import { isOrganizer, useAuthUser } from "@/stores/auth/auth";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import { COMPETITION_STATUS } from "@/utils/competition";
 
@@ -72,6 +72,9 @@ const createCompetitionsQuery = (options?: TanstackCreateQuery) =>
     gcTime: options?.gcTime,
     networkMode: "always",
     refetchOnMount: options?.refetchOnMount,
+    get enabled() {
+      return options?.enabled ? options.enabled() : true;
+    },
   });
 
 export const prefetchCompetitions = (options?: TanstackCreateQuery) => {
@@ -153,8 +156,10 @@ export const useCompetition = () => {
         getCachedCompetitions()?.find((competition) => competition.id === id);
     }
 
+    const user = useAuthUser();
     const competitionsQuery = createCompetitionsQuery({
       staleTime: Number.POSITIVE_INFINITY,
+      enabled: () => Boolean(user()),
     });
 
     return createMemo(() =>
