@@ -404,6 +404,36 @@
     border-top: var(--unit-2) solid transparent;
 }
 
+@media (max-width: 500px) {
+    .obdx-clf__table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .obdx-clf__table thead th:first-child,
+    .obdx-clf__ex-row td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        width: calc(var(--unit-10) + var(--unit-4));
+        min-width: calc(var(--unit-10) + var(--unit-4));
+        overflow-wrap: anywhere;
+        background: var(--surface);
+    }
+
+    .atom-table__expanded-cell .obdx-clf__table thead th:first-child,
+    .atom-table__expanded-cell .obdx-clf__ex-row td:first-child {
+        background: var(--surface-muted);
+    }
+
+    .obdx-clf__tags-row .obdx-clf__tags {
+        position: sticky;
+        left: var(--unit-1);
+        z-index: 1;
+        width: fit-content;
+    }
+}
+
 .obdx-clf__tags {
     display: flex;
     flex-wrap: wrap;
