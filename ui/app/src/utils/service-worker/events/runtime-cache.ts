@@ -3,7 +3,14 @@ import {
   OFFLINE_PRELOAD_RESPONSE_MESSAGE
 } from "@/utils/service-worker/offline_bundle/offlinePreloadConstants";
 
-export const APP_SHELL_CACHE = "app-shell-v1";
+declare const __APP_SHELL_CACHE_VERSION__: string | undefined;
+
+const APP_SHELL_CACHE_VERSION =
+  typeof __APP_SHELL_CACHE_VERSION__ === "string"
+    ? __APP_SHELL_CACHE_VERSION__
+    : "dev";
+
+export const APP_SHELL_CACHE = `app-shell-${APP_SHELL_CACHE_VERSION}`;
 
 const CACHEABLE_EXTENSIONS =
   /\.(?:js|css|ico|png|svg|webp|woff2?|json|webmanifest|html)$/;

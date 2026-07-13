@@ -10,7 +10,12 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname, "");
 
+  const appShellCacheVersion = env.CI_COMMIT_SHORT_SHA || String(Date.now());
+
   return {
+    define: {
+      __APP_SHELL_CACHE_VERSION__: JSON.stringify(appShellCacheVersion),
+    },
     plugins: [
       jsconfigPaths({ root: "." }),
       {

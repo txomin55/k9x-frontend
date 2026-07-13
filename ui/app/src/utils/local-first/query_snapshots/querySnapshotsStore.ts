@@ -46,6 +46,19 @@ export const getQuerySnapshot = <TData>(id: string) => {
 
 export const getPersistedQuerySnapshot = readPersistedQuerySnapshot;
 
+export const QUERY_SNAPSHOT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+export const pruneStaleQuerySnapshots = (
+  maxAgeMs: number = QUERY_SNAPSHOT_MAX_AGE_MS,
+) => {
+  if (!shouldPersistLocalFirstData()) {
+    return Promise.resolve(0);
+  }
+
+  const cutoff = Date.now() - maxAgeMs;
+  return querySnapshotsTable.where("updatedAt").below(cutoff).delete();
+};
+
 export const removeQuerySnapshot = (id: string) =>
   querySnapshotsTable.delete(id);
 

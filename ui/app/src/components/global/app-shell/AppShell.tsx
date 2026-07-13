@@ -6,6 +6,7 @@ import Toast from "@/components/global/toast/Toast";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
+import { pruneStaleQuerySnapshots } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";
 import { prefetchAllDogs, prefetchDogs, prefetchOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
@@ -31,6 +32,7 @@ export default function AppShell() {
 
     if (user()) {
       warmOfflineBundleInBackground();
+      void pruneStaleQuerySnapshots();
     }
   });
 
