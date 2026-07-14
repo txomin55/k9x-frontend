@@ -1,7 +1,9 @@
 import { Title } from "@solidjs/meta";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
-import { createSignal, Match, onMount, Switch } from "solid-js";
+import { createSignal, For, Match, onMount, Switch } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
+import "../styles.css";
 import {
   clearCachedUserData,
   fetchCachedUserData,
@@ -29,6 +31,52 @@ function readCallbackParams() {
   }
 
   return globalThis.location.search;
+}
+
+function AuthCallbackSkeleton() {
+  return (
+    <section class="landing-page" aria-busy="true">
+      <AtomSkeleton variant="rectangular" width="var(--unit-20)" height="var(--unit-5)" />
+
+      <div class="landing-page__hero">
+        <AtomSkeleton height="var(--unit-3)" width="70%" />
+        <div class="landing-page__lead">
+          <AtomSkeleton count={2} />
+          <AtomSkeleton width="60%" />
+        </div>
+        <div class="landing-page__actions">
+          <AtomSkeleton variant="rectangular" width="var(--unit-16)" height="var(--unit-5)" radius="999px" />
+        </div>
+      </div>
+
+      <div class="landing-page__latest">
+        <div class="landing-page__latest-header">
+          <AtomSkeleton width="var(--unit-16)" height="var(--unit-2)" />
+        </div>
+        <ul class="landing-page__latest-list">
+          <For each={Array.from({ length: 3 })}>
+            {() => (
+              <li class="landing-page__latest-item">
+                <AtomSkeleton variant="rectangular" />
+              </li>
+            )}
+          </For>
+        </ul>
+      </div>
+
+      <div class="landing-page__grid">
+        <For each={Array.from({ length: 3 })}>
+          {() => (
+            <article class="landing-page__card">
+              <AtomSkeleton width="40%" />
+              <AtomSkeleton width="80%" height="var(--unit-2)" />
+              <AtomSkeleton count={2} />
+            </article>
+          )}
+        </For>
+      </div>
+    </section>
+  );
 }
 
 function AuthCallbackPage() {
@@ -89,10 +137,10 @@ function AuthCallbackPage() {
       <Title>{i18n.t("AUTH_CALLBACK.TITLE")}</Title>
       <Switch>
         <Match when={status() === "loading" || status() === "pending"}>
-          <p>{i18n.t("AUTH_CALLBACK.AUTHENTICATED_WITH_GOOGLE")}</p>
+          <AuthCallbackSkeleton />
         </Match>
         <Match when={status() === "loaded"}>
-          <p>{i18n.t("AUTH_CALLBACK.AUTHENTICATED_REDIRECTING")}</p>
+          <AuthCallbackSkeleton />
         </Match>
         <Match when={status() === "error"}>
           <p>{`${i18n.t("AUTH_CALLBACK.AUTHENTICATION_ERROR")}: ${errorMessage()}`}</p>
