@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
-import { createEffect, createSignal, onCleanup, onMount, Show } from "solid-js";
+import { createEffect, createSignal, onCleanup, onMount, Show, Suspense } from "solid-js";
 import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
@@ -109,7 +109,9 @@ export default function AppLayout(props: ParentProps) {
         <Show when={user()} fallback={loginButton()}>
           {(currentUser) => (
             <div class="app-layout__actions">
-              <PendingCollectionsDialog />
+              <Suspense fallback={null}>
+                <PendingCollectionsDialog />
+              </Suspense>
               <Show when={!currentUser().organizer}>
                 <AtomDialog
                   closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
