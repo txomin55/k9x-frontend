@@ -6,6 +6,7 @@ import type {
 } from "@/services/fetch-stages/fetchStages.types";
 import {createEffect, createMemo, createSignal, For, onCleanup, onMount, Show,} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
@@ -536,6 +537,16 @@ function EventClassificationPage() {
     CONTROLS_KEYS.LIST,
   );
 
+  const [isMobile, setIsMobile] = createSignal(false);
+
+  onMount(() => {
+    const mediaQuery = window.matchMedia("(max-width: 450px)");
+    const syncIsMobile = () => setIsMobile(mediaQuery.matches);
+    syncIsMobile();
+    mediaQuery.addEventListener("change", syncIsMobile);
+    onCleanup(() => mediaQuery.removeEventListener("change", syncIsMobile));
+  });
+
   const classificationControls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
@@ -580,41 +591,40 @@ function EventClassificationPage() {
         </Show>
       }
     >
-      {(classification) => (
-        <div class="page classification">
-          <div class="classification__header">
-            <div class="classification__header--title">
-              <span class="text-caption-lg">
-                {classification().competitionName}
-              </span>
-              <Show when={competitors().length}>
-                <AtomButton
-                  type="ghost"
-                  disabled={isExporting()}
-                  onClick={handleExportPdf}
-                >
-                  {t("STAGES.CLASSIFICATION.EXPORT_PDF")}
-                </AtomButton>
-              </Show>
-            </div>
-            <div class="classification__header--info">
-              <div>
-                <DisciplineIcon disciplineId={classification().discipline.id} />
-                <span class="text-caption-md">
-                  {classification().configuration.name}
-                </span>
-              </div>
+      {(classification) => {
+        const exportButton = () => (
+          <Show when={competitors().length}>
+            <AtomButton
+              type="ghost"
+              disabled={isExporting()}
+              onClick={handleExportPdf}
+            >
+              {t("STAGES.CLASSIFICATION.EXPORT_PDF")}
+            </AtomButton>
+          </Show>
+        );
 
-              <div>
-                <span class="text-caption-sm">
-                  {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
-                </span>
-                <span class="text-caption-md">
-                  {formatDateTime(classification().lastUpdated)}
-                </span>
-              </div>
-            </div>
+        const disciplineBlock = () => (
+          <div class="classification__discipline">
+            <DisciplineIcon disciplineId={classification().discipline.id} />
+            <span class="text-caption-md">
+              {classification().configuration.name}
+            </span>
           </div>
+        );
+
+        const lastUpdatedBlock = () => (
+          <div class="classification__last-updated">
+            <span class="text-caption-sm">
+              {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
+            </span>
+            <span class="text-caption-md">
+              {formatDateTime(classification().lastUpdated)}
+            </span>
+          </div>
+        );
+
+        const scoreCalculationBlock = () => (
           <Show when={classification().obdx}>
             {(obdx) => (
               <div class="classification__score-calculation">
@@ -629,6 +639,9 @@ function EventClassificationPage() {
               </div>
             )}
           </Show>
+        );
+
+        const judgesBlock = () => (
           <Show when={classification().obdx?.judges?.length}>
             <div class="classification__judges">
               <span class="text-caption-sm">
@@ -641,21 +654,80 @@ function EventClassificationPage() {
               </span>
             </div>
           </Show>
-          <Show when={isLoggedIn() && competitorOptions().length}>
-            <div class="obdx-clf__filter obdx-clf__filter-row">
-              <AtomCombobox
-                multiple
-                label={t("STAGES.CLASSIFICATION.FILTER_COMPETITORS")}
-                placeholder={t(
-                  "STAGES.CLASSIFICATION.FILTER_COMPETITORS_PLACEHOLDER",
-                )}
-                options={competitorOptions()}
-                value={selectedCompetitorOptions()}
-                onChange={(options) =>
-                  setCompetitorFilterIds(options.map((option) => option.value))
-                }
-              />
-              <RotateDeviceHint />
+        );
+
+        const filterCombobox = () => (
+          <AtomCombobox
+            multiple
+            label={t("STAGES.CLASSIFICATION.FILTER_COMPETITORS")}
+            placeholder={t(
+              "STAGES.CLASSIFICATION.FILTER_COMPETITORS_PLACEHOLDER",
+            )}
+            options={competitorOptions()}
+            value={selectedCompetitorOptions()}
+            onChange={(options) =>
+              setCompetitorFilterIds(options.map((option) => option.value))
+            }
+          />
+        );
+
+        return (
+        <div class="page classification">
+          <Show
+            when={isMobile()}
+            fallback={
+              <>
+                <div class="classification__header">
+                  <div class="classification__header--title">
+                    <span class="text-caption-lg">
+                      {classification().competitionName}
+                    </span>
+                    {exportButton()}
+                  </div>
+                  <div class="classification__header--info">
+                    {disciplineBlock()}
+                    {lastUpdatedBlock()}
+                  </div>
+                </div>
+                {scoreCalculationBlock()}
+                {judgesBlock()}
+                <Show when={isLoggedIn() && competitorOptions().length}>
+                  <div class="obdx-clf__filter obdx-clf__filter-row">
+                    {filterCombobox()}
+                    <RotateDeviceHint />
+                  </div>
+                </Show>
+              </>
+            }
+          >
+            <div class="classification__header classification__header--mobile">
+              {lastUpdatedBlock()}
+              <div class="classification__mobile-collapsible-row">
+                <AtomCollapsible
+                  trigger={
+                    <span class="text-caption-lg">
+                      {classification().competitionName}
+                    </span>
+                  }
+                  content={
+                    <div class="classification__mobile-content">
+                      <span class="text-caption-md">
+                        {classification().event.name}
+                      </span>
+                      {disciplineBlock()}
+                      {scoreCalculationBlock()}
+                      {judgesBlock()}
+                      <Show when={isLoggedIn() && competitorOptions().length}>
+                        <div class="obdx-clf__filter">{filterCombobox()}</div>
+                      </Show>
+                      {exportButton()}
+                    </div>
+                  }
+                />
+                <Show when={isLoggedIn() && competitorOptions().length}>
+                  <RotateDeviceHint />
+                </Show>
+              </div>
             </div>
           </Show>
           <Show when={pinnedCompetitors().length}>
@@ -696,7 +768,8 @@ function EventClassificationPage() {
             </Show>
           </Show>
         </div>
-      )}
+        );
+      }}
     </Show>
   );
 }

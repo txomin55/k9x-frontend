@@ -82,7 +82,7 @@
 }
 
 .app-shell {
-    padding: var(--unit-2);
+    padding: 0 var(--unit-2) var(--unit-2) var(--unit-2);
     flex: 1 1 auto;
 }
 
