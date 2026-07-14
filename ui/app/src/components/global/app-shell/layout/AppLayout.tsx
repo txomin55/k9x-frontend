@@ -16,8 +16,7 @@ import PendingCollectionsDialog from "@/components/global/app-shell/layout/Pendi
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import { isDark, setIsDark } from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
-
-const DESKTOP_BREAKPOINT = 1080;
+import { useDeviceType } from "@/utils/media-query/useDeviceType";
 
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
@@ -25,9 +24,9 @@ export default function AppLayout(props: ParentProps) {
   const { isOffline } = useOffline();
   const i18n = useI18n();
 
-  const [isDesktop, setIsDesktop] = createSignal(false);
+  const device = useDeviceType();
+  const isDesktop = () => device() === "laptop";
   const [isNavOpen, setIsNavOpen] = createSignal(false);
-  let previousDesktop = false;
 
   const toggleMode = () => {
     const nextIsDark = !isDark();
@@ -39,14 +38,9 @@ export default function AppLayout(props: ParentProps) {
     setIsDark(nextIsDark);
   };
 
-  const syncViewport = () => {
-    const desktop = globalThis.innerWidth > DESKTOP_BREAKPOINT;
-    if (previousDesktop === null || previousDesktop !== desktop) {
-      setIsNavOpen(desktop);
-    }
-    previousDesktop = desktop;
-    setIsDesktop(desktop);
-  };
+  createEffect(() => {
+    setIsNavOpen(isDesktop());
+  });
 
   const systemDefaultIsDark = globalThis.matchMedia(
     "(prefers-color-scheme: dark)",
@@ -72,8 +66,6 @@ export default function AppLayout(props: ParentProps) {
 
     setIsDark(systemDefaultIsDark);
 
-    syncViewport();
-    globalThis.addEventListener("resize", syncViewport);
     mediaQuery.addEventListener("change", toggleMode);
   });
 
@@ -85,7 +77,6 @@ export default function AppLayout(props: ParentProps) {
   });
 
   onCleanup(() => {
-    globalThis.removeEventListener("resize", syncViewport);
     mediaQuery.removeEventListener("change", toggleMode);
   });
 

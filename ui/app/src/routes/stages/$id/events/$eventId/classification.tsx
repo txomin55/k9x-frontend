@@ -36,6 +36,7 @@ import PinButton
 import {useI18n} from "@/stores/i18n/i18n";
 import {useAuthUser} from "@/stores/auth/auth";
 import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
+import {useDeviceType} from "@/utils/media-query/useDeviceType";
 import {formatDateTime} from "@/utils/date";
 import {exportClassificationPdf} from "@/utils/classification-pdf";
 import {isOffline} from "@/utils/local-first/localFirstPolicy";
@@ -537,15 +538,8 @@ function EventClassificationPage() {
     CONTROLS_KEYS.LIST,
   );
 
-  const [isMobile, setIsMobile] = createSignal(false);
-
-  onMount(() => {
-    const mediaQuery = window.matchMedia("(max-width: 450px)");
-    const syncIsMobile = () => setIsMobile(mediaQuery.matches);
-    syncIsMobile();
-    mediaQuery.addEventListener("change", syncIsMobile);
-    onCleanup(() => mediaQuery.removeEventListener("change", syncIsMobile));
-  });
+  const device = useDeviceType();
+  const isMobile = () => device() === "mobile";
 
   const classificationControls = createMemo(() => [
     {
@@ -701,7 +695,12 @@ function EventClassificationPage() {
             }
           >
             <div class="classification__header classification__header--mobile">
-              {lastUpdatedBlock()}
+              <div class="classification__header--mobile-top">
+                <Show when={isLoggedIn() && competitorOptions().length}>
+                  <RotateDeviceHint />
+                </Show>
+                {lastUpdatedBlock()}
+              </div>
               <div class="classification__mobile-collapsible-row">
                 <AtomCollapsible
                   trigger={
@@ -724,9 +723,6 @@ function EventClassificationPage() {
                     </div>
                   }
                 />
-                <Show when={isLoggedIn() && competitorOptions().length}>
-                  <RotateDeviceHint />
-                </Show>
               </div>
             </div>
           </Show>
