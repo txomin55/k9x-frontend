@@ -10,6 +10,19 @@
   flex: none;
 }
 
+/* The tab bar floats anchored to the bottom on mobile, so the content must
+   leave room to avoid being covered by it. */
+@media (max-width: 767px) {
+  .stages .card-list {
+    padding-bottom: var(--unit-8);
+  }
+
+  .stages-table {
+    max-height: calc(100dvh - 8rem);
+    padding-bottom: var(--unit-8);
+  }
+}
+
 .stages-map-wrapper {
   position: relative;
   flex: 1;

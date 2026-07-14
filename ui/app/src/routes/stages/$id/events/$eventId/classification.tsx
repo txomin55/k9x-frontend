@@ -333,9 +333,10 @@ function EventClassificationPage() {
   const updateListHeight = () => {
     const el = scrollEl();
     if (!el) return;
+    const bottomGap = isMobile() ? 64 : 16;
     const height = Math.max(
       120,
-      Math.floor(window.innerHeight - el.getBoundingClientRect().top - 16),
+      Math.floor(window.innerHeight - el.getBoundingClientRect().top - bottomGap),
     );
     setListHeight(height);
   };

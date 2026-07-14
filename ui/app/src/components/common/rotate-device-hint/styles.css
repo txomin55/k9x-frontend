@@ -1,7 +1,7 @@
 .rotate-device-hint {
     visibility: hidden;
-    width: var(--unit-4);
-    height: var(--unit-4);
+    width: var(--unit-2);
+    height: var(--unit-2);
     line-height: 0;
     flex-shrink: 0;
     color: var(--text-secondary);

@@ -126,3 +126,44 @@
 .atom-segmented-control__item[data-disabled] {
     opacity: 0.6;
 }
+
+/* On mobile the tab bar stops taking space at the top and floats instead,
+   anchored to the bottom center of the app. The breakpoint matches the one
+   useDeviceType treats as "mobile" (< 768px). */
+@media (max-width: 767px) {
+    .atom-segmented-control__controls {
+        position: fixed;
+        left: 50%;
+        bottom: env(safe-area-inset-bottom, 0px);
+        transform: translateX(-50%);
+        z-index: 40;
+
+        padding: 0;
+        gap: 0;
+    }
+
+    .atom-segmented-control__label {
+        display: none;
+    }
+
+    .atom-segmented-control__wrapper {
+        box-shadow: 0 var(--unit-1) var(--unit-3) rgba(15, 23, 32, 0.22);
+    }
+
+    /* Compact pill so it hides as little content as possible. */
+    .atom-segmented-control__items {
+        padding: var(--unit-05);
+        gap: var(--unit-025);
+    }
+
+    .atom-segmented-control__item-label {
+        height: var(--unit-3);
+        padding: 0 var(--unit-075);
+        font-size: var(--text-caption-md);
+    }
+
+    .atom-segmented-control__indicator {
+        top: var(--unit-05);
+        left: var(--unit-05);
+    }
+}
