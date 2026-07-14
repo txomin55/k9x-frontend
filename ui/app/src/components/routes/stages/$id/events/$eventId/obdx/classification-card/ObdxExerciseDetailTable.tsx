@@ -1,14 +1,19 @@
-import { createMemo, For, Show } from "solid-js";
-import { useI18n } from "@/stores/i18n/i18n";
-import ScoreChip from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip";
-import ScoreFraction from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-fraction/ScoreFraction";
+import {createMemo, For, Show} from "solid-js";
+import {useI18n} from "@/stores/i18n/i18n";
+import ScoreChip
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip";
+import ScoreFraction
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-fraction/ScoreFraction";
 import TagList from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/tag-list/TagList";
-import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
+import TotalBlock
+  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
 import {
   judgeInitials,
   uniqueJudges,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type { ObdxExerciseDetailTableProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable.types";
+import type {
+  ObdxExerciseDetailTableProps
+} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export default function ObdxExerciseDetailTable(
@@ -18,8 +23,9 @@ export default function ObdxExerciseDetailTable(
   const judges = createMemo(() => uniqueJudges(props.competitor.exercises));
 
   return (
-    <div class="obdx-clf__detail">
-      <table class="obdx-clf__table">
+    <>
+      <div class="obdx-clf__detail">
+        <table class="obdx-clf__table">
         <thead>
           <tr>
             <th>{t("STAGES.CLASSIFICATION_CARD.EXERCISE")}</th>
@@ -43,7 +49,7 @@ export default function ObdxExerciseDetailTable(
                     classList={{ "is-last-line": exercise.tags.length === 0 }}
                   >
                     <td>
-                      <span class="obdx-clf__ex-name text-body-md">
+                      <span class="obdx-clf__ex-name text-body-sm">
                         {exercise.exercise.name}
                       </span>
                     </td>
@@ -78,26 +84,26 @@ export default function ObdxExerciseDetailTable(
                   </tr>
                   <Show when={exercise.tags.length > 0}>
                     <tr class="obdx-clf__tags-row">
-                      <td colSpan={judges().length + 2}>
+                      <td>
                         <TagList tags={exercise.tags} />
                       </td>
+                      <td colSpan={judges().length + 1} />
                     </tr>
                   </Show>
                 </>
               );
             }}
           </For>
-          <tr class="obdx-clf__total-row">
-            <td colSpan={judges().length + 2}>
-              <TotalBlock
-                value={props.competitor.totalScore ?? null}
-                qualification={props.competitor.qualification}
-                layout="row"
-              />
-            </td>
-          </tr>
         </tbody>
-      </table>
-    </div>
+        </table>
+      </div>
+      <div class="obdx-clf__total obdx-clf__total--row">
+        <TotalBlock
+          value={props.competitor.totalScore ?? null}
+          qualification={props.competitor.qualification}
+          layout="row"
+        />
+      </div>
+    </>
   );
 }

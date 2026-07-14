@@ -203,8 +203,8 @@
 }
 
 .obdx-clf__chip--pill {
-    min-width: calc(var(--unit-4) + var(--unit-05));
-    padding: var(--unit-025) var(--unit-05);
+    min-width: calc(var(--unit-4));
+    padding: var(--unit-025);
     border-radius: var(--radius-sm);
     font-size: var(--text-caption-md);
 }
@@ -336,22 +336,29 @@
 .obdx-clf__detail {
     max-width: 100%;
     overflow-x: auto;
+    /* White fills the full scrollable width; the table sits left-aligned and
+       the fixed exercise column (muted) stays pinned on top of it. */
+    background: var(--surface);
 }
 
+/* In table view the expand lives in a full-width colspan cell whose auto width
+   is driven by its content, so .obdx-clf__detail never bounds itself and the
+   whole table (or the app) scrolls instead. Bind it to the container inline
+   size (.obdx-clf-table is a container) so it scrolls internally like the
+   card/list view, keeping the first exercise column fixed. */
+.atom-table__expanded-cell .obdx-clf__detail {
+    width: calc(100cqi - var(--unit-2));
+    max-width: calc(100cqi - var(--unit-2));
+}
+
+/* From 500px up the table fills its container and the score columns share the
+   remaining width equally (fixed layout); on small mobile it falls back to
+   content-width + horizontal scroll (see the max-width: 499.98px block). */
 .obdx-clf__table {
+    table-layout: fixed;
     width: 100%;
-    border-collapse: collapse;
-}
-
-.obdx-clf__table th:first-child,
-.obdx-clf__table td:first-child {
-    width: 100%;
-}
-
-.obdx-clf__table th:not(:first-child),
-.obdx-clf__ex-row td:not(:first-child) {
-    width: 1%;
-    white-space: nowrap;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .obdx-clf__table thead th {
@@ -398,42 +405,76 @@
     padding-bottom: var(--unit-05);
 }
 
-.obdx-clf__total-row td {
-    padding: var(--unit-1);
+.atom-table__expanded-cell .obdx-clf__tags-row td {
+    background: var(--surface);
+}
+
+/* List view: the detail expand is a distinct muted panel inside the card,
+   including its sticky first column so it stays uniform while scrolling. */
+.obdx-clf__body .atom-collapsible__content-inner {
     background: var(--surface-muted);
-    background-clip: padding-box;
-    border-top: var(--unit-2) solid transparent;
-    border-radius: var(--unit-05);
+}
+
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__table thead th:first-child,
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__ex-row td:first-child,
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__tags-row td:first-child {
+    background: var(--surface-muted);
+}
+
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__table thead th:not(:first-child),
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__ex-row td:not(:first-child),
+.obdx-clf__body .atom-collapsible__content-inner .obdx-clf__tags-row td:not(:first-child) {
+    background: var(--surface);
 }
 
 .atom-table__expanded-cell .obdx-clf__table thead th:first-child,
-.atom-table__expanded-cell .obdx-clf__ex-row td:first-child {
+.atom-table__expanded-cell .obdx-clf__ex-row td:first-child,
+.atom-table__expanded-cell .obdx-clf__tags-row td:first-child {
     background: var(--surface-muted);
     border-radius: var(--unit-05);
 }
 
-@media (max-width: 500px) {
+.atom-table__expanded-cell .obdx-clf__table thead th:not(:first-child),
+.atom-table__expanded-cell .obdx-clf__ex-row td:not(:first-child) {
+    background: var(--surface);
+}
+
+/* The exercise column stays fixed whenever the detail scrolls. From 500px up
+   it gets a roomy 260px so names don't wrap awkwardly; on small mobile it stays
+   compact so the score columns keep as much room as possible. */
+.obdx-clf__table thead th:first-child,
+.obdx-clf__ex-row td:first-child,
+.obdx-clf__tags-row td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
+    overflow-wrap: anywhere;
+    background: var(--surface);
+}
+
+@media (max-width: 499.98px) {
+    /* On small mobile the table sizes to its content and scrolls horizontally,
+       keeping score columns at their natural width instead of squeezing them. */
     .obdx-clf__table {
-        border-collapse: separate;
-        border-spacing: 0;
+        table-layout: auto;
+        width: max-content;
+    }
+
+    .obdx-clf__table th:not(:first-child),
+    .obdx-clf__ex-row td:not(:first-child) {
+        width: 1%;
+        white-space: nowrap;
     }
 
     .obdx-clf__table thead th:first-child,
-    .obdx-clf__ex-row td:first-child {
-        position: sticky;
-        left: 0;
-        z-index: 1;
+    .obdx-clf__ex-row td:first-child,
+    .obdx-clf__tags-row td:first-child {
         width: calc(var(--unit-10) + var(--unit-4));
         min-width: calc(var(--unit-10) + var(--unit-4));
-        overflow-wrap: anywhere;
-        background: var(--surface);
-    }
-
-    .obdx-clf__tags-row .obdx-clf__tags {
-        position: sticky;
-        left: var(--unit-1);
-        z-index: 1;
-        width: fit-content;
+        max-width: calc(var(--unit-10) + var(--unit-4));
     }
 }
 

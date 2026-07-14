@@ -63,6 +63,7 @@
     display: flex;
     align-items: center;
     gap: var(--unit-1);
+    padding-bottom: var(--unit-1);
 }
 
 .classification__mobile-collapsible-row > .atom-collapsible {
@@ -130,7 +131,7 @@
     color: var(--text-secondary);
 
     font: inherit;
-    font-size: 1.5rem;
+    font-size: var(--unit-2);
     line-height: 1;
     cursor: pointer;
 
@@ -208,6 +209,7 @@
 .obdx-clf__pinned {
     padding-top: var(--unit-1);
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--unit-1);
 
     margin-bottom: var(--unit-2);

@@ -12,6 +12,7 @@ type ObdxClassificationContentProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   hideSquaresTotal?: boolean;
+  inlineDetail?: boolean;
 };
 
 export default function ObdxClassificationContent(
@@ -31,16 +32,21 @@ export default function ObdxClassificationContent(
           />
         </div>
       </Show>
-      <AtomCollapsible
-        open={props.open}
-        onOpenChange={props.onOpenChange}
-        trigger={
-          props.open
-            ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
-            : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
-        }
-        content={<ObdxExerciseDetailTable competitor={props.competitor} />}
-      />
+      <Show
+        when={!props.inlineDetail}
+        fallback={<ObdxExerciseDetailTable competitor={props.competitor} />}
+      >
+        <AtomCollapsible
+          open={props.open}
+          onOpenChange={props.onOpenChange}
+          trigger={
+            props.open
+              ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
+              : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
+          }
+          content={<ObdxExerciseDetailTable competitor={props.competitor} />}
+        />
+      </Show>
     </div>
   );
 }

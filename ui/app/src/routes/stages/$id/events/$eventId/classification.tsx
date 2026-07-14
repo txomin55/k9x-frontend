@@ -336,7 +336,9 @@ function EventClassificationPage() {
     const bottomGap = isMobile() ? 64 : 16;
     const height = Math.max(
       120,
-      Math.floor(window.innerHeight - el.getBoundingClientRect().top - bottomGap),
+      Math.floor(
+        window.innerHeight - el.getBoundingClientRect().top - bottomGap,
+      ),
     );
     setListHeight(height);
   };
@@ -515,6 +517,7 @@ function EventClassificationPage() {
             open={isOpen(row.original.dog.id)}
             onOpenChange={(open) => setOpen(row.original.dog.id, open)}
             hideSquaresTotal
+            inlineDetail
           />
         )}
       />
@@ -667,104 +670,104 @@ function EventClassificationPage() {
         );
 
         return (
-        <div class="page classification">
-          <Show
-            when={isMobile()}
-            fallback={
-              <>
-                <div class="classification__header">
-                  <div class="classification__header--title">
-                    <span class="text-caption-lg">
-                      {classification().competitionName}
-                    </span>
-                    {exportButton()}
-                  </div>
-                  <div class="classification__header--info">
-                    {disciplineBlock()}
-                    {lastUpdatedBlock()}
-                  </div>
-                </div>
-                {scoreCalculationBlock()}
-                {judgesBlock()}
-                <Show when={isLoggedIn() && competitorOptions().length}>
-                  <div class="obdx-clf__filter obdx-clf__filter-row">
-                    {filterCombobox()}
-                    <RotateDeviceHint />
-                  </div>
-                </Show>
-              </>
-            }
-          >
-            <div class="classification__header classification__header--mobile">
-              <div class="classification__header--mobile-top">
-                <Show when={isLoggedIn() && competitorOptions().length}>
-                  <RotateDeviceHint />
-                </Show>
-                {lastUpdatedBlock()}
-              </div>
-              <div class="classification__mobile-collapsible-row">
-                <AtomCollapsible
-                  trigger={
-                    <span class="text-caption-lg">
-                      {classification().competitionName}
-                    </span>
-                  }
-                  content={
-                    <div class="classification__mobile-content">
-                      <span class="text-caption-md">
-                        {classification().event.name}
+          <div class="page classification">
+            <Show
+              when={isMobile()}
+              fallback={
+                <>
+                  <div class="classification__header">
+                    <div class="classification__header--title">
+                      <span class="text-caption-lg">
+                        {classification().competitionName}
                       </span>
-                      {disciplineBlock()}
-                      {scoreCalculationBlock()}
-                      {judgesBlock()}
-                      <Show when={isLoggedIn() && competitorOptions().length}>
-                        <div class="obdx-clf__filter">{filterCombobox()}</div>
-                      </Show>
                       {exportButton()}
                     </div>
-                  }
-                />
-              </div>
-            </div>
-          </Show>
-          <Show when={pinnedCompetitors().length}>
-            <div class="obdx-clf__pinned">
-              <For each={pinnedCompetitors()}>
-                {(competitor) => (
-                  <ObdxClassificationCard
-                    competitor={competitor}
-                    trend={trends().get(competitor.dog.id)}
-                    pinned
-                    pinDisabled={liveIds().has(competitor.dog.id)}
-                    onTogglePin={() => togglePin(competitor.dog.id)}
-                    open={isPinnedOpen(competitor.dog.id)}
-                    onOpenChange={(open) =>
-                      setPinnedOpen(competitor.dog.id, open)
-                    }
-                  />
-                )}
-              </For>
-            </div>
-          </Show>
-          <Show
-            when={classification()?.obdx?.competitors?.length}
-            fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
-          >
-            <Show
-              when={filteredCompetitors().length}
-              fallback={
-                <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
+                    <div class="classification__header--info">
+                      {disciplineBlock()}
+                      {lastUpdatedBlock()}
+                    </div>
+                  </div>
+                  {scoreCalculationBlock()}
+                  {judgesBlock()}
+                  <Show when={competitorOptions().length}>
+                    <div class="obdx-clf__filter obdx-clf__filter-row">
+                      {filterCombobox()}
+                      <RotateDeviceHint />
+                    </div>
+                  </Show>
+                </>
               }
             >
-              <AtomSegmentedControl
-                title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
-                control={controlValue()}
-                onControlChange={setControlValue}
-                controls={classificationControls()}
-              />
+              <div class="classification__header classification__header--mobile">
+                <div class="classification__header--mobile-top">
+                  <Show when={competitorOptions().length}>
+                    <RotateDeviceHint />
+                  </Show>
+                  {lastUpdatedBlock()}
+                </div>
+                <div class="classification__mobile-collapsible-row">
+                  <AtomCollapsible
+                    trigger={
+                      <span class="text-caption-lg">
+                        {classification().competitionName}
+                      </span>
+                    }
+                    content={
+                      <div class="classification__mobile-content">
+                        <span class="text-caption-md">
+                          {classification().event.name}
+                        </span>
+                        {disciplineBlock()}
+                        {scoreCalculationBlock()}
+                        {judgesBlock()}
+                        <Show when={isLoggedIn() && competitorOptions().length}>
+                          <div class="obdx-clf__filter">{filterCombobox()}</div>
+                        </Show>
+                        {exportButton()}
+                      </div>
+                    }
+                  />
+                </div>
+              </div>
             </Show>
-          </Show>
-        </div>
+            <Show when={pinnedCompetitors().length}>
+              <div class="obdx-clf__pinned">
+                <For each={pinnedCompetitors()}>
+                  {(competitor) => (
+                    <ObdxClassificationCard
+                      competitor={competitor}
+                      trend={trends().get(competitor.dog.id)}
+                      pinned
+                      pinDisabled={liveIds().has(competitor.dog.id)}
+                      onTogglePin={() => togglePin(competitor.dog.id)}
+                      open={isPinnedOpen(competitor.dog.id)}
+                      onOpenChange={(open) =>
+                        setPinnedOpen(competitor.dog.id, open)
+                      }
+                    />
+                  )}
+                </For>
+              </div>
+            </Show>
+            <Show
+              when={classification()?.obdx?.competitors?.length}
+              fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
+            >
+              <Show
+                when={filteredCompetitors().length}
+                fallback={
+                  <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
+                }
+              >
+                <AtomSegmentedControl
+                  title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
+                  control={controlValue()}
+                  onControlChange={setControlValue}
+                  controls={classificationControls()}
+                />
+              </Show>
+            </Show>
+          </div>
         );
       }}
     </Show>
