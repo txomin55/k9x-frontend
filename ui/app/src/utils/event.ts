@@ -1,8 +1,9 @@
 import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
-import { oneWeekFromNow } from "@/utils/date";
+import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 
 export const toEventEditorDraft = (
   event: EventDetailResponseDTO,
+  stageDateFrom?: number,
 ): EventEditorDraft => ({
   competitors: event.competitors.map((competitor) => ({ ...competitor })),
   configuration: {
@@ -14,7 +15,11 @@ export const toEventEditorDraft = (
     id: event.discipline.id,
     name: event.discipline.name,
   },
-  enrollmentDeadline: event.enrollmentDeadline || oneWeekFromNow(),
+  enrollmentDeadline:
+    event.enrollmentDeadline ||
+    (stageDateFrom !== undefined
+      ? oneWeekBefore(stageDateFrom)
+      : oneWeekFromNow()),
   exercises: event.exercises.map((exercise) => ({ ...exercise })),
   id: event.id,
   judges: event.judges.map((judge) => ({ ...judge })),
@@ -56,6 +61,6 @@ export function canDeleteEvent(status?: string) {
   return status === EVENT_STATUS.CREATED;
 }
 
-export function canEditEvent(stageDateTo?: number) {
-  return stageDateTo === undefined || Date.now() <= stageDateTo;
+export function canEditEvent(stageDateFrom?: number) {
+  return stageDateFrom === undefined || Date.now() < stageDateFrom;
 }

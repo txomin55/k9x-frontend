@@ -34,8 +34,8 @@ import {
 } from "@/utils/event";
 import { canDeleteStage, canEditStage } from "@/utils/stage";
 import {
-  dayBefore,
   formatDateLabel,
+  oneWeekBefore,
   parseDateInputValue,
   toDateInputValue,
 } from "@/utils/date";
@@ -339,7 +339,7 @@ function CompetitionStageDetailBody(props: {
   });
 
   const openEventEditor = (event: EventDetailResponseDTO) => {
-    setEventDialogDraft(toEventEditorDraft(event));
+    setEventDialogDraft(toEventEditorDraft(event, props.stage().dateFrom));
     setEventParam(event.id);
   };
 
@@ -358,7 +358,7 @@ function CompetitionStageDetailBody(props: {
         id: draft.disciplineId,
         name: "",
       },
-      enrollmentDeadline: dayBefore(props.stage().dateFrom),
+      enrollmentDeadline: oneWeekBefore(props.stage().dateFrom),
       exercises: [],
       id: draft.id ?? generateEntityId("event"),
       judges: [],
@@ -558,7 +558,7 @@ function CompetitionStageDetailBody(props: {
                             </AtomButton>
                           </ConfirmActionButton>
                         </Show>
-                        <Show when={canEditEvent(props.stage().dateTo)}>
+                        <Show when={canEditEvent(props.stage().dateFrom)}>
                           <AtomDialog
                             closeButtonText={i18n.t(
                               "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",

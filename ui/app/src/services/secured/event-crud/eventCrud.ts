@@ -18,7 +18,7 @@ import {
 import type { CollectionResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import { translate } from "@/stores/i18n/i18n";
 import { COMPETITOR_STATUS, EVENT_STATUS } from "@/utils/event";
-import { oneWeekFromNow } from "@/utils/date";
+import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
@@ -203,6 +203,7 @@ const mergeApiEventWithPayload = (
   context?: {
     eventId?: string;
     stageId?: string;
+    stageDateFrom?: number;
   },
 ): EventDetailResponseDTO => {
   const isCreatePayload = "id" in payload && "stageId" in payload;
@@ -270,7 +271,9 @@ const mergeApiEventWithPayload = (
     enrollmentDeadline:
       updatePayload?.enrollmentDeadline ??
       previousEvent?.enrollmentDeadline ??
-      oneWeekFromNow(),
+      (context?.stageDateFrom !== undefined
+        ? oneWeekBefore(context.stageDateFrom)
+        : oneWeekFromNow()),
     exercises:
       updatePayload?.exercises.map((exercise) =>
         toApiExercise(
@@ -483,7 +486,9 @@ export const useApiEvent = () => {
       throw new Error(`Stage ${payload.stageId} not found`);
     }
 
-    const draftApiEvent = mergeApiEventWithPayload(payload);
+    const draftApiEvent = mergeApiEventWithPayload(payload, undefined, {
+      stageDateFrom: context.stage.dateFrom,
+    });
 
     applyApiEventUpsert(context.competitionId, payload.stageId, draftApiEvent);
 

@@ -58,8 +58,8 @@ export function parseDateInputValue(value: string, fallback: number) {
 
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-export function dayBefore(timestamp: number) {
-  return timestamp - ONE_DAY_IN_MS;
+export function oneWeekBefore(timestamp: number) {
+  return timestamp - 7 * ONE_DAY_IN_MS;
 }
 
 export function oneWeekFromNow() {

@@ -70,12 +70,12 @@ function CompetitionObdxEventDetailBody(props: {
   event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
-  stageDateTo?: number;
+  stageDateFrom?: number;
 }) {
   const i18n = useI18n();
   const [isEditing, setIsEditing] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
-    toEventEditorDraft(props.event()),
+    toEventEditorDraft(props.event(), props.stageDateFrom),
   );
   const [name, setName] = createSignal(props.event().name);
   const [isCreatingCompetitor, setIsCreatingCompetitor] = createSignal(false);
@@ -125,7 +125,7 @@ function CompetitionObdxEventDetailBody(props: {
   );
 
   const canEditDetails = createMemo(
-    () => isEditing() && hasConfiguration() && canEditEvent(props.stageDateTo),
+    () => isEditing() && hasConfiguration() && canEditEvent(props.stageDateFrom),
   );
 
   const MID_AVG_MIN_JUDGES = 4;
@@ -869,7 +869,7 @@ function CompetitionObdxEventDetailBody(props: {
 
     const event = props.event();
 
-    setDraftEvent(toEventEditorDraft(event));
+    setDraftEvent(toEventEditorDraft(event, props.stageDateFrom));
     setName(event.name);
   });
 
@@ -1019,7 +1019,7 @@ function CompetitionObdxEventDetailBody(props: {
         contents={eventTabsContents()}
       />
 
-      <Show when={canEditEvent(props.stageDateTo)}>
+      <Show when={canEditEvent(props.stageDateFrom)}>
         <FloatingToggleCircle
           onClick={() => toggleEditingMode()}
           toggled={isEditing()}
@@ -1117,7 +1117,7 @@ function CompetitionEventDetailPage() {
       competitionId: params().id,
     });
 
-  const getStageDateTo = () => stage()?.dateTo;
+  const getStageDateFrom = () => stage()?.dateFrom;
 
   createEffect(() => {
     if (params().eventId !== "new" || hasCreatedDraftEvent) return;
@@ -1142,7 +1142,7 @@ function CompetitionEventDetailPage() {
           event={event}
           onDelete={onDelete}
           onUpdate={onUpdate}
-          stageDateTo={getStageDateTo()}
+          stageDateFrom={getStageDateFrom()}
         />
       )}
     </ObdxCompetitionEventDetailBodyWrapper>
