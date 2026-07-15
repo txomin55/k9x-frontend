@@ -1,97 +1,97 @@
 .stages {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--unit-1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
 }
 
 .stages > .atom-segmented-control {
-  height: auto;
-  flex: none;
+    height: auto;
+    flex: none;
 }
 
 /* The tab bar floats anchored to the bottom on mobile, so the content must
    leave room to avoid being covered by it. */
 @media (max-width: 767px) {
-  .stages .card-list {
-    padding-bottom: var(--unit-8);
-  }
+    .stages .card-list {
+        padding-bottom: var(--unit-8);
+    }
 
-  .stages-table {
-    max-height: calc(100dvh - 8rem);
-    padding-bottom: var(--unit-8);
-  }
+    .stages-table {
+        max-height: calc(100dvh - 8rem);
+        padding-bottom: var(--unit-8);
+    }
 }
 
 .stages-map-wrapper {
-  position: relative;
-  flex: 1;
-  min-height: calc(var(--unit-10) * 4);
+    position: relative;
+    flex: 1;
+    min-height: calc(var(--unit-10) * 4);
 }
 
 .stages-table {
-  max-height: calc(100dvh - 12rem);
-  overflow: auto;
+    max-height: calc(100dvh - 12rem);
+    overflow: auto;
 }
 
 /* The table sizes to its content; the wrapper above handles scrolling so a
    short list does not leave a tall empty box. */
 .stages-table .atom-table,
 .stages-table .atom-table__scroller {
-  height: auto;
-  overflow: visible;
+    height: auto;
+    overflow: visible;
 }
 
 .stages-table__name-cell {
-  display: flex;
-  flex-direction: column;
-  gap: var(--unit-1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
 }
 
 .stages-table__name-row {
-  display: flex;
-  align-items: center;
-  gap: var(--unit-1);
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
 }
 
 .stages-table__name-caption {
-  color: var(--text-secondary);
+    color: var(--text-secondary);
 }
 
 .stages-table__expander {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 
-  border: none;
-  background: transparent;
+    border: none;
+    background: transparent;
 
-  color: var(--text-secondary);
+    color: var(--text-secondary);
 
-  font: inherit;
-  font-size: 1.5rem;
-  line-height: 1;
-  cursor: pointer;
+    font: inherit;
+    font-size: var(--unit-2);
+    line-height: 1;
+    cursor: pointer;
 
-  transition: color 120ms ease;
+    transition: color 120ms ease;
 }
 
 .stages-table__expander:hover {
-  color: var(--text-primary);
+    color: var(--text-primary);
 }
 
 .stage-info__enroll-form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--unit-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-2);
 }
 
 .stage-info__enroll-form-actions {
-  padding-top: var(--unit-1);
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+    padding-top: var(--unit-1);
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
 }
