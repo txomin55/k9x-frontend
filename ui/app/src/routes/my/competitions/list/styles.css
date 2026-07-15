@@ -1,0 +1,14 @@
+.competitions-list.card-list {
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+	);
+}
+
+.competitions-list.card-list > .card {
+	max-width: none;
+}
+
+.competitions-list__table {
+	margin-top: var(--unit-1);
+}

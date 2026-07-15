@@ -6,6 +6,7 @@ import {
 import {
   type Accessor,
   createEffect,
+  createMemo,
   createSignal,
   For,
   Index,
@@ -39,6 +40,11 @@ import {
   parseDateInputValue,
   toDateInputValue,
 } from "@/utils/date";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import AtomTable from "@lib/components/atoms/table/AtomTable";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import trashIcon from "@/assets/miscelaneous/trash.svg";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -272,6 +278,8 @@ function CompetitionStageDetailContentContainer(props: {
   );
 }
 
+const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
+
 function CompetitionStageDetailBody(props: {
   createDefaultEvent: (stageId: string) => CreateEventRequestDTO;
   onCreateEvent: (event: CreateEventRequestDTO) => void;
@@ -463,6 +471,194 @@ function CompetitionStageDetailBody(props: {
     closeEventEditor();
   };
 
+  const [view, setView] = createSignal<string>(VIEW.LIST);
+
+  const eventTableActions = (event: EventDetailResponseDTO) =>
+    isEditing() ? (
+      <div class="list-table__actions">
+        <Show when={canDeleteEvent(event.status)}>
+          <ConfirmActionButton
+            text={event.name}
+            onConfirm={deleteEventClick(() => event)}
+          >
+            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+              <AtomSvgIcon
+                src={trashIcon}
+                alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
+                tinted
+              />
+            </AtomButton>
+          </ConfirmActionButton>
+        </Show>
+        <Show when={canEditEvent(props.stage().dateFrom)}>
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() => openEventEditor(event)}
+          >
+            <AtomSvgIcon
+              src={pencilIcon}
+              alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+              tinted
+            />
+          </AtomButton>
+          <AtomDialog
+            closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
+            content={
+              <Show when={eventDialogDraft()}>
+                {(draft) => (
+                  <EventEditorForm
+                    draft={draft()}
+                    onCancel={closeEventEditor}
+                    onChange={setEventDialogDraft}
+                    onSave={saveEventEditor}
+                  />
+                )}
+              </Show>
+            }
+            onOpenChange={createEditDialogOpenChange(() => event)}
+            open={editingEventId() === event.id}
+            title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event.name}`}
+          />
+        </Show>
+      </div>
+    ) : (
+      <div class="list-table__actions">
+        <AtomButton
+          type={BUTTON_TYPES.ACCENT}
+          onClick={createNavigateToEvent(() => event)}
+        >
+          <AtomSvgIcon
+            src={eyeIcon}
+            alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.INFO")}
+            tinted
+          />
+        </AtomButton>
+      </div>
+    );
+
+  const eventColumns = createMemo<ColumnDef<EventDetailResponseDTO, any>[]>(
+    () => {
+      const cols: ColumnDef<EventDetailResponseDTO, any>[] = [
+        {
+          accessorKey: "name",
+          header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NAME"),
+          cell: (info) => info.getValue<string>(),
+        },
+        {
+          id: "status",
+          accessorFn: (event) => event.status,
+          header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.STATUS"),
+          enableSorting: false,
+          cell: (info) => <StatusBadge status={info.row.original.status} />,
+        },
+        {
+          id: "discipline",
+          header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE"),
+          enableSorting: false,
+          cell: (info) => (
+            <DisciplineIcon disciplineId={info.row.original.discipline.id} />
+          ),
+        },
+      ];
+
+      cols.push({
+        id: "actions",
+        header: () => null,
+        enableSorting: false,
+        cell: (info) => eventTableActions(info.row.original),
+      });
+
+      return cols;
+    },
+  );
+
+  const listContent = () => (
+    <div class="stage-detail__content--event">
+      <Index each={props.stage().events}>
+        {(event) => (
+          <Card
+            topLeft={event().name}
+            subHeader={<StatusBadge status={event().status} />}
+            content={<DisciplineIcon disciplineId={event().discipline.id} />}
+            actions={
+              isEditing() ? (
+                <div class="stage-detail__content--event-actions">
+                  <Show when={canDeleteEvent(event().status)}>
+                    <ConfirmActionButton
+                      text={event().name}
+                      onConfirm={deleteEventClick(event)}
+                    >
+                      <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                        {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
+                      </AtomButton>
+                    </ConfirmActionButton>
+                  </Show>
+                  <Show when={canEditEvent(props.stage().dateFrom)}>
+                    <AtomDialog
+                      closeButtonText={i18n.t(
+                        "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+                      )}
+                      content={
+                        <Show when={eventDialogDraft()}>
+                          {(draft) => (
+                            <EventEditorForm
+                              draft={draft()}
+                              onCancel={closeEventEditor}
+                              onChange={setEventDialogDraft}
+                              onSave={saveEventEditor}
+                            />
+                          )}
+                        </Show>
+                      }
+                      onOpenChange={createEditDialogOpenChange(event)}
+                      open={editingEventId() === event().id}
+                      title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
+                      trigger={
+                        <span>
+                          {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+                        </span>
+                      }
+                    />
+                  </Show>
+                </div>
+              ) : (
+                <AtomButton
+                  type={BUTTON_TYPES.ACCENT}
+                  onClick={createNavigateToEvent(event)}
+                >
+                  {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.INFO")}
+                </AtomButton>
+              )
+            }
+          />
+        )}
+      </Index>
+    </div>
+  );
+
+  const tableContent = () => (
+    <div class="stage-detail__events-table">
+      <AtomTable<EventDetailResponseDTO>
+        data={props.stage().events}
+        columns={eventColumns()}
+        getRowId={(row) => row.id}
+      />
+    </div>
+  );
+
+  const controls = createMemo(() => [
+    {
+      value: VIEW.LIST,
+      text: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LIST"),
+      content: listContent,
+    },
+    {
+      value: VIEW.TABLE,
+      text: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.TABLE"),
+      content: tableContent,
+    },
+  ]);
+
   return (
     <div class="page stage-detail">
       <header class="stage-detail__header">
@@ -536,69 +732,12 @@ function CompetitionStageDetailBody(props: {
           when={props.stage().events.length > 0}
           fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS")}</p>}
         >
-          <div class="stage-detail__content--event">
-            <Index each={props.stage().events}>
-              {(event) => (
-                <Card
-                  topLeft={event().name}
-                  subHeader={<StatusBadge status={event().status} />}
-                  content={
-                    <DisciplineIcon disciplineId={event().discipline.id} />
-                  }
-                  actions={
-                    isEditing() ? (
-                      <div class="stage-detail__content--event-actions">
-                        <Show when={canDeleteEvent(event().status)}>
-                          <ConfirmActionButton
-                            text={event().name}
-                            onConfirm={deleteEventClick(event)}
-                          >
-                            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                              {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE")}
-                            </AtomButton>
-                          </ConfirmActionButton>
-                        </Show>
-                        <Show when={canEditEvent(props.stage().dateFrom)}>
-                          <AtomDialog
-                            closeButtonText={i18n.t(
-                              "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
-                            )}
-                            content={
-                              <Show when={eventDialogDraft()}>
-                                {(draft) => (
-                                  <EventEditorForm
-                                    draft={draft()}
-                                    onCancel={closeEventEditor}
-                                    onChange={setEventDialogDraft}
-                                    onSave={saveEventEditor}
-                                  />
-                                )}
-                              </Show>
-                            }
-                            onOpenChange={createEditDialogOpenChange(event)}
-                            open={editingEventId() === event().id}
-                            title={`${i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")} ${event().name}`}
-                            trigger={
-                              <span>
-                                {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
-                              </span>
-                            }
-                          />
-                        </Show>
-                      </div>
-                    ) : (
-                      <AtomButton
-                        type={BUTTON_TYPES.ACCENT}
-                        onClick={createNavigateToEvent(event)}
-                      >
-                        {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.INFO")}
-                      </AtomButton>
-                    )
-                  }
-                />
-              )}
-            </Index>
-          </div>
+          <AtomSegmentedControl
+            title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS_BY")}
+            control={view()}
+            onControlChange={setView}
+            controls={controls()}
+          />
         </Show>
       </section>
       <Show when={canEditStage(props.stage().status)}>

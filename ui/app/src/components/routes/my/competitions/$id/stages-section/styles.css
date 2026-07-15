@@ -12,6 +12,29 @@
     justify-content: space-between;
 }
 
+.stages-section__stages {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.stages-section__stages > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
+.stages-section__events-count {
+    color: var(--text-secondary);
+}
+
+.stages-section__table {
+    margin-top: var(--unit-1);
+}
+
 .stage-editor-form {
     display: flex;
     flex-direction: column;

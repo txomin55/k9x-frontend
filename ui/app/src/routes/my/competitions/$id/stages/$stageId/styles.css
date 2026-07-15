@@ -14,6 +14,25 @@
     justify-content: space-between;
 }
 
+.stage-detail__content--event {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.stage-detail__content--event > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
+.stage-detail__events-table {
+    margin-top: var(--unit-1);
+}
+
 .stage-detail__header {
     display: flex;
     flex-direction: column;
