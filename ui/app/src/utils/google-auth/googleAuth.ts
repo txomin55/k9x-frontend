@@ -1,7 +1,25 @@
 import { AppRoutePath } from "@/components/global/app-shell/paths";
-import { resolveAppPath } from "@/utils/paths/app-paths";
+import { resolveAppPath, stripBasePath } from "@/utils/paths/app-paths";
 
 export const GOOGLE_OAUTH_STATE_KEY = "k9x_google_oauth_state";
+export const POST_LOGIN_REDIRECT_KEY = "k9x_post_login_redirect";
+
+const capturePostLoginRedirect = () => {
+  const { pathname, search, hash } = globalThis.location;
+  const routePath = stripBasePath(pathname);
+
+  if (
+    routePath === AppRoutePath.AUTH_CALLBACK ||
+    routePath === AppRoutePath.HOME
+  ) {
+    return;
+  }
+
+  globalThis.sessionStorage.setItem(
+    POST_LOGIN_REDIRECT_KEY,
+    `${routePath}${search}${hash}`,
+  );
+};
 
 const getGoogleRedirectUri = () =>
   import.meta.env.VITE_GOOGLE_REDIRECT_URI ||
@@ -31,6 +49,7 @@ export const buildGoogleAuthUrl = ({
 
 export const startGoogleInteractiveLogin = () => {
   const state = crypto.randomUUID();
+  capturePostLoginRedirect();
   globalThis.sessionStorage.setItem(GOOGLE_OAUTH_STATE_KEY, state);
   globalThis.location.assign(
     buildGoogleAuthUrl({ prompt: "select_account", state }),

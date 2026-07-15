@@ -216,6 +216,8 @@ function EventClassificationPage() {
     competitors().map((competitor) => ({
       label: competitor.dog.name,
       value: competitor.dog.id,
+      caption: `#${competitor.competitorNumber} · ${competitor.handler}`,
+      searchText: `${competitor.dog.name} ${competitor.handler} ${competitor.competitorNumber}`,
     })),
   );
 

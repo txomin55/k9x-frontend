@@ -197,6 +197,23 @@
     display: flex;
     align-items: center;
     gap: var(--unit-05);
+    min-width: 0;
+}
+
+.atom-combobox__item-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.atom-combobox__item-caption {
+    font-size: var(--text-caption-sm);
+    line-height: var(--text-caption-line-height);
+    color: var(--text-secondary);
+}
+
+.atom-combobox__item[data-highlighted] .atom-combobox__item-caption {
+    color: var(--text-inverted);
 }
 
 /* Highlighted */

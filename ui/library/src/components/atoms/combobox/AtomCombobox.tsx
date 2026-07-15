@@ -8,6 +8,8 @@ export type AtomComboboxOption = {
   value: string;
   disabled?: boolean;
   preLabel?: JSX.Element;
+  caption?: JSX.Element;
+  searchText?: string;
 };
 
 type AtomComboboxBaseProps = {
@@ -39,6 +41,7 @@ export type AtomComboboxProps = ParentProps<
 >;
 
 const ITEM_HEIGHT = 36;
+const ITEM_HEIGHT_WITH_CAPTION = 48;
 const OVERSCAN = 5;
 
 export function AtomCombobox(props: AtomComboboxProps) {
@@ -50,7 +53,9 @@ export function AtomCombobox(props: AtomComboboxProps) {
     if (!query) return props.options;
 
     return props.options.filter((option) =>
-      option.label.toLocaleLowerCase().includes(query),
+      (option.searchText ?? option.label)
+        .toLocaleLowerCase()
+        .includes(query),
     );
   });
 
@@ -60,17 +65,19 @@ export function AtomCombobox(props: AtomComboboxProps) {
     },
     getScrollElement: () => listboxRef,
     getItemKey: (index) => String(visibleOptions()[index]?.value ?? index),
-    estimateSize: () => ITEM_HEIGHT,
+    estimateSize: (index) =>
+      visibleOptions()[index]?.caption ? ITEM_HEIGHT_WITH_CAPTION : ITEM_HEIGHT,
     initialRect: { width: 0, height: ITEM_HEIGHT * 6 },
     overscan: OVERSCAN,
   });
 
   const virtualRows = () => {
-    return visibleOptions().map((option, index) => ({
-      key: String(option.value ?? index),
-      index,
-      start: index * ITEM_HEIGHT,
-      size: ITEM_HEIGHT,
+    void visibleOptions();
+    return virtualizer.getVirtualItems().map((row) => ({
+      key: String(row.key),
+      index: row.index,
+      start: row.start,
+      size: row.size,
     }));
   };
 
@@ -183,9 +190,16 @@ export function AtomCombobox(props: AtomComboboxProps) {
                       >
                         <div class="atom-combobox__item-option">
                           {item.rawValue.preLabel}
-                          <Combobox.ItemLabel class="atom-combobox__item-label">
-                            {item.rawValue.label}
-                          </Combobox.ItemLabel>
+                          <div class="atom-combobox__item-text">
+                            <Combobox.ItemLabel class="atom-combobox__item-label">
+                              {item.rawValue.label}
+                            </Combobox.ItemLabel>
+                            {item.rawValue.caption ? (
+                              <span class="atom-combobox__item-caption">
+                                {item.rawValue.caption}
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
                         <Combobox.ItemIndicator class="atom-combobox__item-indicator">
                           x

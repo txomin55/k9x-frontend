@@ -8,7 +8,10 @@ import {
   clearCachedUserData,
   fetchCachedUserData,
 } from "@/services/secured/fetch-user-data/fetchUserData";
-import { GOOGLE_OAUTH_STATE_KEY } from "@/utils/google-auth/googleAuth";
+import {
+  GOOGLE_OAUTH_STATE_KEY,
+  POST_LOGIN_REDIRECT_KEY,
+} from "@/utils/google-auth/googleAuth";
 import { useLogin } from "@/services/secured/do-login/doLogin";
 import { setUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -31,6 +34,17 @@ function readCallbackParams() {
   }
 
   return globalThis.location.search;
+}
+
+function readPostLoginRedirect() {
+  const stored = globalThis.sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY);
+  globalThis.sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
+
+  if (stored && stored.startsWith("/") && !stored.startsWith("//")) {
+    return stored;
+  }
+
+  return AppRoutePath.HOME;
 }
 
 function AuthCallbackSkeleton() {
@@ -118,7 +132,7 @@ function AuthCallbackPage() {
 
       setStatus("loaded");
 
-      await navigate({ to: AppRoutePath.HOME as "/", replace: true });
+      await navigate({ to: readPostLoginRedirect() as "/", replace: true });
     };
 
     try {
