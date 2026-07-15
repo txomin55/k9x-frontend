@@ -15,7 +15,7 @@ export default function Card(props: CardProps) {
       </Show>
 
       <Show when={props.description !== undefined}>
-        <p class="card__description text-body-md">{props.description}</p>
+        <p class="card__description text-body-sm">{props.description}</p>
       </Show>
 
       <Show when={props.content !== undefined}>

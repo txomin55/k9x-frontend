@@ -405,6 +405,18 @@
   "STAGES.FILTERS.SELECT_STATUS": "Estado",
   "STAGES.FILTERS.ALL_STATUSES": "Todos los estados",
   "MY.JUDGES.LIST.NAME_FILTER": "Nombre del juez",
+  "MY.JUDGES.LIST.VIEW_BY": "Jueces por",
+  "MY.JUDGES.LIST.LIST": "Lista",
+  "MY.JUDGES.LIST.TABLE": "Tabla",
+  "MY.JUDGES.LIST.NAME": "Nombre",
   "MY.DOGS.LIST.NAME_FILTER": "Nombre del perro",
+  "MY.DOGS.LIST.VIEW_BY": "Perros por",
+  "MY.DOGS.LIST.LIST": "Lista",
+  "MY.DOGS.LIST.TABLE": "Tabla",
+  "MY.DOGS.LIST.NAME": "Nombre",
+  "MY.DOGS.LIST.SEX": "Sexo",
+  "MY.DOGS.LIST.BREED": "Raza",
+  "MY.DOGS.LIST.HANDLER": "Guía",
+  "MY.DOGS.LIST.HEIGHT": "Altura",
   "MY.COMPETITIONS.LIST.NAME_FILTER": "Nombre de la competición"
 }

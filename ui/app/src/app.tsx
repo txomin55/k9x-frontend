@@ -8,6 +8,7 @@ import {
   setupQueryRefetchOnReconnect,
 } from "@/utils/http/query-client";
 import "@lib/assets/styles/index.css";
+import "@/assets/styles/list-table.css";
 
 export default function App() {
   onMount(() => {

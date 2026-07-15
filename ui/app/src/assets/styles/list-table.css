@@ -1,0 +1,33 @@
+.list-table__name {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+}
+
+.list-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--unit-1);
+}
+
+.list-table__actions .atom-button {
+  width: var(--unit-4);
+  height: var(--unit-4);
+  min-width: 0;
+  padding: 0;
+  border-width: 1px;
+  border-radius: var(--radius-full);
+  font-size: var(--unit-2);
+}
+
+.list-table__actions .atom-button > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-table__actions .atom-svg-icon {
+  width: var(--unit-2);
+  height: var(--unit-2);
+}

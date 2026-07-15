@@ -1,4 +1,5 @@
 .sex-icon {
+    display: inline-flex;
     width: var(--unit-2);
     height: var(--unit-2);
     line-height: 0;

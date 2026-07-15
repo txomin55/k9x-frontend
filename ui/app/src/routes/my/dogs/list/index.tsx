@@ -1,7 +1,16 @@
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import AtomTable from "@lib/components/atoms/table/AtomTable";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
+import pencilIcon from "@/assets/miscelaneous/pencil.svg";
+import trashIcon from "@/assets/miscelaneous/trash.svg";
+import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
@@ -16,7 +25,11 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
+import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import "./styles.css";
+
+const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 
 export const Route = createFileRoute("/my/dogs/list/")({
   component: MyDogsRoute,
@@ -63,6 +76,9 @@ function MyDogsListPage() {
   });
 
   const [nameFilter, setNameFilter] = createSignal("");
+  const [view, setView] = createSignal<string>(VIEW.LIST);
+  const tableFill = useViewportFillHeight();
+  const device = useDeviceType();
 
   const myDogs = createMemo(() => {
     if (!dogsQuery.data) {
@@ -156,6 +172,133 @@ function MyDogsListPage() {
     handleCloseDialog();
   };
 
+  const columns = createMemo<ColumnDef<Dog, any>[]>(() => {
+    const cols: ColumnDef<Dog, any>[] = [
+      {
+        accessorKey: "name",
+        header: i18n.t("MY.DOGS.LIST.NAME"),
+        cell: (info) => (
+          <div class="list-table__name">
+            <CountryFlag country={info.row.original.country.id} />
+            <span>{info.row.original.name}</span>
+          </div>
+        ),
+      },
+    ];
+
+    if (device() !== "mobile") {
+      cols.push(
+        {
+          id: "sex",
+          header: i18n.t("MY.DOGS.LIST.SEX"),
+          enableSorting: false,
+          cell: (info) => <SexIcon sex={info.row.original.sex} />,
+        },
+        {
+          id: "breed",
+          accessorFn: (dog) => dog.breed.name,
+          header: i18n.t("MY.DOGS.LIST.BREED"),
+          cell: (info) => info.row.original.breed.name,
+        },
+      );
+    }
+
+    if (device() === "laptop") {
+      cols.push(
+        {
+          id: "handler",
+          accessorKey: "handler",
+          header: i18n.t("MY.DOGS.LIST.HANDLER"),
+          cell: (info) => info.getValue<string>(),
+        },
+        {
+          id: "withers",
+          accessorKey: "withersCm",
+          header: i18n.t("MY.DOGS.LIST.HEIGHT"),
+          cell: (info) => {
+            const value = info.getValue<number | null>();
+            return value == null ? "-" : `${value} cm`;
+          },
+        },
+      );
+    }
+
+    cols.push({
+      id: "actions",
+      header: () => null,
+      enableSorting: false,
+      cell: (info) => (
+        <div class="list-table__actions">
+          <ConfirmActionButton
+            text={info.row.original.name}
+            onConfirm={() => deleteDog(info.row.original.id)}
+          >
+            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+              <AtomSvgIcon
+                src={trashIcon}
+                alt={i18n.t("MY.DOGS.DOG_CARD.DELETE")}
+                tinted
+              />
+            </AtomButton>
+          </ConfirmActionButton>
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() => openEditDialog(info.row.original)}
+          >
+            <AtomSvgIcon
+              src={pencilIcon}
+              alt={i18n.t("MY.DOGS.DOG_CARD.EDIT")}
+              tinted
+            />
+          </AtomButton>
+        </div>
+      ),
+    });
+
+    return cols;
+  });
+
+  const listContent = () => (
+    <div class="dogs-list card-list">
+      <For each={myDogs()}>
+        {(dog) => (
+          <DogCard
+            dog={dog}
+            onEdit={() => openEditDialog(dog)}
+            onDelete={() => deleteDog(dog.id)}
+          />
+        )}
+      </For>
+    </div>
+  );
+
+  const tableContent = () => (
+    <div
+      class="dogs-list__table"
+      ref={tableFill.ref}
+      style={{ height: `${tableFill.height()}px` }}
+    >
+      <AtomTable<Dog>
+        data={myDogs()}
+        columns={columns()}
+        getRowId={(row) => row.id}
+      />
+    </div>
+  );
+
+  const controls = createMemo(() => [
+    {
+      value: VIEW.LIST,
+      text: i18n.t("MY.DOGS.LIST.LIST"),
+      content: listContent,
+    },
+    {
+      value: VIEW.TABLE,
+      text: i18n.t("MY.DOGS.LIST.TABLE"),
+      content: tableContent,
+    },
+  ]);
+
   return (
     <Page>
       <Show
@@ -171,17 +314,12 @@ function MyDogsListPage() {
           when={myDogs().length}
           fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
         >
-          <div class="dogs-list card-list">
-            <For each={myDogs()}>
-              {(dog) => (
-                <DogCard
-                  dog={dog}
-                  onEdit={() => openEditDialog(dog)}
-                  onDelete={() => deleteDog(dog.id)}
-                />
-              )}
-            </For>
-          </div>
+          <AtomSegmentedControl
+            title={i18n.t("MY.DOGS.LIST.VIEW_BY")}
+            control={view()}
+            onControlChange={setView}
+            controls={controls()}
+          />
         </Show>
       </Show>
 

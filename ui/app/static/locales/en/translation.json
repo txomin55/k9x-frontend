@@ -405,6 +405,18 @@
   "STAGES.FILTERS.SELECT_STATUS": "Status",
   "STAGES.FILTERS.ALL_STATUSES": "All statuses",
   "MY.JUDGES.LIST.NAME_FILTER": "Judge name",
+  "MY.JUDGES.LIST.VIEW_BY": "Judges by",
+  "MY.JUDGES.LIST.LIST": "List",
+  "MY.JUDGES.LIST.TABLE": "Table",
+  "MY.JUDGES.LIST.NAME": "Name",
   "MY.DOGS.LIST.NAME_FILTER": "Dog name",
+  "MY.DOGS.LIST.VIEW_BY": "Dogs by",
+  "MY.DOGS.LIST.LIST": "List",
+  "MY.DOGS.LIST.TABLE": "Table",
+  "MY.DOGS.LIST.NAME": "Name",
+  "MY.DOGS.LIST.SEX": "Sex",
+  "MY.DOGS.LIST.BREED": "Breed",
+  "MY.DOGS.LIST.HANDLER": "Handler",
+  "MY.DOGS.LIST.HEIGHT": "Height",
   "MY.COMPETITIONS.LIST.NAME_FILTER": "Competition name"
 }

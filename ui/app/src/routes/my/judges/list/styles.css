@@ -1,0 +1,14 @@
+.judges-list.card-list {
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+	);
+}
+
+.judges-list.card-list > .card {
+	max-width: none;
+}
+
+.judges-list__table {
+	margin-top: var(--unit-1);
+}

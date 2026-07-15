@@ -1,11 +1,11 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type {
-  CompetitionCardProps
-} from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
+import type { CompetitionCardProps } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
@@ -36,7 +36,7 @@ export default function CompetitionCard(props: CompetitionCardProps) {
         </div>
       }
       description={
-        <span class="competition-card__description text-body-md">
+        <span class="competition-card__description text-body-sm">
           {props.description}
         </span>
       }

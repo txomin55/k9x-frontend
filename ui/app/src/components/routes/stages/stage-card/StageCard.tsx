@@ -50,7 +50,7 @@ export default function StageCard(props: StageCardProps) {
       }
       subHeader={
         props.competitionName ? (
-          <span class="stage-card__description text-body-md">
+          <span class="stage-card__description text-body-sm">
             {props.competitionName}
           </span>
         ) : undefined

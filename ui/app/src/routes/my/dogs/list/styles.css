@@ -3,3 +3,18 @@
   justify-content: flex-end;
   gap: var(--unit-1);
 }
+
+.dogs-list.card-list {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+  );
+}
+
+.dogs-list.card-list > .card {
+  max-width: none;
+}
+
+.dogs-list__table {
+  margin-top: var(--unit-1);
+}
