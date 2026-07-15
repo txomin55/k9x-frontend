@@ -1,7 +1,35 @@
+.event-competitors-section__competitors {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.event-competitors-section__competitors > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
 .event-competitors-section__competitors--actions {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.event-competitors-section__table {
+    margin-top: var(--unit-1);
+}
+
+.event-competitors-section__table .atom-table {
+    height: auto;
+}
+
+.event-competitors-section__table .atom-table__scroller {
+    height: auto;
+    max-height: var(--table-max-height);
 }
 
 .event-competitors-section__header {

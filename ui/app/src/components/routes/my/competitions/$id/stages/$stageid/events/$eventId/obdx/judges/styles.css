@@ -3,10 +3,46 @@
     justify-content: flex-end;
 }
 
+.event-judges-section__judges {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.event-judges-section__judges > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
+.event-judges-section__judge-name {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
 .event-judges-section__judges--actions {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.event-judges-section__table {
+    margin-top: var(--unit-1);
+}
+
+/* Size the table to its content, capping at the available viewport height so
+   only the table body scrolls (no double scroll with the outer container). */
+.event-judges-section__table .atom-table {
+    height: auto;
+}
+
+.event-judges-section__table .atom-table__scroller {
+    height: auto;
+    max-height: var(--table-max-height);
 }
 
 .judge-editor-form {

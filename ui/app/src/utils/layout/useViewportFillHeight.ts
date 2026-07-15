@@ -19,13 +19,11 @@ export function useViewportFillHeight() {
     const node = el();
     if (!node) return;
     const bottomGap = isMobile() ? 64 : 16;
+    // Clamp the top offset to >= 0 so a partially-scrolled-off element never
+    // yields a height taller than the viewport itself.
+    const top = Math.max(0, node.getBoundingClientRect().top);
     setHeight(
-      Math.max(
-        MIN_HEIGHT,
-        Math.floor(
-          window.innerHeight - node.getBoundingClientRect().top - bottomGap,
-        ),
-      ),
+      Math.max(MIN_HEIGHT, Math.floor(window.innerHeight - top - bottomGap)),
     );
   };
 

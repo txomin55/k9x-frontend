@@ -6,6 +6,14 @@ import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton, {
   BUTTON_TYPES,
 } from "library/src/components/atoms/button/AtomButton";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import AtomTable from "@lib/components/atoms/table/AtomTable";
+import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import checkIcon from "@/assets/miscelaneous/check.svg";
+import pencilIcon from "@/assets/miscelaneous/pencil.svg";
+import scoresIcon from "@/assets/miscelaneous/scores.svg";
+import trashIcon from "@/assets/miscelaneous/trash.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
@@ -25,7 +33,11 @@ import {
   EVENT_STATUS,
 } from "@/utils/event";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
+import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import "./styles.css";
+
+const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 
 type EventCompetitorsSectionProps = {
   competitorDialogDraft: EventCompetitorDetail | null;
@@ -114,6 +126,14 @@ export default function EventCompetitorsSection(
   });
 
   const [dialogOpen, setDialogOpen] = createSignal(false);
+  const [view, setView] = createSignal<string>(VIEW.LIST);
+  const tableFill = useViewportFillHeight();
+  const device = useDeviceType();
+
+  const openCompetitorEditor = (competitor: EventCompetitorDetail) => {
+    props.onOpenCompetitorEditor(competitor);
+    setDialogOpen(true);
+  };
 
   const viewDialogTitle = () => {
     if (props.isCreatingCompetitor) {
@@ -133,6 +153,277 @@ export default function EventCompetitorsSection(
         judgesIds: [],
       },
     });
+
+  const competitorActions = (competitor: EventCompetitorDetail) => {
+    if (competitor.notCompeting) return null;
+
+    const details = getCompetitorDetails(competitor);
+
+    return props.isEditing ? (
+      <div class="event-competitors-section__competitors--actions">
+        <Switch>
+          <Match when={props.eventStatus === EVENT_STATUS.STARTED}>
+            <ConfirmActionButton
+              text={details.handler}
+              onConfirm={() =>
+                props.onMarkCompetitorNotCompeting(competitor.dogId)
+              }
+            >
+              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED")}
+              </AtomButton>
+            </ConfirmActionButton>
+          </Match>
+          <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
+            <ConfirmActionButton
+              text={details.handler}
+              onConfirm={() => props.onDeleteCompetitor(competitor.dogId)}
+            >
+              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
+              </AtomButton>
+            </ConfirmActionButton>
+          </Match>
+        </Switch>
+        <AtomButton
+          type={BUTTON_TYPES.ACCENT}
+          onClick={() => openCompetitorEditor(competitor)}
+        >
+          {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
+        </AtomButton>
+      </div>
+    ) : (
+      <>
+        <Show when={canSeeCompetitorScores(props.eventStatus)}>
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() =>
+              openCompetitorCollection(params().eventId, competitor.dogId)
+            }
+          >
+            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
+          </AtomButton>
+        </Show>
+        <Show when={canAcceptCompetitorEnroll(competitor.status)}>
+          <AtomButton
+            onClick={() => props.onAcceptCompetitor(competitor.dogId)}
+          >
+            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
+          </AtomButton>
+        </Show>
+      </>
+    );
+  };
+
+  const competitorTableActions = (competitor: EventCompetitorDetail) => {
+    if (competitor.notCompeting) return null;
+
+    const details = getCompetitorDetails(competitor);
+
+    return props.isEditing ? (
+      <div class="list-table__actions">
+        <Switch>
+          <Match when={props.eventStatus === EVENT_STATUS.STARTED}>
+            <ConfirmActionButton
+              text={details.handler}
+              onConfirm={() =>
+                props.onMarkCompetitorNotCompeting(competitor.dogId)
+              }
+            >
+              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                <AtomSvgIcon
+                  src={trashIcon}
+                  alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED")}
+                  tinted
+                />
+              </AtomButton>
+            </ConfirmActionButton>
+          </Match>
+          <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
+            <ConfirmActionButton
+              text={details.handler}
+              onConfirm={() => props.onDeleteCompetitor(competitor.dogId)}
+            >
+              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+                <AtomSvgIcon
+                  src={trashIcon}
+                  alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
+                  tinted
+                />
+              </AtomButton>
+            </ConfirmActionButton>
+          </Match>
+        </Switch>
+        <AtomButton
+          type={BUTTON_TYPES.ACCENT}
+          onClick={() => openCompetitorEditor(competitor)}
+        >
+          <AtomSvgIcon
+            src={pencilIcon}
+            alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
+            tinted
+          />
+        </AtomButton>
+      </div>
+    ) : (
+      <div class="list-table__actions">
+        <Show when={canSeeCompetitorScores(props.eventStatus)}>
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() =>
+              openCompetitorCollection(params().eventId, competitor.dogId)
+            }
+          >
+            <AtomSvgIcon
+              src={scoresIcon}
+              alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
+              tinted
+            />
+          </AtomButton>
+        </Show>
+        <Show when={canAcceptCompetitorEnroll(competitor.status)}>
+          <AtomButton onClick={() => props.onAcceptCompetitor(competitor.dogId)}>
+            <AtomSvgIcon
+              src={checkIcon}
+              alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
+              tinted
+            />
+          </AtomButton>
+        </Show>
+      </div>
+    );
+  };
+
+  const columns = createMemo<ColumnDef<EventCompetitorDetail, any>[]>(() => {
+    const cols: ColumnDef<EventCompetitorDetail, any>[] = [
+      {
+        id: "position",
+        accessorFn: (competitor) => competitor.position,
+        header: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.POSITION"),
+        cell: (info) => `#${info.row.original.position}`,
+      },
+      {
+        id: "dog",
+        accessorFn: (competitor) => getCompetitorDetails(competitor).name,
+        header: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG"),
+        enableSorting: false,
+        cell: (info) => {
+          const competitor = info.row.original;
+          const details = getCompetitorDetails(competitor);
+          return (
+            <div class="list-table__name">
+              <CountryFlag country={details.country} />
+              <span>{details.name}</span>
+              <Show when={competitor.notCompeting}>
+                <NotCompetingIndicator />
+              </Show>
+              <Show when={device() !== "mobile"}>
+                <SexIcon sex={details.sex} />
+                <Show when={competitor.bih}>
+                  <BihIndicator />
+                </Show>
+                <Show when={competitor.reserve}>
+                  <ReserveIndicator />
+                </Show>
+              </Show>
+            </div>
+          );
+        },
+      },
+      {
+        id: "handler",
+        accessorFn: (competitor) => getCompetitorDetails(competitor).handler,
+        header: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.HANDLER"),
+        cell: (info) => getCompetitorDetails(info.row.original).handler,
+      },
+    ];
+
+    if (device() === "laptop") {
+      cols.push({
+        id: "team",
+        accessorFn: (competitor) => getCompetitorDetails(competitor).team,
+        header: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM"),
+        cell: (info) => getCompetitorDetails(info.row.original).team,
+      });
+    }
+
+    cols.push({
+      id: "actions",
+      header: () => null,
+      enableSorting: false,
+      cell: (info) => competitorTableActions(info.row.original),
+    });
+
+    return cols;
+  });
+
+  const listContent = () => (
+    <div class="event-competitors-section__competitors">
+      <Index each={sortedCompetitors()}>
+        {(competitor) => {
+          const details = () => getCompetitorDetails(competitor());
+
+          return (
+            <Card
+              topLeft={details().handler}
+              content={
+                <div class="event-competitors-section__competitors--competitor">
+                  <div class="event-competitors-section__competitors--badges">
+                    <SexIcon sex={details().sex} />
+                    <Show when={competitor().notCompeting}>
+                      <NotCompetingIndicator />
+                    </Show>
+                    <Show when={competitor().bih}>
+                      <BihIndicator />
+                    </Show>
+                    <Show when={competitor().reserve}>
+                      <ReserveIndicator />
+                    </Show>
+                  </div>
+                  <span class="text-body-sm">
+                    {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
+                  </span>
+                  <span class="text-body-sm">{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</span>
+                  <span class="text-body-sm">
+                    {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}{" "}
+                    <CountryFlag country={details().country} />
+                  </span>
+                </div>
+              }
+              actions={competitorActions(competitor())}
+            />
+          );
+        }}
+      </Index>
+    </div>
+  );
+
+  const tableContent = () => (
+    <div
+      class="event-competitors-section__table"
+      ref={tableFill.ref}
+      style={{ "--table-max-height": `${tableFill.height()}px` }}
+    >
+      <AtomTable<EventCompetitorDetail>
+        data={sortedCompetitors()}
+        columns={columns()}
+        getRowId={(row) => row.dogId}
+      />
+    </div>
+  );
+
+  const controls = createMemo(() => [
+    {
+      value: VIEW.LIST,
+      text: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.LIST"),
+      content: listContent,
+    },
+    {
+      value: VIEW.TABLE,
+      text: i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TABLE"),
+      content: tableContent,
+    },
+  ]);
 
   return (
     <section class="event-competitors-section">
@@ -154,123 +445,12 @@ export default function EventCompetitorsSection(
           <p>{i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NO_COMPETITORS")}</p>
         }
       >
-        <div class="event-competitors-section__competitors">
-          <Index each={sortedCompetitors()}>
-            {(competitor) => {
-              const details = () => getCompetitorDetails(competitor());
-
-              return (
-                <Card
-                  topLeft={details().handler}
-                  content={
-                    <div class="event-competitors-section__competitors--competitor">
-                      <div class="event-competitors-section__competitors--badges">
-                        <SexIcon sex={details().sex} />
-                        <Show when={competitor().notCompeting}>
-                          <NotCompetingIndicator />
-                        </Show>
-                        <Show when={competitor().bih}>
-                          <BihIndicator />
-                        </Show>
-                        <Show when={competitor().reserve}>
-                          <ReserveIndicator />
-                        </Show>
-                      </div>
-                      <span class="text-body-sm">
-                        {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
-                      </span>
-                      <span class="text-body-sm">{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</span>
-                      <span class="text-body-sm">
-                        {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}{" "}
-                        <CountryFlag country={details().country} />
-                      </span>
-                    </div>
-                  }
-                  actions={
-                    competitor().notCompeting ? null : props.isEditing ? (
-                      <div class="event-competitors-section__competitors--actions">
-                        <Switch>
-                          <Match
-                            when={props.eventStatus === EVENT_STATUS.STARTED}
-                          >
-                            <ConfirmActionButton
-                              text={details().handler}
-                              onConfirm={() =>
-                                props.onMarkCompetitorNotCompeting(
-                                  competitor().dogId,
-                                )
-                              }
-                            >
-                              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                                {i18n.t(
-                                  "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
-                                )}
-                              </AtomButton>
-                            </ConfirmActionButton>
-                          </Match>
-                          <Match
-                            when={props.eventStatus === EVENT_STATUS.CREATED}
-                          >
-                            <ConfirmActionButton
-                              text={details().handler}
-                              onConfirm={() =>
-                                props.onDeleteCompetitor(competitor().dogId)
-                              }
-                            >
-                              <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-                                {i18n.t(
-                                  "MY.COMPETITIONS.EVENT_COMPETITORS.DELETE",
-                                )}
-                              </AtomButton>
-                            </ConfirmActionButton>
-                          </Match>
-                        </Switch>
-                        <AtomButton
-                          type={BUTTON_TYPES.ACCENT}
-                          onClick={() => {
-                            props.onOpenCompetitorEditor(competitor());
-                            setDialogOpen(true);
-                          }}
-                        >
-                          {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EDIT")}
-                        </AtomButton>
-                      </div>
-                    ) : (
-                      <>
-                        <Show when={canSeeCompetitorScores(props.eventStatus)}>
-                          <AtomButton
-                            type={BUTTON_TYPES.ACCENT}
-                            onClick={() => {
-                              openCompetitorCollection(
-                                params().eventId,
-                                competitor().dogId,
-                              );
-                            }}
-                          >
-                            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
-                          </AtomButton>
-                        </Show>
-                        <Show
-                          when={canAcceptCompetitorEnroll(competitor().status)}
-                        >
-                          <AtomButton
-                            onClick={() =>
-                              props.onAcceptCompetitor(competitor().dogId)
-                            }
-                          >
-                            {i18n.t(
-                              "MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL",
-                            )}
-                          </AtomButton>
-                        </Show>
-                      </>
-                    )
-                  }
-                />
-              );
-            }}
-          </Index>
-        </div>
+        <AtomSegmentedControl
+          title={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COMPETITORS_BY")}
+          control={view()}
+          onControlChange={setView}
+          controls={controls()}
+        />
       </Show>
       <AtomDialog
         closeButtonText={i18n.t(

@@ -1,7 +1,41 @@
+.event-exercises-section__exercises {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.event-exercises-section__exercises > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
 .event-exercises-section__exercises--actions {
     display: flex;
     width: 100%;
     justify-content: space-between;
+}
+
+.event-exercises-section__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
+}
+
+.event-exercises-section__table {
+    margin-top: var(--unit-1);
+}
+
+.event-exercises-section__table .atom-table {
+    height: auto;
+}
+
+.event-exercises-section__table .atom-table__scroller {
+    height: auto;
+    max-height: var(--table-max-height);
 }
 
 .event-exercises-section__header {
