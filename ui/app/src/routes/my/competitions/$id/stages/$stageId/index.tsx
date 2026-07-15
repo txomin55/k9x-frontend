@@ -42,8 +42,7 @@ import {
 } from "@/utils/date";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import AtomButton, {
   BUTTON_TYPES,

@@ -4,12 +4,34 @@ import {
   getCoreRowModel,
   getExpandedRowModel,
   getSortedRowModel,
+  type ColumnDef,
   type ExpandedState,
+  type OnChangeFn,
+  type Row,
   type SortingState,
 } from "@tanstack/solid-table";
-import type { AtomTableProps } from "@lib/components/atoms/table/AtomTable.types";
 import { createEffect, createSignal, For, onCleanup } from "solid-js";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type { ColumnDef, Row } from "@tanstack/solid-table";
+
+export type AtomTableProps<TData> = {
+  data: TData[];
+  columns: ColumnDef<TData, any>[];
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
+  onLoadMore?: () => void | Promise<void>;
+  onSortingChange?: OnChangeFn<SortingState>;
+  emptyMessage?: string;
+  loadingMoreMessage?: string;
+  class?: string;
+  getRowCanExpand?: (row: Row<TData>) => boolean;
+  renderSubComponent?: (row: Row<TData>) => JSX.Element;
+  getRowId?: (row: TData, index: number) => string;
+  expanded?: ExpandedState;
+  onExpandedChange?: OnChangeFn<ExpandedState>;
+};
 
 export default function AtomTable<TData>(props: AtomTableProps<TData>) {
   const [sorting, setSorting] = createSignal<SortingState>([]);

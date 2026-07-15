@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import type { AtomNumberInputProps } from "@lib/components/atoms/number-input/AtomNumberInput.types";
+import type { AtomNumberInputProps } from "@lib/components/atoms/number-input/AtomNumberInput";
 
 const meta = {
   title: "Atoms/AtomNumberInput",

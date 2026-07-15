@@ -1,12 +1,32 @@
 import { Breadcrumbs } from "@kobalte/core/breadcrumbs";
-import { For, Show } from "solid-js";
-import {
-  AtomBreadCrumbLinkProps,
-  AtomBreadcrumbsProps,
-} from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs.types";
+import { For, JSX, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import "./styles.css";
+
+interface Crumbs {
+  route: string;
+  text: string;
+  loading?: boolean;
+}
+
+export interface AtomBreadcrumbsInfo {
+  trigger: JSX.Element;
+  content: JSX.Element;
+}
+
+export interface AtomBreadcrumbsProps {
+  crumbs: Crumbs[];
+  onNavigate?: (route: string) => void;
+  info?: AtomBreadcrumbsInfo | null;
+}
+
+export interface AtomBreadCrumbLinkProps {
+  onNavigate?: (route: string) => void;
+  route: string;
+  showSeparator: boolean;
+  children: JSX.Element;
+}
 
 const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
   <li class="atom-breadcrumbs__item">

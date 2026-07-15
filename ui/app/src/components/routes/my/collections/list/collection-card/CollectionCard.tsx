@@ -1,10 +1,17 @@
-import { CollectionCardProps } from "@/components/routes/my/collections/list/collection-card/CollectionCard.types";
+import { CollectionsResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import { useI18n } from "@/stores/i18n/i18n";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import "./styles.css";
+
+type CollectionCardProps = {
+  collection: CollectionsResponseDTO;
+  onCollect: () => void;
+};
+
+export type { CollectionCardProps };
 
 export default function CollectionCard(props: CollectionCardProps) {
   const i18n = useI18n();

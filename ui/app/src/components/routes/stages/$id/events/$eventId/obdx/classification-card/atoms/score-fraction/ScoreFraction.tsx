@@ -1,6 +1,11 @@
 import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type { ScoreFractionProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-fraction/ScoreFraction.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type ScoreFractionProps = {
+  score: number | null | undefined;
+  max: number;
+  rating: number | null | undefined;
+};
 
 export default function ScoreFraction(props: ScoreFractionProps) {
   const color = () => ratingColorClass(props.rating);

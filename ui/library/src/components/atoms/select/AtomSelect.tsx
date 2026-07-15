@@ -1,8 +1,31 @@
 import * as Select from "@kobalte/core/select";
 import { createVirtualizer } from "@tanstack/solid-virtual";
-import type { AtomSelectOption, AtomSelectProps } from "@lib/components/atoms/select/AtomSelect.types";
 import "./styles.css";
 import { For, Show } from "solid-js";
+import type { JSX } from "solid-js";
+
+export type AtomSelectOption = {
+  label: string;
+  value: string;
+  disabled?: boolean;
+  preLabel?: JSX.Element;
+};
+
+export type AtomSelectProps = {
+  options: AtomSelectOption[];
+  value?: AtomSelectOption | null;
+  defaultValue?: AtomSelectOption;
+  onChange?: (value: AtomSelectOption | null) => void;
+  open?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+  placeholder?: JSX.Element;
+  label?: JSX.Element;
+  description?: JSX.Element;
+  errorMessage?: JSX.Element;
+  disabled?: boolean;
+  required?: boolean;
+  validationState?: "valid" | "invalid";
+};
 
 const ITEM_HEIGHT = 44;
 const OVERSCAN = 5;

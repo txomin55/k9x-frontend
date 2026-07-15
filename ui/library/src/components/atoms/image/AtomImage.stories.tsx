@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomImage from "@lib/components/atoms/image/AtomImage";
-import type { AtomImageProps } from "@lib/components/atoms/image/AtomImage.types";
+import type { AtomImageProps } from "@lib/components/atoms/image/AtomImage";
 
 const meta = {
   title: "Atoms/AtomImage",

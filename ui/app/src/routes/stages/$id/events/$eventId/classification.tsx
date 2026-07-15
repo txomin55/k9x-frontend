@@ -20,8 +20,7 @@ import {
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type {ColumnDef} from "@lib/components/atoms/table/AtomTable.types";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";

@@ -7,7 +7,7 @@ import {
   type AtomComboboxOption,
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";

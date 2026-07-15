@@ -8,8 +8,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
@@ -18,7 +17,7 @@ import {
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO
 } from "@/services/secured/event-crud/eventCrud.types";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
 import "./styles.css";

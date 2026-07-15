@@ -1,10 +1,18 @@
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import type { JudgeCardProps } from "@/components/routes/my/judges/list/judge-card/JudgeCard.types";
+import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import "./styles.css";
 import { useI18n } from "@/stores/i18n/i18n";
+
+type JudgeCardProps = {
+  judge: JudgeResponseDTO;
+  onEdit: () => void;
+  onDelete: () => void;
+};
+
+export type { JudgeCardProps };
 
 export default function JudgeCard(props: JudgeCardProps) {
   const i18n = useI18n();

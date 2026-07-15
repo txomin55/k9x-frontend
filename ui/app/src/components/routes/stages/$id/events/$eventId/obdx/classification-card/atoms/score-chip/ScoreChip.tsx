@@ -2,8 +2,19 @@ import { Show } from "solid-js";
 import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import YellowCardIndicator from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/yellow-card-indicator/YellowCardIndicator";
 import RedCardIndicator from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/red-card-indicator/RedCardIndicator";
-import type { ScoreChipProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/score-chip/ScoreChip.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type ScoreChipShape = "square" | "pill";
+
+export type ScoreChipProps = {
+  value: number | null;
+  rating: number | null | undefined;
+  shape: ScoreChipShape;
+  sublabel?: string;
+  hasYellowCard?: boolean;
+  hasRedCard?: boolean;
+  applies?: boolean;
+};
 
 export default function ScoreChip(props: ScoreChipProps) {
   const color = () =>

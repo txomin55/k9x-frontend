@@ -5,8 +5,7 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import { createSignal, Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";

@@ -2,7 +2,7 @@ import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButto
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import EventDisciplineField from "@/components/common/event-discipline-field/EventDisciplineField";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import type { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { Show } from "solid-js";

@@ -3,9 +3,8 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import {
   fetchYellowCards,
   registerYellowCard,

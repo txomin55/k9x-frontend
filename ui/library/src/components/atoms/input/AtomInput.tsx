@@ -1,6 +1,23 @@
 import * as TextField from "@kobalte/core/text-field";
-import type { AtomInputProps } from "@lib/components/atoms/input/AtomInput.types";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type AtomInputProps = {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLInputElement, FocusEvent>;
+  label?: JSX.Element;
+  description?: JSX.Element;
+  errorMessage?: JSX.Element;
+  placeholder?: string;
+  type?: "text" | "email" | "password" | "search" | "tel" | "url" | "date";
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  validationState?: "valid" | "invalid";
+};
 
 export default function AtomInput(props: AtomInputProps) {
   return (

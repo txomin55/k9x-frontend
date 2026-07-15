@@ -5,8 +5,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import Card from "library/src/components/molecules/card/Card";
 import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";

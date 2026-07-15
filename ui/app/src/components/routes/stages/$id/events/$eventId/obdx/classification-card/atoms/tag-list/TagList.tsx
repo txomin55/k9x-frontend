@@ -1,7 +1,10 @@
 import { For, Show } from "solid-js";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import type { TagListProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/tag-list/TagList.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type TagListProps = {
+  tags: string[];
+};
 
 export default function TagList(props: TagListProps) {
   return (

@@ -1,6 +1,5 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectProps } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectProps } from "@lib/components/atoms/select/AtomSelect";
 
 const OPTIONS = [
   { label: "Dog", value: "dog" },

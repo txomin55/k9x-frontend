@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
-import type { AtomCheckboxProps } from "@lib/components/atoms/checkbox/AtomCheckbox.types";
+import type { AtomCheckboxProps } from "@lib/components/atoms/checkbox/AtomCheckbox";
 
 const meta = {
   title: "Atoms/AtomCheckbox",

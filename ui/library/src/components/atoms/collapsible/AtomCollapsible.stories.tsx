@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
-import type { AtomCollapsibleProps } from "@lib/components/atoms/collapsible/AtomCollapsible.types";
+import type { AtomCollapsibleProps } from "@lib/components/atoms/collapsible/AtomCollapsible";
 
 const meta = {
   title: "Atoms/AtomCollapsible",

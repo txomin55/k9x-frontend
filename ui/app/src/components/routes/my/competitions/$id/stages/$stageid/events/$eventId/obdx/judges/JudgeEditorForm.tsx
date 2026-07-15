@@ -7,7 +7,7 @@ import {
   type AtomComboboxOption,
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { createSignal, Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";

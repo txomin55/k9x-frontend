@@ -5,11 +5,21 @@ import AtomButton, {
 import { useNavigate } from "@tanstack/solid-router";
 import { For } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import type { CompetitionCardProps } from "@/components/routes/my/competitions/list/competition-card/CompetitionCard.types";
+import { CompetitionStageDetailResponseDTO } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+
+export interface CompetitionCardProps {
+  address?: string;
+  country: string;
+  description?: string;
+  id: string;
+  name: string;
+  stages?: CompetitionStageDetailResponseDTO[];
+  status: string;
+}
 
 export default function CompetitionCard(props: CompetitionCardProps) {
   const navigate = useNavigate();

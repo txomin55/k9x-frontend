@@ -1,7 +1,14 @@
 import { Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
-import type { TotalBlockProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type TotalBlockLayout = "inline" | "row";
+
+export type TotalBlockProps = {
+  value: number | null;
+  layout: TotalBlockLayout;
+  qualification?: string;
+};
 
 export default function TotalBlock(props: TotalBlockProps) {
   const { t } = useI18n();

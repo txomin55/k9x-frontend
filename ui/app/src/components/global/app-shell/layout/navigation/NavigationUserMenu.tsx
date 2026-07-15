@@ -1,8 +1,7 @@
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import { createSignal, Show } from "solid-js";
@@ -14,12 +13,16 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { queryClient } from "@/utils/http/query-client";
 import { displayNotification } from "@/utils/notifications/notifications";
 import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";
-import type { NavigationUserMenuProps } from "@/components/global/app-shell/layout/navigation/NavigationUserMenu.types";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import sunIcon from "@/assets/miscelaneous/sun.svg";
 import moonIcon from "@/assets/miscelaneous/moon.svg";
+
+export type NavigationUserMenuProps = {
+  isDark: boolean;
+  onToggleMode: () => void;
+};
 
 const LOCALE_COUNTRIES: Record<string, string> = {
   en: "gb",

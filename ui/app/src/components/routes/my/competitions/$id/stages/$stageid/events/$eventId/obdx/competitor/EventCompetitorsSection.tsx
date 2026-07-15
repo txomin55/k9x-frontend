@@ -8,8 +8,7 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import checkIcon from "@/assets/miscelaneous/check.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
@@ -23,7 +22,7 @@ import NotCompetingIndicator from "@/components/common/not-competing-indicator/N
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
 import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";

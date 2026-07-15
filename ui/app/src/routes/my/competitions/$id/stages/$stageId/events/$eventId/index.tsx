@@ -56,8 +56,7 @@ import EventConfigurationSection from "@/components/routes/my/competitions/$id/s
 import ObdxCompetitionEventDetailBodyWrapper from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import { useAwards } from "@/services/secured/award-crud/awardCrud";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import {
   AtomCombobox,
   type AtomComboboxOption,

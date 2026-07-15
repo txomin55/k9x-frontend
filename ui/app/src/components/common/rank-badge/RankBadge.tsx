@@ -1,6 +1,9 @@
 import { Show } from "solid-js";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import type { RankBadgeProps } from "@/components/common/rank-badge/RankBadge.types";
+
+export interface RankBadgeProps {
+  rank?: string;
+}
 
 export default function RankBadge(props: RankBadgeProps) {
   return (

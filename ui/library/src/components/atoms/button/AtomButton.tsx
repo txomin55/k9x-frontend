@@ -1,7 +1,19 @@
 import "@lib/components/atoms/button/styles.css";
 import type { JSX } from "solid-js";
 import { Button } from "@kobalte/core/button";
-import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.types";
+
+export type CoreButtonProps = {
+  children: JSX.Element;
+  disabled?: boolean;
+  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+  type?: ButtonType;
+  size?: ButtonSize;
+  class?: string;
+  style?: JSX.CSSProperties;
+};
+
+export type ButtonType = (typeof BUTTON_TYPES)[keyof typeof BUTTON_TYPES];
+export type ButtonSize = (typeof BUTTON_SIZES)[keyof typeof BUTTON_SIZES];
 
 export const BUTTON_TYPES = {
   PRIMARY: "primary",

@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
-import type { ProfileImageProps } from "@lib/components/molecules/profile-image/ProfileImage.types";
+import type { ProfileImageProps } from "@lib/components/molecules/profile-image/ProfileImage";
 
 const meta = {
   title: "Molecules/ProfileImage",

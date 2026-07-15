@@ -1,7 +1,16 @@
 import { Badge } from "@kobalte/core/badge";
-import type { AtomBadgeProps } from "@lib/components/atoms/badge/AtomBadge.types";
+import { JSX } from "solid-js";
 import { getTagColorStyle } from "@lib/utils/tagColor";
 import "./styles.css";
+
+export interface AtomBadgeProps {
+  type?: (typeof BADGE_TYPES)[keyof typeof BADGE_TYPES];
+  textValue?: string;
+  pulse?: boolean;
+  dotMode?: boolean;
+  colorByLabel?: boolean;
+  children: JSX.Element;
+}
 
 export const BADGE_TYPES = {
   WARNING: "warning",

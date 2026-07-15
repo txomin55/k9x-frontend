@@ -1,7 +1,6 @@
 import { createMemo } from "solid-js";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
-import AtomSelect from "library/src/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import {
   FederationConfigurationResponseDTO,
   FederationConfigurationsResponseDTO

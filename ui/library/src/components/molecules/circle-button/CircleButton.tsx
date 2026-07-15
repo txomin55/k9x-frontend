@@ -1,6 +1,17 @@
+import type { JSX } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
-import type { CircleButtonProps } from "@lib/components/molecules/circle-button/CircleButton.types";
+import type { ButtonType } from "@lib/components/atoms/button/AtomButton";
 import "./styles.css";
+
+export type CircleButtonProps = {
+  children: JSX.Element;
+  disabled?: boolean;
+  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+  size?: CircleButtonPropsSize;
+  type?: ButtonType;
+};
+
+export type CircleButtonPropsSize = "sm" | "md" | "lg";
 
 export default function CircleButton(props: CircleButtonProps) {
   const sizeClass = () => {

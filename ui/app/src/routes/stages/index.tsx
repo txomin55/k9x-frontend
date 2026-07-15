@@ -1,6 +1,5 @@
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
 import {
@@ -39,7 +38,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import "./styles.css";
 
 const DAY_MS = 24 * 60 * 60 * 1000;

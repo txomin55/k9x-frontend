@@ -1,5 +1,4 @@
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import i18n from "i18next";
 import { createMemo } from "solid-js";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";

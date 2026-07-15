@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
-import type { AtomTextAreaProps } from "@lib/components/atoms/text-area/AtomTextArea.types";
+import type { AtomTextAreaProps } from "@lib/components/atoms/text-area/AtomTextArea";
 
 const meta = {
   title: "Atoms/AtomTextArea",

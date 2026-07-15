@@ -1,6 +1,10 @@
 import AtomBadge, { BADGE_TYPES } from "@lib/components/atoms/badge/AtomBadge";
 import { useI18n } from "@/stores/i18n/i18n";
-import type { StatusBadgeProps } from "@/components/common/status-badge/StatusBadge.types";
+
+export interface StatusBadgeProps {
+  status: string;
+  dotMode?: boolean;
+}
 
 type StatusConfig = {
   type?: (typeof BADGE_TYPES)[keyof typeof BADGE_TYPES];

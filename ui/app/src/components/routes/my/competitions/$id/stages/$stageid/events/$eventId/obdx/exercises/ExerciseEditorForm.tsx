@@ -7,7 +7,7 @@ import {
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect.types";
+import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import {
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO

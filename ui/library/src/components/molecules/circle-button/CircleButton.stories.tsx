@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import type { CircleButtonProps } from "@lib/components/molecules/circle-button/CircleButton.types";
+import type { CircleButtonProps } from "@lib/components/molecules/circle-button/CircleButton";
 import { fn } from "storybook/test";
 
 const meta = {

@@ -1,6 +1,24 @@
 import * as TextField from "@kobalte/core/text-field";
-import type { AtomTextAreaProps } from "@lib/components/atoms/text-area/AtomTextArea.types";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type AtomTextAreaProps = {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLTextAreaElement, FocusEvent>;
+  label?: JSX.Element;
+  description?: JSX.Element;
+  errorMessage?: JSX.Element;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  rows?: number;
+  autoResize?: boolean;
+  validationState?: "valid" | "invalid";
+};
 
 export default function AtomTextArea(props: AtomTextAreaProps) {
   return (

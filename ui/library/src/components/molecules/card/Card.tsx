@@ -1,6 +1,15 @@
 import { Show } from "solid-js";
-import type { CardProps } from "@lib/components/molecules/card/Card.types";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type CardProps = {
+  topLeft?: JSX.Element;
+  topRight?: JSX.Element;
+  subHeader?: JSX.Element;
+  description?: JSX.Element;
+  content?: JSX.Element;
+  actions?: JSX.Element;
+};
 
 export default function Card(props: CardProps) {
   return (

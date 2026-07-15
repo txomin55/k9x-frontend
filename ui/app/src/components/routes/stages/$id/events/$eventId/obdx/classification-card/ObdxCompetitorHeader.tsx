@@ -5,9 +5,14 @@ import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndic
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import PositionBadge from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-badge/PositionBadge";
-import { isLive } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type { ObdxCompetitorHeaderProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader.types";
+import { isLive, type TrendDirection } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
+import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type ObdxCompetitorHeaderProps = {
+  competitor: StageEventClassificationItemResponseDTO;
+  trend?: TrendDirection;
+};
 
 export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
   return (

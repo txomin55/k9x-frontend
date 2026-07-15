@@ -1,6 +1,14 @@
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import type { IconToggleButtonProps } from "@/components/common/icon-toggle-button/IconToggleButton.types";
 import "@/components/common/icon-toggle-button/styles.css";
+
+export type IconToggleButtonProps = {
+  src: string;
+  activeLabel: string;
+  inactiveLabel: string;
+  active?: boolean;
+  disabled?: boolean;
+  onToggle?: () => void;
+};
 
 export default function IconToggleButton(props: IconToggleButtonProps) {
   const label = () => (props.active ? props.activeLabel : props.inactiveLabel);

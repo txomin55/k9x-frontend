@@ -1,5 +1,12 @@
 import { Image } from "@kobalte/core/image";
-import type { AtomImageProps } from "@lib/components/atoms/image/AtomImage.types";
+import type { JSX } from "solid-js";
+
+export type AtomImageProps = {
+  src?: string | null;
+  alt?: string | null;
+  fallback?: string | null;
+  onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
+};
 
 export default (props: AtomImageProps) => {
   return (

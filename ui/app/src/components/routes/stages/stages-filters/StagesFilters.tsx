@@ -1,7 +1,6 @@
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";

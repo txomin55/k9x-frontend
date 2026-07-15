@@ -1,6 +1,12 @@
 import { Checkbox } from "@kobalte/core/checkbox";
-import type { AtomCheckboxProps } from "./AtomCheckbox.types";
 import "./styles.css";
+
+export interface AtomCheckboxProps {
+  checked: boolean;
+  setChecked?: (v: boolean) => void;
+  label: string;
+  disabled?: boolean;
+}
 
 export default function AtomCheckbox(props: AtomCheckboxProps) {
   return (

@@ -1,6 +1,11 @@
 import { Show } from "solid-js";
-import type { CoreSvgIconProps } from "@lib/components/atoms/svg-icon/AtomSvgIcon.types";
 import "./styles.css";
+
+export type CoreSvgIconProps = {
+  alt?: string;
+  src: string;
+  tinted?: boolean;
+};
 
 export default function AtomSvgIcon(props: CoreSvgIconProps) {
   return (

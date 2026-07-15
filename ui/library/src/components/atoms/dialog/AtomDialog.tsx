@@ -1,7 +1,18 @@
 import * as Dialog from "@kobalte/core/dialog";
-import type { AtomDialogProps } from "@lib/components/atoms/dialog/AtomDialog.types";
 import { Show } from "solid-js";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type AtomDialogProps = {
+  trigger?: JSX.Element;
+  title?: JSX.Element;
+  description?: JSX.Element;
+  content: JSX.Element;
+  closeButtonText?: string;
+  open?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+  size?: "md" | "wide";
+};
 
 export default function AtomDialog(props: AtomDialogProps) {
   return (

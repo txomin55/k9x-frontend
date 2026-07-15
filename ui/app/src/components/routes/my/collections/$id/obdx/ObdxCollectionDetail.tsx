@@ -6,7 +6,7 @@ import {
 } from "@/services/secured/collection-crud/collectionCrud";
 import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import AtomSelect from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -20,7 +20,6 @@ import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { isOrganizer } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
-import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
 import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import CollectionExerciseScore from "@/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores";

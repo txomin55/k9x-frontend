@@ -6,8 +6,7 @@ import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButto
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable from "@lib/components/atoms/table/AtomTable";
-import type { ColumnDef } from "@lib/components/atoms/table/AtomTable.types";
+import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 import eyeIcon from "@/assets/miscelaneous/eye.svg";

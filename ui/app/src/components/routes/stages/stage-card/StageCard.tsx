@@ -6,7 +6,7 @@ import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
-import type { StageCardProps } from "@/components/routes/stages/stage-card/StageCard.types";
+import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -14,6 +14,20 @@ import bellIcon from "@/assets/miscelaneous/bell.svg";
 import { isStageLive } from "@/utils/stage";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
+
+export interface StageCardProps {
+  address?: string;
+  country: string;
+  competitionName?: string;
+  events: StageEventSummaryResponseDTO[];
+  from: number;
+  id: string;
+  name: string;
+  status?: string;
+  to: number;
+  organizer: string;
+  onEnroll?: (eventId: string) => void;
+}
 
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();

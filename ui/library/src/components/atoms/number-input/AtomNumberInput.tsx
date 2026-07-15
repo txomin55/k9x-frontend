@@ -1,6 +1,28 @@
 import * as NumberField from "@kobalte/core/number-field";
-import type { AtomNumberInputProps } from "@lib/components/atoms/number-input/AtomNumberInput.types";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type AtomNumberInputProps = {
+  value?: string | number;
+  defaultValue?: string | number;
+  rawValue?: number;
+  onChange?: (value: string) => void;
+  onRawValueChange?: (value: number) => void;
+  onBlur?: JSX.FocusEventHandlerUnion<HTMLInputElement, FocusEvent>;
+  label?: JSX.Element;
+  description?: JSX.Element;
+  errorMessage?: JSX.Element;
+  placeholder?: string;
+  minValue?: number;
+  maxValue?: number;
+  step?: number;
+  largeStep?: number;
+  disabled?: boolean;
+  required?: boolean;
+  readOnly?: boolean;
+  name?: string;
+  validationState?: "valid" | "invalid";
+};
 
 export default function AtomNumberInput(props: AtomNumberInputProps) {
   return (

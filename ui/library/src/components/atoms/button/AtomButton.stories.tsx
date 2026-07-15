@@ -3,7 +3,7 @@ import AtomButton, {
   BUTTON_SIZES,
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton.types";
+import type { CoreButtonProps } from "@lib/components/atoms/button/AtomButton";
 import { fn } from "storybook/test";
 
 const meta = {

@@ -1,6 +1,14 @@
 import * as Collapsible from "@kobalte/core/collapsible";
-import type { AtomCollapsibleProps } from "@lib/components/atoms/collapsible/AtomCollapsible.types";
+import type { JSX } from "solid-js";
 import "./styles.css";
+
+export type AtomCollapsibleProps = {
+  trigger: JSX.Element;
+  content: JSX.Element;
+  disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
+};
 
 export default function AtomCollapsible(props: AtomCollapsibleProps) {
   return (

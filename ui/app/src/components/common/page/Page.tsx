@@ -1,6 +1,11 @@
-import { Show } from "solid-js";
-import { PageProps } from "@/components/common/page/Page.types";
+import { Show, type JSX } from "solid-js";
 import "./styles.css";
+
+export interface PageProps {
+  title?: string;
+  actions?: JSX.Element;
+  children: JSX.Element;
+}
 
 export default function Page(props: PageProps) {
   return (

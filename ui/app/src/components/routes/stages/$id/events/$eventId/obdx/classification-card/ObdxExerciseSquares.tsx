@@ -4,8 +4,12 @@ import {
   averageValue,
   exerciseShortCode,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type { ObdxExerciseSquaresProps } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares.types";
+import type { StageEventClassificationExerciseScoresResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type ObdxExerciseSquaresProps = {
+  exercises: StageEventClassificationExerciseScoresResponseDTO[];
+};
 
 export default function ObdxExerciseSquares(props: ObdxExerciseSquaresProps) {
   return (

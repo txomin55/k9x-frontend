@@ -1,6 +1,6 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
 import AtomBadge from "@lib/components/atoms/badge/AtomBadge";
-import type { AtomBadgeProps } from "@lib/components/atoms/badge/AtomBadge.types";
+import type { AtomBadgeProps } from "@lib/components/atoms/badge/AtomBadge";
 
 const meta = {
   title: "Atoms/AtomBadge",

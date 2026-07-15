@@ -11,10 +11,12 @@ import {
   judgeInitials,
   uniqueJudges,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import type {
-  ObdxExerciseDetailTableProps
-} from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable.types";
+import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
+
+export type ObdxExerciseDetailTableProps = {
+  competitor: StageEventClassificationItemResponseDTO;
+};
 
 export default function ObdxExerciseDetailTable(
   props: ObdxExerciseDetailTableProps,
