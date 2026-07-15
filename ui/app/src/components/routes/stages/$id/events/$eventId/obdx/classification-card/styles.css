@@ -197,7 +197,7 @@
     gap: var(--unit-025);
     width: var(--obdx-chip-square-size, calc(var(--unit-3) + var(--unit-05)));
     height: calc(var(--unit-3) + var(--unit-05));
-    padding: 0 var(--unit-025);
+    padding: var(--unit-025);
     border-radius: var(--radius-md);
     flex-shrink: 0;
 }
