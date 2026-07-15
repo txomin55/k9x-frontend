@@ -79,7 +79,7 @@ export default function AppShell() {
   return (
     <MetaProvider>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <Show when={i18n.ready()} fallback={<p>--loading</p>}>
+      <Show when={i18n.ready()}}>
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">
