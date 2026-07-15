@@ -60,6 +60,21 @@ export default function CompetitorEditorForm(
         : current,
     );
   };
+  const setCompetitorNumber = (value: string) => {
+    const parsedNumber = Number(value);
+    const normalizedNumber = Number.isFinite(parsedNumber)
+      ? Math.max(parsedNumber, 0)
+      : 0;
+
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            competitorNumber: normalizedNumber,
+          }
+        : current,
+    );
+  };
   const setBih = (value: boolean) => {
     props.onCompetitorDraftChange((current) =>
       current
@@ -211,14 +226,25 @@ export default function CompetitorEditorForm(
               </span>
             </div>
           </div>
-          <AtomNumberInput
-            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
-            value={draft().position}
-            onBlur={props.onCommitCompetitor}
-            onChange={setOrder}
-            minValue={minOrder}
-            maxValue={maxOrder}
-          />
+          <div class="form-grid form-grid--2col">
+            <AtomNumberInput
+              label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORDER")}
+              value={draft().position}
+              onBlur={props.onCommitCompetitor}
+              onChange={setOrder}
+              minValue={minOrder}
+              maxValue={maxOrder}
+            />
+            <AtomNumberInput
+              label={i18n.t(
+                "MY.COMPETITIONS.COMPETITOR_EDITOR.COMPETITOR_NUMBER",
+              )}
+              value={draft().competitorNumber}
+              onBlur={props.onCommitCompetitor}
+              onChange={setCompetitorNumber}
+              minValue={0}
+            />
+          </div>
           <Show when={selectedDog(draft().dogId)?.sex !== "MALE"}>
             <AtomCheckbox
               label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BIH")}

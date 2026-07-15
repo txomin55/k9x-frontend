@@ -39,9 +39,9 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
             <NotCompetingIndicator />
           </Show>
           <AwardBadges awards={props.competitor.awards} />
-          <Show when={props.competitor.startOrder}>
+          <Show when={props.competitor.competitorNumber}>
             <span class="obdx-clf__start-order">
-              #{props.competitor.startOrder}
+              #{props.competitor.competitorNumber}
             </span>
           </Show>
         </span>

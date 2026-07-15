@@ -82,6 +82,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
           owner: "Owner",
           handler: "Handler",
           position: 1,
+          competitorNumber: 1,
           team: "",
           identity: "",
           country: "",

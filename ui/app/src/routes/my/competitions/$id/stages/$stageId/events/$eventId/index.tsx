@@ -197,6 +197,7 @@ function CompetitionObdxEventDetailBody(props: {
       competitors: event.competitors.map((competitor) => ({
         dogId: competitor.dogId,
         position: competitor.position,
+        competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,
         bih: competitor.bih,
         reserve: competitor.reserve,
@@ -218,6 +219,7 @@ function CompetitionObdxEventDetailBody(props: {
   ): EventCompetitorDetail => {
     return {
       position: order,
+      competitorNumber: order,
       accepted: true,
       dogId,
       identity: "",
@@ -303,6 +305,7 @@ function CompetitionObdxEventDetailBody(props: {
     return {
       dogId: competitor.dogId,
       position: competitor.position,
+      competitorNumber: competitor.competitorNumber,
       accepted: competitor.accepted,
       bih: competitor.bih,
       reserve: competitor.reserve,

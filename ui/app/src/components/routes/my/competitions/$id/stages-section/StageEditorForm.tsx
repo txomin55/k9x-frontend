@@ -26,6 +26,8 @@ export default function StageEditorForm(props: StageDialogProps) {
 
   const [nameTouched, setNameTouched] = createSignal(false);
 
+  const minDate = toDateInputValue(Date.now());
+
   const nameError = () => {
     const draft = props.draft();
     return draft ? validateRequiredText(draft.name) : "REQUIRED";
@@ -94,6 +96,7 @@ export default function StageEditorForm(props: StageDialogProps) {
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.DATE_FROM")}
             type="date"
+            min={minDate}
             value={toDateInputValue(draft().dateFrom)}
             onChange={updateDateFrom}
             validationState={hasDateRangeError() ? "invalid" : undefined}
@@ -101,6 +104,7 @@ export default function StageEditorForm(props: StageDialogProps) {
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.STAGE_EDITOR_FORM.DATE_TO")}
             type="date"
+            min={minDate}
             value={toDateInputValue(draft().dateTo)}
             onChange={updateDateTo}
             validationState={hasDateRangeError() ? "invalid" : undefined}

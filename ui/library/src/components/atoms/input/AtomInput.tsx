@@ -11,6 +11,8 @@ export type AtomInputProps = {
   description?: JSX.Element;
   errorMessage?: JSX.Element;
   placeholder?: string;
+  min?: string;
+  max?: string;
   type?: "text" | "email" | "password" | "search" | "tel" | "url" | "date";
   disabled?: boolean;
   required?: boolean;
@@ -41,6 +43,8 @@ export default function AtomInput(props: AtomInputProps) {
         class="atom-input__control"
         onBlur={props.onBlur}
         placeholder={props.placeholder}
+        min={props.min}
+        max={props.max}
         type={props.type ?? "text"}
       />
       {props.description ? (

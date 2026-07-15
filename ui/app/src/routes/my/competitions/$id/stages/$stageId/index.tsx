@@ -455,6 +455,7 @@ function CompetitionStageDetailBody(props: {
       competitors: draft.competitors.map((competitor) => ({
         dogId: competitor.dogId,
         position: competitor.position,
+        competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,
         bih: competitor.bih,
         reserve: competitor.reserve,

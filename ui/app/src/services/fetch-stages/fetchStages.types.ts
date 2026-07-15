@@ -109,6 +109,7 @@ export interface StageEventClassificationResponseDTO {
   event: IdNameDTO;
   competitionName: string;
   discipline: IdNameDTO;
+  rank: string;
   stage: IdNameDTO;
   configuration: IdNameDTO;
   lastUpdated: number;
@@ -123,6 +124,7 @@ export interface StageEventClassificationItemResponseDTO {
   owner: string;
   handler: string;
   position: number;
+  competitorNumber: number;
   scoreRating: number;
   status: string;
   team: string;

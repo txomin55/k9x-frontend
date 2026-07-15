@@ -5,10 +5,6 @@
     container-type: inline-size;
 }
 
-.competition-info .form-grid {
-    max-width: calc(var(--unit-10) * 8);
-}
-
 .competition-info__view {
     display: flex;
     flex-direction: column;

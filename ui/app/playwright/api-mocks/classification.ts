@@ -4,6 +4,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
   event: { id: "stage-latest-event-1", name: "Agility Standard" },
   competitionName: "Valencia Autumn Trial",
   discipline: { id: "disc-1", name: "Agility" },
+  rank: "A",
   stage: { id: "stage-latest", name: "Valencia Autumn Trial" },
   configuration: { id: "config-1", name: "Standard" },
   lastUpdated: 1_730_050_000_000,
@@ -17,6 +18,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
     competitors: [
       {
         position: 1,
+        competitorNumber: 1,
         dog: { id: "dog-1", name: "Rex" },
         country: { id: "ES", name: "Spain" },
         owner: "Ana Perez",
@@ -35,6 +37,7 @@ export const defaultClassification: StageEventClassificationResponseDTO = {
       },
       {
         position: 2,
+        competitorNumber: 2,
         dog: { id: "dog-2", name: "Luna" },
         country: { id: "FR", name: "France" },
         owner: "Marc Soler",

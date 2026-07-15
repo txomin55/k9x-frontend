@@ -68,7 +68,7 @@ export async function exportClassificationPdf(
   const head = [
     [
       t("STAGES.CLASSIFICATION.POSITION"),
-      t("STAGES.CLASSIFICATION.START_ORDER"),
+      t("STAGES.CLASSIFICATION.COMPETITOR_NUMBER"),
       t("STAGES.CLASSIFICATION.HANDLER"),
       t("STAGES.CLASSIFICATION.DOG"),
       t("STAGES.CLASSIFICATION.DOG_ID"),
@@ -81,7 +81,7 @@ export async function exportClassificationPdf(
 
   const body = competitors.map((competitor) => [
     competitor.notCompeting ? "-" : formatNumber(competitor.position),
-    formatNumber(competitor.startOrder),
+    formatNumber(competitor.competitorNumber),
     competitor.handler ?? "",
     competitor.dog.name,
     competitor.dog.id,

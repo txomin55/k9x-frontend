@@ -7,7 +7,7 @@
     --radius-full: 999px;
 
     /* sizing */
-    --dialog-max-width-md: 32rem;
+    --dialog-max-width-md: 40rem;
     --dialog-max-width-lg: 48rem;
 
     /* overlay */
@@ -219,8 +219,6 @@
 
 @media (max-width: 640px) {
     .atom-dialog__content {
-        width: calc(100vw - (var(--unit-2) * 2));
-        max-height: calc(100vh - (var(--unit-1) * 2));
         padding: var(--unit-1);
         border-radius: var(--radius-md);
     }

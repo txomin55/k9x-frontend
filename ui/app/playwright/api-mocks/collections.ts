@@ -37,6 +37,7 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
         competitor: {
           dog: { id: "dog-1", name: "Rex" },
           position: 1,
+          competitorNumber: 1,
           team: "Team Alpha",
           identity: "ES-001",
           owner: "Ana Perez",

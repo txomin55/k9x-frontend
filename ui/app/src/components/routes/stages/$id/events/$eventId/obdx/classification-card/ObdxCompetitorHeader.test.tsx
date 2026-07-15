@@ -15,6 +15,7 @@ const buildCompetitor = (
   owner: "owner@example.com",
   handler: "Carlos",
   position: 1,
+  competitorNumber: 1,
   scoreRating: 0,
   status: "STARTED",
   team: "team",

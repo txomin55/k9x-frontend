@@ -187,6 +187,8 @@ const toApiCompetitor = (
     country: previousCompetitor?.country ?? "",
     breed: previousCompetitor?.breed ?? "",
     position: competitor.position ?? previousCompetitor?.position ?? 0,
+    competitorNumber:
+      competitor.competitorNumber ?? previousCompetitor?.competitorNumber ?? 0,
     accepted: competitor.accepted ?? previousCompetitor?.accepted ?? false,
     status: competitor.accepted
       ? COMPETITOR_STATUS.ENROLLED

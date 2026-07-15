@@ -25,6 +25,7 @@ import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/Atom
 import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
+import RankBadge from "@/components/common/rank-badge/RankBadge";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
@@ -604,6 +605,7 @@ function EventClassificationPage() {
         const disciplineBlock = () => (
           <div class="classification__discipline">
             <DisciplineIcon disciplineId={classification().discipline.id} />
+            <RankBadge rank={classification().rank} />
             <span class="text-caption-md">
               {classification().configuration.name}
             </span>

@@ -205,6 +205,7 @@ export default function DogForm(props: DogFormProps) {
         label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER")}
         value={props.draft().identity}
         onChange={updateIdentity}
+        description={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER_HINT")}
       />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.SEX")}

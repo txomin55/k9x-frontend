@@ -64,6 +64,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
         {
           dog: { id: seedDog.id, name: seedDog.name },
           position: 1,
+          competitorNumber: 1,
           team: seedDog.team,
           identity: seedDog.identity,
           owner: seedDog.owner,
@@ -146,7 +147,12 @@ const applyEventUpdate = (
       tags: string[];
       judgesIds: string[];
     }[];
-    competitors?: { dogId: string; position: number; accepted: boolean }[];
+    competitors?: {
+      dogId: string;
+      position: number;
+      competitorNumber: number;
+      accepted: boolean;
+    }[];
   },
 ) => {
   const previous = event.obdx;
@@ -183,6 +189,7 @@ const applyEventUpdate = (
           name: dog?.name ?? existing?.dog.name ?? "",
         },
         position: competitor.position,
+        competitorNumber: competitor.competitorNumber,
         team: dog?.team ?? existing?.team ?? "",
         identity: dog?.identity ?? existing?.identity ?? "",
         owner: dog?.owner ?? existing?.owner ?? "",

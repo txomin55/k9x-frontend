@@ -146,30 +146,34 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
           onChange={setJudges}
         />
       </div>
-      <AtomNumberInput
-        label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
-        value={props.draft().position}
-        onBlur={props.onCommit}
-        onChange={setOrder}
-        minValue={minOrder}
-        maxValue={maxOrder}
-      />
       <div class="form-grid__full">
-        <AtomCombobox
-          label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.EXERCISE")}
-          options={exerciseOptions()}
-          value={selectedExerciseOption()}
-          onChange={setExercise}
-          disabled={exerciseOptions().length === 0}
-          description={
-            exerciseOptions().length === 0
-              ? i18n.t(
-                  "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST",
-                )
-              : undefined
-          }
-          placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE")}
-        />
+        <div class="form-grid form-grid--2col">
+          <AtomCombobox
+            label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.EXERCISE")}
+            options={exerciseOptions()}
+            value={selectedExerciseOption()}
+            onChange={setExercise}
+            disabled={exerciseOptions().length === 0}
+            description={
+              exerciseOptions().length === 0
+                ? i18n.t(
+                    "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_CONFIGURATION_FIRST",
+                  )
+                : undefined
+            }
+            placeholder={i18n.t(
+              "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_EXERCISE",
+            )}
+          />
+          <AtomNumberInput
+            label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.ORDER")}
+            value={props.draft().position}
+            onBlur={props.onCommit}
+            onChange={setOrder}
+            minValue={minOrder}
+            maxValue={maxOrder}
+          />
+        </div>
       </div>
       <div class="form-grid__full">
         <AtomInput

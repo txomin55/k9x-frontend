@@ -32,6 +32,7 @@ export interface UpdateEventRequestDTO {
 export interface EventCompetitorResponseDTO {
   dog: IdNameDTO;
   position: number;
+  competitorNumber: number;
   team: string;
   identity: string;
   owner: string;
@@ -48,6 +49,7 @@ export interface EventCompetitorResponseDTO {
 export interface EventCompetitorRequestDTO {
   dogId: string;
   position: number;
+  competitorNumber: number;
   accepted: boolean;
   bih: boolean;
   reserve: boolean;
@@ -68,6 +70,7 @@ export interface EventCompetitorDetail {
   country: string;
   breed: string;
   position: number;
+  competitorNumber: number;
   accepted: boolean;
   status: string;
   notCompeting: boolean;
@@ -189,6 +192,7 @@ const normalizeCompetitor = (
   country: competitor.country ?? "",
   breed: competitor.breed?.name ?? "",
   position: competitor.position ?? 0,
+  competitorNumber: competitor.competitorNumber ?? 0,
   accepted: competitor.status === COMPETITOR_STATUS.ENROLLED,
   status: competitor.status ?? "",
   notCompeting: competitor.notCompeting ?? false,
