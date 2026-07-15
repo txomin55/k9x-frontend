@@ -197,11 +197,13 @@
 }
 
 @container classification-page (max-width: 400px) {
-    .obdx-clf__list .obdx-clf__squares-grid {
+    .obdx-clf__list .obdx-clf__squares-grid,
+    .obdx-clf__pinned .obdx-clf__squares-grid {
         --obdx-chip-square-size: var(--unit-4);
     }
 
-    .obdx-clf__list .obdx-clf__chip--square {
+    .obdx-clf__list .obdx-clf__chip--square,
+    .obdx-clf__pinned .obdx-clf__chip--square {
         height: var(--unit-3);
     }
 }
