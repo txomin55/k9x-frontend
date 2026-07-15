@@ -397,6 +397,7 @@
   "STAGES.CLASSIFICATION.QUALIFICATION": "Calificación",
   "COMMON.NAME_FILTER.NO_MATCHES": "Ningún resultado coincide con el filtro.",
   "COMMON.COUNTRY_FIELD.ALL": "Todos los países",
+  "STAGES.FILTERS.TITLE": "Filtros",
   "STAGES.FILTERS.DATE_FROM": "Fecha desde",
   "STAGES.FILTERS.DATE_TO": "Fecha hasta",
   "STAGES.FILTERS.NAME": "Nombre de la prueba",

@@ -397,6 +397,7 @@
   "STAGES.CLASSIFICATION.QUALIFICATION": "Qualification",
   "COMMON.NAME_FILTER.NO_MATCHES": "No results match the filter.",
   "COMMON.COUNTRY_FIELD.ALL": "All countries",
+  "STAGES.FILTERS.TITLE": "Filters",
   "STAGES.FILTERS.DATE_FROM": "From date",
   "STAGES.FILTERS.DATE_TO": "To date",
   "STAGES.FILTERS.NAME": "Trial name",

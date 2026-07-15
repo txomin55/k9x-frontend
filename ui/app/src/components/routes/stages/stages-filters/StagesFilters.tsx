@@ -1,10 +1,13 @@
+import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect from "@lib/components/atoms/select/AtomSelect";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect.types";
+import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import { useI18n } from "@/stores/i18n/i18n";
 import { STAGE_STATUS } from "@/utils/stage";
+import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import "./styles.css";
 
 const STATUS_VALUES = [
@@ -30,6 +33,8 @@ type StagesFiltersProps = {
 
 export default function StagesFilters(props: StagesFiltersProps) {
   const i18n = useI18n();
+  const device = useDeviceType();
+  const isMobile = () => device() === "mobile";
 
   const countriesQuery = useCountries({ refetchOnMount: false });
 
@@ -72,8 +77,8 @@ export default function StagesFilters(props: StagesFiltersProps) {
     statusOptions.find((option) => option.value === props.status) ??
     statusOptions[0];
 
-  return (
-    <div class="stages-filters">
+  const fields = (
+    <>
       <AtomInput
         type="search"
         label={i18n.t("STAGES.FILTERS.NAME")}
@@ -110,6 +115,19 @@ export default function StagesFilters(props: StagesFiltersProps) {
           onChange={props.onDateToChange}
         />
       </div>
+    </>
+  );
+
+  return (
+    <div class="stages-filters">
+      <Show when={isMobile()} fallback={fields}>
+        <AtomCollapsible
+          trigger={
+            <span class="text-caption-lg">{i18n.t("STAGES.FILTERS.TITLE")}</span>
+          }
+          content={<div class="stages-filters__mobile-content">{fields}</div>}
+        />
+      </Show>
     </div>
   );
 }

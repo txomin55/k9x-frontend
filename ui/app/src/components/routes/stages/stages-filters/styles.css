@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
-    margin-bottom: var(--unit-2);
 }
 
 .stages-filters__inline {
@@ -14,4 +13,11 @@
 .stages-filters__inline > * {
     flex: 1 1 12rem;
     min-width: 0;
+}
+
+.stages-filters__mobile-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+    padding-top: var(--unit-1);
 }
