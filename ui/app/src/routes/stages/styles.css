@@ -23,6 +23,17 @@
     }
 }
 
+.stages .card-list {
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+}
+
+.stages .card-list > .card {
+    max-width: none;
+}
+
 .stages-map-wrapper {
     position: relative;
     flex: 1;
