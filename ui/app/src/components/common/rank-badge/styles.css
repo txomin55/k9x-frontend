@@ -1,0 +1,15 @@
+.rank-badge__content {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.rank-badge__plus {
+    position: absolute;
+    top: calc(-1 * var(--unit-05));
+    inset-inline-end: calc(-1 * var(--unit-075));
+
+    font-size: 0.7em;
+    line-height: 1;
+    font-weight: var(--font-weight-bold);
+}
