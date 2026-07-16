@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
   "installCommand": "corepack enable && pnpm install --frozen-lockfile",
   "buildCommand": "CI_BUILD_ENV=production pnpm build",
   "outputDirectory": "ui/app/.output/public",
