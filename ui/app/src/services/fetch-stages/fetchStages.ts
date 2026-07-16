@@ -1,4 +1,6 @@
-import { getCurrentLocale } from "@/stores/i18n/i18n";
+import { createQuery } from "@tanstack/solid-query";
+import { createEffect, on } from "solid-js";
+import { getCurrentLocale, useI18n } from "@/stores/i18n/i18n";
 import { defineQuery } from "@/utils/http/query-factory";
 import { rawRequest } from "@/utils/http/client";
 import { EVENT_STATUS } from "@/utils/event";
@@ -25,10 +27,10 @@ export const getEventClassificationQueryKey = (
 
 const getStageSnapshotId = (id: string) => `${STAGE_SNAPSHOT_PREFIX}${id}`;
 
-const fetchStages = () =>
+const fetchStages = (from: number, to: number) =>
   fetchWithOfflineSnapshot(STAGES_SNAPSHOT_ID, () =>
     rawRequest<StageSummaryResponseDTO[]>({
-      path: "/stages",
+      path: `/stages?from=${from}&to=${to}`,
     }),
   );
 
@@ -52,11 +54,6 @@ const fetchEventClassification = (stageId: string, eventId: string) =>
     path: `/events/${eventId}/classification`,
   });
 
-const stagesQuery = defineQuery({
-  fetcher: fetchStages,
-  queryKey: ["stages"] as const,
-});
-
 const stageByIdQuery = defineQuery({
   fetcher: fetchStageById,
   queryKey: (id: string) => ["stage", id] as const,
@@ -68,12 +65,25 @@ const eventClassificationQuery = defineQuery({
     ["stage-event-classification", stageId, eventId] as const,
 });
 
-export const useStages = (options?: TanstackCreateQuery) =>
-  stagesQuery.useQuery({
+export const useStages = (
+  from: () => number,
+  to: () => number,
+  options?: TanstackCreateQuery,
+) => {
+  const i18n = useI18n();
+
+  const query = createQuery(() => ({
+    queryKey: ["stages", i18n.locale()],
+    queryFn: () => fetchStages(from(), to()),
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
-  });
+  }));
+
+  createEffect(on([from, to], () => void query.refetch(), { defer: true }));
+
+  return query;
+};
 
 export const useStageById = (id: string, options?: TanstackCreateQuery) =>
   stageByIdQuery.useQuery([id], {

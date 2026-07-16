@@ -31,7 +31,11 @@ import { useOffline } from "@/stores/network/network";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isStageLive } from "@/utils/stage";
-import { formatUtcDateOnly } from "@/utils/date";
+import {
+  defaultStagesDateRange,
+  formatUtcDateOnly,
+  parseDateInputValue,
+} from "@/utils/date";
 import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -77,7 +81,13 @@ const StagesDataContext = createContext<StagesQuery>();
 function StagesDataProvider(props: ParentProps) {
   const { isOffline } = useOffline();
 
-  const query = useStages({
+  const [dateFromFilter] = useSearchParam("from", "");
+  const [dateToFilter] = useSearchParam("to", "");
+  const defaultRange = defaultStagesDateRange();
+  const fromMs = () => parseDateInputValue(dateFromFilter(), defaultRange.from);
+  const toMs = () => parseDateInputValue(dateToFilter(), defaultRange.to);
+
+  const query = useStages(fromMs, toMs, {
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });

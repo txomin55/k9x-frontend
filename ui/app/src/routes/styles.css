@@ -2,6 +2,7 @@
     min-height: 100%;
     display: grid;
     gap: var(--unit-3);
+    padding-top: var(--unit-8);
 }
 
 .landing-page__hero {
@@ -52,22 +53,6 @@
     text-decoration: none;
     font-weight: var(--font-weight-medium);
     transition: transform 160ms ease, background 160ms ease, color 160ms ease;
-}
-
-.landing-page__action:hover {
-    transform: translateY(-1px);
-}
-
-.landing-page__action--primary {
-    background: var(--accent);
-    color: var(--background);
-    height: fit-content;
-}
-
-.landing-page__action--secondary {
-    border: 1px solid var(--border-strong);
-    color: var(--text-primary);
-    background: transparent;
 }
 
 .landing-page__latest {

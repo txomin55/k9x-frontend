@@ -1,18 +1,32 @@
-import { createFileRoute, Link, useLocation, useNavigate } from "@tanstack/solid-router";
-import { createMemo, createSignal, For, onMount, Show, Suspense } from "solid-js";
+import {
+  createFileRoute,
+  Link,
+  useLocation,
+  useNavigate,
+} from "@tanstack/solid-router";
+import {
+  createMemo,
+  createSignal,
+  For,
+  onMount,
+  Show,
+  Suspense,
+} from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useI18n } from "@/stores/i18n/i18n";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
 import { isStageLive } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
-import { formatUtcDateOnly } from "@/utils/date";
+import { defaultStagesDateRange, formatUtcDateOnly } from "@/utils/date";
 import "./styles.css";
 
 const CALLBACK_PARAMS_KEY = "k9x_oauth_callback_params";
@@ -43,10 +57,16 @@ function LatestStagesSkeleton(props: { title: string }) {
 function LatestStages() {
   const i18n = useI18n();
 
-  const fetchedStages = useStages({
-    refetchOnMount: !isOffline(),
-    gcTime: 5 * 60 * 1000,
-  });
+  const defaultRange = defaultStagesDateRange();
+
+  const fetchedStages = useStages(
+    () => defaultRange.from,
+    () => defaultRange.to,
+    {
+      refetchOnMount: !isOffline(),
+      gcTime: 5 * 60 * 1000,
+    },
+  );
 
   const latestStages = createMemo(
     () =>
@@ -138,12 +158,15 @@ function EntryRoutePage() {
         </p>
 
         <div class="landing-page__actions">
-          <Link
-            class="landing-page__action landing-page__action--primary"
-            to={AppRoutePath.STAGES as "/stages"}
+          <AtomButton
+            onClick={async () =>
+              await navigate({
+                to: AppRoutePath.STAGES as "/stages",
+              })
+            }
           >
             {i18n.t("HOME.BROWSE_STAGES")}
-          </Link>
+          </AtomButton>
         </div>
       </div>
 
