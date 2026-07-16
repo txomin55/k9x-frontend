@@ -4,11 +4,17 @@
   "installCommand": "corepack enable && pnpm install --frozen-lockfile",
   "buildCommand": "CI_BUILD_ENV=production pnpm build",
   "outputDirectory": "ui/app/.output/public",
+  "git": {
+    "deploymentEnabled": false
+  },
   "headers": [
     {
       "source": "/_build/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
