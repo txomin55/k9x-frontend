@@ -115,11 +115,8 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
             onOpenChange={setOpenGenericContactForm}
             open={openGenericContactForm()}
             title={i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
-            trigger={
-              <AtomButton size="sm" type={BUTTON_TYPES.GHOST}>
-                {i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
-              </AtomButton>
-            }
+            triggerClass="atom-dialog__trigger--ghost"
+            trigger={<span>{i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}</span>}
           />
           <AtomButton
             class="navigation-tools__logout"

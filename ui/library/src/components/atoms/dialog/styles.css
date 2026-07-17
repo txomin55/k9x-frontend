@@ -43,6 +43,31 @@
     cursor: pointer;
 }
 
+/* Ghost/link-style trigger — a single button that meets the touch-target
+   minimum, replacing a nested ghost AtomButton inside the trigger. */
+.atom-dialog__trigger--ghost {
+    min-height: var(--unit-6);
+    padding: 0 var(--unit-1);
+    color: var(--text-primary);
+    font-size: var(--text-label-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    transition: background-color 200ms;
+}
+
+.atom-dialog__trigger--ghost > span {
+    padding-bottom: var(--unit-025);
+    border-bottom: 1px solid var(--text-primary);
+}
+
+.atom-dialog__trigger--ghost:hover {
+    background-color: var(--surface-hover);
+}
+
+.atom-dialog__trigger--ghost:active {
+    background-color: var(--surface-muted);
+}
+
 .atom-dialog__trigger:focus-visible,
 .atom-dialog__close-button:focus-visible {
     outline: var(--focus-ring-width) solid var(--focus-ring-color);

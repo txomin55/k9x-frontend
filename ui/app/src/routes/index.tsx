@@ -19,9 +19,7 @@ import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useI18n } from "@/stores/i18n/i18n";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
@@ -221,11 +219,8 @@ function EntryRoutePage() {
         onOpenChange={setOpenGenericContactForm}
         open={openGenericContactForm()}
         title={i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
-        trigger={
-          <AtomButton type={BUTTON_TYPES.GHOST}>
-            {i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}
-          </AtomButton>
-        }
+        triggerClass="atom-dialog__trigger--ghost"
+        trigger={<span>{i18n.t("GLOBAL.NAVIGATION.CONTACT_US")}</span>}
       />
     </section>
   );

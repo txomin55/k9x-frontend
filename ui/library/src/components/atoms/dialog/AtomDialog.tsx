@@ -5,6 +5,7 @@ import "./styles.css";
 
 export type AtomDialogProps = {
   trigger?: JSX.Element;
+  triggerClass?: string;
   title?: JSX.Element;
   description?: JSX.Element;
   content: JSX.Element;
@@ -19,7 +20,9 @@ export default function AtomDialog(props: AtomDialogProps) {
     <Dialog.Root open={props.open} onOpenChange={props.onOpenChange} modal>
       <Show when={props.trigger}>
         <div class="atom-dialog">
-          <Dialog.Trigger class="atom-dialog__trigger">
+          <Dialog.Trigger
+            class={`atom-dialog__trigger${props.triggerClass ? ` ${props.triggerClass}` : ""}`}
+          >
             {props.trigger}
           </Dialog.Trigger>
         </div>

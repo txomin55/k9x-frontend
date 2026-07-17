@@ -111,10 +111,9 @@ export default function AppLayout(props: ParentProps) {
                   onOpenChange={setOpenOrganizerForm}
                   open={openOrganizerForm()}
                   title={i18n.t("GLOBAL.APP_LAYOUT.ORGANIZER_REQUEST")}
+                  triggerClass="atom-dialog__trigger--ghost"
                   trigger={
-                    <AtomButton type={BUTTON_TYPES.GHOST}>
-                      {i18n.t("GLOBAL.APP_LAYOUT.WANT_TO_BE_ORGANIZER")}
-                    </AtomButton>
+                    <span>{i18n.t("GLOBAL.APP_LAYOUT.WANT_TO_BE_ORGANIZER")}</span>
                   }
                 />
               </Show>

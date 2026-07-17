@@ -134,10 +134,9 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
           onOpenChange={setOpenWrongLocationForm}
           open={openWrongLocationForm()}
           title={i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION")}
+          triggerClass="atom-dialog__trigger--ghost"
           trigger={
-            <AtomButton size={BUTTON_SIZES.SM} type={BUTTON_TYPES.GHOST}>
-              {i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION_QUESTION")}
-            </AtomButton>
+            <span>{i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION_QUESTION")}</span>
           }
         />
       </div>
