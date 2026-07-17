@@ -1,4 +1,4 @@
-import { LOCAL_FIRST_STORE_NAMES, localFirstDatabase } from "@/utils/local-first/storage/localFirstDatabase";
+import { LOCAL_FIRST_STORE_NAMES, getLocalFirstTable } from "@/utils/local-first/storage/localFirstDatabase";
 import { shouldPersistLocalFirstData } from "@/utils/local-first/localFirstPolicy";
 import type { PendingTask, PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
@@ -11,9 +11,10 @@ export type {
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
 
-const pendingTasksTable = localFirstDatabase.table<PendingTask, string>(
-  LOCAL_FIRST_STORE_NAMES.pendingTasks,
-);
+const getPendingTasksTable = () =>
+  getLocalFirstTable<PendingTask, string>(
+    LOCAL_FIRST_STORE_NAMES.pendingTasks,
+  );
 
 const shouldAccessPendingTasksStore = (options?: {
   skipPersistenceCheck?: boolean;
@@ -31,16 +32,17 @@ export const createPendingTaskId = ({
   timestamp: number;
 }) => `${entityId}-${entityType}-${method.toLowerCase()}-${timestamp}`;
 
-export const enqueuePendingTask = (
+export const enqueuePendingTask = async (
   task: PendingTask,
   options?: {
     skipPersistenceCheck?: boolean;
   },
 ) => {
   if (!shouldAccessPendingTasksStore(options)) {
-    return Promise.resolve(task.id);
+    return task.id;
   }
 
+  const pendingTasksTable = await getPendingTasksTable();
   return pendingTasksTable.put(toSerializable(task));
 };
 
@@ -49,6 +51,7 @@ export const getPendingTasksCount = async (options?: {
 }) => {
   if (!shouldAccessPendingTasksStore(options)) return 0;
 
+  const pendingTasksTable = await getPendingTasksTable();
   return pendingTasksTable.count();
 };
 
@@ -60,6 +63,7 @@ export const getRetryablePendingTasks = async (
 ) => {
   if (!shouldAccessPendingTasksStore(options)) return [];
 
+  const pendingTasksTable = await getPendingTasksTable();
   const tasks = await pendingTasksTable.toArray();
   const staleProcessingBefore = Date.now() - processingStaleMs;
 
@@ -82,20 +86,22 @@ export const updatePendingTask = async (
 ) => {
   if (!shouldAccessPendingTasksStore(options)) return;
 
+  const pendingTasksTable = await getPendingTasksTable();
   const existingTask = await pendingTasksTable.get(id);
   if (!existingTask) return;
   await pendingTasksTable.put(toSerializable(updater(existingTask)));
 };
 
-export const removePendingTask = (
+export const removePendingTask = async (
   id: string,
   options?: {
     skipPersistenceCheck?: boolean;
   },
 ) => {
   if (!shouldAccessPendingTasksStore(options)) {
-    return Promise.resolve();
+    return;
   }
 
+  const pendingTasksTable = await getPendingTasksTable();
   return pendingTasksTable.delete(id);
 };

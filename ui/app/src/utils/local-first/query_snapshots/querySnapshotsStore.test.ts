@@ -3,12 +3,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const deleteMock = vi.hoisted(() => vi.fn());
 const belowMock = vi.hoisted(() => vi.fn(() => ({ delete: deleteMock })));
 const whereMock = vi.hoisted(() => vi.fn(() => ({ below: belowMock })));
-const tableMock = vi.hoisted(() => vi.fn(() => ({ where: whereMock })));
+const getLocalFirstTable = vi.hoisted(() =>
+  vi.fn(() => Promise.resolve({ where: whereMock })),
+);
 const shouldPersistLocalFirstData = vi.hoisted(() => vi.fn());
 
 vi.mock("@/utils/local-first/storage/localFirstDatabase", () => ({
   LOCAL_FIRST_STORE_NAMES: { querySnapshots: "query_snapshots" },
-  localFirstDatabase: { table: tableMock },
+  getLocalFirstTable,
 }));
 
 vi.mock("@/utils/local-first/localFirstPolicy", () => ({

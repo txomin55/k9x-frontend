@@ -1,6 +1,6 @@
 import {
   LOCAL_FIRST_STORE_NAMES,
-  localFirstDatabase,
+  getLocalFirstTable,
 } from "@/utils/local-first/storage/localFirstDatabase";
 import {
   shouldPersistLocalFirstData,
@@ -13,22 +13,25 @@ export type { QuerySnapshot } from "@/utils/local-first/query_snapshots/querySna
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
 
-const querySnapshotsTable = localFirstDatabase.table<QuerySnapshot, string>(
-  LOCAL_FIRST_STORE_NAMES.querySnapshots,
-);
+const getQuerySnapshotsTable = () =>
+  getLocalFirstTable<QuerySnapshot, string>(
+    LOCAL_FIRST_STORE_NAMES.querySnapshots,
+  );
 
-const readPersistedQuerySnapshot = <TData>(
+const readPersistedQuerySnapshot = async <TData>(
   id: string,
-): Promise<TData | undefined> =>
-  querySnapshotsTable
-    .get(id)
-    .then((snapshot) => snapshot?.data as TData | undefined);
+): Promise<TData | undefined> => {
+  const querySnapshotsTable = await getQuerySnapshotsTable();
+  const snapshot = await querySnapshotsTable.get(id);
+  return snapshot?.data as TData | undefined;
+};
 
-export const saveQuerySnapshot = <TData>(id: string, data: TData) => {
+export const saveQuerySnapshot = async <TData>(id: string, data: TData) => {
   if (!shouldPersistLocalFirstData()) {
-    return Promise.resolve(id);
+    return id;
   }
 
+  const querySnapshotsTable = await getQuerySnapshotsTable();
   return querySnapshotsTable.put({
     data: toSerializable(data),
     id,
@@ -41,26 +44,31 @@ export const getQuerySnapshot = <TData>(id: string) => {
     return Promise.resolve(undefined as TData | undefined);
   }
 
-  return readPersistedQuerySnapshot(id);
+  return readPersistedQuerySnapshot<TData>(id);
 };
 
 export const getPersistedQuerySnapshot = readPersistedQuerySnapshot;
 
 export const QUERY_SNAPSHOT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 
-export const pruneStaleQuerySnapshots = (
+export const pruneStaleQuerySnapshots = async (
   maxAgeMs: number = QUERY_SNAPSHOT_MAX_AGE_MS,
 ) => {
   if (!shouldPersistLocalFirstData()) {
-    return Promise.resolve(0);
+    return 0;
   }
 
   const cutoff = Date.now() - maxAgeMs;
+  const querySnapshotsTable = await getQuerySnapshotsTable();
   return querySnapshotsTable.where("updatedAt").below(cutoff).delete();
 };
 
-export const removeQuerySnapshot = (id: string) =>
-  querySnapshotsTable.delete(id);
+export const removeQuerySnapshot = async (id: string) => {
+  const querySnapshotsTable = await getQuerySnapshotsTable();
+  return querySnapshotsTable.delete(id);
+};
 
-export const removeQuerySnapshotsByPrefix = (prefix: string) =>
-  querySnapshotsTable.where("id").startsWith(prefix).delete();
+export const removeQuerySnapshotsByPrefix = async (prefix: string) => {
+  const querySnapshotsTable = await getQuerySnapshotsTable();
+  return querySnapshotsTable.where("id").startsWith(prefix).delete();
+};
