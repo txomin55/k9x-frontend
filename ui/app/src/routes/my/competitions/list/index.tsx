@@ -35,7 +35,9 @@ function MyCompetitionsRoute() {
 		<Suspense
 			fallback={
 				<Page>
-					<CardListSkeleton count={4} />
+					<div class="competitions-list card-list">
+						<CardListSkeleton count={4} />
+					</div>
 				</Page>
 			}
 		>

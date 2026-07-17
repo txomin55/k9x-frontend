@@ -610,7 +610,13 @@ function StagesIndexPage() {
             </Suspense>
           </Match>
           <Match when={true}>
-            <Suspense fallback={<StageCardSkeleton count={3} />}>
+            <Suspense
+              fallback={
+                <div class="card-list">
+                  <StageCardSkeleton count={3} />
+                </div>
+              }
+            >
               <StagesListView onEnroll={openEnrollDialog} />
             </Suspense>
           </Match>
