@@ -2,14 +2,20 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    font-size: var(--unit-1);
+    font-weight: var(--font-weight-bold);
 }
 
 .rank-badge__plus {
     position: absolute;
-    top: calc(-1 * var(--unit-05));
-    inset-inline-end: calc(-1 * var(--unit-075));
+    top: calc(-1 * 11px);
+    inset-inline-end: calc(-1 * var(--unit-1));
 
-    font-size: 0.7em;
+    font-size: var(--unit-2);
     line-height: 1;
     font-weight: var(--font-weight-bold);
+}
+
+.rank-badge__plus--plus {
+    inset-inline-end: calc(-1 * var(--unit-2));
 }

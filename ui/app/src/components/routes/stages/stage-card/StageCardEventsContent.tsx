@@ -37,10 +37,10 @@ export default function StageCardEventsContent(
       {(event) => (
         <div class="stage-card__events-content">
           <div class="stage-card__events-content--info">
+            <RankBadge rank={event().rank} />
             <DisciplineIcon disciplineId={event().discipline.id} />
             <span class="text-heading-xs">{event().name}</span>
             <span class="text-caption-sm">({event().competitors})</span>
-            <RankBadge rank={event().rank} />
             <AwardBadges awards={event().awards} />
           </div>
           <div class="stage-card__events-actions">

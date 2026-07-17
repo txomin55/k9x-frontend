@@ -23,11 +23,15 @@
 .stage-info__events {
     display: grid;
     grid-template-columns: repeat(
-        auto-fill,
-        minmax(min(100%, calc(var(--unit-10) * 6)), calc(var(--unit-10) * 6))
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
     );
     gap: var(--unit-2);
     align-items: start;
+}
+
+.stage-info__events > .card {
+    max-width: none;
 }
 
 .stage-info__event--item {
@@ -82,7 +86,7 @@
     display: flex;
     flex-direction: row;
     gap: var(--unit-1);
-    align-items: baseline;
+    align-items: center;
 }
 
 .stage-info__competitor--info {

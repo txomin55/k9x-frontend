@@ -102,6 +102,7 @@ export interface ObdxEventDetailResponseDTO {
   status: string;
   scoreCalculation: string;
   awards: IdNameDTO[];
+  rank?: string;
 }
 
 export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {

@@ -59,6 +59,12 @@
     padding-top: var(--unit-1);
 }
 
+.classification__discipline {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+}
+
 .classification__mobile-collapsible-row {
     display: flex;
     align-items: center;

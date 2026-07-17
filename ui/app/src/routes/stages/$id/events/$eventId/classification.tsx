@@ -621,8 +621,8 @@ function EventClassificationPage() {
 
         const disciplineBlock = () => (
           <div class="classification__discipline">
-            <DisciplineIcon disciplineId={classification().discipline.id} />
             <RankBadge rank={classification().rank} />
+            <DisciplineIcon disciplineId={classification().discipline.id} />
             <span class="text-caption-md">
               {classification().configuration.name}
             </span>

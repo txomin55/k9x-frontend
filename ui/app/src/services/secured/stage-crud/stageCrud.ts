@@ -75,6 +75,7 @@ export const toApiStage = (
         id: rawEvent.id,
         judges: [],
         name: rawEvent.name,
+        rank: rawEvent.rank,
         scoreCalculation: SCORE_CALCULATION.AVG,
         stage: { id: stage.id, name: stage.name },
         status: rawEvent.status,

@@ -56,6 +56,7 @@ import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
+import RankBadge from "@/components/common/rank-badge/RankBadge";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
@@ -556,7 +557,10 @@ function CompetitionStageDetailBody(props: {
           header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE"),
           enableSorting: false,
           cell: (info) => (
-            <DisciplineIcon disciplineId={info.row.original.discipline.id} />
+            <div class="stage-detail__discipline-cell">
+              <RankBadge rank={info.row.original.rank} />
+              <DisciplineIcon disciplineId={info.row.original.discipline.id} />
+            </div>
           ),
         },
       ];
@@ -579,7 +583,12 @@ function CompetitionStageDetailBody(props: {
           <Card
             topLeft={event().name}
             subHeader={<StatusBadge status={event().status} />}
-            content={<DisciplineIcon disciplineId={event().discipline.id} />}
+            content={
+              <div class="stage-detail__discipline-cell">
+                <RankBadge rank={event().rank} />
+                <DisciplineIcon disciplineId={event().discipline.id} />
+              </div>
+            }
             actions={
               isEditing() ? (
                 <div class="stage-detail__content--event-actions">
