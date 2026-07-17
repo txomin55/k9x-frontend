@@ -12,8 +12,8 @@ import {
   useCompetition,
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
+import type { CompetitionStageDetailResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
-  CompetitionStageDetailResponseDTO,
   CreateStageRequestDTO,
   StageEditorModel,
   UpdateStageRequestDTO,

@@ -4,7 +4,11 @@ import {
   saveCompetitionsSnapshot
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import { getCompetitionsQueryKey } from "@/services/secured/competition-crud/competitionCrud";
-import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type {
+  CompetitionResponseDTO,
+  CompetitionStageDetailResponseDTO,
+  CompetitionStageEventDetailResponseDTO
+} from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
@@ -16,10 +20,6 @@ import {
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
-import {
-  CompetitionStageDetailResponseDTO,
-  CompetitionStageEventDetailResponseDTO
-} from "@/services/secured/stage-crud/stageCrud.types";
 import { ApiEventRollbackPayload, EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";

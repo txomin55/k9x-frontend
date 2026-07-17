@@ -1,4 +1,7 @@
-import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type {
+  CompetitionResponseDTO,
+  CompetitionStageDetailResponseDTO,
+} from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
@@ -24,7 +27,6 @@ import {
 } from "@/services/secured/competition-crud/competitionDraftStore";
 import {
   ApiStageRollbackPayload,
-  CompetitionStageDetailResponseDTO,
   StageEditorModel,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import { STAGE_STATUS } from "@/utils/stage";

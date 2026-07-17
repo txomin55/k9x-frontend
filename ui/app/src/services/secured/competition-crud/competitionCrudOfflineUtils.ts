@@ -1,7 +1,7 @@
 import {
   COMPETITIONS_SNAPSHOT_ID,
   getCompetitionsQueryKey,
-} from "@/services/secured/competition-crud/competitionCrud";
+} from "@/services/secured/competition-crud/competitionCrudConstants";
 import {
   type PendingTaskHandler,
   registerPendingTaskHandler,

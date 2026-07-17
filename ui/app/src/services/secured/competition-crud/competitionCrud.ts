@@ -1,5 +1,5 @@
 import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
-import { getCurrentLocale, translate } from "@/stores/i18n/i18n";
+import { translate } from "@/stores/i18n/i18n";
 import { createMemo, getOwner } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";
@@ -26,13 +26,16 @@ import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { isOrganizer, useAuthUser } from "@/stores/auth/auth";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import { COMPETITION_STATUS } from "@/utils/competition";
+import {
+  COMPETITIONS_SNAPSHOT_ID,
+  getCompetitionsQueryKey,
+} from "@/services/secured/competition-crud/competitionCrudConstants";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-
-export const COMPETITIONS_SNAPSHOT_ID = "competitions";
-
-export const getCompetitionsQueryKey = () =>
-  ["competitions", getCurrentLocale()] as const;
+export {
+  COMPETITIONS_SNAPSHOT_ID,
+  getCompetitionsQueryKey,
+} from "@/services/secured/competition-crud/competitionCrudConstants";
 
 export const refreshCompetitionsSnapshot = async () => {
   if (!isOrganizer()) {
