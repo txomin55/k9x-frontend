@@ -1,12 +1,4 @@
-## Fallow: 4 issues found
-
-### Circular dependencies (4)
-
-- `ui/app/src/services/secured/competition-crud/competitionCrud.ts` → `ui/app/src/services/secured/competition-crud/competitionCrudOfflineUtils.ts` → `ui/app/src/services/secured/competition-crud/competitionCrud.ts`
-- `ui/app/src/services/secured/competition-crud/competitionCrud.ts` → `ui/app/src/stores/auth/auth.ts` → `ui/app/src/utils/local-first/query_snapshots/localFirstQueryCache.ts` → `ui/app/src/services/secured/competition-crud/competitionCrud.ts`
-- `ui/app/src/services/secured/competition-crud/competitionCrud.types.ts` → `ui/app/src/services/secured/stage-crud/stageCrud.types.ts` → `ui/app/src/services/secured/competition-crud/competitionCrud.types.ts`
-- `ui/app/src/services/secured/competition-crud/competitionCrud.types.ts` → `ui/app/src/services/secured/stage-crud/stageCrud.types.ts` → `ui/app/src/services/secured/event-crud/eventCrud.types.ts` → `ui/app/src/services/secured/competition-crud/competitionCrud.types.ts`
-
+## Fallow: no issues found
 
 ## Fallow: no code duplication found
 
@@ -14,14 +6,14 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total LOC | 39811 |
+| Total LOC | 39822 |
 | Avg Cyclomatic | 1.7 |
 | P90 Cyclomatic | 3 |
 | Dead Files | 0.0% |
 | Dead Exports | 0.0% |
 | Maintainability (avg) | 91.6 |
 | Hotspots (since 6 months) | 1 |
-| Circular Deps | 4 |
+| Circular Deps | 0 |
 | Unused Deps | 0 |
 
 ## Fallow: 72 high complexity functions
@@ -32,7 +24,7 @@
 | `ui/app/src/services/secured/event-crud/eventCrud.ts:176` | `toApiCompetitor` | critical | 38 **!** | 16 **!** | 349.9 **!** | 25 |
 | `ui/app/playwright/api-mocks/eventDetail.ts:181` | `competitors` | critical | 30 **!** | 9 | 224.4 **!** | 25 |
 | `ui/app/src/services/secured/dog-crud/dogCrudOfflineUtils.ts:24` | `toDogListItem` | critical | 27 **!** | 12 | 756.0 **!** | 16 |
-| `ui/app/src/services/secured/competition-crud/competitionCrud.ts:109` | `mergeCompetitionWithPayload` | critical | 25 **!** | 12 | 160.0 **!** | 27 |
+| `ui/app/src/services/secured/competition-crud/competitionCrud.ts:112` | `mergeCompetitionWithPayload` | critical | 25 **!** | 12 | 160.0 **!** | 27 |
 | `ui/app/src/services/secured/stage-crud/stageCrud.ts:29` | `mergeApiStageWithPayload` | critical | 22 **!** | 9 | 506.0 **!** | 19 |
 | `ui/app/src/components/routes/my/collections/$id/obdx/ObdxCollectionDetail.tsx:85` | `ObdxCollectionDetail` | high | 17 | 17 **!** | 79.4 **!** | 379 |
 | `ui/app/src/routes/my/competitions/$id/index.tsx:193` | `CompetitionDetailBody` | critical | 15 | 9 | 240.0 **!** | 265 |
@@ -87,7 +79,7 @@
 | `ui/app/src/routes/my/competitions/$id/index.tsx:302` | `openNewStageEditor` | moderate | 5 | 4 | 30.0 **!** | 17 |
 | `ui/app/src/utils/service-worker/events/notification-click.ts:24` | `reuseOrOpenWindow` | moderate | 5 | 5 | 30.0 **!** | 17 |
 | `ui/app/src/utils/router/breadcrumbs.ts:22` | `resolveBreadcrumb` | moderate | 5 | 6 | 30.0 **!** | 14 |
-| `ui/app/src/services/secured/stage-crud/stageCrudOfflineUtils.ts:246` | `commitApiStageMutationSuccess` | moderate | 5 | 5 | 30.0 **!** | 45 |
+| `ui/app/src/services/secured/stage-crud/stageCrudOfflineUtils.ts:248` | `commitApiStageMutationSuccess` | moderate | 5 | 5 | 30.0 **!** | 45 |
 | `ui/app/src/components/global/app-shell/layout/AppBreadcrumbs.tsx:29` | `<arrow>` | moderate | 5 | 3 | 30.0 **!** | 20 |
 | `ui/app/src/utils/notifications/notifications.ts:34` | `subscribeToPushNotifications` | moderate | 5 | 4 | 30.0 **!** | 19 |
 | `ui/app/src/routes/my/competitions/$id/stages/$stageId/index.tsx:321` | `<arrow>` | moderate | 5 | 4 | 30.0 **!** | 12 |
@@ -101,18 +93,18 @@
 | `ui/app/src/services/fetch-stages/stageEnroll.ts:52` | `events` | moderate | 5 | 4 | 30.0 **!** | 29 |
 | `ui/app/src/services/fetch-stages/stageEnroll.ts:198` | `createRollbackPayload` | moderate | 5 | 2 | 30.0 **!** | 19 |
 
-**468** files, **2959** functions analyzed (thresholds: cyclomatic > 20, cognitive > 15, CRAP >= 30.0)
+**469** files, **2959** functions analyzed (thresholds: cyclomatic > 20, cognitive > 15, CRAP >= 30.0)
 
-### File Health Scores (333 files)
+### File Health Scores (334 files)
 
 | File | Maintainability | Fan-in | Fan-out | Dead Code | Density | Risk |
 |:-----|:---------------|:-------|:--------|:----------|:--------|:-----|
 | `ui/app/src/services/secured/dog-crud/dogCrudOfflineUtils.ts` | 81.0 | 2 | 8 | 0% | 0.34 | 756.0 |
 | `ui/app/src/services/secured/event-crud/eventCrud.ts` | 77.4 | 3 | 18 | 0% | 0.36 | 636.1 |
-| `ui/app/src/services/secured/stage-crud/stageCrud.ts` | 84.2 | 3 | 9 | 0% | 0.22 | 506.0 |
+| `ui/app/src/services/secured/stage-crud/stageCrud.ts` | 83.8 | 3 | 10 | 0% | 0.22 | 506.0 |
 | `ui/app/src/routes/my/competitions/$id/index.tsx` | 82.0 | 1 | 19 | 0% | 0.20 | 240.0 |
 | `ui/app/playwright/api-mocks/eventDetail.ts` | 83.9 | 4 | 9 | 0% | 0.23 | 224.4 |
-| `ui/app/src/services/secured/competition-crud/competitionCrud.ts` | 81.7 | 15 | 14 | 0% | 0.25 | 160.0 |
+| `ui/app/src/services/secured/competition-crud/competitionCrud.ts` | 81.4 | 13 | 15 | 0% | 0.25 | 160.0 |
 | `ui/app/src/routes/stages/index.tsx` | 81.0 | 1 | 29 | 0% | 0.18 | 156.0 |
 | `ui/app/src/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection.tsx` | 82.8 | 1 | 25 | 0% | 0.14 | 156.0 |
 | `ui/app/src/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/CompetitorEditorForm.tsx` | 85.0 | 1 | 10 | 0% | 0.18 | 156.0 |
@@ -189,7 +181,7 @@
 | `ui/app/vite.config.ts` | 95.7 | 0 | 1 | 0% | 0.05 | 12.0 |
 | `ui/app/src/manifest.ts` | 96.3 | 1 | 0 | 0% | 0.17 | 12.0 |
 | `ui/app/src/routes/my/competitions/list/index.tsx` | 83.9 | 2 | 20 | 0% | 0.13 | 10.4 |
-| `ui/app/src/services/secured/event-crud/eventCrudOfflineUtils.ts` | 84.3 | 1 | 12 | 0% | 0.18 | 10.4 |
+| `ui/app/src/services/secured/event-crud/eventCrudOfflineUtils.ts` | 84.7 | 1 | 11 | 0% | 0.18 | 10.4 |
 | `ui/app/src/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils.ts` | 86.9 | 8 | 2 | 0% | 0.29 | 10.4 |
 | `ui/app/src/routes/my/collections/$id/route.tsx` | 89.0 | 2 | 7 | 0% | 0.09 | 10.4 |
 | `ui/app/src/components/common/confirm-action-button/ConfirmActionButton.tsx` | 89.7 | 12 | 4 | 0% | 0.13 | 10.4 |
@@ -212,7 +204,7 @@
 | `ui/app/playwright/api-mocks/competitions.ts` | 86.8 | 4 | 6 | 0% | 0.18 | 7.5 |
 | `ui/app/src/services/secured/configurations/configurations.ts` | 88.0 | 5 | 5 | 0% | 0.21 | 7.5 |
 | `ui/app/src/utils/local-first/pending_tasks/pendingTasksStore.ts` | 88.5 | 16 | 3 | 0% | 0.20 | 7.5 |
-| `ui/app/src/stores/i18n/i18n.ts` | 88.7 | 91 | 2 | 0% | 0.23 | 7.5 |
+| `ui/app/src/stores/i18n/i18n.ts` | 88.7 | 92 | 2 | 0% | 0.23 | 7.5 |
 | `ui/app/src/components/routes/my/collections/$id/obdx/collection-exercise-scores/CollectionExerciseScores.tsx` | 89.7 | 1 | 3 | 0% | 0.16 | 7.5 |
 | `ui/app/src/services/secured/collection-crud/collectionsDrafStore.ts` | 90.0 | 2 | 1 | 0% | 0.24 | 7.5 |
 | `ui/library/src/components/atoms/number-input/AtomNumberInput.tsx` | 95.1 | 7 | 1 | 0% | 0.07 | 7.5 |
@@ -439,6 +431,7 @@
 | `ui/library/src/components/atoms/popover/AtomPopover.tsx` | 96.7 | 3 | 1 | 0% | 0.03 | 1.2 |
 | `ui/app/src/utils/media-query/useMediaQuery.ts` | 97.6 | 1 | 0 | 0% | 0.25 | 1.2 |
 | `ui/app/src/utils/competition.ts` | 98.8 | 5 | 0 | 0% | 0.13 | 1.2 |
+| `ui/app/src/services/secured/competition-crud/competitionCrudConstants.ts` | 96.6 | 3 | 1 | 0% | 0.14 | 1.0 |
 | `ui/app/src/utils/id/generateEntityId.ts` | 99.4 | 8 | 0 | 0% | 0.33 | 1.0 |
 
 **Average maintainability index:** 91.6/100
@@ -458,10 +451,10 @@
 | `ui/app/src/routes/my/competitions/$id/stages/$stageId/index.tsx` | 22.9 | 52 | 1744 | 0.12 | 1 | stable |
 | `ui/app/src/routes/my/competitions/$id/index.tsx` | 22.2 | 34 | 885 | 0.20 | 1 | stable |
 | `ui/app/src/services/fetch-stages/fetchStages.ts` | 17.9 | 16 | 376 | 0.36 | 8 | cooling |
-| `ui/app/src/services/secured/competition-crud/competitionCrud.ts` | 17.4 | 19 | 558 | 0.25 | 15 | cooling |
+| `ui/app/src/services/secured/competition-crud/competitionCrud.ts` | 17.4 | 19 | 558 | 0.25 | 13 | cooling |
+| `ui/app/src/services/secured/dog-crud/dogCrud.ts` | 16.8 | 21 | 551 | 0.21 | 5 | stable |
 | `ui/app/src/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection.tsx` | 16.2 | 27 | 1104 | 0.14 | 1 | accelerating |
 | `ui/app/playwright/api-mocks/eventDetail.ts` | 15.8 | 15 | 338 | 0.23 | 4 | stable |
-| `ui/app/src/services/secured/dog-crud/dogCrud.ts` | 15.7 | 20 | 503 | 0.21 | 5 | stable |
 | `ui/app/src/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/CompetitorEditorForm.tsx` | 15.4 | 20 | 587 | 0.18 | 1 | accelerating |
 | `ui/app/src/utils/event.ts` | 14.5 | 21 | 126 | 0.19 | 14 | stable |
 | `ui/app/src/services/secured/stage-crud/stageCrud.ts` | 13.8 | 17 | 453 | 0.22 | 3 | stable |
@@ -482,9 +475,9 @@
 | `ui/app/src/routes/auth/callback.tsx` | 7.3 | 24 | 332 | 0.11 | 1 | cooling |
 | `ui/app/src/components/common/country-flag/CountryFlag.tsx` | 7.2 | 9 | 1208 | 0.20 | 22 | accelerating |
 | `ui/app/src/components/routes/my/competitions/$id/stages-section/StageEditorForm.tsx` | 7.1 | 11 | 247 | 0.21 | 1 | cooling |
+| `ui/app/src/services/secured/judge-crud/judgeCrud.ts` | 6.7 | 8 | 252 | 0.23 | 3 | cooling |
 | `ui/app/src/components/routes/my/judges/list/judge-form/JudgeForm.tsx` | 6.7 | 9 | 128 | 0.25 | 1 | cooling |
 | `ui/app/src/components/global/app-shell/layout/AppLayout.tsx` | 6.7 | 18 | 328 | 0.10 | 1 | stable |
-| `ui/app/src/services/secured/judge-crud/judgeCrud.ts` | 6.6 | 8 | 252 | 0.23 | 3 | cooling |
 | `ui/app/src/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/ConfigurationEditorForm.tsx` | 6.6 | 7 | 195 | 0.25 | 1 | cooling |
 | `ui/app/src/components/global/app-shell/layout/navigation/NavigationUserMenu.tsx` | 6.6 | 18 | 331 | 0.10 | 1 | stable |
 | `ui/app/src/services/fetch-stages/stageEnroll.ts` | 6.3 | 11 | 454 | 0.16 | 2 | stable |
@@ -524,7 +517,7 @@
 | `ui/app/src/utils/service-worker/events/runtime-cache.ts` | 3.3 | 4 | 220 | 0.20 | 1 | accelerating |
 | `ui/app/src/routes/stages/$id/events/$eventId/classification.list-order.spec.ts` | 3.3 | 5 | 107 | 0.14 | 0 | cooling |
 | `ui/app/src/services/secured/competition-crud/competitionDraftStore.ts` | 3.3 | 3 | 133 | 0.32 | 5 | cooling |
-| `ui/app/src/stores/i18n/i18n.ts` | 3.3 | 4 | 129 | 0.23 | 91 | stable |
+| `ui/app/src/stores/i18n/i18n.ts` | 3.3 | 4 | 129 | 0.23 | 92 | stable |
 | `ui/app/src/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils.ts` | 3.2 | 3 | 104 | 0.29 | 8 | cooling |
 | `ui/app/src/services/secured/collection-crud/collectionCrud.ts` | 3.1 | 6 | 352 | 0.18 | 7 | stable |
 | `ui/app/src/components/common/discipline-icon/DisciplineIcon.tsx` | 3.1 | 4 | 94 | 0.17 | 10 | stable |
@@ -556,11 +549,11 @@
 | `ui/app/src/routes/my/competitions/list/index.test.tsx` | 2.0 | 3 | 44 | 0.26 | 0 | accelerating |
 | `ui/library/src/components/atoms/breadcrumbs/AtomBreadcrumbs.tsx` | 1.9 | 5 | 101 | 0.10 | 1 | stable |
 | `ui/app/src/utils/http/query-client.ts` | 1.9 | 5 | 75 | 0.17 | 23 | cooling |
-| `ui/app/src/utils/google-auth/googleAuth.ts` | 1.9 | 4 | 197 | 0.14 | 6 | stable |
 | `ui/app/src/utils/local-first/query_snapshots/querySnapshotsStore.ts` | 1.9 | 3 | 110 | 0.16 | 13 | accelerating |
 | `ui/library/src/components/atoms/image/AtomImage.tsx` | 1.9 | 6 | 54 | 0.12 | 3 | cooling |
 | `ui/app/src/routes/stages/$id/events/$eventId/route.tsx` | 1.9 | 4 | 26 | 0.13 | 1 | stable |
 | `ui/app/src/routes/index.spec.ts` | 1.9 | 8 | 27 | 0.10 | 0 | cooling |
+| `ui/app/src/utils/google-auth/googleAuth.ts` | 1.8 | 4 | 197 | 0.14 | 6 | stable |
 | `ui/app/src/components/routes/my/competitions/list/competition-card/CompetitionCard.tsx` | 1.8 | 12 | 189 | 0.04 | 2 | stable |
 | `ui/app/smoke/utils/constants.ts` | 1.8 | 3 | 35 | 0.14 | 4 | cooling |
 | `ui/app/src/services/secured/collection-crud/collectionCrudOfflineUtils.ts` | 1.7 | 4 | 291 | 0.13 | 2 | cooling |
@@ -642,20 +635,15 @@
 
 *141 files excluded (< 3 commits)*
 
-### Refactoring Targets (10)
+### Refactoring Targets (5)
 
 | Efficiency | Category | Effort / Confidence | File | Recommendation |
 |:-----------|:---------|:--------------------|:-----|:---------------|
 | 14.2 | high impact | medium / medium | `ui/app/src/services/fetch-stages/fetchStages.ts` | Split high-impact file (145 LOC), 8 dependents amplify every change |
 | 12.1 | high impact | high / medium | `ui/app/src/services/secured/event-crud/eventCrud.ts` | Split high-impact file (628 LOC), 3 dependents amplify every change |
-| 11.9 | circular dependency | high / high | `ui/app/src/services/secured/competition-crud/competitionCrud.ts` | Break import cycle, 15 files depend on this, changes cascade through the cycle |
 | 10.3 | high impact | high / medium | `ui/app/src/utils/local-first/localFirstPolicy.ts` | Split high-impact file (19 LOC), 22 dependents amplify every change |
 | 10.3 | untested risk | medium / high | `ui/app/src/services/secured/dog-crud/dogCrudOfflineUtils.ts` | 2 complex functions lack test coverage path, add tests before modifying |
-| 9.8 | circular dependency | high / high | `ui/app/src/stores/auth/auth.ts` | Break import cycle, 27 files depend on this, changes cascade through the cycle |
-| 8.5 | circular dependency | medium / high | `ui/app/src/services/secured/competition-crud/competitionCrudOfflineUtils.ts` | Break import cycle, 5 files depend on this, changes cascade through the cycle |
 | 8.0 | high impact | medium / medium | `ui/app/src/services/secured/competition-crud/competitionDraftStore.ts` | Split high-impact file (118 LOC), 5 dependents amplify every change |
-| 7.4 | circular dependency | high / high | `ui/app/src/services/secured/event-crud/eventCrud.types.ts` | Break import cycle, 21 files depend on this, changes cascade through the cycle |
-| 4.2 | circular dependency | medium / high | `ui/app/src/utils/local-first/query_snapshots/localFirstQueryCache.ts` | Break import cycle to reduce change cascade risk |
 
 ---
 
