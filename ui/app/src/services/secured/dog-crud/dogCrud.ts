@@ -1,4 +1,3 @@
-import { createMemo } from "solid-js";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
@@ -92,20 +91,19 @@ export const prefetchDogs = (options?: TanstackCreateQuery) => {
   });
 };
 
-export const useDogs = (options?: TanstackCreateQuery) => {
-  const dogs = createDogsQuery(options);
-  const mergedData = createMemo(() => mergeDogsWithDrafts(dogs.data ?? []));
-
-  return new Proxy(dogs, {
+const withMergedDogDrafts = <T extends { data?: Dog[] }>(dogs: T): T =>
+  new Proxy(dogs, {
     get(target, property, receiver) {
       if (property === "data") {
-        return mergedData();
+        return mergeDogsWithDrafts(target.data ?? []);
       }
 
       return Reflect.get(target, property, receiver);
     },
   });
-};
+
+export const useDogs = (options?: TanstackCreateQuery) =>
+  withMergedDogDrafts(createDogsQuery(options));
 
 export const prefetchAllDogs = (options?: TanstackCreateQuery) => {
   const allDogsQuery = defineQuery({
@@ -137,22 +135,8 @@ const createAllDogsQuery = (options?: TanstackCreateQuery) =>
     },
   } as any);
 
-export const useAllDogs = (options?: TanstackCreateQuery) => {
-  const dogs = createAllDogsQuery(options);
-  // Merge in optimistic drafts so a dog created from the CRUD shows up here
-  // (e.g. the add-competitor flow) before the mutation commits.
-  const mergedData = createMemo(() => mergeDogsWithDrafts(dogs.data ?? []));
-
-  return new Proxy(dogs, {
-    get(target, property, receiver) {
-      if (property === "data") {
-        return mergedData();
-      }
-
-      return Reflect.get(target, property, receiver);
-    },
-  });
-};
+export const useAllDogs = (options?: TanstackCreateQuery) =>
+  withMergedDogDrafts(createAllDogsQuery(options));
 
 export const prefetchOwnedDogs = (options?: TanstackCreateQuery) => {
   const ownedDogsQuery = defineQuery({
@@ -184,20 +168,8 @@ const createOwnedDogsQuery = (options?: TanstackCreateQuery) =>
     },
   } as any);
 
-export const useOwnedDogs = (options?: TanstackCreateQuery) => {
-  const dogs = createOwnedDogsQuery(options);
-  const mergedData = createMemo(() => mergeDogsWithDrafts(dogs.data ?? []));
-
-  return new Proxy(dogs, {
-    get(target, property, receiver) {
-      if (property === "data") {
-        return mergedData();
-      }
-
-      return Reflect.get(target, property, receiver);
-    },
-  });
-};
+export const useOwnedDogs = (options?: TanstackCreateQuery) =>
+  withMergedDogDrafts(createOwnedDogsQuery(options));
 
 const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   id: draftDog.id,

@@ -19,7 +19,8 @@
     "storybook-addon-tag-badges" // resolved by string via getAbsolutePath() in .storybook/main.ts
   ],
   "ignoreUnresolvedImports": [
-    "**/.reports/test/unit/coverage/coverage-final.json"
+    "**/.reports/test/unit/coverage/coverage-final.json",
+    "**/.reports/test/e2e/coverage/coverage-final.json"
   ],
   "duplicates": {
     // Hide pair-only clones; focus on widespread copy-paste
