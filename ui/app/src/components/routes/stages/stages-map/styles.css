@@ -110,7 +110,7 @@
 .stages-map-marker-popup__btn-icon {
     display: inline-flex;
     align-items: center;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
 }
 
 .stages-map-marker-popup__btn-label {
@@ -130,9 +130,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: var(--unit-3);
-    min-width: var(--unit-3);
-    padding: 0 var(--unit-05);
+    height: var(--unit-4);
+    min-width: var(--unit-4);
+    padding: 0 var(--unit-1);
 }
 
 .stages-map-marker-popup__enrollment {

@@ -27,6 +27,8 @@ import {isStageLive} from "@/utils/stage";
 import {canSeeClassification} from "@/utils/event";
 import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import scoresIcon from "@/assets/miscelaneous/scores.svg";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoRoute,
@@ -270,7 +272,12 @@ function StageInfoPage() {
                                 navigateToClassification(event().id)
                               }
                             >
-                              {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
+                              <span class="stage-info__classification-btn-icon">
+                                <AtomSvgIcon src={scoresIcon} alt="" tinted />
+                              </span>
+                              <span class="stage-info__classification-btn-label">
+                                {i18n.t("STAGES.INFO.SEE_CLASSIFICATION")}
+                              </span>
                             </AtomButton>
                           </div>
                         </Show>

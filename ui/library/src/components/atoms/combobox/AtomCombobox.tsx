@@ -91,6 +91,11 @@ export function AtomCombobox(props: AtomComboboxProps) {
       allowsEmptyCollection
       triggerMode="focus"
       validationState={props.validationState}
+      defaultFilter={(option, query) =>
+        (option.searchText ?? option.label)
+          .toLocaleLowerCase()
+          .includes(query.trim().toLocaleLowerCase())
+      }
       options={visibleOptions()}
       optionDisabled="disabled"
       optionLabel="label"

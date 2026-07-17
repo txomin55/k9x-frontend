@@ -53,7 +53,7 @@
 .stage-card__events-btn-icon {
     display: none;
     align-items: center;
-    font-size: var(--font-size-md);
+    font-size: var(--font-size-lg);
 }
 
 @media (max-width: 767px) {
@@ -82,9 +82,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: var(--unit-3);
-        min-width: var(--unit-3);
-        padding: 0 var(--unit-05);
+        height: var(--unit-4);
+        min-width: var(--unit-4);
+        padding: 0 var(--unit-1);
     }
 }
 
