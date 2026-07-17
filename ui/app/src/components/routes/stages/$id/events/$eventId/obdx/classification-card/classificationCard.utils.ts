@@ -4,8 +4,6 @@ import type {
 } from "@/services/fetch-stages/fetchStages.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
-export type RatingColor = "green" | "yellow" | "red" | "grey";
-
 export type TrendDirection = "up" | "down" | "same";
 
 export function positionTrend(
@@ -16,13 +14,40 @@ export function positionTrend(
   return previous > current ? "up" : "down";
 }
 
-export function ratingColorClass(
+const YELLOW = "color-mix(in oklab, var(--warning), gold 28%)";
+
+// Rating (%) -> position on the red(0)..yellow(1)..green(2) ramp.
+// Flat within each band so the contrast lands on the 58->60 and 70->80 jumps.
+const RATING_STOPS: ReadonlyArray<readonly [number, number]> = [
+  [0, 0], // red
+  [58, 0], // red (flat below 60)
+  [60, 1], // yellow
+  [70, 1], // yellow (flat band 60-70)
+  [80, 2], // green
+  [100, 2], // green (flat band 80+)
+];
+
+export function ratingColor(
   rating: number | null | undefined,
-): RatingColor {
-  if (rating === null || rating === undefined) return "grey";
-  if (rating >= 80) return "green";
-  if (rating >= 50) return "yellow";
-  return "red";
+): string | null {
+  if (rating === null || rating === undefined) return null;
+  const clamped = Math.max(0, Math.min(100, rating));
+  let pos = RATING_STOPS[RATING_STOPS.length - 1][1];
+  for (let i = 1; i < RATING_STOPS.length; i++) {
+    const [prevRating, prevPos] = RATING_STOPS[i - 1];
+    const [nextRating, nextPos] = RATING_STOPS[i];
+    if (clamped <= nextRating) {
+      const t = (clamped - prevRating) / (nextRating - prevRating);
+      pos = prevPos + t * (nextPos - prevPos);
+      break;
+    }
+  }
+  if (pos <= 1) {
+    const p = Math.round(pos * 100);
+    return `color-mix(in oklch, var(--error), ${YELLOW} ${p}%)`;
+  }
+  const p = Math.round((pos - 1) * 100);
+  return `color-mix(in oklch, ${YELLOW}, var(--success) ${p}%)`;
 }
 
 const SHORT_CODE_STOP_WORDS = new Set([

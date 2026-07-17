@@ -221,22 +221,10 @@
     line-height: 1;
 }
 
-.obdx-clf__chip.is-green {
-    background: var(--success-bg);
-    border-color: var(--success-border);
-    color: var(--success-text);
-}
-
-.obdx-clf__chip.is-yellow {
-    background: var(--warning-bg);
-    border-color: var(--warning-border);
-    color: var(--warning-text);
-}
-
-.obdx-clf__chip.is-red {
-    background: var(--error-bg);
-    border-color: var(--error-border);
-    color: var(--error-text);
+.obdx-clf__chip.is-graded {
+    background: color-mix(in srgb, var(--rating-color) 20%, var(--surface));
+    border-color: color-mix(in srgb, var(--rating-color) 48%, var(--surface));
+    color: color-mix(in oklab, var(--rating-color), var(--text-primary) 24%);
 }
 
 .obdx-clf__chip.is-grey {
@@ -317,16 +305,8 @@
     color: var(--text-muted);
 }
 
-.obdx-clf__fraction.is-green {
-    color: var(--success);
-}
-
-.obdx-clf__fraction.is-yellow {
-    color: var(--warning);
-}
-
-.obdx-clf__fraction.is-red {
-    color: var(--error);
+.obdx-clf__fraction.is-graded {
+    color: color-mix(in oklab, var(--rating-color), var(--text-primary) 18%);
 }
 
 .obdx-clf__fraction.is-grey {

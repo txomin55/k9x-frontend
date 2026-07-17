@@ -1,4 +1,4 @@
-import { ratingColorClass } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
+import { ratingColor } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 export type ScoreFractionProps = {
@@ -8,17 +8,16 @@ export type ScoreFractionProps = {
 };
 
 export default function ScoreFraction(props: ScoreFractionProps) {
-  const color = () => ratingColorClass(props.rating);
+  const color = () => ratingColor(props.rating);
 
   return (
     <span
       class="obdx-clf__fraction"
       classList={{
-        "is-green": color() === "green",
-        "is-yellow": color() === "yellow",
-        "is-red": color() === "red",
-        "is-grey": color() === "grey",
+        "is-graded": color() !== null,
+        "is-grey": color() === null,
       }}
+      style={color() === null ? undefined : { "--rating-color": color()! }}
     >
       {props.score ?? "-"}
       <span class="obdx-clf__fraction-max">/{props.max}</span>
