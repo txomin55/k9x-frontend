@@ -24,6 +24,9 @@ import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import { useAuthUser } from "@/stores/auth/auth";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import scoresIcon from "@/assets/miscelaneous/scores.svg";
+import userPlusIcon from "@/assets/miscelaneous/user-plus.svg";
 
 interface StageMapMarker {
   stage: StageSummaryResponseDTO;
@@ -93,7 +96,12 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                         props.onEnroll?.(props.stage.id, event().id)
                       }
                     >
-                      {i18n.t("STAGES.INFO.ENROLL")}
+                      <span class="stages-map-marker-popup__btn-icon">
+                        <AtomSvgIcon src={userPlusIcon} alt="" tinted />
+                      </span>
+                      <span class="stages-map-marker-popup__btn-label">
+                        {i18n.t("STAGES.INFO.ENROLL")}
+                      </span>
                     </AtomButton>
                     <span class="text-caption-sm">
                       {formatDateLabel(
@@ -108,7 +116,12 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
                   size={BUTTON_SIZES.SM}
                   onClick={() => navigateToClassification(event().id)}
                 >
-                  {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_CLASSIFICATIONS")}
+                  <span class="stages-map-marker-popup__btn-icon">
+                    <AtomSvgIcon src={scoresIcon} alt="" tinted />
+                  </span>
+                  <span class="stages-map-marker-popup__btn-label">
+                    {i18n.t("STAGES.STAGES_MAP.MARKER.VIEW_CLASSIFICATIONS")}
+                  </span>
                 </AtomButton>
               </Show>
             </div>

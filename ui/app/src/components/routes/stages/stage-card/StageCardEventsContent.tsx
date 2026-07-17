@@ -12,6 +12,9 @@ import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetch
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import scoresIcon from "@/assets/miscelaneous/scores.svg";
+import userPlusIcon from "@/assets/miscelaneous/user-plus.svg";
 import "./styles.css";
 
 export interface StageCardEventsContentProps {
@@ -58,7 +61,12 @@ export default function StageCardEventsContent(
               >
                 <div class="stage-card__events-content--enrollment">
                   <AtomButton onClick={() => props.onEnroll?.(event().id)}>
-                    {i18n.t("STAGES.INFO.ENROLL")}
+                    <span class="stage-card__events-btn-icon">
+                      <AtomSvgIcon src={userPlusIcon} alt="" tinted />
+                    </span>
+                    <span class="stage-card__events-btn-label">
+                      {i18n.t("STAGES.INFO.ENROLL")}
+                    </span>
                   </AtomButton>
                   <span class="text-caption-sm">
                     {formatDateLabel(
@@ -73,7 +81,12 @@ export default function StageCardEventsContent(
                 type={BUTTON_TYPES.PRIMARY}
                 onClick={() => navigateToClassification(event().id)}
               >
-                {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
+                <span class="stage-card__events-btn-icon">
+                  <AtomSvgIcon src={scoresIcon} alt="" tinted />
+                </span>
+                <span class="stage-card__events-btn-label">
+                  {i18n.t("STAGES.STAGE_CARD.SEE_CLASSIFICATION")}
+                </span>
               </AtomButton>
             </Show>
           </div>

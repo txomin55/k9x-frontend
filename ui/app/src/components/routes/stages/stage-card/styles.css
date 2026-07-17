@@ -40,6 +40,54 @@
     align-items: center;
 }
 
+.stage-card__events-content--info .text-heading-xs {
+    white-space: nowrap;
+}
+
+.stage-card__events-actions .atom-button > span {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--unit-05);
+}
+
+.stage-card__events-btn-icon {
+    display: none;
+    align-items: center;
+    font-size: var(--font-size-md);
+}
+
+@media (max-width: 767px) {
+    .stage-card__events-content {
+        align-items: center;
+    }
+
+    .stage-card__events-btn-icon {
+        display: inline-flex;
+    }
+
+    .stage-card__events-btn-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .stage-card__events-actions
+        .atom-button:has(.stage-card__events-btn-label) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: var(--unit-3);
+        min-width: var(--unit-3);
+        padding: 0 var(--unit-05);
+    }
+}
+
 .stage-card__events-content--enrollment {
     display: flex;
     flex-direction: column;
