@@ -248,8 +248,6 @@
   "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG": "Close dialog",
   "MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT": "New event",
   "MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS": "No events.",
-  "MY.COMPETITIONS.STAGE_DETAIL.STATUS": "Status",
-  "MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE": "Disc.",
   "MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS": "Participants",
   "MY.COMPETITIONS.STAGE_DETAIL.DELETE": "Delete",
   "MY.COMPETITIONS.STAGE_DETAIL.EDIT": "Edit",
@@ -455,5 +453,13 @@
   "MY.COMPETITIONS.LIST.NAME": "Name",
   "MY.COMPETITIONS.LIST.STATUS": "Status",
   "MY.COMPETITIONS.LIST.ADDRESS": "Address",
-  "MY.COMPETITIONS.LIST.VIEW_DETAIL": "View detail"
+  "MY.COMPETITIONS.LIST.VIEW_DETAIL": "View detail",
+  "HOME.META_TITLE": "K9X | Rankings & Working Dog Performance Index",
+  "HOME.META_DESCRIPTION": "K9X tracks and ranks working dogs by FCI competition results. Compare scores, exercises and standings across trials.",
+  "STAGES.INDEX.META_TITLE": "Trials | K9X",
+  "STAGES.INDEX.META_DESCRIPTION": "Browse working dog competition trials: dates, locations, events and live results on K9X.",
+  "STAGES.INFO.META_TITLE": "{{name}} | K9X",
+  "STAGES.INFO.META_DESCRIPTION": "Events, enrollment and competitors for {{name}} on K9X.",
+  "STAGES.CLASSIFICATION.META_TITLE": "{{name}} | K9X",
+  "STAGES.CLASSIFICATION.META_DESCRIPTION": "Live classification and scores for {{name}} on K9X."
 }

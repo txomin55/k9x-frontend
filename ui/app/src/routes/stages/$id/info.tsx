@@ -16,6 +16,7 @@ import {useAuthUser} from "@/stores/auth/auth";
 import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
 import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
 import {useI18n} from "@/stores/i18n/i18n";
+import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
@@ -125,6 +126,18 @@ function StageInfoPage() {
   const params = useParams({ from: "/stages/$id/info" });
 
   const stageInfo = useStageById(params().id);
+  const metaTitle = createMemo(() => {
+    const name = stageInfo.data?.competitionName;
+    return name
+      ? i18n.t("STAGES.INFO.META_TITLE", { name })
+      : i18n.t("STAGES.INDEX.META_TITLE");
+  });
+  const metaDescription = createMemo(() => {
+    const name = stageInfo.data?.competitionName;
+    return name
+      ? i18n.t("STAGES.INFO.META_DESCRIPTION", { name })
+      : undefined;
+  });
   const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
@@ -325,6 +338,7 @@ function StageInfoPage() {
     });
   return (
     <div class="stage-info">
+      <PageSeo title={metaTitle()} description={metaDescription()} />
       <Show
         when={stageInfo.data}
         fallback={<StageInfoSkeleton />}

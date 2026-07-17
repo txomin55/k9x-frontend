@@ -17,6 +17,7 @@ import { setUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
 import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
+import { logger } from "@/utils/logger/logger";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 
@@ -138,7 +139,7 @@ function AuthCallbackPage() {
     try {
       await runCallback();
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       setStatus("error");
       setErrorMessage(
         error instanceof Error ? error.message : i18n.t("AUTH_CALLBACK.AUTHENTICATION_FAILED"),

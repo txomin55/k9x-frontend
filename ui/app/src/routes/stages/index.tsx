@@ -14,6 +14,7 @@ import {
   Switch,
   useContext
 } from "solid-js";
+import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageCard from "@/components/routes/stages/stage-card/StageCard";
@@ -573,6 +574,10 @@ function StagesIndexPage() {
   return (
     <StagesDataProvider>
       <div class="stages">
+        <PageSeo
+          title={i18n.t("STAGES.INDEX.META_TITLE")}
+          description={i18n.t("STAGES.INDEX.META_DESCRIPTION")}
+        />
         <Show when={isLoggedIn()}>
           <StagesFiltersConnected
             name={nameFilter()}

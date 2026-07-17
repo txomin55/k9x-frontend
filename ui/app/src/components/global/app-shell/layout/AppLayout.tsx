@@ -87,6 +87,7 @@ export default function AppLayout(props: ParentProps) {
           class="app-layout__navigation-toggle"
           onClick={() => setIsNavOpen((open) => !open)}
           aria-expanded={isNavOpen()}
+          aria-label={isNavOpen() ? "Close navigation" : "Open navigation"}
         >
           <span class="app-layout__navigation-toggle-icon">
             <span />

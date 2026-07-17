@@ -248,8 +248,6 @@
   "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG": "Cerrar diálogo",
   "MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT": "Nuevo evento",
   "MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS": "No hay eventos.",
-  "MY.COMPETITIONS.STAGE_DETAIL.STATUS": "Estado",
-  "MY.COMPETITIONS.STAGE_DETAIL.DISCIPLINE": "Disc.",
   "MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS": "Participantes",
   "MY.COMPETITIONS.STAGE_DETAIL.DELETE": "Eliminar",
   "MY.COMPETITIONS.STAGE_DETAIL.EDIT": "Editar",
@@ -455,5 +453,13 @@
   "MY.COMPETITIONS.LIST.NAME": "Nombre",
   "MY.COMPETITIONS.LIST.STATUS": "Estado",
   "MY.COMPETITIONS.LIST.ADDRESS": "Dirección",
-  "MY.COMPETITIONS.LIST.VIEW_DETAIL": "Ver detalle"
+  "MY.COMPETITIONS.LIST.VIEW_DETAIL": "Ver detalle",
+  "HOME.META_TITLE": "K9X | Rankings e índice de rendimiento canino",
+  "HOME.META_DESCRIPTION": "K9X sigue y clasifica perros de trabajo por resultados de competición FCI. Compara puntuaciones, ejercicios y clasificaciones.",
+  "STAGES.INDEX.META_TITLE": "Pruebas | K9X",
+  "STAGES.INDEX.META_DESCRIPTION": "Explora las pruebas de competición de perros de trabajo: fechas, ubicaciones, eventos y resultados en directo en K9X.",
+  "STAGES.INFO.META_TITLE": "{{name}} | K9X",
+  "STAGES.INFO.META_DESCRIPTION": "Eventos, inscripción y participantes de {{name}} en K9X.",
+  "STAGES.CLASSIFICATION.META_TITLE": "{{name}} | K9X",
+  "STAGES.CLASSIFICATION.META_DESCRIPTION": "Clasificación y puntuaciones en directo de {{name}} en K9X."
 }

@@ -13,6 +13,7 @@ import {
   Suspense,
 } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
+import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useStages } from "@/services/fetch-stages/fetchStages";
@@ -144,6 +145,10 @@ function EntryRoutePage() {
 
   return (
     <section class="landing-page">
+      <PageSeo
+        title={i18n.t("HOME.META_TITLE")}
+        description={i18n.t("HOME.META_DESCRIPTION")}
+      />
       <AtomLogo
         line1Text={i18n.t("HOME.LOGO.LINE1")}
         line2Text={i18n.t("HOME.LOGO.LINE2")}

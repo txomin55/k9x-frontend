@@ -23,6 +23,7 @@ import {
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
+import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
@@ -173,6 +174,18 @@ function EventClassificationPage() {
 
   const [clfData, setClfData] =
     createSignal<StageEventClassificationResponseDTO>();
+  const metaTitle = createMemo(() => {
+    const name = clfData()?.event?.name;
+    return name
+      ? t("STAGES.CLASSIFICATION.META_TITLE", { name })
+      : t("STAGES.INDEX.META_TITLE");
+  });
+  const metaDescription = createMemo(() => {
+    const name = clfData()?.event?.name;
+    return name
+      ? t("STAGES.CLASSIFICATION.META_DESCRIPTION", { name })
+      : undefined;
+  });
   const activeScroller = () => {
     const list = scrollEl();
     if (list?.isConnected) return list;
@@ -573,9 +586,11 @@ function EventClassificationPage() {
   });
 
   return (
-    <Show
-      when={clfData()}
-      fallback={
+    <>
+      <PageSeo title={metaTitle()} description={metaDescription()} />
+      <Show
+        when={clfData()}
+        fallback={
         <Show
           when={classificationQuery.isError}
           fallback={<ClassificationSkeleton />}
@@ -773,6 +788,7 @@ function EventClassificationPage() {
           </div>
         );
       }}
-    </Show>
+      </Show>
+    </>
   );
 }

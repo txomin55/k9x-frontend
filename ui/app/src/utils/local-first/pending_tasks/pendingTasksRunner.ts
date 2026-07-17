@@ -1,4 +1,5 @@
 import { HttpRequestError, NetworkRequestError, rawRequest } from "@/utils/http/client";
+import { logger } from "@/utils/logger/logger";
 import { getRetryablePendingTasks, removePendingTask, updatePendingTask } from "./pendingTasksStore";
 import type { PendingTask, PendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
@@ -18,7 +19,7 @@ const executePendingTask = (task: PendingTask) =>
   });
 
 const discardPendingTask = async (task: PendingTask, error: unknown) => {
-  console.error("Discarding pending task after unexpected local-first error", {
+  logger.error("Discarding pending task after unexpected local-first error", {
     error,
     taskId: task.id,
     taskType: task.entityType,

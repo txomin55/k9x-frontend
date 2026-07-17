@@ -44,6 +44,7 @@ export default defineConfig(({ mode }) => {
     },
     publicDir: "static",
     build: {
+      sourcemap: true,
       rollupOptions: {
         external: [
           "*jest*",

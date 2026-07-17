@@ -58,5 +58,5 @@
 
 .atom-logo__tagline--line2 {
     letter-spacing: 0.55em;
-    color: var(--focus-ring);
+    font-weight: 400 !important;
 }
