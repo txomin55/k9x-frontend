@@ -29,6 +29,7 @@ import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
+import userPlusIcon from "@/assets/miscelaneous/user-plus.svg";
 
 export const Route = createFileRoute("/stages/$id/info")({
   component: StageInfoRoute,
@@ -252,7 +253,16 @@ function StageInfoPage() {
                               <AtomButton
                                 onClick={() => openEnrollDialog(event().id)}
                               >
-                                {i18n.t("STAGES.INFO.ENROLL")}
+                                <span class="stage-info__enroll-btn-icon">
+                                  <AtomSvgIcon
+                                    src={userPlusIcon}
+                                    alt=""
+                                    tinted
+                                  />
+                                </span>
+                                <span class="stage-info__enroll-btn-label">
+                                  {i18n.t("STAGES.INFO.ENROLL")}
+                                </span>
                               </AtomButton>
                               <span class="text-caption-sm">
                                 {formatDateLabel(

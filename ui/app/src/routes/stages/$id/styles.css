@@ -73,18 +73,21 @@
     width: 100%;
 }
 
-.stage-info__classification-btn-icon {
+.stage-info__classification-btn-icon,
+.stage-info__enroll-btn-icon {
     display: none;
     align-items: center;
     font-size: var(--font-size-lg);
 }
 
 @media (max-width: 767px) {
-    .stage-info__classification-btn-icon {
+    .stage-info__classification-btn-icon,
+    .stage-info__enroll-btn-icon {
         display: inline-flex;
     }
 
-    .stage-info__classification-btn-label {
+    .stage-info__classification-btn-label,
+    .stage-info__enroll-btn-label {
         position: absolute;
         width: 1px;
         height: 1px;
@@ -97,13 +100,19 @@
     }
 
     .stage-info__event--classification
-        .atom-button:has(.stage-info__classification-btn-label) {
+        .atom-button:has(.stage-info__classification-btn-label),
+    .stage-info__event--enrollment
+        .atom-button:has(.stage-info__enroll-btn-label) {
         display: flex;
         align-items: center;
         justify-content: center;
         height: var(--unit-4);
         min-width: var(--unit-4);
         padding: 0 var(--unit-1);
+    }
+
+    .stage-info__event--enrollment {
+        align-items: center;
     }
 }
 
