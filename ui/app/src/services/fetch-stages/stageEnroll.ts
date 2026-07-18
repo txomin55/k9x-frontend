@@ -84,7 +84,7 @@ const buildNextStagesSummary = (
   stageId: string,
   stages: StageSummaryResponseDTO[],
   payload: EnrollStageEventRequestDTO,
-  nextStage: StageDetailResponseDTO,
+  nextStage?: StageDetailResponseDTO,
 ): StageSummaryResponseDTO[] =>
   stages.map((stage) => {
     if (String(stage.id) !== String(stageId)) {
@@ -98,13 +98,14 @@ const buildNextStagesSummary = (
           return event;
         }
 
-        const nextEvent = (nextStage.events ?? []).find(
+        const nextEvent = nextStage?.events?.find(
           (stageEvent) => String(stageEvent.id) === String(payload.eventId),
         );
 
         return {
           ...event,
-          competitors: nextEvent?.competitors?.length ?? event.competitors ?? 0,
+          competitors:
+            nextEvent?.competitors?.length ?? (event.competitors ?? 0) + 1,
         };
       }),
     };
@@ -118,14 +119,13 @@ const applyOptimisticEnroll = async (
     getStageByIdQueryKey(stageId),
   );
 
-  if (!previousStage) {
-    throw new Error(`Stage ${stageId} not found in cache`);
+  let nextStage: StageDetailResponseDTO | undefined;
+
+  if (previousStage) {
+    nextStage = buildNextStage(previousStage, payload);
+    queryClient.setQueryData(getStageByIdQueryKey(stageId), nextStage);
+    await saveQuerySnapshot(getStageSnapshotId(stageId), nextStage);
   }
-
-  const nextStage = buildNextStage(previousStage, payload);
-
-  queryClient.setQueryData(getStageByIdQueryKey(stageId), nextStage);
-  await saveQuerySnapshot(getStageSnapshotId(stageId), nextStage);
 
   const previousStages =
     queryClient.getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey());

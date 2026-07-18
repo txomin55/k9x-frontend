@@ -71,6 +71,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
               <RankBadge rank={event().rank} />
               <DisciplineIcon disciplineId={event().discipline.id} />
               <span class="text-heading-xs">{event().name}</span>
+              <span class="text-caption-sm">({event().competitors})</span>
               <Show when={isStageLive(event().status)}>
                 <StatusBadge status={event().status} dotMode />
               </Show>
