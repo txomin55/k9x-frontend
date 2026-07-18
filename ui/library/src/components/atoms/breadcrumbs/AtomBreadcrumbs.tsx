@@ -39,7 +39,9 @@ const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
         }
 
         event.preventDefault();
-        props.onNavigate(props.route);
+        const route = props.route;
+        const onNavigate = props.onNavigate;
+        queueMicrotask(() => onNavigate(route));
       }}
     >
       {props.children}

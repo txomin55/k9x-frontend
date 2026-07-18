@@ -27,14 +27,16 @@ export function useSearchParam(
   const setValue = (next: string) => {
     const nextValue = String(next);
     if (value() === nextValue) return;
-    void navigate({
-      to: ".",
-      search: (prev: SearchRecord) => ({
-        ...prev,
-        [key]: nextValue === defaultValue ? undefined : nextValue,
+    queueMicrotask(() =>
+      void navigate({
+        to: ".",
+        search: (prev: SearchRecord) => ({
+          ...prev,
+          [key]: nextValue === defaultValue ? undefined : nextValue,
+        }),
+        replace: mode === "replace",
       }),
-      replace: mode === "replace",
-    });
+    );
   };
 
   return [value, setValue] as const;
@@ -67,14 +69,16 @@ export function useSearchParamList(
   const setValue = (next: string[]) => {
     const nextValue = next.map(String).join(",");
     if (value().join(",") === nextValue) return;
-    void navigate({
-      to: ".",
-      search: (prev: SearchRecord) => ({
-        ...prev,
-        [key]: next.length ? nextValue : undefined,
+    queueMicrotask(() =>
+      void navigate({
+        to: ".",
+        search: (prev: SearchRecord) => ({
+          ...prev,
+          [key]: next.length ? nextValue : undefined,
+        }),
+        replace: mode === "replace",
       }),
-      replace: mode === "replace",
-    });
+    );
   };
 
   return [value, setValue] as const;
