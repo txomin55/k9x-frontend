@@ -8,7 +8,7 @@ import type {
 export type TanstackCreateQuery = {
   staleTime?: number;
   gcTime?: number;
-  refetchOnMount?: boolean;
+  refetchOnMount?: boolean | "always";
   enabled?: () => boolean;
 };
 

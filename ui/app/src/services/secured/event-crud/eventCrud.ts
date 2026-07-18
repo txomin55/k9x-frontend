@@ -463,7 +463,7 @@ export const useApiEvent = () => {
 
     const eventQuery = useEventById(id, {
       staleTime: Number.POSITIVE_INFINITY,
-      refetchOnMount: !isOffline(),
+      refetchOnMount: isOffline() ? false : "always",
     });
 
     return createMemo(() => eventQuery.data);
@@ -500,6 +500,7 @@ export const useApiEvent = () => {
         method: "POST",
         payload: {
           disciplineId: payload.disciplineId,
+          enrollmentDeadline: draftApiEvent.enrollmentDeadline,
           id: draftApiEvent.id,
           name: draftApiEvent.name,
           stageId: draftApiEvent.stage.id,
