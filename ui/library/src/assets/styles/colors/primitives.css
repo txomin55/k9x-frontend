@@ -89,4 +89,19 @@
     --error-700: #991B1B;
     --error-800: #7F1D1D;
     --error-900: #450A0A;
+
+    /* ----------------------------- */
+    /* Special (Violet)              */
+    /* ----------------------------- */
+
+    --special-50: #F5F3FF;
+    --special-100: #EDE9FE;
+    --special-200: #DDD6FE;
+    --special-300: #C4B5FD;
+    --special-400: #A78BFA;
+    --special-500: #8B5CF6;
+    --special-600: #7C3AED;
+    --special-700: #6D28D9;
+    --special-800: #5B21B6;
+    --special-900: #4C1D95;
 }

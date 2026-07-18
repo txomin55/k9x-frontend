@@ -5,8 +5,8 @@ import type { AtomBadgeProps } from "@lib/components/atoms/badge/AtomBadge";
 const meta = {
   title: "Atoms/AtomBadge",
   argTypes: {
-    kind: {
-      options: ["success", "warning", "error", "accent"],
+    type: {
+      options: ["success", "warning", "error", "accent", "primary", "special"],
       control: { type: "select" },
     },
     textValue: { control: "text" },
@@ -26,28 +26,35 @@ export const Basic = {
 export const Success = {
   args: {
     children: "Active",
-    kind: "success",
+    type: "success",
   },
 };
 
 export const Warning = {
   args: {
     children: "Pending",
-    kind: "warning",
+    type: "warning",
   },
 };
 
 export const Error = {
   args: {
     children: "Blocked",
-    kind: "error",
+    type: "error",
   },
 };
 
 export const Accent = {
   args: {
     children: "Featured",
-    kind: "accent",
+    type: "accent",
+  },
+};
+
+export const Special = {
+  args: {
+    children: "Special",
+    type: "special",
   },
 };
 

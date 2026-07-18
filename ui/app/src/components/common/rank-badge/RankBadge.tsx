@@ -11,6 +11,7 @@ type StatusConfig = {
 };
 
 const RANK_CONFIG: Record<string, StatusConfig> = {
+  S: { type: BADGE_TYPES.SPECIAL },
   A: { type: BADGE_TYPES.SUCCESS },
   B: { type: BADGE_TYPES.PRIMARY },
   C: { type: BADGE_TYPES.ACCENT },
@@ -21,7 +22,6 @@ const RANK_CONFIG: Record<string, StatusConfig> = {
 export default function RankBadge(props: RankBadgeProps) {
   const letter = () => props.rank?.replaceAll("+", "");
   const hasPlus = () => Boolean(props.rank?.includes("+"));
-  const hasPlusPlus = () => Boolean(props.rank?.includes("++"));
   const type = () => {
     const key = letter();
     return key ? RANK_CONFIG[key]?.type : undefined;
@@ -34,9 +34,6 @@ export default function RankBadge(props: RankBadgeProps) {
           {letter()}
           <Show when={hasPlus()}>
             <span class="rank-badge__plus">+</span>
-          </Show>
-          <Show when={hasPlusPlus()}>
-            <span class="rank-badge__plus rank-badge__plus--plus">+</span>
           </Show>
         </span>
       </AtomBadge>

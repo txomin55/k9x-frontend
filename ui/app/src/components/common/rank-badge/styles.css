@@ -15,7 +15,3 @@
     line-height: 1;
     font-weight: var(--font-weight-bold);
 }
-
-.rank-badge__plus--plus {
-    inset-inline-end: calc(-1 * var(--unit-2));
-}

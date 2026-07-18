@@ -18,6 +18,7 @@ export const BADGE_TYPES = {
   SUCCESS: "success",
   ACCENT: "accent",
   PRIMARY: "primary",
+  SPECIAL: "special",
 } as const;
 
 export default function (props: AtomBadgeProps) {

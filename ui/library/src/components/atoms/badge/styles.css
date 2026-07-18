@@ -54,6 +54,12 @@
     border: 1px solid var(--primary-400);
 }
 
+.atom-badge[data-variant="special"] {
+    background: var(--special-100);
+    color: var(--special-800);
+    border: 1px solid var(--special-300);
+}
+
 [data-theme="dark"] .atom-badge[data-variant="success"] {
     background: var(--success-800);
     color: var(--success-200);
@@ -82,6 +88,12 @@
     background: var(--primary-700);
     color: var(--primary-100);
     border-color: var(--primary-400);
+}
+
+[data-theme="dark"] .atom-badge[data-variant="special"] {
+    background: var(--special-700);
+    color: var(--special-100);
+    border-color: var(--special-400);
 }
 
 .atom-badge[data-variant="tag"] {
