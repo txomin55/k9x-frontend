@@ -228,25 +228,23 @@ export default function DogForm(props: DogFormProps) {
           setChecked={updateThreeFciGenerationsConfirmed}
         />
       </div>
-      <Show when={!!user()?.organizer}>
-        <Show when={!props.draft().owned}>
-          <div class="form-grid__full">
-            <AtomInput
-              label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
-              type="email"
-              description={i18n.t("MY.DOGS.DOG_FORM.OWNER_HINT")}
-              value={props.draft().owner}
-              onChange={updateOwner}
-              {...fieldProps("owner", ownerError)}
-            />
-          </div>
-        </Show>
-        <AtomInput
-          label={i18n.t("MY.DOGS.DOG_FORM.HANDLER")}
-          value={props.draft().handler}
-          onChange={updateHandler}
-        />
+      <Show when={ownerFieldVisible()}>
+        <div class="form-grid__full">
+          <AtomInput
+            label={i18n.t("MY.DOGS.DOG_FORM.OWNER")}
+            type="email"
+            description={i18n.t("MY.DOGS.DOG_FORM.OWNER_HINT")}
+            value={props.draft().owner}
+            onChange={updateOwner}
+            {...fieldProps("owner", ownerError)}
+          />
+        </div>
       </Show>
+      <AtomInput
+        label={i18n.t("MY.DOGS.DOG_FORM.HANDLER")}
+        value={props.draft().handler}
+        onChange={updateHandler}
+      />
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.TEAM")}
         value={props.draft().team}
