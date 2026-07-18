@@ -61,6 +61,10 @@ export function canDeleteEvent(status?: string) {
   return status === EVENT_STATUS.CREATED;
 }
 
-export function canEditEvent(stageDateFrom?: number) {
-  return stageDateFrom === undefined || Date.now() < stageDateFrom;
+export function canEditEvent(status?: string) {
+  return status === EVENT_STATUS.CREATED;
+}
+
+export function canManageEvent(status?: string) {
+  return [EVENT_STATUS.CREATED, EVENT_STATUS.STARTED].includes(status ?? "");
 }

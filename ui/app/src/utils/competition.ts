@@ -7,7 +7,7 @@ export const COMPETITION_STATUS = {
 };
 
 export function canEditCompetition(status?: string) {
-  return status !== COMPETITION_STATUS.FINISHED;
+  return status === COMPETITION_STATUS.CREATED;
 }
 
 export function canDeleteCompetition(status?: string) {

@@ -33,7 +33,7 @@ import {
   canEditEvent,
   toEventEditorDraft,
 } from "@/utils/event";
-import { canDeleteStage, canEditStage } from "@/utils/stage";
+import { canCreateEvent, canDeleteStage, canEditStage } from "@/utils/stage";
 import {
   formatDateLabel,
   oneWeekBefore,
@@ -491,7 +491,7 @@ function CompetitionStageDetailBody(props: {
             </AtomButton>
           </ConfirmActionButton>
         </Show>
-        <Show when={canEditEvent(props.stage().dateFrom)}>
+        <Show when={canEditEvent(event.status)}>
           <AtomButton
             type={BUTTON_TYPES.ACCENT}
             onClick={() => openEventEditor(event)}
@@ -602,7 +602,7 @@ function CompetitionStageDetailBody(props: {
                       </AtomButton>
                     </ConfirmActionButton>
                   </Show>
-                  <Show when={canEditEvent(props.stage().dateFrom)}>
+                  <Show when={canEditEvent(event().status)}>
                     <AtomDialog
                       closeButtonText={i18n.t(
                         "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
@@ -712,7 +712,7 @@ function CompetitionStageDetailBody(props: {
           <span class="text-heading-md">
             {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}
           </span>
-          <Show when={isEditing()}>
+          <Show when={isEditing() && canCreateEvent(props.stage().status)}>
             <AtomDialog
               closeButtonText={i18n.t(
                 "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",

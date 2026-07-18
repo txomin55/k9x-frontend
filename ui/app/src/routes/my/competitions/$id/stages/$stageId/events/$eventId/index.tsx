@@ -37,6 +37,7 @@ import { getCachedCompetitions } from "@/services/secured/competition-crud/compe
 import {
   canDeleteEvent,
   canEditEvent,
+  canManageEvent,
   COMPETITOR_STATUS,
   toEventEditorDraft,
 } from "@/utils/event";
@@ -124,7 +125,13 @@ function CompetitionObdxEventDetailBody(props: {
   );
 
   const canEditDetails = createMemo(
-    () => isEditing() && hasConfiguration() && canEditEvent(props.stageDateFrom),
+    () =>
+      isEditing() && hasConfiguration() && canEditEvent(props.event().status),
+  );
+
+  const canManageCompetitors = createMemo(
+    () =>
+      isEditing() && hasConfiguration() && canManageEvent(props.event().status),
   );
 
   const MID_AVG_MIN_JUDGES = 4;
@@ -862,7 +869,7 @@ function CompetitionObdxEventDetailBody(props: {
           eventStatus={props.event().status}
           editingCompetitorId={editingCompetitorId()}
           isCreatingCompetitor={isCreatingCompetitor()}
-          isEditing={canEditDetails()}
+          isEditing={canManageCompetitors()}
           onAddCompetitor={handleAddCompetitor}
           onCompetitorDraftChange={setCompetitorDialogDraft}
           onDeleteCompetitor={handleDeleteCompetitor}
@@ -896,7 +903,7 @@ function CompetitionObdxEventDetailBody(props: {
     <div class="page competition-event-detail__content">
       <header>
         <Show
-          when={isEditing()}
+          when={canEditDetails()}
           fallback={
             <div class="competition-event-detail__content--header">
               <div class="competition-event-detail__content--header-title">
@@ -920,7 +927,7 @@ function CompetitionObdxEventDetailBody(props: {
       <EventConfigurationSection
         draft={draftEvent()}
         event={props.event()}
-        isEditing={isEditing()}
+        isEditing={canEditDetails()}
         onDraftChange={(updater) =>
           updateDraftEvent((current) => updater(current), {
             persist: true,
@@ -1031,7 +1038,7 @@ function CompetitionObdxEventDetailBody(props: {
         contents={eventTabsContents()}
       />
 
-      <Show when={canEditEvent(props.stageDateFrom)}>
+      <Show when={canManageEvent(props.event().status)}>
         <FloatingToggleCircle
           onClick={() => toggleEditingMode()}
           toggled={isEditing()}

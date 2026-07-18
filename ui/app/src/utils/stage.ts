@@ -41,11 +41,15 @@ export function isStageLive(status: string) {
 }
 
 export function canEditStage(status?: string) {
-  return status !== STAGE_STATUS.FINISHED;
+  return status === STAGE_STATUS.CREATED;
 }
 
 export function canDeleteStage(status?: string) {
   return status === STAGE_STATUS.CREATED;
+}
+
+export function canCreateEvent(stageStatus?: string) {
+  return stageStatus === STAGE_STATUS.CREATED;
 }
 
 export function isDayAfterStageDateTo(stageDateTo?: number) {
