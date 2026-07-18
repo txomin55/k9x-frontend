@@ -11,7 +11,6 @@ export interface CreateEventRequestDTO {
   name: string;
   stageId: string;
   disciplineId: string;
-  enrollmentDeadline?: number;
 }
 
 export const SCORE_CALCULATION = {
