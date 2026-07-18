@@ -152,8 +152,8 @@ function CompetitionObdxEventDetailBody(props: {
       ) ?? null,
   );
 
-  const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
-    const configurationExercises =
+  const configurationExercises = createMemo(
+    () =>
       configurations.data?.obdx?.federations
         ?.find(
           (entry) =>
@@ -161,15 +161,24 @@ function CompetitionObdxEventDetailBody(props: {
         )
         ?.configurations.find(
           (entry) => entry.id === draftEvent().configuration.id,
-        )?.exercises ?? [];
+        )?.exercises ?? [],
+  );
 
+  const exerciseCatalogOptions = createMemo<AtomSelectOption[]>(() =>
+    configurationExercises().map((exercise) => ({
+      label: exercise.name,
+      value: exercise.id,
+    })),
+  );
+
+  const exerciseSelectOptions = createMemo<AtomSelectOption[]>(() => {
     const addedExerciseIds = new Set(
       draftEvent()
         .exercises.filter((exercise) => exercise.id !== editingExerciseId())
         .map((exercise) => exercise.id),
     );
 
-    return configurationExercises
+    return configurationExercises()
       .filter((exercise) => !addedExerciseIds.has(exercise.id))
       .map((exercise) => ({
         label: exercise.name,
@@ -832,6 +841,7 @@ function CompetitionObdxEventDetailBody(props: {
           exerciseDialogDraft={exerciseDialogDraft()}
           exercises={draftEvent().exercises}
           exerciseCandidatesOptions={exerciseSelectOptions()}
+          exerciseCatalogOptions={exerciseCatalogOptions()}
           isCreatingExercise={isCreatingExercise()}
           isEditing={canEditDetails()}
           onAddExercise={handleAddExercise}

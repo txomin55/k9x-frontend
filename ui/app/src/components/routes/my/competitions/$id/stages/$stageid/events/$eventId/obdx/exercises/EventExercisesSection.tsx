@@ -31,6 +31,7 @@ type EventExercisesSectionProps = {
   exerciseDialogDraft: EventExerciseDetailResponseDTO | null;
   exercises: EventExerciseDetailResponseDTO[];
   exerciseCandidatesOptions: AtomSelectOption[];
+  exerciseCatalogOptions: AtomSelectOption[];
   isCreatingExercise: boolean;
   isEditing: boolean;
   onAddExercise: () => void;
@@ -56,7 +57,7 @@ export default function EventExercisesSection(
     }
 
     return (
-      props.exerciseCandidatesOptions
+      props.exerciseCatalogOptions
         .find((option) => option.value === exercise.id)
         ?.label.replace(/^--/, "") ?? exercise.id
     );
