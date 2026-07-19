@@ -16,7 +16,7 @@ export function getMarkerTextColorByStatus(status: string) {
     case STAGE_STATUS.STARTED:
       return "var(--success-text)";
     case STAGE_STATUS.FINISHED:
-      return "var(--accent)";
+      return "var(--text-inverted)";
     case STAGE_STATUS.DELETED:
       return "var(--error-text)";
   }
@@ -30,7 +30,7 @@ export function getMarkerColorByStatus(status: string) {
     case STAGE_STATUS.STARTED:
       return "var(--success-bg)";
     case STAGE_STATUS.FINISHED:
-      return "var(--accent-soft)";
+      return "var(--accent)";
     case STAGE_STATUS.DELETED:
       return "var(--error-bg)";
   }
