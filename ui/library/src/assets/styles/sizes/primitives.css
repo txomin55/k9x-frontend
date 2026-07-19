@@ -22,4 +22,15 @@
     --radius-full: 999px;
 
     --control-height-md: var(--unit-3);
+
+    /* Z-INDEX SCALE
+       Layers order from lowest to highest. Portaled popovers (select,
+       combobox, popover) sit above the modal so they open on top of a
+       dialog; the floating mobile nav sits below it so a dialog covers it. */
+    --z-raised: 1;
+    --z-sticky: 2;
+    --z-floating: 40;
+    --z-overlay: 50;
+    --z-modal: 51;
+    --z-popover: 60;
 }

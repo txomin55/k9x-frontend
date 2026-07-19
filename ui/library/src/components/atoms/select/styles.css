@@ -121,7 +121,7 @@
 }
 
 .atom-select__content {
-    z-index: 30;
+    z-index: var(--z-popover);
     overflow: hidden;
 
     background: var(--surface);

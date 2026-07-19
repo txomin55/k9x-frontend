@@ -84,7 +84,7 @@
 .atom-dialog__overlay {
     position: fixed;
     inset: 0;
-    z-index: 50;
+    z-index: var(--z-overlay);
     background: var(--overlay-backdrop);
     animation: atom-dialog-overlay-hide 160ms ease-in forwards;
 }
@@ -98,7 +98,7 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    z-index: 51;
+    z-index: var(--z-modal);
 
     width: min(calc(100vw - (var(--unit-2) * 2)), var(--dialog-max-width-md));
     max-height: calc(100vh - (var(--unit-1) * 2));

@@ -150,7 +150,7 @@
 
 /* Dropdown */
 .atom-combobox__content {
-    z-index: 30;
+    z-index: var(--z-popover);
     margin-top: 4px;
     background: var(--surface);
     border: 1px solid var(--border);
