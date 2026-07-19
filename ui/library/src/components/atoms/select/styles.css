@@ -144,6 +144,7 @@
     padding: var(--unit-05);
     overflow: auto;
     outline: none;
+    margin: 0;
 }
 
 .atom-select__item {
