@@ -52,7 +52,8 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import eyeIcon from "@/assets/miscelaneous/eye.svg";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
+import arrowBackIcon from "@/assets/miscelaneous/arrow-back.svg";
+import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -475,8 +476,11 @@ function CompetitionStageDetailBody(props: {
 
   const [view, setView] = createSignal<string>(VIEW.LIST);
 
-  const eventTableActions = (event: EventDetailResponseDTO) =>
-    isEditing() ? (
+  const eventTableActions = (
+    event: EventDetailResponseDTO,
+    editing: boolean,
+  ) =>
+    editing ? (
       <div class="list-table__actions">
         <Show when={canDeleteEvent(event.status)}>
           <ConfirmActionButton
@@ -540,6 +544,7 @@ function CompetitionStageDetailBody(props: {
 
   const eventColumns = createMemo<ColumnDef<EventDetailResponseDTO, any>[]>(
     () => {
+      const editing = isEditing();
       const cols: ColumnDef<EventDetailResponseDTO, any>[] = [
         {
           accessorKey: "name",
@@ -570,7 +575,7 @@ function CompetitionStageDetailBody(props: {
         id: "actions",
         header: () => null,
         enableSorting: false,
-        cell: (info) => eventTableActions(info.row.original),
+        cell: (info) => eventTableActions(info.row.original, editing),
       });
 
       return cols;
@@ -715,30 +720,6 @@ function CompetitionStageDetailBody(props: {
           <span class="text-heading-md">
             {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}
           </span>
-          <Show when={isEditing() && canCreateEvent(props.stage().status)}>
-            <AtomDialog
-              closeButtonText={i18n.t(
-                "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
-              )}
-              content={
-                <Show when={eventDialogDraft()}>
-                  {(draft) => (
-                    <EventEditorForm
-                      draft={draft()}
-                      onCancel={closeEventEditor}
-                      onChange={setEventDialogDraft}
-                      onSave={saveEventEditor}
-                      isCreate
-                    />
-                  )}
-                </Show>
-              }
-              onOpenChange={handleCreateDialogOpenChange}
-              open={isCreatingEvent()}
-              title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
-              trigger={<CircleButton>+</CircleButton>}
-            />
-          </Show>
         </div>
         <Show
           when={props.stage().events.length > 0}
@@ -753,24 +734,75 @@ function CompetitionStageDetailBody(props: {
         </Show>
       </section>
       <Show when={canEditStage(props.stage().status)}>
+        <Show when={isEditing()}>
+          <Show when={canDeleteStage(props.stage().status)}>
+            <div class="stage-detail__delete-stage">
+              <ConfirmActionButton
+                text={props.stage().name}
+                onConfirm={props.onDelete}
+              >
+                <span class="stage-detail__float-label">
+                  {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
+                </span>
+                <span class="stage-detail__delete-stage-icon">
+                  <AtomSvgIcon
+                    src={trashIcon}
+                    alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
+                    tinted
+                  />
+                </span>
+              </ConfirmActionButton>
+            </div>
+          </Show>
+          <Show when={canCreateEvent(props.stage().status)}>
+            <div class="stage-detail__add-event">
+              <AtomDialog
+                closeButtonText={i18n.t(
+                  "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+                )}
+                content={
+                  <Show when={eventDialogDraft()}>
+                    {(draft) => (
+                      <EventEditorForm
+                        draft={draft()}
+                        onCancel={closeEventEditor}
+                        onChange={setEventDialogDraft}
+                        onSave={saveEventEditor}
+                        isCreate
+                      />
+                    )}
+                  </Show>
+                }
+                onOpenChange={handleCreateDialogOpenChange}
+                open={isCreatingEvent()}
+                title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
+                triggerClass="stage-detail__float-trigger"
+                trigger={
+                  <>
+                    <span class="stage-detail__float-label">
+                      {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
+                    </span>
+                    <span class="stage-detail__add-event-icon">
+                      <AtomSvgIcon
+                        src={plusIcon}
+                        alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
+                        tinted
+                      />
+                    </span>
+                  </>
+                }
+              />
+            </div>
+          </Show>
+        </Show>
         <FloatingToggleCircle
           onClick={() => setIsEditing((current) => !current)}
           toggled={isEditing()}
           nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
           toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
           nonToggledIcon={pencilIcon}
-          toggledIcon={eyeIcon}
+          toggledIcon={arrowBackIcon}
         />
-      </Show>
-      <Show when={isEditing() && canDeleteStage(props.stage().status)}>
-        <ConfirmActionButton
-          text={props.stage().name}
-          onConfirm={props.onDelete}
-        >
-          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
-          </AtomButton>
-        </ConfirmActionButton>
       </Show>
     </div>
   );

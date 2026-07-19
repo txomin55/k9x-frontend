@@ -13,10 +13,6 @@
     gap: var(--unit-1);
 }
 
-.stages-section__table--editing {
-    padding-right: calc(var(--circle-size-md) + var(--unit-2));
-}
-
 .stages-section__stages {
     display: grid;
     grid-template-columns: repeat(

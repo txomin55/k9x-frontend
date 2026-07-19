@@ -235,10 +235,7 @@ export default function StagesSection(props: StagesSectionProps) {
   );
 
   const tableContent = () => (
-    <div
-      class="stages-section__table"
-      classList={{ "stages-section__table--editing": props.isEditing }}
-    >
+    <div class="stages-section__table">
       <AtomTable<StageItem>
         data={props.stages ?? []}
         columns={columns()}

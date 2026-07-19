@@ -98,23 +98,16 @@ Todos anclados a `right: calc(var(--unit-2) + var(--unit-05))` y apilados con
 - **Vista lista (cards):** las acciones del footer se alinean a la **izquierda**
   (`.stages-section__stages--actions { justify-content: flex-start }`), dejando libre
   la esquina derecha donde está el stack.
-- **Vista tabla:** la columna de acciones va a la derecha por convención. Para librar el
-  stack en **modo edición** se mete `padding-right` ≈ ancho del FAB **al contenedor de la
-  tabla** (NO a la celda de acciones):
+- **Vista tabla:** la columna de acciones va a la derecha por convención y **se deja así**.
+  NO se encoge ni desplaza la tabla para librar el FAB: probamos `padding-right` en el
+  contenedor y en móvil hacía que la tabla desbordara (`.atom-table__scroller { overflow:auto }`)
+  y la columna de acciones se saliera del viewport → peor. **Decisión: se acepta que en
+  pantallas estrechas el FAB pueda solaparse con las acciones de la tabla** (no compensa el
+  apaño). Para editar/borrar sin estorbo está la **vista Lista**, con las acciones a la
+  izquierda.
 
-  ```css
-  .stages-section__table--editing {
-    padding-right: calc(var(--circle-size-md) + var(--unit-2));
-  }
-  ```
-  Aplicado con `classList={{ "...__table--editing": props.isEditing }}` en el wrapper del
-  `AtomTable`.
-
-  > ⚠️ NO poner el `padding-right` en la celda/`.list-table__actions`: ensancha la columna,
-  > la tabla desborda (`.atom-table__scroller { overflow:auto }`) y la columna de acciones
-  > se va **fuera del viewport** (parece que "faltan" los botones). Encogiendo el contenedor
-  > toda la tabla se desplaza a la izquierda sin crear scroll. `.list-table__actions` es
-  > compartida por otras tablas, así que tampoco se toca globalmente.
+- **Las columnas de la tabla se muestran igual en vista y en edición** (se descartó ocultar
+  columnas en edición). La tabla va siempre a ancho completo con sus columnas habituales.
 
 ### 6b. ⚠️ Reactividad de las celdas de tabla (`AtomTable`)
 
@@ -174,8 +167,8 @@ La vista **lista** no sufre esto porque renderiza las acciones directamente en J
       `ConfirmActionButton` con contenido plano.
 - [ ] Los tres flotantes: `position: fixed`, `z-index: var(--z-floating)`, apilado con
       el mismo `calc(...)` de posición (compensando el `--unit-05` del FAB).
-- [ ] Acciones de fila fuera de la esquina inferior derecha (cards a la izquierda;
-      tabla con `padding-right` solo en edición).
+- [ ] Cards: acciones de fila a la izquierda. Tabla: se deja a la derecha (se acepta
+      solape con el FAB), a ancho completo y con las mismas columnas en vista y edición.
 - [ ] `resetScroll: false` ya está en `useSearchParam` (compartido, no hay que repetir).
 - [ ] Claves i18n `ADD_...` nuevas en es/en.
 - [ ] Revisar `padding-bottom` de página si el stack tapa el contenido final.

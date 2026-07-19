@@ -11,7 +11,8 @@
 .stage-detail__content--event-actions {
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: var(--unit-1);
 }
 
 .stage-detail__content--event {
@@ -31,6 +32,112 @@
 
 .stage-detail__events-table {
     margin-top: var(--unit-1);
+}
+
+/* Floating action stack (mirror of competition detail; see
+   ui/app/docs/entity-edit-floating-actions.md) */
+
+.stage-detail__add-event {
+    position: fixed;
+    z-index: var(--z-floating);
+    right: calc(var(--unit-2) + var(--unit-05));
+    bottom: calc(var(--unit-2) + var(--unit-05) + var(--circle-size-md) + var(--unit-1));
+
+    animation: stage-detail-float-in 180ms ease-out;
+}
+
+.stage-detail__delete-stage {
+    position: fixed;
+    z-index: var(--z-floating);
+    right: calc(var(--unit-2) + var(--unit-05));
+    bottom: calc(
+        var(--unit-2) + var(--unit-05) +
+        (var(--circle-size-md) + var(--unit-1)) * 2
+    );
+
+    animation: stage-detail-float-in 180ms ease-out;
+}
+
+@keyframes stage-detail-float-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--unit-1));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stage-detail__float-trigger,
+.stage-detail__delete-stage .atom-dialog__trigger {
+    gap: var(--unit-1);
+    background: none;
+}
+
+.stage-detail__float-label {
+    padding: var(--unit-05) var(--unit-1);
+
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border-radius: var(--radius-full);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+
+    font-size: var(--text-label-sm);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.stage-detail__add-event-icon,
+.stage-detail__delete-stage-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--circle-size-md);
+    height: var(--circle-size-md);
+
+    color: var(--text-inverted);
+    border-radius: var(--radius-full);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+
+    transition: background-color 200ms, transform 200ms;
+}
+
+.stage-detail__add-event-icon {
+    background: var(--primary);
+}
+
+.stage-detail__delete-stage-icon {
+    background: var(--error);
+}
+
+.stage-detail__float-trigger:hover .stage-detail__add-event-icon {
+    background: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.stage-detail__float-trigger:active .stage-detail__add-event-icon {
+    background: var(--primary-active);
+    transform: scale(0.96);
+}
+
+.stage-detail__delete-stage .atom-dialog__trigger:hover
+    .stage-detail__delete-stage-icon {
+    transform: scale(1.05);
+}
+
+.stage-detail__delete-stage .atom-dialog__trigger:active
+    .stage-detail__delete-stage-icon {
+    transform: scale(0.96);
+}
+
+.stage-detail__add-event-icon .atom-svg-icon,
+.stage-detail__delete-stage-icon .atom-svg-icon {
+    width: var(--icon-size-lg);
+    height: var(--icon-size-lg);
+    display: block;
 }
 
 .stage-detail__header {
