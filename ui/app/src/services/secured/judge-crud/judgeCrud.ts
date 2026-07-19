@@ -28,7 +28,7 @@ const refreshJudgesSnapshot = async () => {
   }
 
   const judges = await rawRequest<JudgeResponseDTO[]>({
-    path: "/secured/judges",
+    path: "/secured/judges?owned=true",
   });
 
   await saveJudgesSnapshot(judges);
