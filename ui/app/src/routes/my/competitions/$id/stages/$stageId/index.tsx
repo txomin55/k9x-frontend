@@ -307,6 +307,7 @@ function CompetitionStageDetailBody(props: {
   const [dateTo, setDateTo] = createSignal(
     toDateInputValue(props.stage().dateTo),
   );
+  const minDate = toDateInputValue(Date.now());
   const [eventParam, setEventParam] = useSearchParam("event", "", "push");
   const isCreatingEvent = () => eventParam() === "new";
   const editingEventId = () =>
@@ -692,6 +693,7 @@ function CompetitionStageDetailBody(props: {
             <AtomInput
               label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_FROM")}
               type="date"
+              min={minDate}
               value={dateFrom()}
               onBlur={commitStageEdits}
               onChange={setDateFrom}
@@ -699,6 +701,7 @@ function CompetitionStageDetailBody(props: {
             <AtomInput
               label={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DATE_TO")}
               type="date"
+              min={minDate}
               value={dateTo()}
               onBlur={commitStageEdits}
               onChange={setDateTo}
