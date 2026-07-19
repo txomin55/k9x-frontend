@@ -7,7 +7,6 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
-import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import Card from "@lib/components/molecules/card/Card";
 import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
@@ -27,12 +26,10 @@ const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 type StagesSectionProps = {
   draft: Accessor<StageEditorModel | null>;
   editingStageId: string | null;
-  isCreatingStage: boolean;
   isEditing: boolean;
   onCloseStageEditor: () => void;
   onDeleteStage: (stageId: string) => void;
   onNavigateToStage: (stageId: string) => void;
-  onOpenNewStageEditor: () => void;
   onOpenStageEditor: (stage: StageItem) => void;
   onSaveStageEditor: () => void;
   onUpdateStageDialogDraft: (
@@ -95,8 +92,8 @@ export default function StagesSection(props: StagesSectionProps) {
       </AtomButton>
     );
 
-  const tableActions = (stage: StageItem) =>
-    props.isEditing ? (
+  const tableActions = (stage: StageItem, isEditing: boolean) =>
+    isEditing ? (
       <div class="list-table__actions">
         <Show when={canDeleteStage(stage.status)}>
           <ConfirmActionButton
@@ -157,6 +154,7 @@ export default function StagesSection(props: StagesSectionProps) {
     );
 
   const columns = createMemo<ColumnDef<StageItem, any>[]>(() => {
+    const isEditing = props.isEditing;
     const cols: ColumnDef<StageItem, any>[] = [
       {
         accessorKey: "name",
@@ -201,7 +199,7 @@ export default function StagesSection(props: StagesSectionProps) {
       id: "actions",
       header: () => null,
       enableSorting: false,
-      cell: (info) => tableActions(info.row.original),
+      cell: (info) => tableActions(info.row.original, isEditing),
     });
 
     return cols;
@@ -237,7 +235,10 @@ export default function StagesSection(props: StagesSectionProps) {
   );
 
   const tableContent = () => (
-    <div class="stages-section__table">
+    <div
+      class="stages-section__table"
+      classList={{ "stages-section__table--editing": props.isEditing }}
+    >
       <AtomTable<StageItem>
         data={props.stages ?? []}
         columns={columns()}
@@ -265,31 +266,6 @@ export default function StagesSection(props: StagesSectionProps) {
         <span class="text-heading-sm">
           {i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}
         </span>
-        <Show when={props.isEditing}>
-          <AtomDialog
-            closeButtonText={i18n.t(
-              "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
-            )}
-            content={
-              <StageEditorForm
-                draft={props.draft}
-                onCancel={props.onCloseStageEditor}
-                onDraftChange={props.onUpdateStageDialogDraft}
-                onSave={props.onSaveStageEditor}
-              />
-            }
-            onOpenChange={(isOpen) => {
-              if (isOpen) {
-                props.onOpenNewStageEditor();
-              } else {
-                props.onCloseStageEditor();
-              }
-            }}
-            open={props.isCreatingStage}
-            title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
-            trigger={<CircleButton>+</CircleButton>}
-          />
-        </Show>
       </div>
       <AtomSegmentedControl
         title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES_BY")}

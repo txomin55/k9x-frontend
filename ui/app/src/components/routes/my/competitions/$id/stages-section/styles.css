@@ -9,7 +9,12 @@
 .stages-section__stages--actions {
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: var(--unit-1);
+}
+
+.stages-section__table--editing {
+    padding-right: calc(var(--circle-size-md) + var(--unit-2));
 }
 
 .stages-section__stages {

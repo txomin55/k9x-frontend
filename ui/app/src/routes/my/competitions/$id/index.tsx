@@ -34,12 +34,14 @@ import {
   validateRequiredSelection,
   validateRequiredText,
 } from "@/utils/validation/textField";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
-import eyeIcon from "@/assets/miscelaneous/eye.svg";
+import arrowBackIcon from "@/assets/miscelaneous/arrow-back.svg";
+import plusIcon from "@/assets/miscelaneous/plus.svg";
+import trashIcon from "@/assets/miscelaneous/trash.svg";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
+import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
@@ -422,35 +424,81 @@ function CompetitionDetailBody(props: {
       <StagesSection
         draft={stageDialogDraft}
         editingStageId={editingStageId()}
-        isCreatingStage={isCreatingStage()}
         isEditing={isEditing()}
         onCloseStageEditor={closeStageEditor}
         onDeleteStage={getOnDeleteStage()}
         onNavigateToStage={onNavigateToStage}
-        onOpenNewStageEditor={openNewStageEditor}
         onOpenStageEditor={openStageEditor}
         onSaveStageEditor={saveStageEditor}
         onUpdateStageDialogDraft={updateStageDialogDraft}
         stages={sortedStages()}
       />
       <Show when={canEditCompetition(props.competition()?.status)}>
+        <Show when={isEditing()}>
+          <Show when={canDeleteCompetition(props.competition()?.status)}>
+            <div class="competition-detail__delete-competition">
+              <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
+                <span class="competition-detail__add-stage-label">
+                  {i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
+                </span>
+                <span class="competition-detail__delete-competition-icon">
+                  <AtomSvgIcon
+                    src={trashIcon}
+                    alt={i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
+                    tinted
+                  />
+                </span>
+              </ConfirmActionButton>
+            </div>
+          </Show>
+          <div class="competition-detail__add-stage">
+            <AtomDialog
+              closeButtonText={i18n.t(
+                "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+              )}
+              content={
+                <StageEditorForm
+                  draft={stageDialogDraft}
+                  onCancel={closeStageEditor}
+                  onDraftChange={updateStageDialogDraft}
+                  onSave={saveStageEditor}
+                />
+              }
+              onOpenChange={(isOpen) => {
+                if (isOpen) {
+                  openNewStageEditor();
+                } else {
+                  closeStageEditor();
+                }
+              }}
+              open={isCreatingStage()}
+              title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
+              triggerClass="competition-detail__add-stage-trigger"
+              trigger={
+                <>
+                  <span class="competition-detail__add-stage-label">
+                    {i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
+                  </span>
+                  <span class="competition-detail__add-stage-icon">
+                    <AtomSvgIcon
+                      src={plusIcon}
+                      alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
+                      tinted
+                    />
+                  </span>
+                </>
+              }
+            />
+          </div>
+        </Show>
         <FloatingToggleCircle
           onClick={() => setIsEditing((current) => !current)}
           toggled={isEditing()}
           nonToggledText={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
           toggledText={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
           nonToggledIcon={pencilIcon}
-          toggledIcon={eyeIcon}
+          toggledIcon={arrowBackIcon}
         />
-      </Show>
-      <Show
-        when={isEditing() && canDeleteCompetition(props.competition()?.status)}
-      >
-        <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
-          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-            {i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
-          </AtomButton>
-        </ConfirmActionButton>
       </Show>
     </div>
   );

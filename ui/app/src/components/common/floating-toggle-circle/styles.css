@@ -1,5 +1,6 @@
 .floating-toggle-circle {
     position: fixed;
+    z-index: var(--z-floating);
     right: var(--unit-2);
     bottom: var(--unit-2);
 }

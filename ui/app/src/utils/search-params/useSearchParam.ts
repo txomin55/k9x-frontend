@@ -35,6 +35,7 @@ export function useSearchParam(
           [key]: nextValue === defaultValue ? undefined : nextValue,
         }),
         replace: mode === "replace",
+        resetScroll: false,
       }),
     );
   };
@@ -77,6 +78,7 @@ export function useSearchParamList(
           [key]: next.length ? nextValue : undefined,
         }),
         replace: mode === "replace",
+        resetScroll: false,
       }),
     );
   };
