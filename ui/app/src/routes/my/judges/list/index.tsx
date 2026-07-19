@@ -26,7 +26,7 @@ import {
 	createJudge,
 	deleteJudge,
 	updateJudge,
-	useJudges,
+	useCreatedJudges,
 } from "@/services/secured/judge-crud/judgeCrud";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
@@ -69,7 +69,7 @@ function MyJudgesListPage() {
 		country: "",
 	});
 	const user = useAuthUser();
-	const judgesQuery = useJudges({
+	const judgesQuery = useCreatedJudges({
 		refetchOnMount: !isOffline(),
 		gcTime: 2 * 60 * 1000,
 		enabled: () => Boolean(user()),
