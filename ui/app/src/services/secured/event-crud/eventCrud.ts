@@ -1,4 +1,4 @@
-import { createMemo, getOwner } from "solid-js";
+import { createMemo, getOwner, onMount } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
@@ -60,6 +60,12 @@ export const getEventByIdQueryKey = (id: string) =>
 
 export const getCachedEventById = (id: string) =>
   queryClient.getQueryData<EventDetailResponseDTO>(getEventByIdQueryKey(id));
+
+export const prefetchEventById = (id: string) => {
+  const { queryFn, queryKey } = eventByIdQuery.options(id);
+
+  return queryClient.fetchQuery({ queryFn, queryKey, staleTime: 0 });
+};
 
 export const useEventById = (id: string, options?: TanstackCreateQuery) =>
   eventByIdQuery.useQuery([id], {
@@ -463,7 +469,7 @@ export const useApiEvent = () => {
 
     const eventQuery = useEventById(id, {
       staleTime: Number.POSITIVE_INFINITY,
-      refetchOnMount: isOffline() ? false : "always",
+      refetchOnMount: false,
     });
 
     return createMemo(() => eventQuery.data);

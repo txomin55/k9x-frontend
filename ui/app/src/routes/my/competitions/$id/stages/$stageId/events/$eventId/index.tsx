@@ -16,9 +16,11 @@ import EventCompetitorsSection from "@/components/routes/my/competitions/$id/sta
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import {
+  prefetchEventById,
   updateApiEventNotCompeting,
   useApiEvent,
 } from "@/services/secured/event-crud/eventCrud";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
   EventCompetitorDetail,
@@ -1071,6 +1073,11 @@ export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
 )({
   component: CompetitionEventDetailRoute,
+  loader: ({ params }) => {
+    if (params.eventId !== "new" && !isOffline()) {
+      void prefetchEventById(params.eventId);
+    }
+  },
   staticData: {
     breadcrumb: (match) => {
       const competition = getCachedCompetitions()?.find(
