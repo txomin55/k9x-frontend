@@ -20,10 +20,10 @@ export default function JudgeCard(props: JudgeCardProps) {
     <Card
       topLeft={
         <div class="judge-card__heading">
+          <CountryFlag country={props.judge.country} />
           <span class="judge-card__name">{props.judge.name}</span>
         </div>
       }
-      topRight={<CountryFlag country={props.judge.country} />}
       actions={
         <div class="judge-card__actions">
           <ConfirmActionButton
