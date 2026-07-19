@@ -136,16 +136,18 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
 
   return (
     <div class="form-grid">
-      <div class="form-grid__full">
-        <AtomCombobox
-          multiple
-          label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
-          placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
-          options={judgeOptions()}
-          value={selectedJudgeOptions()}
-          onChange={setJudges}
-        />
-      </div>
+      <Show when={props.eventJudges.length > 1}>
+        <div class="form-grid__full">
+          <AtomCombobox
+            multiple
+            label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
+            placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
+            options={judgeOptions()}
+            value={selectedJudgeOptions()}
+            onChange={setJudges}
+          />
+        </div>
+      </Show>
       <div class="form-grid__full">
         <div class="form-grid form-grid--2col">
           <AtomCombobox
