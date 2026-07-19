@@ -49,10 +49,9 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
+import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import eyeIcon from "@/assets/miscelaneous/eye.svg";
-import arrowBackIcon from "@/assets/miscelaneous/arrow-back.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -301,6 +300,7 @@ function CompetitionStageDetailBody(props: {
   const i18n = useI18n();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = createSignal(false);
+  const [menuOpen, setMenuOpen] = createSignal(false);
   const [title, setTitle] = createSignal(props.stage().name);
   const [dateFrom, setDateFrom] = createSignal(
     toDateInputValue(props.stage().dateFrom),
@@ -734,17 +734,17 @@ function CompetitionStageDetailBody(props: {
         </Show>
       </section>
       <Show when={canEditStage(props.stage().status)}>
-        <Show when={isEditing()}>
+        <Show when={isEditing() && menuOpen()}>
           <Show when={canDeleteStage(props.stage().status)}>
-            <div class="stage-detail__delete-stage">
+            <div class="floating-action floating-action--level-3">
               <ConfirmActionButton
                 text={props.stage().name}
                 onConfirm={props.onDelete}
               >
-                <span class="stage-detail__float-label">
+                <span class="floating-action__label">
                   {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
                 </span>
-                <span class="stage-detail__delete-stage-icon">
+                <span class="floating-action__circle floating-action__circle--danger">
                   <AtomSvgIcon
                     src={trashIcon}
                     alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.DELETE_STAGE")}
@@ -755,7 +755,7 @@ function CompetitionStageDetailBody(props: {
             </div>
           </Show>
           <Show when={canCreateEvent(props.stage().status)}>
-            <div class="stage-detail__add-event">
+            <div class="floating-action floating-action--level-2">
               <AtomDialog
                 closeButtonText={i18n.t(
                   "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
@@ -776,13 +776,13 @@ function CompetitionStageDetailBody(props: {
                 onOpenChange={handleCreateDialogOpenChange}
                 open={isCreatingEvent()}
                 title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
-                triggerClass="stage-detail__float-trigger"
+                triggerClass="floating-action__trigger"
                 trigger={
                   <>
-                    <span class="stage-detail__float-label">
+                    <span class="floating-action__label">
                       {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
                     </span>
-                    <span class="stage-detail__add-event-icon">
+                    <span class="floating-action__circle">
                       <AtomSvgIcon
                         src={plusIcon}
                         alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
@@ -795,13 +795,14 @@ function CompetitionStageDetailBody(props: {
             </div>
           </Show>
         </Show>
-        <FloatingToggleCircle
-          onClick={() => setIsEditing((current) => !current)}
-          toggled={isEditing()}
-          nonToggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
-          toggledText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
-          nonToggledIcon={pencilIcon}
-          toggledIcon={arrowBackIcon}
+        <FloatingEditMenu
+          editing={isEditing()}
+          menuOpen={menuOpen()}
+          onMenuToggle={() => setMenuOpen((current) => !current)}
+          onEditToggle={() => setIsEditing((current) => !current)}
+          configLabel={i18n.t("COMMON.FLOATING_MENU.OPTIONS")}
+          editLabel={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EDIT")}
+          viewLabel={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.VIEW")}
         />
       </Show>
     </div>

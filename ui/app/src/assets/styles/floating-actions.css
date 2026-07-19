@@ -1,0 +1,144 @@
+/* Floating action stack for entity-detail edit mode.
+   See ui/app/docs/entity-edit-floating-actions.md.
+
+   Stacks above the FloatingToggleCircle (bottom-right FAB):
+     level 1 = añadir hijo, level 2 = eliminar entidad.
+   Works for a plain <button>, an AtomDialog trigger (triggerClass) or a
+   ConfirmActionButton's inner .atom-dialog__trigger. */
+
+.floating-action {
+    position: fixed;
+    z-index: var(--z-floating);
+    right: var(--unit-2);
+
+    animation: floating-action-in 180ms ease-out;
+}
+
+/* Stack levels above the bottom edge. level-0 = base (config gear);
+   each level is one circle + gap higher. */
+.floating-action--level-0 {
+    bottom: var(--unit-1);
+}
+
+.floating-action--level-1 {
+    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)));
+}
+
+.floating-action--level-2 {
+    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 2);
+}
+
+.floating-action--level-3 {
+    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 3);
+}
+
+@keyframes floating-action-in {
+    from {
+        opacity: 0;
+        transform: translateY(var(--unit-1));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.floating-action__trigger {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--unit-1);
+
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.floating-action .atom-dialog__trigger {
+    gap: var(--unit-1);
+}
+
+.floating-action__label {
+    padding: var(--unit-05) var(--unit-1);
+
+    background: var(--surface);
+    color: var(--text-primary);
+
+    border-radius: var(--radius-full);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+
+    font-size: var(--text-label-sm);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.floating-action__circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: var(--circle-size-md);
+    height: var(--circle-size-md);
+
+    background: var(--primary);
+    color: var(--text-inverted);
+    border-radius: var(--radius-full);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+
+    transition: background-color 200ms, transform 200ms;
+}
+
+.floating-action__circle--danger {
+    background: var(--error);
+}
+
+.floating-action__circle .atom-svg-icon {
+    width: var(--icon-size-lg);
+    height: var(--icon-size-lg);
+    display: block;
+}
+
+/* Hover / active (not when disabled) */
+.floating-action__trigger:hover:not(:disabled) .floating-action__circle,
+.floating-action .atom-dialog__trigger:hover .floating-action__circle {
+    transform: scale(1.05);
+}
+
+.floating-action__trigger:active:not(:disabled) .floating-action__circle,
+.floating-action .atom-dialog__trigger:active .floating-action__circle {
+    transform: scale(0.96);
+}
+
+.floating-action__trigger:hover:not(:disabled)
+    .floating-action__circle:not(.floating-action__circle--danger),
+.floating-action .atom-dialog__trigger:hover
+    .floating-action__circle:not(.floating-action__circle--danger) {
+    background: var(--primary-hover);
+}
+
+.floating-action__trigger:active:not(:disabled)
+    .floating-action__circle:not(.floating-action__circle--danger),
+.floating-action .atom-dialog__trigger:active
+    .floating-action__circle:not(.floating-action__circle--danger) {
+    background: var(--primary-active);
+}
+
+/* Disabled add pill (e.g. añadir ejercicio sin jueces) */
+.floating-action__trigger:disabled {
+    cursor: not-allowed;
+}
+
+.floating-action__trigger:disabled .floating-action__label {
+    opacity: 0.6;
+}
+
+.floating-action__trigger:disabled .floating-action__circle {
+    background: var(--surface-muted);
+    color: var(--text-muted);
+    box-shadow: none;
+}

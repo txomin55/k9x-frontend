@@ -48,9 +48,9 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
-import pencilIcon from "@/assets/miscelaneous/pencil.svg";
-import eyeIcon from "@/assets/miscelaneous/eye.svg";
+import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
+import trashIcon from "@/assets/miscelaneous/trash.svg";
+import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -76,6 +76,7 @@ function CompetitionObdxEventDetailBody(props: {
 }) {
   const i18n = useI18n();
   const [isEditing, setIsEditing] = createSignal(false);
+  const [menuOpen, setMenuOpen] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
   );
@@ -124,6 +125,10 @@ function CompetitionObdxEventDetailBody(props: {
 
   const hasConfiguration = createMemo(() =>
     Boolean(draftEvent().configuration.id),
+  );
+
+  const canEditConfiguration = createMemo(
+    () => isEditing() && canEditEvent(props.event().status),
   );
 
   const canEditDetails = createMemo(
@@ -799,8 +804,6 @@ function CompetitionObdxEventDetailBody(props: {
     setIsEditing((current) => !current);
   };
 
-  const hasJudges = createMemo(() => draftEvent().judges.length > 0);
-
   const eventTabsTitles = createMemo(() => [
     {
       value: TABS.JUDGES,
@@ -809,7 +812,6 @@ function CompetitionObdxEventDetailBody(props: {
     {
       value: TABS.EXERCISES,
       content: <span>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXERCISES")}</span>,
-      disabled: !hasJudges(),
     },
     {
       value: TABS.COMPETITORS,
@@ -830,6 +832,7 @@ function CompetitionObdxEventDetailBody(props: {
           editingJudgeId={editingJudgeId()}
           isCreatingJudge={isCreatingJudge()}
           isEditing={canEditDetails()}
+          menuOpen={menuOpen()}
           judgeDialogDraft={judgeDialogDraft()}
           judges={draftEvent().judges}
           onAddJudge={handleAddJudge}
@@ -853,6 +856,7 @@ function CompetitionObdxEventDetailBody(props: {
           exerciseCatalogOptions={exerciseCatalogOptions()}
           isCreatingExercise={isCreatingExercise()}
           isEditing={canEditDetails()}
+          menuOpen={menuOpen()}
           onAddExercise={handleAddExercise}
           onDeleteExercise={handleDeleteExercise}
           onExerciseDraftChange={setExerciseDialogDraft}
@@ -872,6 +876,7 @@ function CompetitionObdxEventDetailBody(props: {
           editingCompetitorId={editingCompetitorId()}
           isCreatingCompetitor={isCreatingCompetitor()}
           isEditing={canManageCompetitors()}
+          menuOpen={menuOpen()}
           onAddCompetitor={handleAddCompetitor}
           onCompetitorDraftChange={setCompetitorDialogDraft}
           onDeleteCompetitor={handleDeleteCompetitor}
@@ -929,7 +934,7 @@ function CompetitionObdxEventDetailBody(props: {
       <EventConfigurationSection
         draft={draftEvent()}
         event={props.event()}
-        isEditing={canEditDetails()}
+        isEditing={canEditConfiguration()}
         onDraftChange={(updater) =>
           updateDraftEvent((current) => updater(current), {
             persist: true,
@@ -1041,21 +1046,35 @@ function CompetitionObdxEventDetailBody(props: {
       />
 
       <Show when={canManageEvent(props.event().status)}>
-        <FloatingToggleCircle
-          onClick={() => toggleEditingMode()}
-          toggled={isEditing()}
-          nonToggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
-          toggledText={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
-          nonToggledIcon={pencilIcon}
-          toggledIcon={eyeIcon}
+        <Show
+          when={
+            isEditing() && menuOpen() && canDeleteEvent(props.event().status)
+          }
+        >
+          <div class="floating-action floating-action--level-3">
+            <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
+              <span class="floating-action__label">
+                {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}
+              </span>
+              <span class="floating-action__circle floating-action__circle--danger">
+                <AtomSvgIcon
+                  src={trashIcon}
+                  alt={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}
+                  tinted
+                />
+              </span>
+            </ConfirmActionButton>
+          </div>
+        </Show>
+        <FloatingEditMenu
+          editing={isEditing()}
+          menuOpen={menuOpen()}
+          onMenuToggle={() => setMenuOpen((current) => !current)}
+          onEditToggle={() => toggleEditingMode()}
+          configLabel={i18n.t("COMMON.FLOATING_MENU.OPTIONS")}
+          editLabel={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EDIT")}
+          viewLabel={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.VIEW")}
         />
-      </Show>
-      <Show when={isEditing() && canDeleteEvent(props.event().status)}>
-        <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
-          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-            {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}
-          </AtomButton>
-        </ConfirmActionButton>
       </Show>
     </div>
   );

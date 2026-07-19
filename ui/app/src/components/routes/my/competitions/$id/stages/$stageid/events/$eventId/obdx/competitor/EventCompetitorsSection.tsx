@@ -1,7 +1,6 @@
 import { createMemo, createSignal, Index, Match, Show, Switch } from "solid-js";
 import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
-import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import CompetitorEditorForm from "./CompetitorEditorForm";
 import AtomButton, {
   BUTTON_TYPES,
@@ -13,6 +12,7 @@ import checkIcon from "@/assets/miscelaneous/check.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
+import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
@@ -45,6 +45,7 @@ type EventCompetitorsSectionProps = {
   editingCompetitorId: string | null;
   isCreatingCompetitor: boolean;
   isEditing: boolean;
+  menuOpen: boolean;
   onAddCompetitor: () => void;
   onCommitCompetitor: () => void;
   onCompetitorDraftChange: (
@@ -426,18 +427,28 @@ export default function EventCompetitorsSection(
 
   return (
     <section class="event-competitors-section">
-      <div class="event-competitors-section__header">
-        <Show when={props.isEditing}>
-          <CircleButton
+      <Show when={props.isEditing && props.menuOpen}>
+        <div class="floating-action floating-action--level-2">
+          <button
+            class="floating-action__trigger"
             onClick={() => {
               props.onAddCompetitor();
               setDialogOpen(true);
             }}
           >
-            +
-          </CircleButton>
-        </Show>
-      </div>
+            <span class="floating-action__label">
+              {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ADD_COMPETITOR")}
+            </span>
+            <span class="floating-action__circle">
+              <AtomSvgIcon
+                src={plusIcon}
+                alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ADD_COMPETITOR")}
+                tinted
+              />
+            </span>
+          </button>
+        </div>
+      </Show>
       <Show
         when={props.competitors.length > 0}
         fallback={

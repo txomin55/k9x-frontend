@@ -9,6 +9,7 @@ import {
 } from "@/utils/http/query-client";
 import "@lib/assets/styles/index.css";
 import "@/assets/styles/list-table.css";
+import "@/assets/styles/floating-actions.css";
 
 export default function App() {
   onMount(() => {

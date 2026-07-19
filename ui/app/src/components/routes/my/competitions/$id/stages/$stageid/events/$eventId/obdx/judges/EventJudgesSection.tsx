@@ -7,9 +7,9 @@ import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/At
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import Card from "library/src/components/molecules/card/Card";
-import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
+import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import JudgeEditorForm from "./JudgeEditorForm";
@@ -27,6 +27,7 @@ type EventJudgesSectionProps = {
   onCommitJudge: () => void;
   isCreatingJudge: boolean;
   isEditing: boolean;
+  menuOpen: boolean;
   judgeDialogDraft: EventJudgeDetailResponseDTO | null;
   judges: EventJudgeDetailResponseDTO[];
   onAddJudge: () => void;
@@ -226,18 +227,28 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
 
   return (
     <section class="event-judges-section">
-      <div class="event-judges-section__header">
-        <Show when={props.isEditing}>
-          <CircleButton
+      <Show when={props.isEditing && props.menuOpen}>
+        <div class="floating-action floating-action--level-2">
+          <button
+            class="floating-action__trigger"
             onClick={() => {
               props.onAddJudge();
               setDialogOpen(true);
             }}
           >
-            +
-          </CircleButton>
-        </Show>
-      </div>
+            <span class="floating-action__label">
+              {i18n.t("MY.COMPETITIONS.EVENT_JUDGES.ADD_JUDGE")}
+            </span>
+            <span class="floating-action__circle">
+              <AtomSvgIcon
+                src={plusIcon}
+                alt={i18n.t("MY.COMPETITIONS.EVENT_JUDGES.ADD_JUDGE")}
+                tinted
+              />
+            </span>
+          </button>
+        </div>
+      </Show>
       <Show
         when={props.judges.length > 0}
         fallback={<p>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.NO_JUDGES")}</p>}

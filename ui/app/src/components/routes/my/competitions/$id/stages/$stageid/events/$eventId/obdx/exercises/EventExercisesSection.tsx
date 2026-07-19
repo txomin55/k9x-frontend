@@ -1,7 +1,6 @@
 import { createMemo, createSignal, For, Index, Show } from "solid-js";
 import AtomDialog from "library/src/components/atoms/dialog/AtomDialog";
 import Card from "library/src/components/molecules/card/Card";
-import CircleButton from "library/src/components/molecules/circle-button/CircleButton";
 import ExerciseEditorForm from "./ExerciseEditorForm";
 import AtomButton, {
   BUTTON_TYPES,
@@ -13,6 +12,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
+import plusIcon from "@/assets/miscelaneous/plus.svg";
 import {
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO
@@ -34,6 +34,7 @@ type EventExercisesSectionProps = {
   exerciseCatalogOptions: AtomSelectOption[];
   isCreatingExercise: boolean;
   isEditing: boolean;
+  menuOpen: boolean;
   onAddExercise: () => void;
   onDeleteExercise: (exerciseId: string) => void;
   onExerciseDraftChange: (
@@ -248,18 +249,29 @@ export default function EventExercisesSection(
 
   return (
     <section class="event-exercises-section">
-      <div class="event-exercises-section__header">
-        <Show when={props.isEditing}>
-          <CircleButton
+      <Show when={props.isEditing && props.menuOpen}>
+        <div class="floating-action floating-action--level-2">
+          <button
+            class="floating-action__trigger"
+            disabled={props.eventJudges.length === 0}
             onClick={() => {
               props.onAddExercise();
               setDialogOpen(true);
             }}
           >
-            +
-          </CircleButton>
-        </Show>
-      </div>
+            <span class="floating-action__label">
+              {i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.ADD_EXERCISE")}
+            </span>
+            <span class="floating-action__circle">
+              <AtomSvgIcon
+                src={plusIcon}
+                alt={i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.ADD_EXERCISE")}
+                tinted
+              />
+            </span>
+          </button>
+        </div>
+      </Show>
       <Show
         when={props.exercises.length > 0}
         fallback={

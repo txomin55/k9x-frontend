@@ -18,24 +18,39 @@ ver/editar viven en un **stack flotante fijo abajo-derecha**. Las acciones "de f
 (editar/borrar cada hijo) se mantienen dentro de la lista/tabla, pero **se apartan de
 la esquina inferior derecha** para no quedar tapadas por el stack.
 
-Stack flotante, de abajo hacia arriba:
+Stack flotante, de abajo hacia arriba (con el menú **abierto** y en **modo edición**):
 
 ```
-              [ Eliminar <entidad> ]  (○🗑)   ← rojo, solo si es borrable
-              [ Añadir <hijo>      ]  (○+)    ← solo en modo edición
-                                      (○↩)    ← toggle: lápiz (ver→editar) / flecha atrás (editar→ver)
+              [ Eliminar <entidad> ]  (○🗑)   ← level-3, rojo, solo si es borrable
+              [ Añadir <hijo>      ]  (○+)    ← level-2
+                                      (○↩)    ← level-1: lápiz (ver→editar) / flecha atrás (editar→ver)
+                                      (○⚙)    ← level-0: config/menú, SIEMPRE visible (abre/cierra el menú)
 ```
+
+El **⚙️ config** (level-0) es el único siempre visible. Controla `menuOpen`
+(mostrar/ocultar el resto del stack), independiente de `isEditing`:
+- Cerrado → solo ⚙️.
+- Abierto + no editando → ⚙️ + lápiz.
+- Abierto + editando → ⚙️ + flecha atrás + añadir + eliminar.
+- Pulsar ⚙️ en modo edición **oculta** lápiz/atrás + acciones pero **sigue editando**
+  (formulario y acciones de fila siguen activos); volver a pulsar ⚙️ las muestra.
 
 ---
 
 ## Decisiones
 
-### 1. Toggle ver/editar (FAB base)
+### 1. Menú config + toggle ver/editar (`FloatingEditMenu`)
 
-- Componente reutilizable `components/common/floating-toggle-circle/FloatingToggleCircle`.
-- Icono en modo vista: **lápiz** (`pencil.svg`). Icono en modo edición: **flecha atrás
-  curva** (`arrow-back.svg`) — NO un ojo.
-- Se muestra con `<Show when={canEditCompetition(status)}>` (equivalente: `canEdit<Entidad>`).
+- Componente reutilizable `components/common/floating-edit-menu/FloatingEditMenu`
+  (sustituye al antiguo `FloatingToggleCircle`, que se mantiene solo para los "+" de las
+  listas: competiciones/jueces/perros, que NO son toggles).
+- Renderiza dos círculos: **⚙️ config** (`config.svg`, level-0, siempre) y, cuando
+  `menuOpen`, el **lápiz** (`pencil.svg`) / **flecha atrás** (`arrow-back.svg`) en level-1.
+- Props: `editing`, `menuOpen`, `onMenuToggle`, `onEditToggle`, `configLabel`,
+  `editLabel`, `viewLabel`. La página posee ambos signals (`isEditing`, `menuOpen`).
+- aria del ⚙️: i18n `COMMON.FLOATING_MENU.OPTIONS`.
+- Se muestra con `<Show when={canEdit<Entidad>(status)}>`.
+- Las acciones (añadir/eliminar) se muestran con `isEditing() && menuOpen()`.
 
 ### 2. "Añadir <hijo>" flotante
 
@@ -158,6 +173,38 @@ La vista **lista** no sufre esto porque renderiza las acciones directamente en J
 
 ---
 
+### 10. CSS compartido (`floating-actions.css`)
+
+Los estilos del stack están extraídos en `ui/app/src/assets/styles/floating-actions.css`
+(importado en `app.tsx`), NO duplicados por página. Clases genéricas:
+
+- `.floating-action` + `.floating-action--level-1` / `--level-2` (posición fija, z-index,
+  animación de entrada; nivel 1 = añadir, nivel 2 = eliminar).
+- `.floating-action__trigger` — sirve para un `<button>` plano, para el `triggerClass` de un
+  `AtomDialog`, y (vía `.floating-action .atom-dialog__trigger`) para el trigger interno de
+  `ConfirmActionButton`.
+- `.floating-action__label` (chip de texto) y `.floating-action__circle`
+  (+ `--danger` para el rojo de eliminar).
+- Estado `:disabled` del trigger (círculo apagado) — usado por "Añadir ejercicio" sin jueces.
+
+Competición, stage y event usan estas clases; ya no hay CSS flotante por página.
+
+### 11. Página de event (varias secciones)
+
+`event` tiene `AtomTabs` (Jueces / Ejercicios / Competidores; Configuración es inline) y
+**cada tab se desmonta al no estar activo** (Kobalte). Por eso:
+
+- El **"Añadir X" es por sección** (cada sección renderiza su propio pill `--level-1`).
+  Como solo hay una sección montada a la vez, solo se ve el "+" del tab activo. En event el
+  botón de añadir ya estaba **desacoplado** del diálogo (un `<button>` con `onClick` que
+  abre un `AtomDialog` controlado aparte), así que el pill es un `<button
+  class="floating-action__trigger">`, no un trigger de dialog.
+- **Toggle** (flecha atrás) y **"Eliminar evento"** (`--level-2`, rojo) viven en el route.
+- **Jueces → Ejercicios:** el tab de Ejercicios ya NO se deshabilita por falta de jueces
+  (antes `disabled: !hasJudges()`); ahora el tab es accesible y el pill **"Añadir
+  ejercicio" se deshabilita** con `disabled={props.eventJudges.length === 0}`.
+- Configuración no tiene añadir (editor inline).
+
 ## Checklist para replicar en stage / event
 
 - [ ] `arrow-back.svg` en el toggle (no ojo); lápiz ↔ flecha atrás.
@@ -175,7 +222,9 @@ La vista **lista** no sufre esto porque renderiza las acciones directamente en J
 
 ## Pendientes / dudas abiertas
 
-- Unificar el patrón en un componente/CSS reutilizable (`FloatingActionStack`) en vez de
-  repetir estilos por página. Hoy está inline en la styles.css de competición.
+- CSS ya extraído a `floating-actions.css` (hecho). Falta, si se quiere, un componente
+  `FloatingActionStack` que encapsule también el markup del pill.
+- Quedan clases muertas `.event-*-section__header` en las CSS de las secciones de event
+  (el `<div>__header` que alojaba el "+" se eliminó). Limpiar cuando se pase por ahí.
 - El botón "Editar" de fila en la card (vista lista) sigue siendo texto plano dentro de un
   trigger de dialog; valorar homogeneizar con los iconos de la tabla.

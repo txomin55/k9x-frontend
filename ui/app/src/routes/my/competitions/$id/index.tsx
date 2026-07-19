@@ -34,9 +34,7 @@ import {
   validateRequiredSelection,
   validateRequiredText,
 } from "@/utils/validation/textField";
-import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
-import pencilIcon from "@/assets/miscelaneous/pencil.svg";
-import arrowBackIcon from "@/assets/miscelaneous/arrow-back.svg";
+import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -209,6 +207,7 @@ function CompetitionDetailBody(props: {
     updateApiStage,
   } = useApiStage();
   const [isEditing, setIsEditing] = createSignal(false);
+  const [menuOpen, setMenuOpen] = createSignal(false);
   const [title, setTitle] = createSignal(props.competition()?.name ?? "");
   const [country, setCountry] = createSignal(
     props.competition()?.country ?? "",
@@ -434,14 +433,14 @@ function CompetitionDetailBody(props: {
         stages={sortedStages()}
       />
       <Show when={canEditCompetition(props.competition()?.status)}>
-        <Show when={isEditing()}>
+        <Show when={isEditing() && menuOpen()}>
           <Show when={canDeleteCompetition(props.competition()?.status)}>
-            <div class="competition-detail__delete-competition">
+            <div class="floating-action floating-action--level-3">
               <ConfirmActionButton text={title()} onConfirm={props.onDelete}>
-                <span class="competition-detail__add-stage-label">
+                <span class="floating-action__label">
                   {i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
                 </span>
-                <span class="competition-detail__delete-competition-icon">
+                <span class="floating-action__circle floating-action__circle--danger">
                   <AtomSvgIcon
                     src={trashIcon}
                     alt={i18n.t("MY.COMPETITIONS.DETAIL.DELETE")}
@@ -451,7 +450,7 @@ function CompetitionDetailBody(props: {
               </ConfirmActionButton>
             </div>
           </Show>
-          <div class="competition-detail__add-stage">
+          <div class="floating-action floating-action--level-2">
             <AtomDialog
               closeButtonText={i18n.t(
                 "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
@@ -473,13 +472,13 @@ function CompetitionDetailBody(props: {
               }}
               open={isCreatingStage()}
               title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
-              triggerClass="competition-detail__add-stage-trigger"
+              triggerClass="floating-action__trigger"
               trigger={
                 <>
-                  <span class="competition-detail__add-stage-label">
+                  <span class="floating-action__label">
                     {i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
                   </span>
-                  <span class="competition-detail__add-stage-icon">
+                  <span class="floating-action__circle">
                     <AtomSvgIcon
                       src={plusIcon}
                       alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
@@ -491,13 +490,14 @@ function CompetitionDetailBody(props: {
             />
           </div>
         </Show>
-        <FloatingToggleCircle
-          onClick={() => setIsEditing((current) => !current)}
-          toggled={isEditing()}
-          nonToggledText={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
-          toggledText={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
-          nonToggledIcon={pencilIcon}
-          toggledIcon={arrowBackIcon}
+        <FloatingEditMenu
+          editing={isEditing()}
+          menuOpen={menuOpen()}
+          onMenuToggle={() => setMenuOpen((current) => !current)}
+          onEditToggle={() => setIsEditing((current) => !current)}
+          configLabel={i18n.t("COMMON.FLOATING_MENU.OPTIONS")}
+          editLabel={i18n.t("MY.COMPETITIONS.DETAIL.EDIT")}
+          viewLabel={i18n.t("MY.COMPETITIONS.DETAIL.VIEW")}
         />
       </Show>
     </div>
