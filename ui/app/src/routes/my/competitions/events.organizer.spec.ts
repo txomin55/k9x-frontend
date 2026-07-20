@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { organizerTest } from "@test/utils/authFixtures";
 import { setupCompetitionsCrud } from "@test/api-mocks/competitions";
 import { verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { openEditMode } from "@test/utils/detailEditMenu";
 
 const STAGE_DETAIL_URL =
   "/my/competitions/comp-with-stage-1/stages/stage-existing-1";
@@ -15,16 +16,16 @@ organizerTest.describe("Stage events (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto(STAGE_DETAIL_URL);
       await expect(
-        page.getByRole("heading", { name: "Existing Trial" }),
+        page.getByText("Existing Trial", { exact: true }).first(),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "POST", urlIncludes: "/secured/events" },
         entityType: "event",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page
-            .getByRole("button", { name: "+", exact: true })
+            .getByRole("button", { name: "Add event" })
             .first()
             .click();
           const dialog = page.getByRole("dialog");
@@ -79,14 +80,14 @@ organizerTest.describe("Stage events (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto(STAGE_WITH_EVENT_URL);
       await expect(
-        page.getByText("Existing Event", { exact: true }),
+        page.getByText("Existing Event", { exact: true }).first(),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "DELETE", urlIncludes: "/secured/events/" },
         entityType: "event",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page
             .getByRole("button", { name: "Delete", exact: true })
             .first()

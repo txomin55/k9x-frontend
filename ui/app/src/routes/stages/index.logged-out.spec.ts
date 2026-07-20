@@ -42,7 +42,7 @@ loggedOutTest.describe("Trials list - logged out", () => {
         .click();
 
       await expect(
-        page.getByText("Agility Standard (Agility)"),
+        page.getByText("Agility Standard", { exact: true }),
       ).toBeVisible();
 
       await page
@@ -61,7 +61,7 @@ loggedOutTest.describe("Trials list - logged out", () => {
       await page
         .getByRole("article")
         .filter({ hasText: "Valencia Autumn Trial" })
-        .getByRole("button", { name: "See classification" })
+        .getByRole("button", { name: "Classification" })
         .click();
 
       await expect(page.getByText("Rex")).toBeVisible();

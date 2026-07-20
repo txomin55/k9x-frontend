@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { organizerTest } from "@test/utils/authFixtures";
 import { setupCompetitionsCrud } from "@test/api-mocks/competitions";
 import { verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { openEditMode } from "@test/utils/detailEditMenu";
 
 organizerTest.describe("Competition stages (write) - organizer", () => {
   organizerTest(
@@ -10,16 +11,16 @@ organizerTest.describe("Competition stages (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto("/my/competitions/comp-created-1");
       await expect(
-        page.getByText("Madrid Summer Cup", { exact: true }),
+        page.getByText("Madrid Summer Cup", { exact: true }).first(),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "POST", urlIncludes: "/secured/stages" },
         entityType: "stage",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page
-            .getByRole("button", { name: "+", exact: true })
+            .getByRole("button", { name: "Add trial" })
             .first()
             .click();
           const dialog = page.getByRole("dialog");
@@ -70,14 +71,14 @@ organizerTest.describe("Competition stages (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto("/my/competitions/comp-with-stage-1");
       await expect(
-        page.getByText("Existing Trial", { exact: true }),
+        page.getByText("Existing Trial", { exact: true }).first(),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "DELETE", urlIncludes: "/secured/stages/" },
         entityType: "stage",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page.getByRole("button", { name: "Delete" }).first().click();
           await page
             .getByRole("dialog")

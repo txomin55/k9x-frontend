@@ -66,10 +66,10 @@ const toCreatedCompetition = (payload: IdNameDTO): CompetitionResponseDTO => ({
 const deletableCompetition: CompetitionResponseDTO = {
   id: "comp-deletable-1",
   name: "Valencia Winter Cup",
-  description: "Started competition without stages",
+  description: "Created competition without stages (deletable)",
   country: "ES",
   address: "Avinguda del Port 1, Valencia",
-  status: COMPETITION_STATUS.STARTED,
+  status: COMPETITION_STATUS.CREATED,
   notifications: [],
   stages: [],
 };
@@ -90,7 +90,7 @@ const competitionWithStage: CompetitionResponseDTO = {
       name: "Existing Trial",
       dateFrom: 1_717_200_000_000,
       dateTo: 1_717_286_400_000,
-      status: "started",
+      status: STAGE_STATUS.CREATED,
       events: [],
     },
   ],
@@ -112,7 +112,7 @@ const competitionWithEvent: CompetitionResponseDTO = {
       name: "Event Trial",
       dateFrom: 1_717_200_000_000,
       dateTo: 1_717_286_400_000,
-      status: "started",
+      status: STAGE_STATUS.CREATED,
       events: [
         {
           id: "event-existing-1",

@@ -47,15 +47,15 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
             dog: { id: dog.id, name: dog.name },
             owner: dog.owner,
             team: dog.team,
-            country: dog.country,
-            breed: dog.breed.name,
+            country: dog.country.id,
+            breed: dog.breed,
           });
         }
         await route.fulfill({ status: 204, body: "" });
       });
 
       await page.goto(`/stages/${STAGE_ID}/info`);
-      await expect(page.getByText("Agility Standard (Agility)")).toBeVisible();
+      await expect(page.getByText("Agility Standard", { exact: true })).toBeVisible();
 
       const openEnrolledCompetitors = () =>
         page.getByRole("button", { name: "Competitors enrolled" }).click();

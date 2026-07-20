@@ -34,6 +34,11 @@ export default async function defaultApiResponses(page: Page) {
     }),
     setRouteResponses(page, {
       method: "GET",
+      payload: [],
+      pathname: "/secured/collections",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
       payload: resolveDogByIdPayload,
       pathname: "/secured/dogs/*",
     }),

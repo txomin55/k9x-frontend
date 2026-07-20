@@ -19,7 +19,9 @@ competitorTest.describe("Landing page - competitor", () => {
         page.getByRole("button", { name: "Light", exact: true }),
       ).toBeVisible();
 
-      await page.getByRole("button", { name: "es", exact: true }).click();
+      // The locale toggle is now a select; open it and pick the Spanish option.
+      await page.locator('button[aria-haspopup="listbox"]').click();
+      await page.getByRole("option", { name: "es" }).click();
       await expect(
         page.getByText("¿Quieres ser organizador?"),
       ).toBeVisible();

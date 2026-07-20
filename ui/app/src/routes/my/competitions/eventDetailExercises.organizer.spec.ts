@@ -7,6 +7,7 @@ import {
   setupEventDetailCrud,
 } from "@test/api-mocks/eventDetail";
 import { verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { openEditMode } from "@test/utils/detailEditMenu";
 
 const EVENT_DETAIL_URL = `/my/competitions/${EVENT_DETAIL_COMPETITION_ID}/stages/${EVENT_DETAIL_STAGE_ID}/events/${EVENT_DETAIL_ID}`;
 
@@ -14,10 +15,10 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
   organizerTest(
     "adds an exercise optimistically, queues it offline, and rehydrates on reload",
     async ({ page, context }) => {
-      await setupEventDetailCrud(page);
+      await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
 
@@ -25,7 +26,7 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
         entityType: "event",
         performMutation: async () => {
-          await page.getByRole("button", { name: "+", exact: true }).click();
+          await page.getByRole("button", { name: "Add exercise" }).click();
           const dialog = page.getByRole("dialog");
           const exercise = dialog.getByRole("combobox", { name: "Exercise" });
           await exercise.click();
@@ -54,10 +55,10 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
   organizerTest(
     "edits an exercise's tags optimistically, queues it offline, and rehydrates on reload",
     async ({ page, context }) => {
-      await setupEventDetailCrud(page);
+      await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
 
@@ -89,10 +90,10 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
   organizerTest(
     "deletes an exercise optimistically, queues it offline, and rehydrates on reload",
     async ({ page, context }) => {
-      await setupEventDetailCrud(page);
+      await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
 

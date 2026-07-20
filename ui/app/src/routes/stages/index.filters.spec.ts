@@ -28,9 +28,9 @@ const filterStages: StageSummaryResponseDTO[] = [
     country: "ES",
     dateFrom: Date.UTC(2024, 4, 1),
     dateTo: Date.UTC(2024, 4, 1),
-    // Coordinates are spread across the globe so the map never clusters the
-    // three markers, keeping each individually assertable by its label.
-    location: { address: "Barcelona", latitude: 41.39, longitude: 2.17 },
+    // Coordinates form a wide triangle so fit-bounds keeps the three markers
+    // pixel-separated (no clustering), each individually assertable by its label.
+    location: { address: "Barcelona", latitude: 55, longitude: -30 },
   }),
   buildStage({
     id: "stage-pt",
@@ -38,7 +38,7 @@ const filterStages: StageSummaryResponseDTO[] = [
     country: "PT",
     dateFrom: Date.UTC(2024, 11, 1),
     dateTo: Date.UTC(2024, 11, 1),
-    location: { address: "Sydney", latitude: -33.87, longitude: 151.21 },
+    location: { address: "Sydney", latitude: 55, longitude: 30 },
   }),
   buildStage({
     id: "stage-fr",
@@ -46,7 +46,7 @@ const filterStages: StageSummaryResponseDTO[] = [
     country: "FR",
     dateFrom: Date.UTC(2024, 9, 15),
     dateTo: Date.UTC(2024, 9, 15),
-    location: { address: "Lima", latitude: -12.05, longitude: -77.04 },
+    location: { address: "Lima", latitude: 10, longitude: 0 },
   }),
 ];
 
@@ -71,7 +71,18 @@ const setupFilterStages = async (page: Page) => {
   });
 };
 
+// On mobile (the only configured project) the filters live inside a collapsed
+// "Filters" collapsible; expand it before touching any filter field. Idempotent.
+const openFilters = async (page: Page) => {
+  const trigger = page.getByRole("button", { name: "Filters" });
+  await trigger.waitFor({ state: "visible" });
+  if ((await trigger.getAttribute("aria-expanded")) !== "true") {
+    await trigger.click();
+  }
+};
+
 const selectCountry = async (page: Page, country: string) => {
+  await openFilters(page);
   await page.getByRole("button", { name: "Country" }).click();
   await page.keyboard.type(country);
   await page.keyboard.press("Enter");
@@ -81,6 +92,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   competitorTest("filters the trials by name", async ({ page }) => {
     await setupFilterStages(page);
     await page.goto(AppRoutePath.STAGES);
+    await openFilters(page);
 
     await expect(
       page.getByText("Barcelona Spring Trial", { exact: true }),
@@ -105,6 +117,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   competitorTest("filters the trials by country", async ({ page }) => {
     await setupFilterStages(page);
     await page.goto(AppRoutePath.STAGES);
+    await openFilters(page);
     await expect(
       page.getByText("Paris Autumn Open", { exact: true }),
     ).toBeVisible();
@@ -127,6 +140,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
     async ({ page }) => {
       await setupFilterStages(page);
       await page.goto(AppRoutePath.STAGES);
+    await openFilters(page);
       await expect(
         page.getByText("Paris Autumn Open", { exact: true }),
       ).toBeVisible();
@@ -146,6 +160,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   competitorTest("filters the trials by date range", async ({ page }) => {
     await setupFilterStages(page);
     await page.goto(AppRoutePath.STAGES);
+    await openFilters(page);
     await expect(
       page.getByText("Lisbon Winter Cup", { exact: true }),
     ).toBeVisible();
@@ -220,6 +235,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
     async ({ page }) => {
       await setupFilterStages(page);
       await page.goto(AppRoutePath.STAGES);
+    await openFilters(page);
       await expect(
         page.getByText("Barcelona Spring Trial", { exact: true }),
       ).toBeVisible();

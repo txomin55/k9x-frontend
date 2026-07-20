@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { organizerTest } from "@test/utils/authFixtures";
 import { setupCompetitionsCrud } from "@test/api-mocks/competitions";
 import { trackRequests, verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { openEditMode } from "@test/utils/detailEditMenu";
 
 organizerTest.describe("My competitions (write) - organizer", () => {
   organizerTest(
@@ -27,7 +28,7 @@ organizerTest.describe("My competitions (write) - organizer", () => {
 
       await page.reload();
       await expect(
-        page.getByText("Default competition", { exact: true }),
+        page.getByRole("link", { name: "Default competition" }),
       ).toBeVisible();
     },
   );
@@ -38,14 +39,14 @@ organizerTest.describe("My competitions (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto("/my/competitions/comp-created-1");
       await expect(
-        page.getByText("Madrid Summer Cup", { exact: true }),
+        page.getByRole("link", { name: "Madrid Summer Cup" }),
       ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "PUT", urlIncludes: "/secured/competitions/" },
         entityType: "competition",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page.getByLabel("Title").fill("Madrid Summer Cup Edited");
           await page.getByLabel("Description").click();
         },
@@ -56,7 +57,7 @@ organizerTest.describe("My competitions (write) - organizer", () => {
         },
         assertRehydrated: async () => {
           await expect(
-            page.getByText("Madrid Summer Cup Edited", { exact: true }),
+            page.getByRole("link", { name: "Madrid Summer Cup Edited" }),
           ).toBeVisible();
         },
       });
@@ -69,7 +70,7 @@ organizerTest.describe("My competitions (write) - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto("/my/competitions/comp-deletable-1");
       await expect(
-        page.getByText("Valencia Winter Cup", { exact: true }),
+        page.getByRole("link", { name: "Valencia Winter Cup" }),
       ).toBeVisible();
 
       const deletes = trackRequests(page, {
@@ -77,7 +78,7 @@ organizerTest.describe("My competitions (write) - organizer", () => {
         urlIncludes: "/secured/competitions/",
       });
 
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("button", { name: "Delete" }).first().click();
       await page
         .getByRole("dialog")

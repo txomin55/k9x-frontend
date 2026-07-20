@@ -7,6 +7,7 @@ import {
   setupEventDetailCrud,
 } from "@test/api-mocks/eventDetail";
 import { verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { openEditMode } from "@test/utils/detailEditMenu";
 import type { Page } from "@playwright/test";
 
 const EVENT_DETAIL_URL = `/my/competitions/${EVENT_DETAIL_COMPETITION_ID}/stages/${EVENT_DETAIL_STAGE_ID}/events/${EVENT_DETAIL_ID}`;
@@ -14,7 +15,7 @@ const EVENT_DETAIL_URL = `/my/competitions/${EVENT_DETAIL_COMPETITION_ID}/stages
 // Open the competitor editor once online so the dogs query (used by the dog
 // combobox) is cached before a later step goes offline, then close it.
 const warmDogOptions = async (page: Page) => {
-  await page.getByRole("button", { name: "+", exact: true }).click();
+  await page.getByRole("button", { name: "Add competitor" }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("combobox", { name: "Dog" }).click();
   // The dog option label is "Koda (Carlos Competitor)", so match by substring.
@@ -32,7 +33,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
       // intercepts pointer events; neutralize it (the toggle is not needed again).
@@ -46,7 +47,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
         entityType: "event",
         performMutation: async () => {
-          await page.getByRole("button", { name: "+", exact: true }).click();
+          await page.getByRole("button", { name: "Add competitor" }).click();
           const dialog = page.getByRole("dialog");
           const dog = dialog.getByRole("combobox", { name: "Dog" });
           await dog.click();
@@ -75,7 +76,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
       // intercepts pointer events; neutralize it (the toggle is not needed again).
@@ -120,7 +121,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
       // intercepts pointer events; neutralize it (the toggle is not needed again).
@@ -150,7 +151,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
           ).toHaveCount(0);
         },
         assertRehydrated: async () => {
-          await page.getByRole("button", { name: "Edit" }).click();
+          await openEditMode(page);
           await page.getByRole("tab", { name: "Competitors" }).click();
           await expect(page.getByText("Dog: Luna", { exact: true })).toBeVisible();
           await expect(
@@ -182,10 +183,10 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
   organizerTest(
     "deletes a competitor optimistically, queues it offline, and rehydrates on reload",
     async ({ page, context }) => {
-      await setupEventDetailCrud(page, { eventStatus: "CLOSED_ENROLLMENT" });
+      await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
       // intercepts pointer events; neutralize it (the toggle is not needed again).

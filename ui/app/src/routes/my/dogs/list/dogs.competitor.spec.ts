@@ -17,6 +17,7 @@ competitorTest.describe("My dogs (write) - competitor", () => {
         performMutation: async () => {
           await page.getByRole("button", { name: "+", exact: true }).click();
           const dialog = page.getByRole("dialog");
+          await dialog.getByLabel("Chip").fill("CHIP-REX-1");
           await dialog.getByLabel("Name").fill("Rex");
           await dialog.getByRole("button", { name: "Country" }).click();
           await page.keyboard.type("Spain");

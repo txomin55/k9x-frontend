@@ -29,8 +29,9 @@ organizerTest.describe("My dogs (write) - organizer", () => {
         performMutation: async () => {
           await page.getByRole("button", { name: "+", exact: true }).click();
           const dialog = page.getByRole("dialog");
+          await dialog.getByLabel("Chip").fill("CHIP-REX-1");
           await dialog.getByLabel("Name").fill("Rex");
-          await dialog.getByLabel("Owner").fill("Olivia Organizer");
+          await dialog.getByLabel("Owner").fill("olivia@k9x.test");
           await expect(ownedCheckbox).not.toBeChecked();
           await dialog.getByRole("button", { name: "Country" }).click();
           await page.keyboard.type("Spain");
