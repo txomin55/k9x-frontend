@@ -20,7 +20,7 @@ describe("AtomCheckbox", () => {
     expect(checkbox.checked).toBe(true);
   });
 
-  test("calls setChecked when clicked", () => {
+  test("calls setChecked when clicked", async () => {
     const setChecked = vi.fn();
     const { getByLabelText } = render(() => (
       <AtomCheckbox
@@ -31,7 +31,7 @@ describe("AtomCheckbox", () => {
     ));
 
     const label = getByLabelText("Test Label");
-    user.click(label);
+    await user.click(label);
 
     expect(setChecked).toHaveBeenCalledWith(true);
   });

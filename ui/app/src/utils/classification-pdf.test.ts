@@ -123,9 +123,10 @@ describe("exportClassificationPdf", () => {
     expect(options.head[0]).not.toContain("Heelwork");
     expect(options.body[0]).toEqual([
       "1",
-      "4",
+      "1",
       "Handler One",
       "Rex",
+      "dog-1",
       "Club A",
       "195",
       "90%",

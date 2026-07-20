@@ -46,6 +46,25 @@ if (typeof globalThis.localStorage?.getItem !== "function") {
   }
 }
 
+if (
+  typeof globalThis.window !== "undefined" &&
+  typeof globalThis.window.matchMedia !== "function"
+) {
+  Object.defineProperty(globalThis.window, "matchMedia", {
+    configurable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  });
+}
+
 vi.mock("@solidjs/meta", () => ({
   MetaProvider: (props: ParentProps) => props.children,
   Title: () => null,
