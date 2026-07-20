@@ -38,6 +38,7 @@
     "vitest": "catalog:"
   },
   "dependencies": {
+    "@newrelic/browser-agent": "^1.318.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/start": "2.0.0-alpha.2",
     "@tanstack/solid-query": "^5.91.1",
