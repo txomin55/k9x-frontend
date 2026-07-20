@@ -1,7 +1,8 @@
 .judge-card__actions {
     display: flex;
-    justify-content: space-between;
     width: 100%;
+    justify-content: flex-start;
+    gap: var(--unit-1);
 }
 
 .judge-card__heading {

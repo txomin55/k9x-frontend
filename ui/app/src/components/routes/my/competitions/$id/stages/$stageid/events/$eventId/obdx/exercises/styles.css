@@ -16,12 +16,27 @@
 .event-exercises-section__exercises--actions {
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: var(--unit-1);
+    align-items: center;
+}
+
+.event-exercises-section__tags-judges {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--unit-2);
 }
 
 .event-exercises-section__tags {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--unit-05);
+}
+
+.event-exercises-section__judges {
+    display: flex;
+    flex-direction: column;
     gap: var(--unit-05);
 }
 

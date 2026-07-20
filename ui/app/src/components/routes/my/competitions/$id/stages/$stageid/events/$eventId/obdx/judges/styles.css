@@ -27,7 +27,9 @@
 .event-judges-section__judges--actions {
     display: flex;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: var(--unit-1);
+    align-items: center;
 }
 
 .event-judges-section__table {

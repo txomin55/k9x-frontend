@@ -131,8 +131,13 @@ export default function EventExercisesSection(
             exercise.judges.map((judge) => judge.name).join(", "),
           header: i18n.t("MY.COMPETITIONS.EVENT_EXERCISES.JUDGES"),
           enableSorting: false,
-          cell: (info) =>
-            info.row.original.judges.map((judge) => judge.name).join(", "),
+          cell: (info) => (
+            <div class="event-exercises-section__judges">
+              <For each={info.row.original.judges}>
+                {(judge) => <span>{judge.name}</span>}
+              </For>
+            </div>
+          ),
         },
       ];
 
@@ -183,18 +188,22 @@ export default function EventExercisesSection(
             description={
               <div>
                 <p>{getExerciseName(exercise())}</p>
-                <Index each={exercise().tags}>
-                  {(tag) => (
-                    <AtomBadge textValue={tag()} colorByLabel>
-                      {tag()}
-                    </AtomBadge>
-                  )}
-                </Index>
-                <p>
-                  {exercise()
-                    .judges.map((judge) => judge.name)
-                    .join(", ")}
-                </p>
+                <div class="event-exercises-section__tags-judges">
+                  <div class="event-exercises-section__tags">
+                    <Index each={exercise().tags}>
+                      {(tag) => (
+                        <AtomBadge textValue={tag()} colorByLabel>
+                          {tag()}
+                        </AtomBadge>
+                      )}
+                    </Index>
+                  </div>
+                  <div class="event-exercises-section__judges">
+                    <Index each={exercise().judges}>
+                      {(judge) => <span>{judge().name}</span>}
+                    </Index>
+                  </div>
+                </div>
               </div>
             }
             actions={
