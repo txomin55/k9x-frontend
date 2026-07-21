@@ -31,6 +31,7 @@ export type AtomTableProps<TData> = {
   getRowId?: (row: TData, index: number) => string;
   expanded?: ExpandedState;
   onExpandedChange?: OnChangeFn<ExpandedState>;
+  expandOnRowClick?: boolean;
 };
 
 export default function AtomTable<TData>(props: AtomTableProps<TData>) {
@@ -70,6 +71,14 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
     getSortedRowModel: getSortedRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
   });
+
+  const handleRowClick = (row: Row<TData>, event: MouseEvent) => {
+    if (!props.expandOnRowClick || !row.getCanExpand()) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('button, a, input, select, textarea, label, [role="button"]'))
+      return;
+    row.toggleExpanded();
+  };
 
   createEffect(() => {
     if (!sentinelRef || typeof IntersectionObserver === "undefined") {
@@ -151,7 +160,14 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
               <For each={table.getRowModel().rows}>
                 {(row) => (
                   <>
-                    <tr class="atom-table__row">
+                    <tr
+                      class="atom-table__row"
+                      classList={{
+                        "atom-table__row--clickable":
+                          Boolean(props.expandOnRowClick) && row.getCanExpand(),
+                      }}
+                      onClick={(event) => handleRowClick(row, event)}
+                    >
                       <For each={row.getVisibleCells()}>
                         {(cell) => (
                           <td class="atom-table__cell">

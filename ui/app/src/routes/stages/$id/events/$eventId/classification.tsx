@@ -523,6 +523,7 @@ function EventClassificationPage() {
         data={filteredCompetitors()}
         columns={columns()}
         getRowCanExpand={() => true}
+        expandOnRowClick
         getRowId={(row) => row.dog.id}
         expanded={expandedState()}
         onExpandedChange={handleExpandedChange}

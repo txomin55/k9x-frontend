@@ -77,6 +77,10 @@
   background: var(--surface-muted);
 }
 
+.atom-table__body .atom-table__row--clickable {
+  cursor: pointer;
+}
+
 /* Expanded sub-row */
 
 .atom-table__body .atom-table__row--expanded:hover {

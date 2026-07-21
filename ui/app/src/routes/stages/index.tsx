@@ -297,6 +297,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
         data={filteredStages()}
         columns={columns()}
         getRowCanExpand={() => true}
+        expandOnRowClick
         renderSubComponent={(row) => (
           <StageCardEventsContent
             id={row.original.id}
