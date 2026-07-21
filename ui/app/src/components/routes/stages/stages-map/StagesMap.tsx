@@ -5,12 +5,14 @@ import {
 	createSignal,
 	onCleanup,
 	onMount,
+	Show,
 } from "solid-js";
 import { render } from "solid-js/web";
 import {
 	StageMapMarker,
 	StageMapMarkerPopup,
 } from "@/components/routes/stages/stages-map/StageMapMarker";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { isDark } from "@/stores/theme/theme";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -31,9 +33,12 @@ export default function StagesMap(props: StagesMapProps) {
 	let resizeObserver: ResizeObserver | undefined;
 	let tileLayer: L.TileLayer | undefined;
 	const disposers: Array<() => void> = [];
-	const markerByStage = new Map<string, L.Marker>();
 	const [mapReady, setMapReady] = createSignal(false);
 	const [stageParam, setStageParam] = useSearchParam("stage", "");
+
+	const selectedStage = createMemo(() =>
+		props.stages.find((stage) => stage.id === stageParam()),
+	);
 
 	const clusterGroup = L.markerClusterGroup({
 		showCoverageOnHover: false,
@@ -63,30 +68,13 @@ export default function StagesMap(props: StagesMapProps) {
 	};
 
 	const markers = createMemo(() => {
-		markerByStage.clear();
 		return props.stages.map((stage) => {
 			const marker = L.marker(
 				[stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
 				{ icon: getIconStyle(stage) },
 			);
 
-			const container = document.createElement("div");
-			const dispose = render(
-				() => <StageMapMarkerPopup stage={stage} onEnroll={props.onEnroll} />,
-				container,
-			);
-
-			disposers.push(dispose);
-			marker.bindPopup(container);
-
-			marker.on("popupopen", () => {
-				if (stageParam() !== stage.id) setStageParam(stage.id);
-			});
-			marker.on("popupclose", () => {
-				if (stageParam() === stage.id) setStageParam("");
-			});
-
-			markerByStage.set(stage.id, marker);
+			marker.on("click", () => setStageParam(stage.id));
 
 			return marker;
 		});
@@ -112,16 +100,6 @@ export default function StagesMap(props: StagesMapProps) {
 		clusterGroup.clearLayers();
 		clusterGroup.addLayers(currentMarkers);
 		fitToMarkers();
-	});
-
-	createEffect(() => {
-		const id = stageParam();
-		if (!mapReady() || !map || !id) return;
-
-		const marker = markerByStage.get(id);
-		if (!marker || marker.isPopupOpen()) return;
-
-		clusterGroup.zoomToShowLayer(marker, () => marker.openPopup());
 	});
 
 	const getTileLayerUrl = (isDark: boolean) =>
@@ -194,5 +172,23 @@ export default function StagesMap(props: StagesMapProps) {
 		disposers.forEach((dispose) => dispose());
 	});
 
-	return <div class="stages-map" ref={mapEl} />;
+	return (
+		<>
+			<div class="stages-map" ref={mapEl} />
+			<AtomDialog
+				open={Boolean(selectedStage())}
+				onOpenChange={(isOpen) => {
+					if (!isOpen) setStageParam("");
+				}}
+				title={selectedStage()?.name}
+				content={
+					<Show when={selectedStage()}>
+						{(stage) => (
+							<StageMapMarkerPopup stage={stage()} onEnroll={props.onEnroll} />
+						)}
+					</Show>
+				}
+			/>
+		</>
+	);
 }

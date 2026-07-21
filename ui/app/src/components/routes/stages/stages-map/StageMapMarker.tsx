@@ -52,7 +52,6 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
   const [openWrongLocationForm, setOpenWrongLocationForm] = createSignal(false);
   return (
     <div class="stages-map-marker-popup">
-      <span class="text-body-md">{props.stage.name}</span>
       <span class="text-caption-lg">{props.stage.competitionName}</span>
       <span class="text-caption-sm">
         {formatStageDateRange(
