@@ -2,6 +2,7 @@ import {
   createFileRoute,
   useNavigate,
   useParams,
+  useSearch,
 } from "@tanstack/solid-router";
 import {
   type Accessor,
@@ -68,6 +69,12 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import "./styles.css";
 
+const TABS = {
+  JUDGES: "JUDGES",
+  EXERCISES: "EXERCISES",
+  COMPETITORS: "COMPETITORS",
+} as const;
+
 function CompetitionObdxEventDetailBody(props: {
   event: Accessor<EventDetailResponseDTO>;
   onDelete: () => void;
@@ -75,6 +82,21 @@ function CompetitionObdxEventDetailBody(props: {
   stageDateFrom?: number;
 }) {
   const i18n = useI18n();
+  const params = useParams({
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
+  });
+  const search = useSearch({
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
+  });
+  const navigate = useNavigate();
+  const currentTab = () => search().tab ?? TABS.JUDGES;
+  const handleTabChange = (tab: string) =>
+    void navigate({
+      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
+      params: params(),
+      search: (prev) => ({ ...prev, tab }),
+      replace: true,
+    });
   const [isEditing, setIsEditing] = createSignal(false);
   const [menuOpen, setMenuOpen] = createSignal(false);
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
@@ -116,12 +138,6 @@ function CompetitionObdxEventDetailBody(props: {
     const selectedIds = new Set(draftEvent().awards.map((award) => award.id));
     return awardOptions().filter((option) => selectedIds.has(option.value));
   });
-
-  const TABS = {
-    JUDGES: "JUDGES",
-    EXERCISES: "EXERCISES",
-    COMPETITORS: "COMPETITORS",
-  };
 
   const hasConfiguration = createMemo(() =>
     Boolean(draftEvent().configuration.id),
@@ -1041,6 +1057,8 @@ function CompetitionObdxEventDetailBody(props: {
 
       <AtomTabs
         defaultValue={TABS.JUDGES}
+        value={currentTab()}
+        onChange={handleTabChange}
         options={eventTabsTitles()}
         contents={eventTabsContents()}
       />
@@ -1088,10 +1106,33 @@ function CompetitionEventDetailRoute() {
   );
 }
 
+export interface CompetitionEventDetailSearch {
+  tab?: string;
+  unverified?: boolean;
+}
+
 export const Route = createFileRoute(
   "/my/competitions/$id/stages/$stageId/events/$eventId/",
 )({
   component: CompetitionEventDetailRoute,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): CompetitionEventDetailSearch => {
+    const result: CompetitionEventDetailSearch = {};
+
+    if (
+      typeof search.tab === "string" &&
+      (Object.values(TABS) as string[]).includes(search.tab)
+    ) {
+      result.tab = search.tab;
+    }
+
+    if (search.unverified === true || search.unverified === "true") {
+      result.unverified = true;
+    }
+
+    return result;
+  },
   loader: ({ params }) => {
     if (params.eventId !== "new" && !isOffline()) {
       void prefetchEventById(params.eventId);

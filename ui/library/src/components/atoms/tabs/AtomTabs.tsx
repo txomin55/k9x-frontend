@@ -15,6 +15,8 @@ export interface TabsContentProps {
 
 export interface TabsProps {
   defaultValue: string;
+  value?: string;
+  onChange?: (value: string) => void;
   options: TabsOptionProps[];
   contents: TabsContentProps[];
 }
@@ -31,8 +33,13 @@ const AtomTabContent = (props: TabsContentProps) => (
 
 export default (props: TabsProps) => {
   const [selectedTab, setSelectedTab] = createSignal(props.defaultValue);
+  const currentTab = () => props.value ?? selectedTab();
+  const handleChange = (value: string) => {
+    setSelectedTab(value);
+    props.onChange?.(value);
+  };
   return (
-    <Tabs value={selectedTab()} onChange={setSelectedTab} class="atom-tabs">
+    <Tabs value={currentTab()} onChange={handleChange} class="atom-tabs">
       <Tabs.List>
         <Index each={props.options}>
           {(option) => (

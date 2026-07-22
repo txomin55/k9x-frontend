@@ -6,6 +6,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import checkIcon from "@/assets/miscelaneous/check.svg";
@@ -24,7 +25,7 @@ import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
-import { useNavigate, useParams } from "@tanstack/solid-router";
+import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
   canAcceptCompetitorEnroll,
@@ -67,6 +68,10 @@ export default function EventCompetitorsSection(
   const params = useParams({
     from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
   });
+  const search = useSearch({
+    from: "/my/competitions/$id/stages/$stageId/events/$eventId/",
+  });
+  const showUnverifiedOnly = () => Boolean(search().unverified);
 
   const user = useAuthUser();
   const dogsQuery = useAllDogs({
@@ -112,8 +117,14 @@ export default function EventCompetitorsSection(
   const getOrderValue = (competitor: EventCompetitorDetail) =>
     competitor.position;
 
+  const visibleCompetitors = createMemo(() =>
+    showUnverifiedOnly()
+      ? props.competitors.filter((competitor) => !competitor.accepted)
+      : props.competitors,
+  );
+
   const sortedCompetitors = createMemo(() =>
-    [...props.competitors].toSorted(
+    [...visibleCompetitors()].toSorted(
       (a, b) => getOrderValue(a) - getOrderValue(b),
     ),
   );
@@ -144,6 +155,13 @@ export default function EventCompetitorsSection(
   };
 
   const navigate = useNavigate();
+  const toggleUnverifiedOnly = (checked: boolean) =>
+    void navigate({
+      to: "/my/competitions/$id/stages/$stageId/events/$eventId",
+      params: params(),
+      search: (prev) => ({ ...prev, unverified: checked || undefined }),
+      replace: true,
+    });
   const openCompetitorCollection = (eventId: string, competitorId: string) =>
     void navigate({
       params: { id: eventId },
@@ -455,6 +473,13 @@ export default function EventCompetitorsSection(
           <p>{i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NO_COMPETITORS")}</p>
         }
       >
+        <div class="event-competitors-section__filter">
+          <AtomCheckbox
+            label={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_PENDING")}
+            checked={showUnverifiedOnly()}
+            setChecked={toggleUnverifiedOnly}
+          />
+        </div>
         <AtomSegmentedControl
           title={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.COMPETITORS_BY")}
           control={view()}

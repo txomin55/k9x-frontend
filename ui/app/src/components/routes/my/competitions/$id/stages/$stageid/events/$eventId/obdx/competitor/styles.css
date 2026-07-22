@@ -21,6 +21,12 @@
     align-items: center;
 }
 
+.event-competitors-section__filter {
+    display: flex;
+    align-items: center;
+    padding: var(--unit-1) 0;
+}
+
 .event-competitors-section__table {
     margin-top: var(--unit-1);
 }
