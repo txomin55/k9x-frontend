@@ -47,6 +47,17 @@
     max-height: var(--table-max-height);
 }
 
+.event-judges-section__table .atom-table__cell {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+    .event-judges-section__table .atom-table__header:nth-child(2),
+    .event-judges-section__table .atom-table__cell:nth-child(2) {
+        display: none;
+    }
+}
+
 .judge-editor-form {
     display: flex;
     flex-direction: column;

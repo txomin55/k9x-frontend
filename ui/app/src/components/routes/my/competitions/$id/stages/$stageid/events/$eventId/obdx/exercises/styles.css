@@ -53,6 +53,19 @@
     max-height: var(--table-max-height);
 }
 
+.event-exercises-section__table .atom-table__cell {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+    .event-exercises-section__table .atom-table__header:nth-child(3),
+    .event-exercises-section__table .atom-table__cell:nth-child(3),
+    .event-exercises-section__table .atom-table__header:nth-child(4),
+    .event-exercises-section__table .atom-table__cell:nth-child(4) {
+        display: none;
+    }
+}
+
 .event-exercises-section__header {
     display: flex;
     justify-content: flex-end;

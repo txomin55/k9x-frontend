@@ -34,6 +34,17 @@
     max-height: var(--table-max-height);
 }
 
+.event-competitors-section__table .atom-table__cell {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+    .event-competitors-section__table .atom-table__header:nth-child(3),
+    .event-competitors-section__table .atom-table__cell:nth-child(3) {
+        display: none;
+    }
+}
+
 .event-competitors-section__header {
     display: flex;
     justify-content: flex-end;

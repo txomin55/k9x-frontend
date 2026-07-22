@@ -2,6 +2,11 @@
   display: flex;
   align-items: center;
   gap: var(--unit-1);
+  min-width: 0;
+}
+
+.list-table__name > span {
+  overflow-wrap: anywhere;
 }
 
 .list-table__actions {
@@ -9,6 +14,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: var(--unit-1);
+  flex-shrink: 0;
 }
 
 .list-table__actions .atom-button {
