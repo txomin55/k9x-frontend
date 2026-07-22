@@ -173,9 +173,13 @@ test("authenticate", async ({ browser }) => {
     });
     const reusePage = await reuseContext.newPage();
     await gotoStable(reusePage, "/my/dogs/list");
+    // Give the SPA time to hydrate and silently refresh the access token before
+    // deciding the session is dead — an instant isVisible() check races the
+    // render and falsely falls through to the interactive Google login.
     const stillAuthed = await reusePage
       .getByRole("button", { name: "+", exact: true })
-      .isVisible()
+      .waitFor({ state: "visible", timeout: 20_000 })
+      .then(() => true)
       .catch(() => false);
 
     if (stillAuthed && (await readToken(reusePage))) {

@@ -17,7 +17,7 @@ const localWebServer: PlaywrightTestConfig["webServer"] = {
 export default defineConfig({
   testDir: "./smoke",
   testMatch: "**/*.smoke.spec.ts",
-  timeout: 120_000,
+  timeout: 180_000,
   expect: { timeout: 10_000 },
   retries: 1,
   fullyParallel: false,

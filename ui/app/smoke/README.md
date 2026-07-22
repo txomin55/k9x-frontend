@@ -48,3 +48,10 @@ regresiones en los flujos felices.
 Los datos creados (juez, perros, competición→stage→evento) se borran en `afterAll`
 vía `DELETE /secured/competitions|dogs|judges/{id}` (la competición borra en
 cascada sus stages y eventos).
+
+**Limitación:** las journeys `scoring` y `visitor` mueven la fecha del stage a
+hoy para poder puntuar, lo que deja el evento en estado `STARTED`. El backend
+rechaza (412 "no se puede eliminar en su estado actual") borrar o modificar una
+competición/stage/evento ya iniciado, así que **esas competiciones puntuadas
+quedan sin borrar**; el resto (jueces, perros y competiciones no iniciadas) sí
+se limpia.
