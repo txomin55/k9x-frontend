@@ -29,13 +29,15 @@ export default function Navigation() {
 
   return (
     <nav class="navigation__sidebar-panel--navigation">
-      <Link
-        to={AppRoutePath.HOME as "/"}
-        activeOptions={{ exact: true }}
-        activeProps={{ class: "navigation__link--active" }}
-      >
-        {i18n.t("GLOBAL.NAVIGATION.LANDING")}
-      </Link>
+      <Show when={!user()}>
+        <Link
+          to={AppRoutePath.HOME as "/"}
+          activeOptions={{ exact: true }}
+          activeProps={{ class: "navigation__link--active" }}
+        >
+          {i18n.t("GLOBAL.NAVIGATION.LANDING")}
+        </Link>
+      </Show>
       <Link
         to={AppRoutePath.STAGES as "/stages"}
         activeProps={{ class: "navigation__link--active" }}

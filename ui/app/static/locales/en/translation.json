@@ -1,6 +1,6 @@
 {
   "GLOBAL.NAVIGATION.HELLO": "hello {{ name }}, how are you?",
-  "GLOBAL.NAVIGATION.LANDING": "Landing",
+  "GLOBAL.NAVIGATION.LANDING": "Home",
   "GLOBAL.NAVIGATION.STAGES": "Trials",
   "GLOBAL.NAVIGATION.MY": "My",
   "GLOBAL.NAVIGATION.COMPETITIONS": "Competitions",
