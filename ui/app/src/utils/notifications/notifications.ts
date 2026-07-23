@@ -1,6 +1,5 @@
 import {
   isPushNotificationSupported,
-  nativeDisplayNotification,
   nativeGetNotificationPermission,
   nativeGetPushSubscription,
   nativeRequestNotificationPermission,
@@ -15,20 +14,6 @@ const requestNotificationPermission = async () => {
   }
 
   return await nativeRequestNotificationPermission();
-};
-
-const displayNotification = async (payload) => {
-  if (
-    !isPushNotificationSupported() ||
-    nativeGetNotificationPermission() !== "granted"
-  ) {
-    return;
-  }
-
-  const registration = await navigator.serviceWorker.ready;
-  if (!registration) return;
-
-  await nativeDisplayNotification(registration, payload);
 };
 
 const subscribeToPushNotifications = async (
@@ -69,8 +54,4 @@ const enablePushNotifications = async (applicationServerKey: Uint8Array) => {
   };
 };
 
-export {
-  requestNotificationPermission,
-  displayNotification,
-  enablePushNotifications,
-};
+export { requestNotificationPermission, enablePushNotifications };

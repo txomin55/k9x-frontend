@@ -1,4 +1,6 @@
 {
+  "NOTIFICATION.NEW_ENROLL.TITLE": "Nueva inscripción en {{event_name}}",
+  "NOTIFICATION.NEW_ENROLL.BODY": "{{competition_name}} · {{stage_name}}",
   "GLOBAL.NAVIGATION.HELLO": "Hola {{ name }}, como estás?",
   "GLOBAL.NAVIGATION.LANDING": "Inicio",
   "GLOBAL.NAVIGATION.STAGES": "Pruebas",
@@ -14,7 +16,6 @@
   "GLOBAL.NAVIGATION.LOCALE": "Idioma",
   "GLOBAL.NAVIGATION.CLOSE_DIALOG": "Cerrar diálogo",
   "GLOBAL.NAVIGATION.CONTACT_US": "Contáctanos",
-  "GLOBAL.NAVIGATION.TRIGGER_NOTIFICATION": "Lanzar notificación",
   "GLOBAL.NAVIGATION.LOGOUT": "Cerrar sesión",
   "GLOBAL.NAVIGATION.SEND": "Enviar",
   "GLOBAL.FORM.SENT": "Formulario enviado",

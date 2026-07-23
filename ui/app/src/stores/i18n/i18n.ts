@@ -2,7 +2,34 @@ import i18n from "i18next";
 import Backend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { createAppStore } from "@/utils/store/createAppStore";
+import { saveActiveNotificationTranslations } from "@/utils/local-first/notification_translations/notificationTranslationsStore";
 import type { I18nState, Locale } from "@/stores/i18n/i18n.types";
+
+const NOTIFICATION_KEY_PREFIX = "NOTIFICATION.";
+
+/**
+ * Persists just the notification strings of the currently active language so the service worker can
+ * render push notifications with the app closed. Best-effort: never blocks or breaks i18n init.
+ */
+const persistNotificationTranslations = () => {
+  try {
+    const bundle =
+      (i18n.getResourceBundle(i18n.language, "translation") as
+        | Record<string, string>
+        | undefined) ?? {};
+    const translations = Object.fromEntries(
+      Object.entries(bundle).filter(([key]) =>
+        key.startsWith(NOTIFICATION_KEY_PREFIX),
+      ),
+    );
+    void saveActiveNotificationTranslations(
+      normalizeLocale(i18n.language),
+      translations,
+    );
+  } catch {
+    // ignore: notification i18n persistence must never affect the app
+  }
+};
 
 enum TranslationLocale {
   EN = "en",
@@ -69,6 +96,7 @@ const initI18n = async () => {
         locale: normalizeLocale(i18n.language),
         ready: true,
       }));
+      persistNotificationTranslations();
     });
 
   return initPromise;
@@ -96,6 +124,7 @@ const useI18n = () => {
         ...state,
         locale: normalizeLocale(i18n.language),
       }));
+      persistNotificationTranslations();
     },
     t: (key: string, options?: Record<string, unknown>) => {
       if (!locale() || !ready()) return key;

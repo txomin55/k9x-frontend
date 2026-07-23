@@ -1,7 +1,9 @@
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import { createSignal, Show } from "solid-js";
@@ -11,8 +13,6 @@ import { clearAuth, useAuthUser } from "@/stores/auth/auth";
 import { logout } from "@/services/secured/do-logout/doLogout";
 import { useI18n } from "@/stores/i18n/i18n";
 import { queryClient } from "@/utils/http/query-client";
-import { displayNotification } from "@/utils/notifications/notifications";
-import mockedNotification from "@/utils/service-worker/native_features/notifications/mockedNotification";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -92,16 +92,6 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
             />
           </CircleButton>
         </div>
-      </div>
-
-      <div class="navigation-tools__actions">
-        <AtomButton
-          onClick={() => displayNotification(mockedNotification)}
-          size="sm"
-          type={BUTTON_TYPES.GHOST}
-        >
-          {i18n.t("GLOBAL.NAVIGATION.TRIGGER_NOTIFICATION")}
-        </AtomButton>
       </div>
 
       <Show when={user()}>

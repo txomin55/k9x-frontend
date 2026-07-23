@@ -2,11 +2,12 @@ import type { Table } from "dexie";
 import type Dexie from "dexie";
 
 const DATABASE_NAME = "k9x-local-first";
-const DATABASE_VERSION = 3;
+const DATABASE_VERSION = 4;
 
 export const LOCAL_FIRST_STORE_NAMES = {
   pendingTasks: "pending_tasks",
   querySnapshots: "query_snapshots",
+  notificationTranslations: "notification_translations",
 } as const;
 
 type LocalFirstStoreName =
@@ -22,6 +23,7 @@ const loadDatabase = async (): Promise<Dexie> => {
     [LOCAL_FIRST_STORE_NAMES.pendingTasks]:
       "id,status,entityId,entityType,timestamp,[status+timestamp]",
     [LOCAL_FIRST_STORE_NAMES.querySnapshots]: "id,updatedAt",
+    [LOCAL_FIRST_STORE_NAMES.notificationTranslations]: "id",
   });
 
   return database;

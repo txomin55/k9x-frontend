@@ -1,6 +1,7 @@
 /// <reference lib="webworker" />
 
 import { registerNotificationClickHandler } from "@/utils/service-worker/events/notification-click";
+import { registerPushHandler } from "@/utils/service-worker/events/push";
 import {
   APP_SHELL_CACHE,
   registerAppShellCache,
@@ -15,5 +16,6 @@ registerServiceWorkerSetup(self, {
   cacheNames: [APP_SHELL_CACHE],
 });
 registerNotificationClickHandler(self);
+registerPushHandler(self);
 registerAppShellCache(self);
 registerPendingTasksBackgroundSync(self, processPendingTasksInBackground);

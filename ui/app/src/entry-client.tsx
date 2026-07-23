@@ -57,7 +57,9 @@ const options = {
 };
 
 // The agent loader code executes immediately on instantiation.
-new BrowserAgent(options);
+if (!import.meta.env.DEV) {
+  new BrowserAgent(options);
+}
 
 window.addEventListener("error", (event) => {
   logger.error(event.error ?? event.message, {
