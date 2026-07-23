@@ -9,12 +9,10 @@ export interface ConfigurationResponseDTO {
 export interface FederationConfigurationResponseDTO {
   id: string;
   name: string;
-  country: string;
 }
 
 export const EMPTY_FEDERATION_CONFIGURATION: FederationConfigurationResponseDTO =
   {
-    country: "",
     id: "",
     name: "",
   };

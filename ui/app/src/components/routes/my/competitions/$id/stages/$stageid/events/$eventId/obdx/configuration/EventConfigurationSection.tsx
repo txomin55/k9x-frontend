@@ -2,7 +2,7 @@ import type {EventDetailResponseDTO, EventEditorDraft,} from "@/services/secured
 import {Show} from "solid-js";
 import ConfigurationEditorForm
   from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/configuration/ConfigurationEditorForm";
-import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import FederationIcon from "@/components/common/federation-icon/FederationIcon";
 import {useI18n} from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -35,11 +35,11 @@ export default function (props: {
                       </span>
                     )}
                   </Show>
-                  <Show when={props.event.configuration.federation?.country}>
-                    {(country) => (
-                      <CountryFlag
-                        country={country()}
-                        alt={`${country()} flag`}
+                  <Show when={props.event.configuration.federation?.id}>
+                    {(id) => (
+                      <FederationIcon
+                        federation={id()}
+                        alt={`${id()} icon`}
                       />
                     )}
                   </Show>

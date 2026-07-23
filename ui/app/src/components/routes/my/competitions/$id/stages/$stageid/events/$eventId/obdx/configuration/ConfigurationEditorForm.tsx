@@ -5,7 +5,7 @@ import {
   FederationConfigurationResponseDTO,
   FederationConfigurationsResponseDTO
 } from "@/services/secured/configurations/configurations.types";
-import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import FederationIcon from "@/components/common/federation-icon/FederationIcon";
 import { EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -22,9 +22,9 @@ const getFederationOption = (
   label: federation.info.name,
   value: federation.info.id,
   preLabel: (
-    <CountryFlag
-      country={federation.info.country}
-      alt={`${federation.info.country} flag`}
+    <FederationIcon
+      federation={federation.info.id}
+      alt={`${federation.info.name} icon`}
     />
   ),
 });
