@@ -310,7 +310,13 @@ function StageInfoPage() {
                           <ul class="stage-info__competitors">
                             <For each={event().competitors}>
                               {(competitor) => (
-                                <li class="stage-info__competitor">
+                                <li
+                                  class="stage-info__competitor"
+                                  classList={{
+                                    "stage-info__competitor--unverified":
+                                      !competitor.verified,
+                                  }}
+                                >
                                   <CountryFlag country={competitor.country} />
                                   <div class="stage-info__competitor--info">
                                     <span class="text-caption-lg">
@@ -320,6 +326,11 @@ function StageInfoPage() {
                                     <span class="text-caption-md">
                                       {competitor.handler} ({competitor.team})
                                     </span>
+                                    <Show when={!competitor.verified}>
+                                      <span class="text-caption-sm stage-info__competitor--tag">
+                                        {i18n.t("STAGES.INFO.UNVERIFIED")}
+                                      </span>
+                                    </Show>
                                   </div>
                                 </li>
                               )}

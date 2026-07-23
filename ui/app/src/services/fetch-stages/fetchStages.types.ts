@@ -51,6 +51,7 @@ export interface StageEventDetailCompetitorResponseDTO {
   team: string;
   country: string;
   breed: IdNameDTO;
+  verified: boolean;
 }
 
 export interface StageEventDetailResponseDTO {

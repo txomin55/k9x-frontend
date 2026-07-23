@@ -42,6 +42,7 @@ const buildOptimisticCompetitor = (
   team: dog.team,
   country: dog.country.id,
   breed: dog.breed,
+  verified: false,
 });
 
 const buildNextStage = (

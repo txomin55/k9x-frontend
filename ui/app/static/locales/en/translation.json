@@ -232,6 +232,7 @@
   "STAGES.INFO.ENROLL_IN": "Enroll in",
   "STAGES.INFO.COMPETITORS_ENROLLED": "Competitors enrolled",
   "STAGES.INFO.NO_COMPETITORS": "No competitors enrolled yet",
+  "STAGES.INFO.UNVERIFIED": "Pending verification",
   "MY.COMPETITIONS.DETAIL.COMPETITION_NOT_FOUND": "Competition not found.",
   "MY.COMPETITIONS.DETAIL.EDIT": "Edit",
   "MY.COMPETITIONS.DETAIL.VIEW": "View",

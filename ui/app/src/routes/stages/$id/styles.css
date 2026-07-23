@@ -137,6 +137,15 @@
     flex-direction: column;
 }
 
+.stage-info__competitor--unverified {
+    opacity: 0.5;
+}
+
+.stage-info__competitor--tag {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
 .stage-info__enroll-form {
     display: flex;
     flex-direction: column;

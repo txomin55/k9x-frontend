@@ -28,6 +28,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
           team: "Team Alpha",
           country: "ES",
           breed: { id: "breed-1", name: "Border Collie" },
+          verified: true,
         },
         {
           dog: { id: "dog-2", name: "Luna" },
@@ -36,6 +37,7 @@ export const defaultStageDetail: StageDetailResponseDTO = {
           team: "Team Beta",
           country: "FR",
           breed: { id: "breed-2", name: "Australian Shepherd" },
+          verified: false,
         },
       ],
     },
