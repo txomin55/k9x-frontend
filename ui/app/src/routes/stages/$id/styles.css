@@ -99,20 +99,23 @@
         border: 0;
     }
 
-    .stage-info__event--classification
-        .atom-button:has(.stage-info__classification-btn-label),
-    .stage-info__event--enrollment
-        .atom-button:has(.stage-info__enroll-btn-label) {
+    .stage-info__event--enrollment {
+        display: flex;
+        align-items: center;
+        height: var(--unit-4);
+        min-width: var(--unit-8);
+        padding: 0 var(--unit-1);
+    }
+
+    .stage-info__event--classification,
+    .atom-button:has(.stage-info__classification-btn-label),
+    .atom-button:has(.stage-info__enroll-btn-label) {
         display: flex;
         align-items: center;
         justify-content: center;
         height: var(--unit-4);
         min-width: var(--unit-4);
         padding: 0 var(--unit-1);
-    }
-
-    .stage-info__event--enrollment {
-        align-items: center;
     }
 }
 

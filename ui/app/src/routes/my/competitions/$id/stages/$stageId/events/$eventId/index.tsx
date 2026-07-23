@@ -44,10 +44,11 @@ import {
   COMPETITOR_STATUS,
   toEventEditorDraft,
 } from "@/utils/event";
-import { parseDateInputValue, toDateInputValue } from "@/utils/date";
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
+import {
+  formatUtcDateOnly,
+  parseDateInputValue,
+  toDateInputValue,
+} from "@/utils/date";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
@@ -60,7 +61,9 @@ import EventConfigurationSection from "@/components/routes/my/competitions/$id/s
 import ObdxCompetitionEventDetailBodyWrapper from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import { useAwards } from "@/services/secured/award-crud/awardCrud";
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import {
   AtomCombobox,
   type AtomComboboxOption,
@@ -958,24 +961,38 @@ function CompetitionObdxEventDetailBody(props: {
         }
       />
 
-      <AtomInput
-        label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
-        type="date"
-        disabled={!canEditDetails()}
-        value={toDateInputValue(draftEvent().enrollmentDeadline)}
-        onChange={(value) =>
-          updateDraftEvent(
-            (current) => ({
-              ...current,
-              enrollmentDeadline: parseDateInputValue(
-                value,
-                current.enrollmentDeadline,
-              ),
-            }),
-            { persist: true },
-          )
+      <Show
+        when={canEditDetails()}
+        fallback={
+          <div class="competition-event-detail__content--calculation">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
+            </span>
+            <span class="text-caption-lg">
+              {formatUtcDateOnly(draftEvent().enrollmentDeadline)}
+            </span>
+          </div>
         }
-      />
+      >
+        <AtomInput
+          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
+          type="date"
+          disabled={!canEditDetails()}
+          value={toDateInputValue(draftEvent().enrollmentDeadline)}
+          onChange={(value) =>
+            updateDraftEvent(
+              (current) => ({
+                ...current,
+                enrollmentDeadline: parseDateInputValue(
+                  value,
+                  current.enrollmentDeadline,
+                ),
+              }),
+              { persist: true },
+            )
+          }
+        />
+      </Show>
 
       <Show
         when={canEditDetails()}

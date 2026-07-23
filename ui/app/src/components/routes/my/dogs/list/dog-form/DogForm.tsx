@@ -176,15 +176,6 @@ export default function DogForm(props: DogFormProps) {
         onChange={updateName}
         {...fieldProps("name", nameError)}
       />
-      <Show when={!!user()?.organizer}>
-        <div class="form-grid__full">
-          <AtomCheckbox
-            label={i18n.t("MY.DOGS.DOG_FORM.OWNED")}
-            checked={props.draft().owned}
-            setChecked={updateOwned}
-          />
-        </div>
-      </Show>
       <div class="form-grid__full">
         <AtomInput
           label={i18n.t("MY.DOGS.DOG_FORM.IMAGE")}
@@ -228,6 +219,15 @@ export default function DogForm(props: DogFormProps) {
           setChecked={updateThreeFciGenerationsConfirmed}
         />
       </div>
+      <Show when={!!user()?.organizer}>
+        <div class="form-grid__full">
+          <AtomCheckbox
+            label={i18n.t("MY.DOGS.DOG_FORM.OWNED")}
+            checked={props.draft().owned}
+            setChecked={updateOwned}
+          />
+        </div>
+      </Show>
       <Show when={ownerFieldVisible()}>
         <div class="form-grid__full">
           <AtomInput
