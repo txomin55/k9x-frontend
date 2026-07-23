@@ -10,7 +10,8 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname, "");
 
-  const appShellCacheVersion = env.CI_COMMIT_SHORT_SHA || String(Date.now());
+  const commitSha = env.CI_COMMIT_SHORT_SHA || env.GITHUB_SHA;
+  const appShellCacheVersion = commitSha ? commitSha.slice(0, 12) : "dev";
 
   return {
     define: {
