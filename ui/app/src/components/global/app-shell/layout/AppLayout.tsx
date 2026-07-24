@@ -13,6 +13,7 @@ import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
 import PendingCollectionsDialog from "@/components/global/app-shell/layout/PendingCollectionsDialog";
+import NotificationsDialog from "@/components/global/app-shell/layout/NotificationsDialog";
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import { isDark, setIsDark } from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -103,6 +104,9 @@ export default function AppLayout(props: ParentProps) {
             <div class="app-layout__actions">
               <Suspense fallback={null}>
                 <PendingCollectionsDialog />
+              </Suspense>
+              <Suspense fallback={null}>
+                <NotificationsDialog />
               </Suspense>
               <Show when={!currentUser().organizer}>
                 <AtomDialog

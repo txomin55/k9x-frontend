@@ -27,6 +27,8 @@
   "GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_TITLE": "Colecciones pendientes",
   "GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_MESSAGE": "Tienes pruebas pendientes de puntuar. Ve a Colecciones para introducir las puntuaciones.",
   "GLOBAL.APP_LAYOUT.GO_TO_COLLECTIONS": "Ir a Colecciones",
+  "GLOBAL.APP_LAYOUT.NOTIFICATIONS_TITLE": "Notificaciones",
+  "GLOBAL.APP_LAYOUT.NOTIFICATIONS_EMPTY": "No tienes notificaciones.",
   "GLOBAL.LOADING_APP": "Cargando aplicación....",
   "ROOT.PAGE_NOT_FOUND": "Página no encontrada.",
   "AUTH_CALLBACK.TITLE": "Callback de autenticación",

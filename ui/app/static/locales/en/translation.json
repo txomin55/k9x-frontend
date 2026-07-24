@@ -27,6 +27,8 @@
   "GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_TITLE": "Pending collections",
   "GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_MESSAGE": "You have trials pending to be scored. Go to Collections to enter the scores.",
   "GLOBAL.APP_LAYOUT.GO_TO_COLLECTIONS": "Go to Collections",
+  "GLOBAL.APP_LAYOUT.NOTIFICATIONS_TITLE": "Notifications",
+  "GLOBAL.APP_LAYOUT.NOTIFICATIONS_EMPTY": "You have no notifications.",
   "GLOBAL.LOADING_APP": "Loading app....",
   "ROOT.PAGE_NOT_FOUND": "Page not found.",
   "AUTH_CALLBACK.TITLE": "Auth Callback",
