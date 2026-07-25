@@ -6,6 +6,7 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { useCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useI18n } from "@/stores/i18n/i18n";
+import { isWalkthroughPending } from "@/components/global/app-shell/layout/walkthrough/walkthroughState";
 
 export default function PendingCollectionsDialog() {
   const i18n = useI18n();
@@ -16,7 +17,7 @@ export default function PendingCollectionsDialog() {
   const [dismissed, setDismissed] = createSignal(false);
 
   createEffect(() => {
-    if (!dismissed() && collectionsQuery.data?.length) {
+    if (!dismissed() && !isWalkthroughPending() && collectionsQuery.data?.length) {
       setOpen(true);
     }
   });

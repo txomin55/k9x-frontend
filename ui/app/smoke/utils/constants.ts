@@ -1,5 +1,7 @@
 export const ACCESS_TOKEN_KEY = "k9x_access_token";
 
+export const WALKTHROUGH_DISABLED_KEY = "k9x_walkthrough_disabled";
+
 export const SMOKE_STATE_PATH = ".auth/smoke-state.json";
 
 export const SMOKE_CREDENTIALS_PATH =

@@ -1,0 +1,37 @@
+.walkthrough {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--unit-2);
+}
+
+.walkthrough__figure {
+    margin: 0;
+    width: 100%;
+    max-width: calc(var(--unit-10) * 4);
+    border: 1px solid var(--border);
+    border-radius: var(--unit-15);
+    background: var(--surface);
+    box-shadow: 0 var(--unit-1) var(--unit-3) rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+}
+
+.walkthrough__image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.walkthrough__text {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-line-height);
+    text-align: center;
+}
+
+.walkthrough__actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}

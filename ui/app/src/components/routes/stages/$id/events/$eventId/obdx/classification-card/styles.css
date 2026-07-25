@@ -331,9 +331,9 @@
     max-width: calc(100cqi - var(--unit-2));
 }
 
-/* From 500px up the table fills its container and the score columns share the
-   remaining width equally (fixed layout); on small mobile it falls back to
-   content-width + horizontal scroll (see the max-width: 499.98px block). */
+/* From 620px up the table fills its container and the score columns share the
+   remaining width equally (fixed layout); below that it falls back to
+   content-width + horizontal scroll (see the max-width: 619.98px block). */
 .obdx-clf__table {
     table-layout: fixed;
     width: 100%;
@@ -419,8 +419,8 @@
     background: var(--surface);
 }
 
-/* The exercise column stays fixed whenever the detail scrolls. From 500px up
-   it gets a roomy 260px so names don't wrap awkwardly; on small mobile it stays
+/* The exercise column stays fixed whenever the detail scrolls. From 620px up
+   it gets a roomy 260px so names don't wrap awkwardly; below that it stays
    compact so the score columns keep as much room as possible. */
 .obdx-clf__table thead th:first-child,
 .obdx-clf__ex-row td:first-child,
@@ -435,12 +435,15 @@
     background: var(--surface);
 }
 
-@media (max-width: 499.98px) {
-    /* On small mobile the table sizes to its content and scrolls horizontally,
-       keeping score columns at their natural width instead of squeezing them. */
+@media (max-width: 619.98px) {
+    /* Below 620px the table sizes to its content and scrolls horizontally,
+       keeping score columns at their natural width instead of squeezing them;
+       min-width keeps row borders spanning the full container when the content
+       is narrower. */
     .obdx-clf__table {
         table-layout: auto;
         width: max-content;
+        min-width: 100%;
     }
 
     .obdx-clf__table th:not(:first-child),
@@ -455,6 +458,19 @@
         width: calc(var(--unit-10) + var(--unit-4));
         min-width: calc(var(--unit-10) + var(--unit-4));
         max-width: calc(var(--unit-10) + var(--unit-4));
+    }
+}
+
+/* Between 500 and 620px there is room for a wider exercise column than the
+   compact mobile one, while the score columns keep their natural width and
+   the detail scrolls if needed. */
+@media (min-width: 500px) and (max-width: 619.98px) {
+    .obdx-clf__table thead th:first-child,
+    .obdx-clf__ex-row td:first-child,
+    .obdx-clf__tags-row td:first-child {
+        width: calc(var(--unit-10) * 2);
+        min-width: calc(var(--unit-10) * 2);
+        max-width: calc(var(--unit-10) * 2);
     }
 }
 

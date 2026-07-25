@@ -21,7 +21,8 @@ export default function ScoreChip(props: ScoreChipProps) {
     props.value === null || props.applies === false
       ? null
       : ratingColor(props.rating);
-  const display = () => (props.value === null ? "—" : props.value);
+  const display = () =>
+    props.value === null ? "—" : Math.round(props.value * 100) / 100;
 
   return (
     <span

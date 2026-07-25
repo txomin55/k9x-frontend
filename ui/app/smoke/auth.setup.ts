@@ -6,6 +6,7 @@ import {
   GOOGLE_LOGIN_TIMEOUT,
   SMOKE_CREDENTIALS_PATH,
   SMOKE_STATE_PATH,
+  WALKTHROUGH_DISABLED_KEY,
 } from "./utils/constants";
 
 const TOKEN_FILE = ".auth/token.txt";
@@ -102,6 +103,14 @@ const gotoStable = async (
   }
 };
 
+const disableWalkthrough = (
+  context: import("@playwright/test").BrowserContext,
+) =>
+  context.addInitScript(
+    (key) => window.localStorage.setItem(key, "true"),
+    WALKTHROUGH_DISABLED_KEY,
+  );
+
 const persist = (
   context: import("@playwright/test").BrowserContext,
 ) => {
@@ -138,6 +147,7 @@ test("authenticate", async ({ browser }) => {
   const token = seedToken();
   if (token) {
     const context = await browser.newContext();
+    await disableWalkthrough(context);
     const page = await context.newPage();
     await gotoStable(page, "/");
     await page.evaluate(
@@ -171,6 +181,7 @@ test("authenticate", async ({ browser }) => {
     const reuseContext = await browser.newContext({
       storageState: SMOKE_STATE_PATH,
     });
+    await disableWalkthrough(reuseContext);
     const reusePage = await reuseContext.newPage();
     await gotoStable(reusePage, "/my/dogs/list");
     // Give the SPA time to hydrate and silently refresh the access token before
@@ -191,6 +202,7 @@ test("authenticate", async ({ browser }) => {
   }
 
   const context = await browser.newContext();
+  await disableWalkthrough(context);
   const page = await context.newPage();
   await page.goto("/");
   await page.getByRole("button", { name: "Login" }).click();
