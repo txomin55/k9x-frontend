@@ -94,8 +94,11 @@ export function averageValue(
   scores: StageEventClassificationScoreResponseDTO[],
 ): number | null {
   if (!scores || scores.length === 0) return null;
-  const sum = scores.reduce((acc, score) => acc + score.value, 0);
-  return sum / scores.length;
+  // Under MID_AVG the backend flags the trimmed high/low scores as applies=false; only applied scores count.
+  const applied = scores.filter((score) => score.applies);
+  if (applied.length === 0) return null;
+  const sum = applied.reduce((acc, score) => acc + score.value, 0);
+  return sum / applied.length;
 }
 
 export function uniqueJudges(
