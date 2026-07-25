@@ -13,7 +13,7 @@ export interface RenderedNotification {
  * Looks up a translation key in the active-language dictionary and interpolates `{{ placeholders }}`
  * with the given values — the service worker's stand-in for i18next, which it cannot run.
  */
-type Translate = (key: string, values?: Record<string, string>) => string;
+export type Translate = (key: string, values?: Record<string, string>) => string;
 
 /**
  * One renderer per notification type, each receiving its own strongly-typed metadata and a `t` helper.
@@ -48,6 +48,22 @@ const interpolate = (template: string, values: Record<string, string>) =>
   template.replace(/\{\{\s*(\w+)\s*}}/g, (_, key) => values[key] ?? "");
 
 /**
+ * Dispatches to the type's renderer with a caller-supplied `t`. Shared by the push path (which binds a
+ * `t` to the dictionary compiled into the SW bundle) and the in-app list (which passes i18next's `t`).
+ */
+export const renderNotificationWith = <Type extends NotificationType>(
+  type: Type,
+  metadata: NotificationMetadataByType[Type],
+  t: Translate,
+): RenderedNotification => {
+  const render = catalog[type] as (
+    metadata: NotificationMetadataByType[Type],
+    t: Translate,
+  ) => RenderedNotification;
+  return render(metadata, t);
+};
+
+/**
  * Produces the final, ready-to-show notification for a push: builds a `t` bound to the active-language
  * dictionary and hands it to the type's renderer.
  */
@@ -58,9 +74,5 @@ export const renderNotification = <Type extends NotificationType>(
 ): RenderedNotification => {
   const t: Translate = (key, values = {}) =>
     interpolate(translations[key] ?? key, values);
-  const render = catalog[type] as (
-    metadata: NotificationMetadataByType[Type],
-    t: Translate,
-  ) => RenderedNotification;
-  return render(metadata, t);
+  return renderNotificationWith(type, metadata, t);
 };

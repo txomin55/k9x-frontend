@@ -1,5 +1,8 @@
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import { getCurrentLocale } from "@/stores/i18n/i18n";
+import {
+  getCurrentLocale,
+  persistNotificationTranslations,
+} from "@/stores/i18n/i18n";
 import type { LoginRequestDTO } from "@/services/secured/do-login/doLogin.types";
 import type {
   RequestOptions,
@@ -202,9 +205,17 @@ const refreshAccessToken = () => {
       method: "POST",
       path: REFRESH_ENDPOINT_PATH,
       retryOnUnauthorized: false,
-    }).finally(() => {
-      refreshPromise = null;
-    });
+    })
+      .then((token) => {
+        // A 200 here proves the session is valid, and it happens on every app start with a live session
+        // and on every 401 retry — the most frequent point at which we can guarantee the notification
+        // dictionary the service worker reads matches the strings this build ships.
+        void persistNotificationTranslations();
+        return token;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
   }
 
   return refreshPromise;

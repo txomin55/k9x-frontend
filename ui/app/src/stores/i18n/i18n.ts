@@ -9,10 +9,21 @@ const NOTIFICATION_KEY_PREFIX = "NOTIFICATION.";
 
 /**
  * Persists just the notification strings of the currently active language so the service worker can
- * render push notifications with the app closed. Best-effort: never blocks or breaks i18n init.
+ * render push notifications with the app closed. Overwrites whatever was stored, so the dictionary can
+ * never go stale behind a deploy. Best-effort: never blocks or breaks i18n init.
+ *
+ * Awaits the i18next bundle rather than `initPromise` — the init `.then()` calls this, and awaiting the
+ * promise it is itself resolving would deadlock and silently skip the write.
+ *
+ * Never stores an empty dictionary: callers such as the token refresh can run before i18next has any
+ * resources loaded, and overwriting a good record with `{}` is what makes a push render raw keys.
  */
-const persistNotificationTranslations = () => {
+const persistNotificationTranslations = async () => {
+  if (!bundleReadyPromise) return;
+
   try {
+    await bundleReadyPromise;
+
     const bundle =
       (i18n.getResourceBundle(i18n.language, "translation") as
         | Record<string, string>
@@ -22,7 +33,10 @@ const persistNotificationTranslations = () => {
         key.startsWith(NOTIFICATION_KEY_PREFIX),
       ),
     );
-    void saveActiveNotificationTranslations(
+
+    if (!Object.keys(translations).length) return;
+
+    await saveActiveNotificationTranslations(
       normalizeLocale(i18n.language),
       translations,
     );
@@ -45,6 +59,7 @@ const { getState, setState, useAppStore } = createAppStore<I18nState>({
 });
 
 let initPromise: Promise<void> | undefined;
+let bundleReadyPromise: Promise<unknown> | undefined;
 
 export const normalizeLocale = (inputLocale: unknown): Locale => {
   const candidates = (Array.isArray(inputLocale) ? inputLocale : [inputLocale])
@@ -72,7 +87,7 @@ const initI18n = async () => {
   const languageDetector = new LanguageDetector();
   languageDetector.init();
 
-  initPromise = i18n
+  bundleReadyPromise = i18n
     .use(Backend)
     .use(languageDetector)
     .init({
@@ -90,14 +105,15 @@ const initI18n = async () => {
       keySeparator: false,
       nsSeparator: false,
       lng: normalizeLocale(languageDetector.detect()),
-    })
-    .then(() => {
-      setState(() => ({
-        locale: normalizeLocale(i18n.language),
-        ready: true,
-      }));
-      persistNotificationTranslations();
     });
+
+  initPromise = bundleReadyPromise.then(() => {
+    setState(() => ({
+      locale: normalizeLocale(i18n.language),
+      ready: true,
+    }));
+    void persistNotificationTranslations();
+  });
 
   return initPromise;
 };
@@ -124,7 +140,7 @@ const useI18n = () => {
         ...state,
         locale: normalizeLocale(i18n.language),
       }));
-      persistNotificationTranslations();
+      await persistNotificationTranslations();
     },
     t: (key: string, options?: Record<string, unknown>) => {
       if (!locale() || !ready()) return key;
@@ -133,4 +149,10 @@ const useI18n = () => {
   };
 };
 
-export { getCurrentLocale, initI18n, translate, useI18n };
+export {
+  getCurrentLocale,
+  initI18n,
+  persistNotificationTranslations,
+  translate,
+  useI18n,
+};

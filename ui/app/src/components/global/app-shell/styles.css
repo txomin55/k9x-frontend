@@ -122,8 +122,15 @@
     width: var(--unit-1);
     height: var(--unit-1);
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--primary);
     box-shadow: 0 0 0 2px var(--surface-muted);
+}
+
+.notifications-dialog {
+    max-height: 300px;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
 }
 
 .notifications-list {
@@ -133,7 +140,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
-    max-width: 20rem;
 }
 
 .notifications-list__item {
@@ -159,17 +165,7 @@
     width: var(--unit-1);
     height: var(--unit-1);
     border-radius: 50%;
-    background: var(--accent);
-}
-
-.notifications-list__text {
-    margin: 0;
-    color: var(--text-primary);
-}
-
-.notifications-list__time {
-    font-size: var(--unit-2);
-    color: var(--text-secondary);
+    background: var(--primary);
 }
 
 .app-layout__user-img--menu {

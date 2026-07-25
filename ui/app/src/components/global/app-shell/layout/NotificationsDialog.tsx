@@ -8,16 +8,27 @@ import {
 } from "@/services/secured/notifications/notifications";
 import { formatDateTime } from "@/utils/date";
 import { useI18n } from "@/stores/i18n/i18n";
+import { renderNotificationWith } from "@/utils/service-worker/events/notification-catalog";
+import type { NotificationResponseDTO } from "@/services/secured/notifications/notifications.types";
 
 export default function NotificationsDialog() {
   const i18n = useI18n();
   const notificationsQuery = useNotifications();
 
+  // Same title/body the push produces — the catalog is the single source of rendering for both paths.
+  const renderContent = (notification: NotificationResponseDTO) =>
+    renderNotificationWith(
+      notification.type,
+      notification.metadata,
+      (key, values) => i18n.t(key, values),
+    );
+
   const [open, setOpen] = createSignal(false);
   const [unseenOnOpen, setUnseenOnOpen] = createSignal<Set<string>>(new Set());
 
   const notifications = () => notificationsQuery.data ?? [];
-  const hasUnseen = () => notifications().some((notification) => !notification.seen);
+  const hasUnseen = () =>
+    notifications().some((notification) => !notification.seen);
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
@@ -54,25 +65,31 @@ export default function NotificationsDialog() {
           when={notifications().length}
           fallback={<p>{i18n.t("GLOBAL.APP_LAYOUT.NOTIFICATIONS_EMPTY")}</p>}
         >
-          <ul class="notifications-list">
-            <For each={notifications()}>
-              {(notification) => (
-                <li
-                  class="notifications-list__item"
-                  classList={{
-                    "notifications-list__item--unseen": unseenOnOpen().has(
-                      notification.id,
-                    ),
-                  }}
-                >
-                  <p class="notifications-list__text">{notification.text}</p>
-                  <time class="notifications-list__time">
-                    {formatDateTime(notification.timestamp)}
-                  </time>
-                </li>
-              )}
-            </For>
-          </ul>
+          <div class="notifications-dialog">
+            <ul class="notifications-list">
+              <For each={notifications()}>
+                {(notification) => {
+                  const content = renderContent(notification);
+                  return (
+                    <li
+                      class="notifications-list__item"
+                      classList={{
+                        "notifications-list__item--unseen": unseenOnOpen().has(
+                          notification.id,
+                        ),
+                      }}
+                    >
+                      <span class="text-heading-xs">{content.title}</span>
+                      <span class="text-caption-md">{content.body}</span>
+                      <time class="text-caption-sm">
+                        {formatDateTime(notification.timestamp)}
+                      </time>
+                    </li>
+                  );
+                }}
+              </For>
+            </ul>
+          </div>
         </Show>
       }
     />

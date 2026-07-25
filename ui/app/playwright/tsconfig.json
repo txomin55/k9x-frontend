@@ -8,7 +8,7 @@
     "strict": false,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["node", "@playwright/test"],
+    "types": ["node", "@playwright/test", "vite/client"],
     "isolatedModules": true,
     "baseUrl": "..",
     "paths": {

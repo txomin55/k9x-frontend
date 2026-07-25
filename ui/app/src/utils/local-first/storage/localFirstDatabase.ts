@@ -1,5 +1,5 @@
-import type { Table } from "dexie";
 import type Dexie from "dexie";
+import type { Table } from "dexie";
 
 const DATABASE_NAME = "k9x-local-first";
 const DATABASE_VERSION = 4;
@@ -44,7 +44,20 @@ export const getLocalFirstTable = async <TData, TKey>(
   return database.table<TData, TKey>(storeName);
 };
 
+const SESSION_INDEPENDENT_STORE_NAMES: LocalFirstStoreName[] = [
+  LOCAL_FIRST_STORE_NAMES.notificationTranslations,
+];
+
 export const clearLocalFirstData = async () => {
   const database = await getLocalFirstDatabase();
-  await Promise.all(database.tables.map((table) => table.clear()));
+  await Promise.all(
+    database.tables
+      .filter(
+        (table) =>
+          !SESSION_INDEPENDENT_STORE_NAMES.includes(
+            table.name as LocalFirstStoreName,
+          ),
+      )
+      .map((table) => table.clear()),
+  );
 };
