@@ -11,7 +11,7 @@ import StageCardEventsContent from "@/components/routes/stages/stage-card/StageC
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import bellIcon from "@/assets/miscelaneous/bell.svg";
-import { isStageLive } from "@/utils/stage";
+import { isStageLive, STAGE_STATUS } from "@/utils/stage";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 
@@ -52,15 +52,17 @@ export default function StageCard(props: StageCardProps) {
         </div>
       }
       topRight={
-        <div class="stage-card__notifications">
-          <IconToggleButton
-            src={bellIcon}
-            active={notificationsEnabled()}
-            activeLabel={i18n.t("STAGES.STAGE_CARD.UNNOTIFY")}
-            inactiveLabel={i18n.t("STAGES.STAGE_CARD.NOTIFY")}
-            onToggle={() => setNotificationsEnabled((enabled) => !enabled)}
-          />
-        </div>
+        <Show when={props.status !== STAGE_STATUS.FINISHED}>
+          <div class="stage-card__notifications">
+            <IconToggleButton
+              src={bellIcon}
+              active={notificationsEnabled()}
+              activeLabel={i18n.t("STAGES.STAGE_CARD.UNNOTIFY")}
+              inactiveLabel={i18n.t("STAGES.STAGE_CARD.NOTIFY")}
+              onToggle={() => setNotificationsEnabled((enabled) => !enabled)}
+            />
+          </div>
+        </Show>
       }
       subHeader={
         props.competitionName ? (

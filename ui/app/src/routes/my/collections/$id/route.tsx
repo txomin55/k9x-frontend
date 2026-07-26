@@ -39,7 +39,7 @@ function CollectionDetailSkeleton() {
   const i18n = useI18n();
 
   return (
-    <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
+    <Page>
       <div class="obdx-collection-detail__discipline">
         <AtomSkeleton
           variant="rectangular"

@@ -21,7 +21,7 @@ export default function WalkthroughDialog() {
       return;
     }
 
-    if (!dismissed() && i18n.ready()) {
+    if (!dismissed() && i18n.translationsLoaded()) {
       setOpen(true);
     }
   });

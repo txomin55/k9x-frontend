@@ -56,7 +56,25 @@ const supportedLocales = locales as Locale[];
 const { getState, setState, useAppStore } = createAppStore<I18nState>({
   locale: TranslationLocale.EN,
   ready: false,
+  translationsLoaded: false,
 });
+
+const hasBundle = (language: string) =>
+  Object.keys(
+    (i18n.getResourceBundle(language, "translation") as
+      | Record<string, string>
+      | undefined) ?? {},
+  ).length > 0;
+
+const hasActiveBundle = () =>
+  hasBundle(i18n.language) || hasBundle(TranslationLocale.EN);
+
+const syncTranslationsLoaded = () => {
+  setState((state) => ({
+    ...state,
+    translationsLoaded: hasActiveBundle(),
+  }));
+};
 
 let initPromise: Promise<void> | undefined;
 let bundleReadyPromise: Promise<unknown> | undefined;
@@ -87,6 +105,8 @@ const initI18n = async () => {
   const languageDetector = new LanguageDetector();
   languageDetector.init();
 
+  i18n.on("loaded", syncTranslationsLoaded);
+
   bundleReadyPromise = i18n
     .use(Backend)
     .use(languageDetector)
@@ -111,6 +131,7 @@ const initI18n = async () => {
     setState(() => ({
       locale: normalizeLocale(i18n.language),
       ready: true,
+      translationsLoaded: hasActiveBundle(),
     }));
     void persistNotificationTranslations();
   });
@@ -128,10 +149,12 @@ const translate = (key: string, options?: Record<string, unknown>) => {
 const useI18n = () => {
   const locale = useAppStore((state) => state.locale);
   const ready = useAppStore((state) => state.ready);
+  const translationsLoaded = useAppStore((state) => state.translationsLoaded);
   return {
     init: initI18n,
     locale,
     ready,
+    translationsLoaded,
     locales: supportedLocales,
     setLocale: async (nextLocale: string) => {
       if (!ready()) return;
@@ -143,7 +166,7 @@ const useI18n = () => {
       await persistNotificationTranslations();
     },
     t: (key: string, options?: Record<string, unknown>) => {
-      if (!locale() || !ready()) return key;
+      if (!locale() || !ready() || !translationsLoaded()) return key;
       return i18n.t(key, options);
     },
   };

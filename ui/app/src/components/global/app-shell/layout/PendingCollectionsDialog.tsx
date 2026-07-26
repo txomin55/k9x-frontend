@@ -17,7 +17,12 @@ export default function PendingCollectionsDialog() {
   const [dismissed, setDismissed] = createSignal(false);
 
   createEffect(() => {
-    if (!dismissed() && !isWalkthroughPending() && collectionsQuery.data?.length) {
+    if (
+      !dismissed() &&
+      !isWalkthroughPending() &&
+      i18n.translationsLoaded() &&
+      collectionsQuery.data?.length
+    ) {
       setOpen(true);
     }
   });

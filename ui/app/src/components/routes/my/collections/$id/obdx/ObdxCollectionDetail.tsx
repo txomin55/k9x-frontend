@@ -6,7 +6,9 @@ import {
 } from "@/services/secured/collection-crud/collectionCrud";
 import { updateApiEventNotCompeting } from "@/services/secured/event-crud/eventCrud";
 import { getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
@@ -326,7 +328,7 @@ export default function ObdxCollectionDetail() {
   });
 
   return (
-    <Page title={i18n.t("MY.COLLECTIONS.DETAIL.SPECIFIC_SCORES")}>
+    <Page>
       <Show when={collectionData.data}>
         {(collection) => (
           <div class="obdx-collection-detail__names">
