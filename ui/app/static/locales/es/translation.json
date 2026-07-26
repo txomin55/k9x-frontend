@@ -30,7 +30,7 @@
   "GLOBAL.APP_LAYOUT.NOTIFICATIONS_TITLE": "Notificaciones",
   "GLOBAL.APP_LAYOUT.NOTIFICATIONS_EMPTY": "No tienes notificaciones.",
   "GLOBAL.WALKTHROUGH.BREADCRUMBS_TITLE": "Bienvenido a k9x",
-  "GLOBAL.WALKTHROUGH.BREADCRUMBS_MESSAGE": "En cada pantalla, los breadcrumbs de la parte superior te dan información específica de la vista en la que estás. Pulsa el icono ⓘ para verla.",
+  "GLOBAL.WALKTHROUGH.BREADCRUMBS_MESSAGE": "En cada pantalla, la ruta de navegación de la parte superior te da información específica de la vista en la que estás. Pulsa el icono ⓘ para verla.",
   "GLOBAL.WALKTHROUGH.BREADCRUMBS_IMAGE_ALT": "Breadcrumbs con el icono de información resaltado",
   "GLOBAL.WALKTHROUGH.GOT_IT": "Entendido",
   "GLOBAL.LOADING_APP": "Cargando aplicación....",
