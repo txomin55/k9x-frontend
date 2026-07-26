@@ -35,9 +35,10 @@
 }
 
 .event-exercises-section__judges {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+    gap: var(--unit-05) var(--unit-2);
 }
 
 .event-exercises-section__table {

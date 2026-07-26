@@ -7,7 +7,9 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
@@ -15,7 +17,7 @@ import trashIcon from "@/assets/miscelaneous/trash.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
 import {
   EventExerciseDetailResponseDTO,
-  EventJudgeDetailResponseDTO
+  EventJudgeDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -184,20 +186,25 @@ export default function EventExercisesSection(
       <Index each={sortedExercises()}>
         {(exercise) => (
           <Card
-            topLeft={`#${exercise().position}`}
+            topLeft={
+              <span class="text-heading-xs">
+                {`#${exercise().position} ${getExerciseName(exercise())}`}
+              </span>
+            }
             description={
               <div>
-                <p>{getExerciseName(exercise())}</p>
                 <div class="event-exercises-section__tags-judges">
-                  <div class="event-exercises-section__tags">
-                    <Index each={exercise().tags}>
-                      {(tag) => (
-                        <AtomBadge textValue={tag()} colorByLabel>
-                          {tag()}
-                        </AtomBadge>
-                      )}
-                    </Index>
-                  </div>
+                  <Show when={exercise().tags.length}>
+                    <div class="event-exercises-section__tags">
+                      <Index each={exercise().tags}>
+                        {(tag) => (
+                          <AtomBadge textValue={tag()} colorByLabel>
+                            {tag()}
+                          </AtomBadge>
+                        )}
+                      </Index>
+                    </div>
+                  </Show>
                   <div class="event-exercises-section__judges">
                     <Index each={exercise().judges}>
                       {(judge) => <span>{judge().name}</span>}

@@ -15,6 +15,7 @@
 /* FIELD WRAPPER */
 .atom-number-input__field {
     align-items: stretch;
+    box-sizing: border-box;
     width: 100%;
 
     border: 1px solid var(--border);
@@ -45,6 +46,7 @@
 
 /* CONTROL (input) */
 .atom-number-input__control {
+    box-sizing: border-box;
     width: 100%;
     min-height: var(--control-height-md);
 

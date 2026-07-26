@@ -1,7 +1,21 @@
+.app-shell:has(.collection-detail__exercises) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.page:has(> .collection-detail__exercises) {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-bottom: 0;
+}
+
 .collection-detail__exercises {
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .collection-detail__exercises--headers {
@@ -23,6 +37,8 @@
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .collection-detail__scores-banner {
