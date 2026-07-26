@@ -22,6 +22,7 @@ import ContactForm from "@/components/global/app-shell/layout/navigation/Contact
 import AtomButton, {
   BUTTON_SIZES,
 } from "@lib/components/atoms/button/AtomButton";
+import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
@@ -155,12 +156,8 @@ function EntryRoutePage() {
       />
 
       <div class="landing-page__hero">
-        <span class="text-heading-lg">
-          {i18n.t("HOME.STAGE_MANAGEMENT_TITLE")}
-        </span>
-        <p class="landing-page__lead">
-          {i18n.t("HOME.STAGE_MANAGEMENT_DESCRIPTION")}
-        </p>
+        <span class="text-heading-lg">{i18n.t("HOME.HERO_TITLE")}</span>
+        <p class="landing-page__lead">{i18n.t("HOME.HERO_LEAD")}</p>
 
         <div class="landing-page__actions">
           <AtomButton
@@ -176,6 +173,36 @@ function EntryRoutePage() {
         </div>
       </div>
 
+      <div class="landing-page__what">
+        <span class="landing-page__section-title">
+          {i18n.t("HOME.WHAT_IS_TITLE")}
+        </span>
+        <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_1")}</p>
+        <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_2")}</p>
+      </div>
+
+      <div class="landing-page__faq">
+        <span class="landing-page__section-title">
+          {i18n.t("HOME.FAQ_TITLE")}
+        </span>
+        <For
+          each={[
+            "FAQ_WHAT",
+            "FAQ_ENROLL",
+            "FAQ_ORGANIZER",
+            "FAQ_OFFLINE",
+            "FAQ_ACCOUNT",
+          ]}
+        >
+          {(faq) => (
+            <AtomCollapsible
+              trigger={i18n.t(`HOME.${faq}_Q`)}
+              content={<p>{i18n.t(`HOME.${faq}_A`)}</p>}
+            />
+          )}
+        </For>
+      </div>
+
       <Suspense
         fallback={<LatestStagesSkeleton title={i18n.t("HOME.LATEST_STAGES")} />}
       >
@@ -183,35 +210,29 @@ function EntryRoutePage() {
       </Suspense>
 
       <div class="landing-page__grid">
-        <article class="landing-page__card">
-          <span class="landing-page__card-kicker">
-            {i18n.t("HOME.DISCOVER")}
-          </span>
-          <span class="landing-page__card-title">
-            {i18n.t("HOME.PUBLIC_STAGES_TITLE")}
-          </span>
-          <p>{i18n.t("HOME.PUBLIC_STAGES_DESCRIPTION")}</p>
-        </article>
-
-        <article class="landing-page__card">
-          <span class="landing-page__card-kicker">
-            {i18n.t("HOME.OPERATE")}
-          </span>
-          <span class="landing-page__card-title">
-            {i18n.t("HOME.COMPETITION_TOOLING_TITLE")}
-          </span>
-          <p>{i18n.t("HOME.COMPETITION_TOOLING_DESCRIPTION")}</p>
-        </article>
-
-        <article class="landing-page__card">
-          <span class="landing-page__card-kicker">
-            {i18n.t("HOME.OFFLINE_READY")}
-          </span>
-          <span class="landing-page__card-title">
-            {i18n.t("HOME.CONNECTIVITY_TITLE")}
-          </span>
-          <p>{i18n.t("HOME.CONNECTIVITY_DESCRIPTION")}</p>
-        </article>
+        <For
+          each={[
+            "CARD_BROWSE",
+            "CARD_LIVE",
+            "CARD_ENROLL",
+            "CARD_ORGANIZE",
+            "CARD_DOGS",
+            "CARD_ACCOUNT",
+            "CARD_OFFLINE",
+          ]}
+        >
+          {(card) => (
+            <article class="landing-page__card">
+              <span class="landing-page__card-kicker">
+                {i18n.t(`HOME.${card}_KICKER`)}
+              </span>
+              <span class="landing-page__card-title">
+                {i18n.t(`HOME.${card}_TITLE`)}
+              </span>
+              <p>{i18n.t(`HOME.${card}_DESCRIPTION`)}</p>
+            </article>
+          )}
+        </For>
       </div>
 
       <AtomDialog

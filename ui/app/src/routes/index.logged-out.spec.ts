@@ -20,6 +20,34 @@ loggedOutTest.describe("Landing page - logged out", () => {
     await expect(page).toHaveURL(`/stages/${latestStage.id}/info`);
   });
 
+  loggedOutTest("explains what K9X is", async ({ page }) => {
+    await page.goto(AppRoutePath.HOME);
+
+    await expect(
+      page.getByText("Canine competitions, in one place"),
+    ).toBeVisible();
+    await expect(page.getByText("What is K9X?", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("Enroll in trials", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText("More features with an account")).toBeVisible();
+  });
+
+  loggedOutTest("expands and collapses a FAQ answer", async ({ page }) => {
+    await page.goto(AppRoutePath.HOME);
+
+    const question = page.getByRole("button", {
+      name: "Does it work offline?",
+    });
+    const answer = page.getByText("K9X is built local-first", { exact: false });
+
+    await question.click();
+    await expect(answer).toBeVisible();
+
+    await question.click();
+    await expect(answer).not.toBeVisible();
+  });
+
   loggedOutTest(
     "expands the menu and navigates to trials",
     async ({ page }) => {
