@@ -10,6 +10,20 @@
     gap: var(--unit-2);
 }
 
+.app-layout__login {
+    display: inline-flex;
+    width: auto;
+}
+
+.app-layout__login--skeleton.atom-skeleton {
+    width: auto;
+    border-radius: var(--unit-05);
+}
+
+.app-layout__login--skeleton .atom-button {
+    visibility: hidden;
+}
+
 .app-layout__navigation {
     position: sticky;
     top: 0;

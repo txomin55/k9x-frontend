@@ -97,6 +97,8 @@
 }
 
 .atom-badge[data-variant="tag"] {
+    padding: 0 var(--unit-05);
+    font-size: var(--text-caption-xs);
     background: var(--tag-color-bg-light);
     color: var(--tag-color-text-light);
     border: 1px solid var(--tag-color-border-light);

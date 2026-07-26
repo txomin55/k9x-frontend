@@ -1,5 +1,6 @@
 :root {
     /* FONT SIZE */
+    --font-size-3xs: 10px; /* tiny tags */
     --font-size-2xs: 12px; /* very small labels */
     --font-size-xs: 13px;
     --font-size-sm: 14px;

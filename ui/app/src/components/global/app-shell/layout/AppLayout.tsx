@@ -5,7 +5,7 @@ import Navigation from "@/components/global/app-shell/layout/navigation/Navigati
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
-import { useAuthUser } from "@/stores/auth/auth";
+import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
 import { useOffline } from "@/stores/network/network";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
@@ -23,6 +23,7 @@ import { useDeviceType } from "@/utils/media-query/useDeviceType";
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
   const user = useAuthUser();
+  const authLoading = useAuthLoading();
   const { isOffline } = useOffline();
   const i18n = useI18n();
 
@@ -50,12 +51,21 @@ export default function AppLayout(props: ParentProps) {
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
 
   const loginButton = () => (
-    <AtomButton
-      type={BUTTON_TYPES.ACCENT}
-      onClick={startGoogleInteractiveLogin}
+    <span
+      class="app-layout__login"
+      classList={{
+        "app-layout__login--skeleton atom-skeleton atom-skeleton--animated":
+          authLoading(),
+      }}
     >
-      {i18n.t("GLOBAL.APP_LAYOUT.LOGIN")}
-    </AtomButton>
+      <AtomButton
+        type={BUTTON_TYPES.ACCENT}
+        disabled={authLoading()}
+        onClick={startGoogleInteractiveLogin}
+      >
+        {i18n.t("GLOBAL.APP_LAYOUT.LOGIN")}
+      </AtomButton>
+    </span>
   );
 
   const [openOrganizerForm, setOpenOrganizerForm] = createSignal(false);

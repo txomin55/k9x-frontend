@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/solid-router";
 import { For, Suspense } from "solid-js";
 import {
+  getCachedCollectionById,
   getCachedCollections,
   useCollections,
 } from "@/services/secured/collection-crud/collectionCrud";
@@ -36,8 +37,6 @@ function CollectionDetailRoute() {
 }
 
 function CollectionDetailSkeleton() {
-  const i18n = useI18n();
-
   return (
     <Page>
       <div class="obdx-collection-detail__discipline">
@@ -133,7 +132,10 @@ export const Route = createFileRoute("/my/collections/$id")({
         (entry) => entry.eventId === match.params.id,
       );
 
-      return collection?.eventName;
+      return (
+        collection?.eventName ??
+        getCachedCollectionById(match.params.id)?.eventName
+      );
     },
     breadcrumbInfo: CollectionDetailBreadcrumbInfo,
   },

@@ -23,6 +23,7 @@
     --text-caption-lg: var(--font-size-sm);
     --text-caption-md: var(--font-size-xs);
     --text-caption-sm: var(--font-size-2xs);
+    --text-caption-xs: var(--font-size-3xs);
 
     /* line heights */
     --text-heading-line-height: var(--line-height-tight);

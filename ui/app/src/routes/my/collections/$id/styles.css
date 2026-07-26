@@ -31,7 +31,6 @@
     justify-content: center;
     text-align: center;
     padding: var(--unit-2);
-    margin-bottom: var(--unit-2);
     border-radius: var(--radius-md);
     border: 1px solid;
 }
