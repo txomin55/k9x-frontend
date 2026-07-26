@@ -1,6 +1,6 @@
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  FederationConfigurationResponseDTO
+  FederationConfigurationResponseDTO,
 } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
@@ -132,8 +132,10 @@ export interface EventDetailRawResponseDTO {
   obdx: ObdxEventDetailRawResponseDTO;
 }
 
-export interface EventExerciseDetailResponseDTO
-  extends Omit<EventExerciseRequestDTO, "judgesIds"> {
+export interface EventExerciseDetailResponseDTO extends Omit<
+  EventExerciseRequestDTO,
+  "judgesIds"
+> {
   name: string;
   judges: IdNameDTO[];
 }
@@ -194,7 +196,10 @@ const normalizeCompetitor = (
   breed: competitor.breed?.name ?? "",
   position: competitor.position ?? 0,
   competitorNumber: competitor.competitorNumber ?? 0,
-  accepted: competitor.status === COMPETITOR_STATUS.ENROLLED,
+  accepted: [
+    COMPETITOR_STATUS.NOT_COMPETING,
+    COMPETITOR_STATUS.ENROLLED,
+  ].includes(competitor.status),
   status: competitor.status ?? "",
   notCompeting: competitor.notCompeting ?? false,
   bih: competitor.bih ?? false,

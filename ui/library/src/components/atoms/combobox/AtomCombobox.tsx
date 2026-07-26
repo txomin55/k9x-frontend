@@ -89,6 +89,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
       aria-label={props.label ?? "--Combobox"}
       disabled={props.disabled}
       allowsEmptyCollection
+      sameWidth
       triggerMode="focus"
       validationState={props.validationState}
       defaultFilter={(option, query) =>
@@ -120,7 +121,9 @@ export function AtomCombobox(props: AtomComboboxProps) {
                 <For each={state.selectedOptions()}>
                   {(option) => (
                     <span class="atom-combobox__tag">
-                      {option.label}
+                      <span class="atom-combobox__tag-label">
+                        {option.label}
+                      </span>
                       <button
                         type="button"
                         class="atom-combobox__tag-remove"
