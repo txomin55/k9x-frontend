@@ -30,6 +30,21 @@ const prefixHtmlAssetPaths = (html, basePath) => {
     );
 };
 
+const inlineEntryStylesheet = async (html) => {
+  const linkMatch = html.match(
+    /<link href="(\/_build\/assets\/entry-client-[^"]+\.css)" rel="stylesheet"[^>]*>/,
+  );
+
+  if (!linkMatch) return html;
+
+  const css = await fs.readFile(
+    path.join(OUTPUT_DIR, linkMatch[1].slice(1)),
+    "utf8",
+  );
+
+  return html.replace(linkMatch[0], () => `<style>${css}</style>`);
+};
+
 const walkHtmlFiles = async (directory) => {
   const entries = await fs.readdir(directory, { withFileTypes: true });
   const files = await Promise.all(
@@ -124,7 +139,8 @@ const main = async () => {
   await Promise.all(
     htmlFiles.map(async (htmlFile) => {
       const originalHtml = await fs.readFile(htmlFile, "utf8");
-      const prefixedHtml = prefixHtmlAssetPaths(originalHtml, basePath);
+      const inlinedHtml = await inlineEntryStylesheet(originalHtml);
+      const prefixedHtml = prefixHtmlAssetPaths(inlinedHtml, basePath);
 
       if (prefixedHtml !== originalHtml) {
         await fs.writeFile(htmlFile, prefixedHtml);
