@@ -27,6 +27,7 @@ export default createHandler(() => (
           <meta property="og:image:height" content="512" />
           <meta property="og:image:type" content="image/png" />
           <link rel="icon" href={resolveAppPath("/favicon.svg")} />
+          <link rel="preconnect" href="https://bam.eu01.nr-data.net" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"

@@ -23,15 +23,20 @@ export default function WalkthroughDialog() {
 
     if (dismissed()) return;
 
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(() => setOpen(true), {
-        timeout: 2500,
-      });
-      onCleanup(() => window.cancelIdleCallback(id));
-    } else {
-      const id = window.setTimeout(() => setOpen(true), 400);
-      onCleanup(() => window.clearTimeout(id));
-    }
+    const events = ["pointerup", "keydown", "wheel", "touchend", "scroll"];
+    const openOnFirstInteraction = () => setOpen(true);
+
+    events.forEach((event) =>
+      window.addEventListener(event, openOnFirstInteraction, {
+        once: true,
+        passive: true,
+      }),
+    );
+    onCleanup(() =>
+      events.forEach((event) =>
+        window.removeEventListener(event, openOnFirstInteraction),
+      ),
+    );
   });
 
   const handleOpenChange = (isOpen: boolean) => {
