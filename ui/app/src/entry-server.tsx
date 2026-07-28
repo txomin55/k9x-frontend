@@ -1,7 +1,6 @@
 // @refresh reload
 import { createHandler, StartServer } from "@solidjs/start/server";
 import { resolveAppPath } from "@/utils/paths/app-paths";
-import breadcrumbsHint from "@/assets/miscelaneous/i_icon.webp";
 
 export default createHandler(() => (
   <StartServer
@@ -28,12 +27,6 @@ export default createHandler(() => (
           <meta property="og:image:height" content="512" />
           <meta property="og:image:type" content="image/png" />
           <link rel="icon" href={resolveAppPath("/favicon.svg")} />
-          <link
-            rel="preload"
-            as="image"
-            href={breadcrumbsHint}
-            fetchpriority="high"
-          />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link
             rel="preconnect"

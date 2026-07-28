@@ -1,4 +1,4 @@
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, onCleanup } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -21,8 +21,16 @@ export default function WalkthroughDialog() {
       return;
     }
 
-    if (!dismissed()) {
-      setOpen(true);
+    if (dismissed()) return;
+
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(() => setOpen(true), {
+        timeout: 2500,
+      });
+      onCleanup(() => window.cancelIdleCallback(id));
+    } else {
+      const id = window.setTimeout(() => setOpen(true), 400);
+      onCleanup(() => window.clearTimeout(id));
     }
   });
 
@@ -47,9 +55,8 @@ export default function WalkthroughDialog() {
               class="walkthrough__image"
               src={breadcrumbsHint}
               alt={i18n.t("GLOBAL.WALKTHROUGH.BREADCRUMBS_IMAGE_ALT")}
-              width="700"
-              height="617"
-              fetchpriority="high"
+              width="640"
+              height="564"
             />
           </figure>
           <p class="walkthrough__text">
