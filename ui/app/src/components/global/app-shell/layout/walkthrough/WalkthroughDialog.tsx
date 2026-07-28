@@ -6,7 +6,7 @@ import {
   isWalkthroughDisabled,
   setIsWalkthroughPending,
 } from "@/components/global/app-shell/layout/walkthrough/walkthroughState";
-import breadcrumbsHint from "@/assets/miscelaneous/i_icon.png";
+import breadcrumbsHint from "@/assets/miscelaneous/i_icon.webp";
 import "@/components/global/app-shell/layout/walkthrough/styles.css";
 
 export default function WalkthroughDialog() {
@@ -21,7 +21,7 @@ export default function WalkthroughDialog() {
       return;
     }
 
-    if (!dismissed() && i18n.translationsLoaded()) {
+    if (!dismissed()) {
       setOpen(true);
     }
   });
@@ -47,6 +47,9 @@ export default function WalkthroughDialog() {
               class="walkthrough__image"
               src={breadcrumbsHint}
               alt={i18n.t("GLOBAL.WALKTHROUGH.BREADCRUMBS_IMAGE_ALT")}
+              width="700"
+              height="617"
+              fetchpriority="high"
             />
           </figure>
           <p class="walkthrough__text">

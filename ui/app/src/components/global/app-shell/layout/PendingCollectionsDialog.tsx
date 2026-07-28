@@ -20,7 +20,6 @@ export default function PendingCollectionsDialog() {
     if (
       !dismissed() &&
       !isWalkthroughPending() &&
-      i18n.translationsLoaded() &&
       collectionsQuery.data?.length
     ) {
       setOpen(true);

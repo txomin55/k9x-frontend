@@ -1,7 +1,8 @@
 import { Link, MetaProvider } from "@solidjs/meta";
 import { Outlet, useLocation } from "@tanstack/solid-router";
-import { createEffect, onMount, Show } from "solid-js";
+import { createEffect, onMount } from "solid-js";
 import AppLayout from "@/components/global/app-shell/layout/AppLayout";
+import TranslationsGate from "@/components/common/translations-gate/TranslationsGate";
 import Toast from "@/components/global/toast/Toast";
 import NotificationGuard from "@/providers/notifications/NotificationsInit";
 import { resolveAppPath } from "@/utils/paths/app-paths";
@@ -79,7 +80,7 @@ export default function AppShell() {
   return (
     <MetaProvider>
       <Link rel="manifest" href={resolveAppPath("/manifest.webmanifest")} />
-      <Show when={i18n.ready()}>
+      <TranslationsGate>
         <NotificationGuard>
           <AppLayout>
             <div class="app-shell">
@@ -88,7 +89,7 @@ export default function AppShell() {
             <Toast />
           </AppLayout>
         </NotificationGuard>
-      </Show>
+      </TranslationsGate>
     </MetaProvider>
   );
 }

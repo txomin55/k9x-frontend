@@ -166,7 +166,7 @@ const useI18n = () => {
       await persistNotificationTranslations();
     },
     t: (key: string, options?: Record<string, unknown>) => {
-      if (!locale() || !ready() || !translationsLoaded()) return key;
+      if (!locale() || !ready() || !translationsLoaded()) return "";
       return i18n.t(key, options);
     },
   };

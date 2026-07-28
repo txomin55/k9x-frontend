@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
-import { createEffect, createSignal, onCleanup, onMount, Show, Suspense } from "solid-js";
+import { createEffect, createSignal, lazy, onCleanup, onMount, Show, Suspense } from "solid-js";
 import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
@@ -8,17 +8,27 @@ import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButto
 import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
 import { useOffline } from "@/stores/network/network";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import NavigationUserMenu from "@/components/global/app-shell/layout/navigation/NavigationUserMenu";
 import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
-import OrganizerForm from "@/components/global/app-shell/layout/navigation/OrganizerForm";
-import PendingCollectionsDialog from "@/components/global/app-shell/layout/PendingCollectionsDialog";
-import NotificationsDialog from "@/components/global/app-shell/layout/NotificationsDialog";
 import WalkthroughDialog from "@/components/global/app-shell/layout/walkthrough/WalkthroughDialog";
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
 import { isDark, setIsDark } from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
+
+const NavigationUserMenu = lazy(
+  () =>
+    import("@/components/global/app-shell/layout/navigation/NavigationUserMenu"),
+);
+const OrganizerForm = lazy(
+  () => import("@/components/global/app-shell/layout/navigation/OrganizerForm"),
+);
+const PendingCollectionsDialog = lazy(
+  () => import("@/components/global/app-shell/layout/PendingCollectionsDialog"),
+);
+const NotificationsDialog = lazy(
+  () => import("@/components/global/app-shell/layout/NotificationsDialog"),
+);
 
 export default function AppLayout(props: ParentProps) {
   const location = useLocation();
@@ -123,7 +133,11 @@ export default function AppLayout(props: ParentProps) {
               <Show when={!currentUser().organizer}>
                 <AtomDialog
                   closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
-                  content={<OrganizerForm onClose={() => setOpenOrganizerForm(false)} />}
+                  content={
+                    <Suspense fallback={null}>
+                      <OrganizerForm onClose={() => setOpenOrganizerForm(false)} />
+                    </Suspense>
+                  }
                   onOpenChange={setOpenOrganizerForm}
                   open={openOrganizerForm()}
                   title={i18n.t("GLOBAL.APP_LAYOUT.ORGANIZER_REQUEST")}
@@ -146,10 +160,12 @@ export default function AppLayout(props: ParentProps) {
                 }
                 content={
                   <div class="app-layout__user-img--menu">
-                    <NavigationUserMenu
-                      isDark={isDark()}
-                      onToggleMode={toggleMode}
-                    />
+                    <Suspense fallback={null}>
+                      <NavigationUserMenu
+                        isDark={isDark()}
+                        onToggleMode={toggleMode}
+                      />
+                    </Suspense>
                   </div>
                 }
               />
