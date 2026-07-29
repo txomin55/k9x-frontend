@@ -10,6 +10,7 @@ export type CoreButtonProps = {
   size?: ButtonSize;
   class?: string;
   style?: JSX.CSSProperties;
+  ariaLabel?: string;
 };
 
 export type ButtonType = (typeof BUTTON_TYPES)[keyof typeof BUTTON_TYPES];
@@ -51,6 +52,7 @@ export default function AtomButton(props: CoreButtonProps) {
       disabled={disabled()}
       onClick={handleClick}
       style={props.style}
+      aria-label={props.ariaLabel}
     >
       <span>{props.children}</span>
     </Button>

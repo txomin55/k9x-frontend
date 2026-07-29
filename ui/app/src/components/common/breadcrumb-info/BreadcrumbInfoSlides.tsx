@@ -49,7 +49,12 @@ export default function BreadcrumbInfoSlides(props: BreadcrumbInfoSlidesProps) {
       when={props.slides.length > 1}
       fallback={renderSlide(props.slides[0])}
     >
-      <Carousel items={renderedSlides()} />
+      <Carousel
+        items={renderedSlides()}
+        label={i18n.t("COMMON.PAGE_INFORMATION")}
+        previousLabel={i18n.t("COMMON.CAROUSEL_PREVIOUS")}
+        nextLabel={i18n.t("COMMON.CAROUSEL_NEXT")}
+      />
     </Show>
   );
 }

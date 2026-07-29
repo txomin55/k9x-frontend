@@ -1,4 +1,3 @@
-import { Show } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -26,13 +25,13 @@ export default function DogCard(props: DogCardProps) {
       topRight={<span class="dog-card__breed">{props.dog.breed.name}</span>}
       description={<span class="text-body-md">{props.dog.identity}</span>}
       content={
-        <Show when={props.dog.image}>
+        props.dog.image ? (
           <img
             class="dog-card__image"
             src={props.dog.image}
             alt={`Dog ${props.dog.name}`}
           />
-        </Show>
+        ) : undefined
       }
       actions={
         <div class="dog-card__actions">

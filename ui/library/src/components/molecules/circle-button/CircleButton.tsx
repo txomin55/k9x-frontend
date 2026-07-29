@@ -9,6 +9,7 @@ export type CircleButtonProps = {
   onClick?: JSX.EventHandler<HTMLButtonElement, MouseEvent>;
   size?: CircleButtonPropsSize;
   type?: ButtonType;
+  ariaLabel?: string;
 };
 
 export type CircleButtonPropsSize = "sm" | "md" | "lg";
@@ -26,6 +27,7 @@ export default function CircleButton(props: CircleButtonProps) {
       disabled={props.disabled}
       onClick={props.onClick}
       type={props.type}
+      ariaLabel={props.ariaLabel}
     >
       {props.children}
     </AtomButton>

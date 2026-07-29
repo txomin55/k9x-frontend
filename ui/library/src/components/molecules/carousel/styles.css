@@ -4,6 +4,12 @@
     gap: var(--unit-2);
 }
 
+.carousel:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: var(--unit-05);
+    border-radius: var(--radius-md);
+}
+
 .carousel__control {
     flex: 0 0 auto;
     display: flex;
