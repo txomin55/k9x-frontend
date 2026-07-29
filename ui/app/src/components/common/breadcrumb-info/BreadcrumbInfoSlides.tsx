@@ -1,4 +1,4 @@
-import { For, Show } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import Carousel from "@lib/components/molecules/carousel/Carousel";
 import { useI18n } from "@/stores/i18n/i18n";
 import "@/components/common/breadcrumb-info/styles.css";
@@ -42,12 +42,14 @@ export default function BreadcrumbInfoSlides(props: BreadcrumbInfoSlidesProps) {
     </div>
   );
 
+  const renderedSlides = createMemo(() => props.slides.map(renderSlide));
+
   return (
     <Show
       when={props.slides.length > 1}
       fallback={renderSlide(props.slides[0])}
     >
-      <Carousel items={props.slides.map(renderSlide)} />
+      <Carousel items={renderedSlides()} />
     </Show>
   );
 }

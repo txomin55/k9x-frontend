@@ -13,6 +13,7 @@ interface Crumbs {
 export interface AtomBreadcrumbsInfo {
   trigger: JSX.Element;
   content: JSX.Element;
+  title?: string;
 }
 
 export interface AtomBreadcrumbsProps {
@@ -76,7 +77,7 @@ export default function (props: AtomBreadcrumbsProps) {
           <li class="atom-breadcrumbs__info">
             <AtomDialog
               trigger={props.info!.trigger}
-              title={lastCrumbText()}
+              title={props.info!.title ?? lastCrumbText()}
               content={props.info!.content}
               size="wide"
             />

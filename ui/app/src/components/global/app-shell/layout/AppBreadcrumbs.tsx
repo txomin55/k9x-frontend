@@ -5,6 +5,7 @@ import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
 import { resolveBreadcrumb } from "@/utils/router/breadcrumbs";
 import { queryClient } from "@/utils/http/query-client";
 import InfoIcon from "@/components/common/info-icon/InfoIcon";
+import { useI18n } from "@/stores/i18n/i18n";
 
 type BreadcrumbItem = {
   route: string;
@@ -15,6 +16,7 @@ type BreadcrumbItem = {
 export default function AppBreadcrumbs() {
   const matches = useMatches();
   const navigate = useNavigate();
+  const i18n = useI18n();
 
   const [cacheVersion, setCacheVersion] = createSignal(0);
   const unsubscribe = queryClient
@@ -66,7 +68,11 @@ export default function AppBreadcrumbs() {
     const component = infoComponent();
 
     return component
-      ? { trigger: <InfoIcon />, content: <Dynamic component={component} /> }
+      ? {
+          trigger: <InfoIcon />,
+          content: <Dynamic component={component} />,
+          title: i18n.t("COMMON.PAGE_INFORMATION"),
+        }
       : null;
   });
 
