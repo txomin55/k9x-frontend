@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
 import { getCachedEventName } from "@/services/fetch-stages/fetchStages";
-import { useI18n } from "@/stores/i18n/i18n";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
 
 export const Route = createFileRoute("/stages/$id/events/$eventId")({
   component: StageEventLayoutPage,
@@ -16,7 +16,5 @@ function StageEventLayoutPage() {
 }
 
 function StageEventBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("STAGES.EVENT_DETAIL.BREADCRUMB_INFO")}</p>;
+  return <BreadcrumbInfoSlides slides={[[{ keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO"] }]]} />;
 }

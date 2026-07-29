@@ -78,6 +78,7 @@ export default function (props: AtomBreadcrumbsProps) {
               trigger={props.info!.trigger}
               title={lastCrumbText()}
               content={props.info!.content}
+              size="wide"
             />
           </li>
         </Show>

@@ -1,6 +1,9 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
 import { getCachedStageName } from "@/services/fetch-stages/fetchStages";
-import { useI18n } from "@/stores/i18n/i18n";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
+import stageDetailTabs from "@/assets/breadcrumb-info/stage-detail-tabs.webp";
+import stageDetailEventCard from "@/assets/breadcrumb-info/stage-detail-event-card.webp";
+import stageDetailCompetitors from "@/assets/breadcrumb-info/stage-detail-competitors.webp";
 
 export const Route = createFileRoute("/stages/$id")({
   component: EventDetailLayoutPage,
@@ -20,7 +23,24 @@ function EventDetailLayoutPage() {
 }
 
 function StageDetailBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("STAGES.DETAIL.BREADCRUMB_INFO")}</p>;
+  return (
+    <BreadcrumbInfoSlides
+      slides={[
+        [{ keys: ["STAGES.DETAIL.BREADCRUMB_INFO"] }],
+        [{ keys: ["STAGES.DETAIL.BREADCRUMB_INFO_2"], image: stageDetailTabs }],
+        [
+          {
+            keys: ["STAGES.DETAIL.BREADCRUMB_INFO_3"],
+            image: stageDetailEventCard,
+          },
+        ],
+        [
+          {
+            keys: ["STAGES.DETAIL.BREADCRUMB_INFO_4"],
+            image: stageDetailCompetitors,
+          },
+        ],
+      ]}
+    />
+  );
 }

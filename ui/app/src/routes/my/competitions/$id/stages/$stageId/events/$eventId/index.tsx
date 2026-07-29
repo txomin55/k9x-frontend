@@ -12,6 +12,7 @@ import {
   Show,
   Suspense,
 } from "solid-js";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
 import EventDetailSkeleton from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/EventDetailSkeleton";
 import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
@@ -1174,9 +1175,11 @@ export const Route = createFileRoute(
 });
 
 function CompetitionEventDetailBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO")}</p>;
+  return (
+    <BreadcrumbInfoSlides
+      slides={[[{ keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO"] }]]}
+    />
+  );
 }
 
 function CompetitionEventDetailPage() {

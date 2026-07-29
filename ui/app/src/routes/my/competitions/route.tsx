@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
-import { useI18n } from "@/stores/i18n/i18n";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
 
 export const Route = createFileRoute("/my/competitions")({
   component: MyCompetitionsLayoutPage,
@@ -14,7 +14,5 @@ function MyCompetitionsLayoutPage() {
 }
 
 function MyCompetitionsBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("MY.COMPETITIONS.BREADCRUMB_INFO")}</p>;
+  return <BreadcrumbInfoSlides slides={[[{ keys: ["MY.COMPETITIONS.BREADCRUMB_INFO"] }]]} />;
 }

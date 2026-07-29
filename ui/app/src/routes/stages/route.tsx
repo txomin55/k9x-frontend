@@ -1,5 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/solid-router";
-import { useI18n } from "@/stores/i18n/i18n";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
+import stagesViewModes from "@/assets/breadcrumb-info/stages-view-modes.webp";
+import stagesCardStage from "@/assets/breadcrumb-info/stages-card-stage.webp";
+import stagesCardEvent from "@/assets/breadcrumb-info/stages-card-event.webp";
+import stagesFilters from "@/assets/breadcrumb-info/stages-filters.webp";
+import stagesMapStatus from "@/assets/breadcrumb-info/stages-map-status.webp";
 
 export const Route = createFileRoute("/stages")({
   component: StagesLayoutPage,
@@ -14,7 +19,16 @@ function StagesLayoutPage() {
 }
 
 function StagesBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("STAGES.BREADCRUMB_INFO")}</p>;
+  return (
+    <BreadcrumbInfoSlides
+      slides={[
+        [{ keys: ["STAGES.BREADCRUMB_INFO", "STAGES.BREADCRUMB_INFO_2"] }],
+        [{ keys: ["STAGES.BREADCRUMB_INFO_3"], image: stagesViewModes }],
+        [{ keys: ["STAGES.BREADCRUMB_INFO_4"], image: stagesCardStage }],
+        [{ keys: ["STAGES.BREADCRUMB_INFO_5"], image: stagesCardEvent }],
+        [{ keys: ["STAGES.BREADCRUMB_INFO_6"], image: stagesFilters }],
+        [{ keys: ["STAGES.BREADCRUMB_INFO_7"], image: stagesMapStatus }],
+      ]}
+    />
+  );
 }

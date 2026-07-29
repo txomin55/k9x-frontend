@@ -9,7 +9,7 @@ import ObdxCollectionDetail from "@/components/routes/my/collections/$id/obdx/Ob
 import Page from "@/components/common/page/Page";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
-import { useI18n } from "@/stores/i18n/i18n";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
 import "./styles.css";
 
 function CollectionsListPrimer() {
@@ -119,9 +119,7 @@ type CollectionDetailSearch = {
 };
 
 function CollectionDetailBreadcrumbInfo() {
-  const i18n = useI18n();
-
-  return <p>{i18n.t("MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO")}</p>;
+  return <BreadcrumbInfoSlides slides={[[{ keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO"] }]]} />;
 }
 
 export const Route = createFileRoute("/my/collections/$id")({
