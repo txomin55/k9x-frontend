@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/solid-query";
 import { RouterProvider } from "@tanstack/solid-router";
 import { onCleanup, onMount } from "solid-js";
 import { router } from "@/router";
+import { refetchNotificationsIfStale } from "@/services/secured/notifications/notifications";
 import { setupPendingTasksProcessing } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import {
   queryClient,
@@ -15,8 +16,12 @@ export default function App() {
   onMount(() => {
     const cleanupPendingTasksProcessing = setupPendingTasksProcessing();
     const cleanupQueryRefetchOnReconnect = setupQueryRefetchOnReconnect();
+    const unsubscribeNavigationRefetch = router.subscribe("onResolved", () => {
+      void refetchNotificationsIfStale();
+    });
     onCleanup(cleanupPendingTasksProcessing);
     onCleanup(cleanupQueryRefetchOnReconnect);
+    onCleanup(unsubscribeNavigationRefetch);
   });
 
   return (

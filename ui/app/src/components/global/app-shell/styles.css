@@ -241,3 +241,14 @@
 .app-layout__user-img--menu .navigation-tools__logout {
     align-self: flex-start;
 }
+
+.pending-collections-dialog__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+}
+
+.pending-collections-dialog__content > div {
+    display: flex;
+    justify-content: flex-end;
+}

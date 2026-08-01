@@ -147,8 +147,7 @@ function useFilteredStages() {
       if (status && stage.status !== status) return false;
       const date = stage.dateFrom ?? 0;
       if (fromTs !== null && date < fromTs) return false;
-      if (toTs !== null && date > toTs) return false;
-      return true;
+      return !(toTs !== null && date > toTs);
     });
   });
 

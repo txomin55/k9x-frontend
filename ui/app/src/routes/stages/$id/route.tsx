@@ -4,6 +4,7 @@ import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/Breadcrumb
 import stageDetailTabs from "@/assets/breadcrumb-info/stage-detail-tabs.webp";
 import stageDetailEventCard from "@/assets/breadcrumb-info/stage-detail-event-card.webp";
 import stageDetailCompetitors from "@/assets/breadcrumb-info/stage-detail-competitors.webp";
+import enrollButton from "@/assets/breadcrumb-info/enroll-button.webp";
 
 export const Route = createFileRoute("/stages/$id")({
   component: EventDetailLayoutPage,
@@ -34,6 +35,7 @@ function StageDetailBreadcrumbInfo() {
             image: stageDetailEventCard,
           },
         ],
+        [{ keys: ["COMMON.ENROLL_BUTTON_HINT"], image: enrollButton }],
         [
           {
             keys: ["STAGES.DETAIL.BREADCRUMB_INFO_4"],

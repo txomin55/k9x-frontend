@@ -3,9 +3,20 @@
     flex-direction: column;
     align-items: center;
     gap: var(--unit-2);
+    min-width: 0;
+}
+
+.walkthrough__slide {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--unit-2);
+    width: 100%;
+    min-width: 0;
 }
 
 .walkthrough__figure {
+    box-sizing: border-box;
     margin: 0;
     width: 100%;
     max-width: calc(var(--unit-10) * 4);

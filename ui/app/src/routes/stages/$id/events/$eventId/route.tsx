@@ -33,40 +33,39 @@ function StageEventBreadcrumbInfo() {
             image: stageEventResponsive,
           },
         ],
-        [{ keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_3"] }],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_4"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_3"],
             image: stageEventViewModes,
           },
         ],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_5"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_4"],
             image: stageEventHeader,
           },
         ],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_6"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_5"],
             image: stageEventInfo,
           },
         ],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_7"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_6"],
             image: stageEventCompetitorCard,
           },
         ],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_8"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_7"],
             image: stageEventScoreDetail,
           },
         ],
         [
           {
-            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_9"],
+            keys: ["STAGES.EVENT_DETAIL.BREADCRUMB_INFO_8"],
             image: stageEventIcons,
           },
         ],

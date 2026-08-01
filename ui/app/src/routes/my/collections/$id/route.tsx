@@ -10,6 +10,9 @@ import Page from "@/components/common/page/Page";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
+import collectionDetail from "@/assets/breadcrumb-info/collection-detail.webp";
+import collectionCardDialog from "@/assets/breadcrumb-info/collection-card-dialog.webp";
+import collectionCardButtons from "@/assets/breadcrumb-info/collection-card-buttons.webp";
 import "./styles.css";
 
 function CollectionsListPrimer() {
@@ -119,7 +122,29 @@ type CollectionDetailSearch = {
 };
 
 function CollectionDetailBreadcrumbInfo() {
-  return <BreadcrumbInfoSlides slides={[[{ keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO"] }]]} />;
+  return (
+    <BreadcrumbInfoSlides
+      slides={[
+        [{ keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO"] }],
+        [
+          {
+            keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO_2"],
+            image: collectionDetail,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO_3"],
+            image: collectionCardButtons,
+          },
+          {
+            keys: ["MY.COLLECTIONS.DETAIL.BREADCRUMB_INFO_4"],
+            image: collectionCardDialog,
+          },
+        ],
+      ]}
+    />
+  );
 }
 
 export const Route = createFileRoute("/my/collections/$id")({

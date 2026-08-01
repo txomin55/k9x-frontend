@@ -11,6 +11,7 @@ import type {
 export type { NotificationResponseDTO } from "@/services/secured/notifications/notifications.types";
 
 const NOTIFICATIONS_ENDPOINT_PATH = "/secured/notifications";
+const NOTIFICATIONS_STALE_TIME_MS = 5 * 60 * 1000;
 
 export const getNotificationsQueryKey = () =>
   ["notifications", getCurrentLocale()] as const;
@@ -29,8 +30,18 @@ const notificationsQuery = defineQuery({
 export const useNotifications = (override?: TanstackCreateQuery) =>
   notificationsQuery.useQuery({
     networkMode: "always",
+    staleTime: NOTIFICATIONS_STALE_TIME_MS,
     ...override,
   });
+
+export const refetchNotificationsIfStale = () => {
+  if (!globalThis.navigator?.onLine) return Promise.resolve();
+
+  return queryClient.refetchQueries({
+    queryKey: ["notifications"],
+    stale: true,
+  });
+};
 
 const putNotificationsSeen = (ids: string[]) =>
   rawRequest<void>({

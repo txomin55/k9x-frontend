@@ -2,6 +2,8 @@
     display: flex;
     align-items: center;
     gap: var(--unit-2);
+    width: 100%;
+    min-width: 0;
 }
 
 .carousel:focus-visible {
@@ -20,7 +22,7 @@
 }
 
 .carousel__viewport {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-width: 0;
     overflow: hidden;
 }

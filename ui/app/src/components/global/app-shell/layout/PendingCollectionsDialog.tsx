@@ -1,7 +1,7 @@
 import { createEffect, createSignal } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { useCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
@@ -45,12 +45,16 @@ export default function PendingCollectionsDialog() {
       open={open()}
       title={i18n.t("GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_TITLE")}
       content={
-        <>
-          <p>{i18n.t("GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_MESSAGE")}</p>
-          <AtomButton type={BUTTON_TYPES.ACCENT} onClick={goToCollections}>
-            {i18n.t("GLOBAL.APP_LAYOUT.GO_TO_COLLECTIONS")}
-          </AtomButton>
-        </>
+        <div class="pending-collections-dialog__content">
+          <span class="text-body-md">
+            {i18n.t("GLOBAL.APP_LAYOUT.PENDING_COLLECTIONS_MESSAGE")}
+          </span>
+          <div>
+            <AtomButton onClick={goToCollections}>
+              {i18n.t("GLOBAL.APP_LAYOUT.GO_TO_COLLECTIONS")}
+            </AtomButton>
+          </div>
+        </div>
       }
     />
   );
