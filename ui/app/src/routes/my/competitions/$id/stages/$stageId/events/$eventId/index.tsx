@@ -161,6 +161,11 @@ function CompetitionObdxEventDetailBody(props: {
       isEditing() && hasConfiguration() && canManageEvent(props.event().status),
   );
 
+  const hasAddAction = () =>
+    currentTab() === TABS.COMPETITORS
+      ? canManageCompetitors()
+      : canEditDetails();
+
   const MID_AVG_MIN_JUDGES = 4;
 
   const hasEnoughJudgesForMidAvg = createMemo(
@@ -1087,7 +1092,13 @@ function CompetitionObdxEventDetailBody(props: {
             isEditing() && menuOpen() && canDeleteEvent(props.event().status)
           }
         >
-          <div class="floating-action floating-action--level-3">
+          <div
+            class="floating-action"
+            classList={{
+              "floating-action--level-3": hasAddAction(),
+              "floating-action--level-2": !hasAddAction(),
+            }}
+          >
             <ConfirmActionButton text={name()} onConfirm={props.onDelete}>
               <span class="floating-action__label">
                 {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DELETE_EVENT")}

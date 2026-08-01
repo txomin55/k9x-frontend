@@ -1,5 +1,7 @@
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
 import {
@@ -12,7 +14,7 @@ import {
   Show,
   Suspense,
   Switch,
-  useContext
+  useContext,
 } from "solid-js";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -36,9 +38,12 @@ import {
   defaultStagesDateRange,
   formatUtcDateOnly,
   parseDateInputValue,
+  toDateInputValue,
 } from "@/utils/date";
 import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
@@ -535,6 +540,11 @@ function StagesIndexPage() {
   const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
   const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
 
+  const defaultRange = defaultStagesDateRange();
+  const dateFromValue = () =>
+    dateFromFilter() || toDateInputValue(defaultRange.from);
+  const dateToValue = () => dateToFilter() || toDateInputValue(defaultRange.to);
+
   const controls = createMemo(() => [
     {
       value: CONTROLS_KEYS.LIST,
@@ -584,8 +594,8 @@ function StagesIndexPage() {
             name={nameFilter()}
             country={countryFilter()}
             status={statusFilter()}
-            dateFrom={dateFromFilter()}
-            dateTo={dateToFilter()}
+            dateFrom={dateFromValue()}
+            dateTo={dateToValue()}
             onNameChange={setNameFilter}
             onCountryChange={setCountryFilter}
             onStatusChange={setStatusFilter}
