@@ -3,9 +3,11 @@ import { getCachedCompetitions } from "@/services/secured/competition-crud/compe
 import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
 import competitionDetail from "@/assets/breadcrumb-info/competition-detail.webp";
 import competitionDetailViewModes from "@/assets/breadcrumb-info/competition-detail-view-modes.webp";
-import competitionDetailGear from "@/assets/breadcrumb-info/competition-detail-gear.webp";
-import competitionDetailEditStack from "@/assets/breadcrumb-info/competition-detail-edit-stack.webp";
+import competitionDetailGear from "@/assets/breadcrumb-info/edit-mode-gear.webp";
+import competitionDetailEditStack from "@/assets/breadcrumb-info/edit-mode-stack.webp";
 import competitionDetailActions from "@/assets/breadcrumb-info/competition-detail-actions.webp";
+import stageStatuses from "@/assets/breadcrumb-info/stage-statuses.webp";
+import competitionDetailCardActions from "@/assets/breadcrumb-info/competition-detail-card-actions.webp";
 
 export const Route = createFileRoute("/my/competitions/$id")({
   component: CompetitionDetailLayoutPage,
@@ -39,23 +41,35 @@ function CompetitionDetailBreadcrumbInfo() {
         [
           {
             keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_3"],
-            image: competitionDetailViewModes,
+            image: stageStatuses,
           },
         ],
         [
           {
             keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_4"],
+            image: competitionDetailViewModes,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_5"],
             image: competitionDetailGear,
           },
           {
-            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_5"],
+            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_6"],
             image: competitionDetailEditStack,
           },
         ],
         [
           {
-            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_6"],
+            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_7"],
             image: competitionDetailActions,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_8"],
+            image: competitionDetailCardActions,
           },
         ],
       ]}
