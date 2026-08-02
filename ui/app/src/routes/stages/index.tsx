@@ -38,6 +38,7 @@ import {
   defaultStagesDateRange,
   formatUtcDateOnly,
   parseDateInputValue,
+  parseTimestampParam,
   toDateInputValue,
 } from "@/utils/date";
 import { isOffline as isOfflinePolicy } from "@/utils/local-first/localFirstPolicy";
@@ -90,8 +91,8 @@ function StagesDataProvider(props: ParentProps) {
   const [dateFromFilter] = useSearchParam("from", "");
   const [dateToFilter] = useSearchParam("to", "");
   const defaultRange = defaultStagesDateRange();
-  const fromMs = () => parseDateInputValue(dateFromFilter(), defaultRange.from);
-  const toMs = () => parseDateInputValue(dateToFilter(), defaultRange.to);
+  const fromMs = () => parseTimestampParam(dateFromFilter(), defaultRange.from);
+  const toMs = () => parseTimestampParam(dateToFilter(), defaultRange.to);
 
   const query = useStages(fromMs, toMs, {
     refetchOnMount: !isOffline(),
@@ -133,10 +134,10 @@ function useFilteredStages() {
     const country = countryFilter().toLowerCase();
     const status = statusFilter();
     const fromTs = dateFromFilter()
-      ? new Date(dateFromFilter()).getTime()
+      ? parseTimestampParam(dateFromFilter(), 0)
       : null;
     const toTs = dateToFilter()
-      ? new Date(dateToFilter()).getTime() + DAY_MS - 1
+      ? parseTimestampParam(dateToFilter(), 0) + DAY_MS - 1
       : null;
 
     return stages.filter((stage) => {
@@ -541,8 +542,9 @@ function StagesIndexPage() {
 
   const defaultRange = defaultStagesDateRange();
   const dateFromValue = () =>
-    dateFromFilter() || toDateInputValue(defaultRange.from);
-  const dateToValue = () => dateToFilter() || toDateInputValue(defaultRange.to);
+    toDateInputValue(parseTimestampParam(dateFromFilter(), defaultRange.from));
+  const dateToValue = () =>
+    toDateInputValue(parseTimestampParam(dateToFilter(), defaultRange.to));
 
   const controls = createMemo(() => [
     {
@@ -598,8 +600,14 @@ function StagesIndexPage() {
             onNameChange={setNameFilter}
             onCountryChange={setCountryFilter}
             onStatusChange={setStatusFilter}
-            onDateFromChange={setDateFromFilter}
-            onDateToChange={setDateToFilter}
+            onDateFromChange={(value) =>
+              setDateFromFilter(
+                value ? String(parseDateInputValue(value, 0)) : "",
+              )
+            }
+            onDateToChange={(value) =>
+              setDateToFilter(value ? String(parseDateInputValue(value, 0)) : "")
+            }
           />
         </Show>
         <AtomSegmentedControl

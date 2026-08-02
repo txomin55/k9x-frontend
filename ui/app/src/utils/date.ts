@@ -56,6 +56,12 @@ export function parseDateInputValue(value: string, fallback: number) {
   return new Date(`${value}T00:00:00Z`).getTime();
 }
 
+export function parseTimestampParam(value: string, fallback: number) {
+  const timestamp = Number(value);
+  if (!value || !Number.isFinite(timestamp)) return fallback;
+  return timestamp;
+}
+
 export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export function defaultStagesDateRange() {
