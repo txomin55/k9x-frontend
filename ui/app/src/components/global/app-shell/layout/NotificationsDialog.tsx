@@ -1,5 +1,7 @@
 import { createSignal, For, Show } from "solid-js";
+import { useNavigate } from "@tanstack/solid-router";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import bellIcon from "@/assets/miscelaneous/bell.svg";
 import {
@@ -13,6 +15,7 @@ import type { NotificationResponseDTO } from "@/services/secured/notifications/n
 
 export default function NotificationsDialog() {
   const i18n = useI18n();
+  const navigate = useNavigate();
   const notificationsQuery = useNotifications();
 
   // Same title/body the push produces — the catalog is the single source of rendering for both paths.
@@ -43,6 +46,11 @@ export default function NotificationsDialog() {
     } else {
       setUnseenOnOpen(new Set<string>());
     }
+  };
+
+  const openNotificationUrl = (url: string) => {
+    handleOpenChange(false);
+    void navigate({ href: url });
   };
 
   return (
@@ -84,6 +92,15 @@ export default function NotificationsDialog() {
                       <time class="text-caption-sm">
                         {formatDateTime(notification.timestamp)}
                       </time>
+                      <Show when={content.url}>
+                        {(url) => (
+                          <div class="notifications-list__item-action">
+                            <AtomButton onClick={() => openNotificationUrl(url())}>
+                              {i18n.t("NOTIFICATION.REVIEW")}
+                            </AtomButton>
+                          </div>
+                        )}
+                      </Show>
                     </li>
                   );
                 }}

@@ -166,6 +166,10 @@
     background: var(--surface-muted);
 }
 
+.notifications-list__item-action {
+    align-self: flex-end;
+}
+
 .notifications-list__item--unseen {
     padding-left: var(--unit-3);
 }
