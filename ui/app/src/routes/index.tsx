@@ -26,6 +26,7 @@ import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
+import obdxIcon from "@/assets/disciplines/obdx.svg";
 import { isStageLive } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { defaultStagesDateRange, formatUtcDateOnly } from "@/utils/date";
@@ -179,6 +180,19 @@ function EntryRoutePage() {
         </span>
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_1")}</p>
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_2")}</p>
+        <div class="landing-page__disciplines">
+          <span class="landing-page__disciplines-title">
+            {i18n.t("HOME.SUPPORTED_DISCIPLINES_TITLE")}
+          </span>
+          <div class="landing-page__discipline">
+            <img
+              alt="FCI Obedience"
+              class="landing-page__discipline-logo"
+              src={obdxIcon}
+            />
+            <span class="landing-page__discipline-name">FCI OBEDIENCE</span>
+          </div>
+        </div>
       </div>
 
       <div class="landing-page__faq">

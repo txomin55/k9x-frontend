@@ -13,6 +13,15 @@ import {
   Suspense,
 } from "solid-js";
 import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
+import eventDetailData from "@/assets/breadcrumb-info/event-detail-data.webp";
+import eventStatuses from "@/assets/breadcrumb-info/event-statuses.webp";
+import eventDetailViewModes from "@/assets/breadcrumb-info/event-detail-view-modes.webp";
+import eventDetailJudges from "@/assets/breadcrumb-info/event-detail-judges.webp";
+import eventDetailExercises from "@/assets/breadcrumb-info/event-detail-exercises.webp";
+import eventDetailCompetitors from "@/assets/breadcrumb-info/event-detail-competitors.webp";
+import editModeGear from "@/assets/breadcrumb-info/edit-mode-gear.webp";
+import editModeStack from "@/assets/breadcrumb-info/edit-mode-stack.webp";
+import eventDetailActions from "@/assets/breadcrumb-info/event-detail-actions.webp";
 import EventDetailSkeleton from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/EventDetailSkeleton";
 import EventCompetitorsSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/competitor/EventCompetitorsSection";
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
@@ -1188,7 +1197,61 @@ export const Route = createFileRoute(
 function CompetitionEventDetailBreadcrumbInfo() {
   return (
     <BreadcrumbInfoSlides
-      slides={[[{ keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO"] }]]}
+      slides={[
+        [{ keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO"] }],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_2"],
+            image: eventDetailData,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_3"],
+            image: eventStatuses,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_4"],
+            image: eventDetailViewModes,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_5"],
+            image: eventDetailJudges,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_6"],
+            image: eventDetailExercises,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_7"],
+            image: eventDetailCompetitors,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_8"],
+            image: editModeGear,
+          },
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_9"],
+            image: editModeStack,
+          },
+        ],
+        [
+          {
+            keys: ["MY.COMPETITIONS.EVENT_DETAIL.BREADCRUMB_INFO_10"],
+            image: eventDetailActions,
+          },
+        ],
+      ]}
     />
   );
 }

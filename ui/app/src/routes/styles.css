@@ -62,6 +62,37 @@
     line-height: 1.5;
 }
 
+.landing-page__disciplines {
+    display: grid;
+    gap: var(--unit-1);
+    margin-top: var(--unit-1);
+}
+
+.landing-page__disciplines-title {
+    color: var(--text-primary);
+    font-size: var(--text-body-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+}
+
+.landing-page__discipline {
+    display: grid;
+    justify-items: center;
+    gap: var(--unit-05);
+    width: fit-content;
+}
+
+.landing-page__discipline-logo {
+    width: var(--unit-8);
+    height: var(--unit-8);
+}
+
+.landing-page__discipline-name {
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+    letter-spacing: 0.08em;
+}
+
 .landing-page__faq {
     display: grid;
     gap: var(--unit-1);
