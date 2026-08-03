@@ -2,6 +2,9 @@ export const ACCESS_TOKEN_KEY = "k9x_access_token";
 
 export const WALKTHROUGH_DISABLED_KEY = "k9x_walkthrough_disabled";
 
+export const PENDING_COLLECTIONS_DISABLED_KEY =
+  "k9x_pending_collections_disabled";
+
 export const SMOKE_STATE_PATH = ".auth/smoke-state.json";
 
 export const SMOKE_CREDENTIALS_PATH =
@@ -19,11 +22,13 @@ const readableRunId = () => {
 
 export const RUN_ID = process.env.SMOKE_RUN_ID ?? readableRunId();
 
+export const SMOKE_PREFIX = "--SMOKE--";
+
 const sequences = new Map<string, number>();
 export const named = (label: string) => {
   const next = (sequences.get(label) ?? 0) + 1;
   sequences.set(label, next);
-  return `${label} ${next} (${RUN_ID})`;
+  return `${SMOKE_PREFIX} ${label} ${next} (${RUN_ID})`;
 };
 
 export const GOOGLE_LOGIN_TIMEOUT = 240_000;

@@ -49,10 +49,10 @@ export const cleanup = async (entities: CreatedEntities) => {
     }
   };
 
-  // Deletes the created entities. A competition whose event has been scored is
-  // STARTED, and the backend refuses to delete it (412 "no se puede eliminar en
-  // su estado actual") — those from the scoring/visitor journeys are left
-  // behind; everything else (judges, dogs, non-started competitions and their
+  // Deletes the created entities. STARTED competitions are normally not
+  // deletable (412), but the backend exempts smoke data: a "--SMOKE--"-prefixed
+  // competition created by k9x.support@gmail.com can be deleted in any state,
+  // so everything (including the scored scoring/visitor competitions and their
   // cascade of stages/events) is removed.
   for (const id of entities.competitionIds) {
     await remove(`/secured/competitions/${id}`);

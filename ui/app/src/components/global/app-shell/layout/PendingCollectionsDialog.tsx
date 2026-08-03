@@ -8,6 +8,11 @@ import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useI18n } from "@/stores/i18n/i18n";
 import { isWalkthroughPending } from "@/components/global/app-shell/layout/walkthrough/walkthroughState";
 
+const PENDING_COLLECTIONS_DISABLED_KEY = "k9x_pending_collections_disabled";
+
+const isPendingCollectionsDisabled = () =>
+  Boolean(globalThis.localStorage?.getItem(PENDING_COLLECTIONS_DISABLED_KEY));
+
 export default function PendingCollectionsDialog() {
   const i18n = useI18n();
   const navigate = useNavigate();
@@ -20,6 +25,7 @@ export default function PendingCollectionsDialog() {
     if (
       !dismissed() &&
       !isWalkthroughPending() &&
+      !isPendingCollectionsDisabled() &&
       collectionsQuery.data?.length
     ) {
       setOpen(true);

@@ -1,0 +1,33 @@
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Comparación del índice de dos perros con nivel 750: uno deja de competir y cae hacia casi cero; el otro compite una vez más en el mes 15, su índice salta de vuelta a 750 y la degradación se reinicia.</h2>
+<div style="font-size:13px;color:var(--text-secondary);margin-bottom:6px">Ambos con nivel = 750 · índice = 750 × frescura(meses desde la última prueba)</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:8px;font-size:12px;color:var(--text-secondary)">
+<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:0;border-top:2px dashed #898781"></span>Perro A: no vuelve a competir</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:0;border-top:2px solid #2a78d6"></span>Perro B: compite otra vez en el mes 15</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#eb6834"></span>Nueva prueba → frescura vuelve a 1.0</span>
+</div>
+<div style="position:relative;width:100%;height:320px">
+<canvas id="dosPerros" role="img" aria-label="Gráfica de líneas comparando el índice de dos perros de nivel 750: el inactivo decae hasta casi cero y el que vuelve a competir en el mes 15 recupera 750 y reinicia la meseta">El perro A cae de 750 a 660 en el mes 15, 375 en el mes 34 y 7,5 en el mes 70. El perro B cae igual hasta el mes 15, salta a 750 al competir, mantiene la meseta hasta el mes 25 y decae después con 15 meses de ventaja.</canvas>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const gD = matchMedia('(prefers-color-scheme: dark)').matches ? '#2c2c2a' : '#e1e0d9';
+new Chart(document.getElementById('dosPerros'), {
+  type: 'line',
+  data: { datasets: [
+    { label: 'Perro A (inactivo)', data: [{x:0,y:750},{x:10,y:750},{x:12,y:690},{x:15,y:660},{x:18,y:630},{x:22,y:562.5},{x:34,y:375},{x:46,y:187.5},{x:58,y:75},{x:70,y:7.5},{x:75,y:7.5}],
+      borderColor: '#898781', borderDash: [6,4], borderWidth: 2, pointRadius: 0 },
+    { label: 'Perro B (vuelve en el mes 15)', data: [{x:0,y:750},{x:10,y:750},{x:12,y:690},{x:15,y:660},{x:15,y:750},{x:25,y:750},{x:27,y:690},{x:33,y:630},{x:37,y:562.5},{x:49,y:375},{x:61,y:187.5},{x:73,y:75},{x:75,y:63.75}],
+      borderColor: '#2a78d6', borderWidth: 2, pointRadius: 0 },
+    { label: 'Nueva prueba', type: 'scatter', data: [{x:15,y:750}], pointRadius: 8, pointBackgroundColor: '#eb6834', pointBorderColor: '#fff', pointBorderWidth: 2 }
+  ]},
+  options: { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.dataset.label + ': mes ' + c.parsed.x + ' → índice ' + c.parsed.y.toFixed(1) } } },
+    scales: {
+      x: { type: 'linear', min: 0, max: 75, grid: { color: gD }, ticks: { color: '#898781', stepSize: 10, callback: v => v + ' m' },
+        title: { display: true, text: 'meses desde la última prueba del perro A', color: '#898781', font: { size: 12 } } },
+      y: { min: 0, max: 800, grid: { color: gD }, ticks: { color: '#898781', stepSize: 150 },
+        title: { display: true, text: 'índice', color: '#898781', font: { size: 12 } } }
+    }
+  }
+});
+</script>

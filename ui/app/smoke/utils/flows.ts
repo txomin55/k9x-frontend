@@ -1,13 +1,14 @@
 import { expect, type Page } from "@playwright/test";
 import { named, RUN_ID } from "./constants";
 
+// UTC, not local: the backend compares UTC days, so between local midnight and
+// UTC midnight the local "today" is still tomorrow for the backend — a stage
+// dated with it is NOT started and every score PUT 412s. The date inputs are
+// UTC-based too (toDateInputValue), so their min-date accepts the UTC day.
 const futureDate = (daysFromNow: number) => {
   const date = new Date();
-  date.setDate(date.getDate() + daysFromNow);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  date.setUTCDate(date.getUTCDate() + daysFromNow);
+  return date.toISOString().slice(0, 10);
 };
 
 const selectFirstOption = async (
@@ -47,12 +48,16 @@ const waitForEventWrite = async (page: Page, action: () => Promise<void>) => {
   const responsePromise = page.waitForResponse(
     (response) =>
       response.request().method() === "PUT" &&
-      response.url().includes("/secured/obdx/events/") &&
-      response.ok(),
+      response.url().includes("/secured/obdx/events/"),
     { timeout: 30_000 },
   );
   await action();
-  await responsePromise;
+  const response = await responsePromise;
+  // Surface server rejections immediately instead of timing out in silence.
+  if (!response.ok()) {
+    const body = await response.text().catch(() => "");
+    throw new Error(`Event write failed: ${response.status()} ${body}`);
+  }
 };
 
 const enterEditMode = async (page: Page) => {
@@ -140,6 +145,7 @@ export const createDog = async (page: Page) => {
 };
 
 export const createCompetition = async (page: Page) => {
+  const name = named("Competition");
   await page.goto("/my/competitions/list");
   const body = await captureCreate<{ id: string }>(
     page,
@@ -149,7 +155,28 @@ export const createCompetition = async (page: Page) => {
     },
   );
   await expect(page).toHaveURL(new RegExp(`/my/competitions/${body.id}`));
-  return { id: body.id };
+
+  // The "+" button creates the competition with a default name and no country;
+  // rename it so everything the run creates carries the smoke prefix. The
+  // commit is gated on a valid country, so set the title first (its blur
+  // commit is a no-op while the country is empty) and await the PUT that the
+  // country selection triggers.
+  await enterEditMode(page);
+  const title = page.getByLabel("Title", { exact: true });
+  await title.fill(name);
+  await title.blur();
+  const renamed = page.waitForResponse(
+    (response) =>
+      response.request().method() === "PUT" &&
+      response.url().includes(`/secured/competitions/${body.id}`) &&
+      response.ok(),
+  );
+  await page.getByRole("button", { name: "Country" }).click();
+  await page.keyboard.type("Spain");
+  await page.keyboard.press("Enter");
+  await renamed;
+
+  return { id: body.id, name };
 };
 
 export const createStage = async (
@@ -363,6 +390,24 @@ export const acceptEnrollment = async (
   await expect(acceptEnroll).toBeHidden();
 };
 
+export const closeEnrollment = async (
+  page: Page,
+  competitionId: string,
+  stageId: string,
+  eventId: string,
+) => {
+  // The backend only re-dates a stage if every event's enrollment deadline
+  // stays before the new start day, so move the deadline to yesterday before
+  // making the stage live (enrollment must already be over by then).
+  await page.goto(
+    `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+  );
+  await enterEditMode(page);
+  const deadline = page.getByLabel("Enrollment deadline");
+  await expect(deadline).toBeEnabled();
+  await waitForEventWrite(page, () => deadline.fill(futureDate(-1)));
+};
+
 export const setStageDatesToToday = async (
   page: Page,
   competitionId: string,
@@ -447,9 +492,18 @@ export const addScores = async (
   const scoreCount = await scores.count();
   for (let i = 0; i < scoreCount; i++) {
     const score = scores.nth(i);
-    await score.fill("8");
-    await score.blur();
-    await expect(score).toHaveValue("8");
+    // Committing a score re-renders the collection page, which can wipe an
+    // in-progress value from the next input — re-fill until it sticks. Scores
+    // are written through the local-first queue, so also wait for each PUT to
+    // reach the server before moving on; otherwise the event may still be
+    // CREATED server-side when the flow checks for the "Scores" button.
+    await waitForEventWrite(page, () =>
+      expect(async () => {
+        await score.fill("8");
+        await score.blur();
+        await expect(score).toHaveValue("8", { timeout: 2_000 });
+      }).toPass({ timeout: 30_000 }),
+    );
   }
 
   // Scoring transitions the event to STARTED; the "Scores" button now shows.
@@ -493,6 +547,7 @@ export const buildScoredEvent = async (page: Page) => {
   await addExerciseToEvent(page, competition.id, stage.id, event.id, 2);
   await enrollDog(page, stage.id, dog.name);
   await acceptEnrollment(page, competition.id, stage.id, event.id);
+  await closeEnrollment(page, competition.id, stage.id, event.id);
   await setStageDatesToToday(page, competition.id);
   await addScores(page, competition.id, stage.id, event.id, dog.name);
 
@@ -529,10 +584,12 @@ export const visitStagesListing = async (page: Page, stageName: string) => {
     page.getByRole("button", { name: "Competitors enrolled" }),
   ).toBeVisible();
 
-  await page.goBack();
-  // Back on the listing; the name filter persists via the URL search param
-  // (the mobile filter panel itself collapses again).
-  await expect(page).toHaveURL(/\/stages(\?|$)/);
+  // Return to the listing with a fresh navigation instead of history back:
+  // going back leaves the info view mounted over the listing (URL updates but
+  // the segmented control stays covered), which deadlocks the Map click.
+  await page.goto("/stages");
+  await revealStagesFilters(page);
+  await page.getByLabel("Trial name").fill(query);
 
   await selectSegment(page, "Map");
   await selectSegment(page, "Table");

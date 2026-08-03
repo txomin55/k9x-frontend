@@ -13,7 +13,7 @@ regresiones en los flujos felices.
 |---|---|---|
 | `PWA_PRO_URL` | `http://localhost:5173` | URL del front a testar. En local arranca `start:integrated` (API en `:4000`). Apúntala a un deploy para testar otro entorno. |
 | `SMOKE_API_URL` | `http://localhost:4000` | API real usada por el cleanup (DELETE de lo creado). |
-| `SMOKE_RUN_ID` | `Date.now()` | Sufijo único de los nombres creados. |
+| `SMOKE_RUN_ID` | `MMDD-HHMMSS` | Sufijo único de los nombres creados. |
 | `SMOKE_GOOGLE_EMAIL` / `SMOKE_GOOGLE_PASSWORD` | — | Credenciales para el auto-login (alternativa al fichero). |
 | `SMOKE_CREDENTIALS_FILE` | `.auth/credentials.json` | Ruta del fichero `{ "email", "password" }`. |
 
@@ -45,13 +45,18 @@ regresiones en los flujos felices.
    PWA_PRO_URL=https://staging.app SMOKE_API_URL=https://staging-api pnpm test:smoke
    ```
 
+Todo lo creado (jueces, perros, competiciones, stages, eventos) se nombra con el
+prefijo `--SMOKE--` más un contador y el `RUN_ID` (p. ej. `--SMOKE-- Judge 1 (0803-142530)`),
+así que cualquier resto es identificable a simple vista. La competición se crea
+con nombre por defecto y se renombra justo después.
+
 Los datos creados (juez, perros, competición→stage→evento) se borran en `afterAll`
 vía `DELETE /secured/competitions|dogs|judges/{id}` (la competición borra en
 cascada sus stages y eventos).
 
-**Limitación:** las journeys `scoring` y `visitor` mueven la fecha del stage a
-hoy para poder puntuar, lo que deja el evento en estado `STARTED`. El backend
-rechaza (412 "no se puede eliminar en su estado actual") borrar o modificar una
-competición/stage/evento ya iniciado, así que **esas competiciones puntuadas
-quedan sin borrar**; el resto (jueces, perros y competiciones no iniciadas) sí
-se limpia.
+Las journeys `scoring` y `visitor` dejan su competición en estado `STARTED`
+(normalmente no borrable, 412). El backend hace una excepción para los datos de
+smoke: una competición cuyo nombre empieza por `--SMOKE--` **y** cuyo creador es
+`k9x.support@gmail.com` se puede borrar en cualquier estado, así que el cleanup
+lo elimina todo. Contra un backend sin esa excepción, esas competiciones
+puntuadas quedan sin borrar.

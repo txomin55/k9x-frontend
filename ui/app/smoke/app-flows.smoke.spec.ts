@@ -1,6 +1,7 @@
 import { test } from "@playwright/test";
 import * as flows from "./utils/flows";
 import { cleanup, newRegistry } from "./utils/cleanup";
+import { PENDING_COLLECTIONS_DISABLED_KEY } from "./utils/constants";
 
 const registry = newRegistry();
 
@@ -13,9 +14,14 @@ test.afterAll(async () => {
 });
 
 // An event with unscored trials pops a global "Pending collections" reminder on
-// every page, which aria-hides the page underneath and blocks interactions.
-// Auto-dismiss it whenever it appears.
+// every page, which aria-hides the page underneath and blocks interactions (and
+// closing it mid-action is itself a flakiness source). Suppress it via its
+// localStorage kill-switch, keeping the auto-dismiss handler as a fallback.
 test.beforeEach(async ({ page }) => {
+  await page.addInitScript(
+    (key) => window.localStorage.setItem(key, "true"),
+    PENDING_COLLECTIONS_DISABLED_KEY,
+  );
   const pending = page.locator(".atom-dialog__content", {
     hasText: "Pending collections",
   });
@@ -94,6 +100,7 @@ test("scoring journey: build an event with a dog, enroll the owned dog, add scor
   await flows.addExerciseToEvent(page, competition.id, stage.id, event.id, 2);
   await flows.enrollDog(page, stage.id, dog.name);
   await flows.acceptEnrollment(page, competition.id, stage.id, event.id);
+  await flows.closeEnrollment(page, competition.id, stage.id, event.id);
   await flows.setStageDatesToToday(page, competition.id);
 
   await flows.addScores(page, competition.id, stage.id, event.id, dog.name);
