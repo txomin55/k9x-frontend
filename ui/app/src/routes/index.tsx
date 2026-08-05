@@ -27,6 +27,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { AtomLogo } from "@lib/components/atoms/logo/AtomLogo";
 import obdxIcon from "@/assets/disciplines/obdx.svg";
+import k9xLogo from "@/assets/miscelaneous/k9x-logo.svg";
 import { isStageLive } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { defaultStagesDateRange, formatUtcDateOnly } from "@/utils/date";
@@ -180,18 +181,33 @@ function EntryRoutePage() {
         </span>
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_1")}</p>
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_2")}</p>
+        <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_3")}</p>
+        <div class="landing-page__methodology">
+          <Link class="landing-page__logo-link" to="/">
+            <img
+              alt={i18n.t("HOME.METHODOLOGY_LINK_ALT")}
+              class="landing-page__logo-link-image"
+              src={k9xLogo}
+            />
+            <span class="landing-page__logo-link-name">
+              {i18n.t("HOME.METHODOLOGY_LINK_NAME")}
+            </span>
+          </Link>
+        </div>
         <div class="landing-page__disciplines">
           <span class="landing-page__disciplines-title">
             {i18n.t("HOME.SUPPORTED_DISCIPLINES_TITLE")}
           </span>
-          <div class="landing-page__discipline">
+          <Link class="landing-page__logo-link" to="/">
             <img
-              alt="FCI Obedience"
-              class="landing-page__discipline-logo"
+              alt={i18n.t("HOME.DISCIPLINE_OBDX_ALT")}
+              class="landing-page__logo-link-image"
               src={obdxIcon}
             />
-            <span class="landing-page__discipline-name">FCI OBEDIENCE</span>
-          </div>
+            <span class="landing-page__logo-link-name">
+              {i18n.t("HOME.DISCIPLINE_OBDX_NAME")}
+            </span>
+          </Link>
         </div>
       </div>
 

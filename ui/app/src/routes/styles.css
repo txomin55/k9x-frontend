@@ -75,22 +75,50 @@
     line-height: 1.2;
 }
 
-.landing-page__discipline {
+.landing-page__logo-link {
     display: grid;
     justify-items: center;
     gap: var(--unit-05);
     width: fit-content;
+    padding: var(--unit-1) var(--unit-15);
+    border: 1px solid var(--border);
+    border-radius: var(--unit-15);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease,
+        border-color 160ms ease;
 }
 
-.landing-page__discipline-logo {
+.landing-page__logo-link:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--surface) 88%, white 12%);
+}
+
+.landing-page__logo-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.landing-page__logo-link-image {
     width: var(--unit-8);
     height: var(--unit-8);
 }
 
-.landing-page__discipline-name {
+.landing-page__logo-link-name {
     color: var(--text-secondary);
     font-size: var(--text-caption-md);
     letter-spacing: 0.08em;
+}
+
+.landing-page__logo-link:hover .landing-page__logo-link-name {
+    color: var(--text-primary);
+}
+
+.landing-page__methodology {
+    display: grid;
+    justify-items: center;
+    margin-top: var(--unit-1);
 }
 
 .landing-page__faq {
