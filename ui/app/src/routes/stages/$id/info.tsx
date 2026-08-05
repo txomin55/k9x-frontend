@@ -3,7 +3,7 @@ import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
 import {useStageById} from "@/services/fetch-stages/fetchStages";
 import {useOwnedDogs} from "@/services/secured/dog-crud/dogCrud";
 import {createMemo, createSignal, For, Index, Show, Suspense} from "solid-js";
-import {formatDateLabel, toDateInputValue} from "@/utils/date";
+import {formatDateLabel, formatDateTime, toDateInputValue} from "@/utils/date";
 import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
@@ -147,6 +147,16 @@ function StageInfoPage() {
     enabled: () => Boolean(user()),
   });
   const ownedDogs = () => (user() ? (dogsQuery.data ?? []) : []);
+  const notifications = createMemo(() => stageInfo.data?.notifications ?? []);
+  // The API identifies the affected events by id only, so names are resolved from the stage's own events.
+  const eventNameById = createMemo(
+    () =>
+      new Map(
+        (stageInfo.data?.events ?? []).map((event) => [event.id, event.name]),
+      ),
+  );
+  const affectedEventNames = (eventIds: string[]) =>
+    eventIds.map((eventId) => eventNameById().get(eventId) ?? eventId);
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     ownedDogs().map((dog) => ({
       label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
@@ -213,7 +223,6 @@ function StageInfoPage() {
     {
       value: TABS.NOTIFICATIONS,
       content: <span>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</span>,
-      disabled: true,
     },
   ];
 
@@ -350,7 +359,49 @@ function StageInfoPage() {
     },
     {
       value: TABS.NOTIFICATIONS,
-      content: <div>{i18n.t("STAGES.INFO.NOTIFICATIONS")}</div>,
+      content: (
+        <div class="stage-info__notifications">
+          <Show
+            when={notifications().length > 0}
+            fallback={
+              <span class="text-caption-md">
+                {i18n.t("STAGES.INFO.NO_NOTIFICATIONS")}
+              </span>
+            }
+          >
+            <Index each={notifications()}>
+              {(notification) => (
+                <Card
+                  topLeft={
+                    <span class="text-caption-md">
+                      {formatDateTime(notification().timestamp)}
+                    </span>
+                  }
+                  description={notification().content}
+                  content={
+                    <Show when={notification().eventIds.length > 0}>
+                      <div class="stage-info__notification--events">
+                        <span class="text-caption-sm">
+                          {i18n.t("STAGES.INFO.NOTIFICATION_AFFECTS")}
+                        </span>
+                        <div class="stage-info__notification--event-list">
+                          <For each={affectedEventNames(notification().eventIds)}>
+                            {(eventName) => (
+                              <span class="stage-info__notification--event text-caption-sm">
+                                {eventName}
+                              </span>
+                            )}
+                          </For>
+                        </div>
+                      </div>
+                    </Show>
+                  }
+                />
+              )}
+            </Index>
+          </Show>
+        </div>
+      ),
     },
   ];
 

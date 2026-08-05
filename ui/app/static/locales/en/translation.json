@@ -292,6 +292,8 @@
   "STAGES.INFO.EVENTS": "Events",
   "STAGES.INFO.SEE_CLASSIFICATION": "Classification",
   "STAGES.INFO.NOTIFICATIONS": "Notifications",
+  "STAGES.INFO.NO_NOTIFICATIONS": "There are no notifications for this stage yet.",
+  "STAGES.INFO.NOTIFICATION_AFFECTS": "Affects:",
   "STAGES.INFO.LOGIN_TO_ENROLL": "Login to enroll",
   "STAGES.INFO.ENROLL": "Enroll",
   "STAGES.INFO.BIH": "Bitch in heat",

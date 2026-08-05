@@ -292,6 +292,8 @@
   "STAGES.INFO.EVENTS": "Eventos",
   "STAGES.INFO.SEE_CLASSIFICATION": "Clasificación",
   "STAGES.INFO.NOTIFICATIONS": "Notificaciones",
+  "STAGES.INFO.NO_NOTIFICATIONS": "Todavía no hay notificaciones para esta jornada.",
+  "STAGES.INFO.NOTIFICATION_AFFECTS": "Afecta a:",
   "STAGES.INFO.LOGIN_TO_ENROLL": "Inicia sesión para inscribirte",
   "STAGES.INFO.ENROLL": "Inscribirse",
   "STAGES.INFO.BIH": "Perra en celo",

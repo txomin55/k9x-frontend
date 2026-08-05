@@ -39,7 +39,7 @@ export interface StageDetailResponseDTO {
   id: string;
   address: string;
   name: string;
-  notifications: CompetitionNotificationDetailResponseDTO[];
+  notifications: StageNotificationResponseDTO[];
   organizer: string;
   status?: string;
 }
@@ -67,10 +67,10 @@ export interface StageEventDetailResponseDTO {
   rank: string;
 }
 
-export interface CompetitionNotificationDetailResponseDTO {
-  date: number;
-  id: string;
-  text: string;
+export interface StageNotificationResponseDTO {
+  timestamp: number;
+  eventIds: string[];
+  content: string;
 }
 
 export interface StageEventClassificationScoreResponseDTO {
