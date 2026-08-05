@@ -70,7 +70,7 @@ export default function AppBreadcrumbs() {
     return component
       ? {
           trigger: <InfoIcon />,
-          content: <Dynamic component={component} />,
+          content: () => <Dynamic component={component} />,
           title: i18n.t("COMMON.PAGE_INFORMATION"),
         }
       : null;

@@ -2,6 +2,7 @@ import type {
   NotificationMetadataByType,
   NotificationType,
 } from "@/utils/service-worker/events/notification-types";
+import { stageNotificationsPath } from "@/utils/stage";
 
 export interface RenderedNotification {
   title: string;
@@ -13,7 +14,10 @@ export interface RenderedNotification {
  * Looks up a translation key in the active-language dictionary and interpolates `{{ placeholders }}`
  * with the given values — the service worker's stand-in for i18next, which it cannot run.
  */
-export type Translate = (key: string, values?: Record<string, string>) => string;
+export type Translate = (
+  key: string,
+  values?: Record<string, string>,
+) => string;
 
 /**
  * One renderer per notification type, each receiving its own strongly-typed metadata and a `t` helper.
@@ -38,6 +42,16 @@ const catalog: NotificationCatalog = {
       stage_name: metadata.stage_name,
     }),
     url: `/my/competitions/${metadata.competition_id}/stages/${metadata.stage_id}/events/${metadata.event_id}?unverified=true`,
+  }),
+  // The announcement's text is the organizer's own, so it is shown as-is instead of through a key. The
+  // click opens the public stage page — the one every recipient can see — straight on its notifications
+  // tab, where the announcement is listed.
+  EVENT_NOTIFICATION: (metadata, t) => ({
+    title: t("NOTIFICATION.EVENT_NOTIFICATION.TITLE", {
+      stage_name: metadata.stage_name,
+    }),
+    body: metadata.content,
+    url: stageNotificationsPath(metadata.stage_id),
   }),
 };
 

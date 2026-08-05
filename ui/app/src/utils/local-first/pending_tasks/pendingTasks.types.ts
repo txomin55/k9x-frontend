@@ -5,7 +5,7 @@ import type {
 import type { SerializableRequest } from "@/utils/http/client.types";
 
 export type PendingTaskStatus = "pending" | "processing" | "failed";
-export type PendingTaskMethod = "POST" | "PUT" | "DELETE";
+export type PendingTaskMethod = "POST" | "PUT" | "PATCH" | "DELETE";
 
 export interface PendingTask {
   attemptCount: number;

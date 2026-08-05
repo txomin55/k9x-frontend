@@ -11,8 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StagesRouteRouteImport } from './routes/stages/route'
 import { Route as MyRouteRouteImport } from './routes/my/route'
+import { Route as MethodologyRouteRouteImport } from './routes/methodology/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StagesIndexRouteImport } from './routes/stages/index'
+import { Route as MethodologyObdxRouteImport } from './routes/methodology/obdx'
+import { Route as MethodologyK9xRouteImport } from './routes/methodology/k9x'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as StagesIdRouteRouteImport } from './routes/stages/$id/route'
 import { Route as MyJudgesRouteRouteImport } from './routes/my/judges/route'
@@ -47,6 +50,11 @@ const MyRouteRoute = MyRouteRouteImport.update({
   path: '/my',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MethodologyRouteRoute = MethodologyRouteRouteImport.update({
+  id: '/methodology',
+  path: '/methodology',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -56,6 +64,16 @@ const StagesIndexRoute = StagesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => StagesRouteRoute,
+} as any)
+const MethodologyObdxRoute = MethodologyObdxRouteImport.update({
+  id: '/obdx',
+  path: '/obdx',
+  getParentRoute: () => MethodologyRouteRoute,
+} as any)
+const MethodologyK9xRoute = MethodologyK9xRouteImport.update({
+  id: '/k9x',
+  path: '/k9x',
+  getParentRoute: () => MethodologyRouteRoute,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
@@ -180,6 +198,7 @@ const MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
@@ -188,6 +207,8 @@ export interface FileRoutesByFullPath {
   '/my/judges': typeof MyJudgesRouteRouteWithChildren
   '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
+  '/methodology/k9x': typeof MethodologyK9xRoute
+  '/methodology/obdx': typeof MethodologyObdxRoute
   '/stages/': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
@@ -209,9 +230,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
+  '/methodology/k9x': typeof MethodologyK9xRoute
+  '/methodology/obdx': typeof MethodologyObdxRoute
   '/stages': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/stages/$id/info': typeof StagesIdInfoRoute
@@ -232,6 +256,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
@@ -240,6 +265,8 @@ export interface FileRoutesById {
   '/my/judges': typeof MyJudgesRouteRouteWithChildren
   '/stages/$id': typeof StagesIdRouteRouteWithChildren
   '/auth/callback': typeof AuthCallbackRoute
+  '/methodology/k9x': typeof MethodologyK9xRoute
+  '/methodology/obdx': typeof MethodologyObdxRoute
   '/stages/': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
@@ -263,6 +290,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/methodology'
     | '/my'
     | '/stages'
     | '/my/collections'
@@ -271,6 +299,8 @@ export interface FileRouteTypes {
     | '/my/judges'
     | '/stages/$id'
     | '/auth/callback'
+    | '/methodology/k9x'
+    | '/methodology/obdx'
     | '/stages/'
     | '/my/collections/$id'
     | '/my/competitions/$id'
@@ -292,9 +322,12 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/methodology'
     | '/my'
     | '/stages/$id'
     | '/auth/callback'
+    | '/methodology/k9x'
+    | '/methodology/obdx'
     | '/stages'
     | '/my/collections/$id'
     | '/stages/$id/info'
@@ -314,6 +347,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/methodology'
     | '/my'
     | '/stages'
     | '/my/collections'
@@ -322,6 +356,8 @@ export interface FileRouteTypes {
     | '/my/judges'
     | '/stages/$id'
     | '/auth/callback'
+    | '/methodology/k9x'
+    | '/methodology/obdx'
     | '/stages/'
     | '/my/collections/$id'
     | '/my/competitions/$id'
@@ -344,6 +380,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MethodologyRouteRoute: typeof MethodologyRouteRouteWithChildren
   MyRouteRoute: typeof MyRouteRouteWithChildren
   StagesRouteRoute: typeof StagesRouteRouteWithChildren
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -365,6 +402,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof MyRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/methodology': {
+      id: '/methodology'
+      path: '/methodology'
+      fullPath: '/methodology'
+      preLoaderRoute: typeof MethodologyRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -378,6 +422,20 @@ declare module '@tanstack/solid-router' {
       fullPath: '/stages/'
       preLoaderRoute: typeof StagesIndexRouteImport
       parentRoute: typeof StagesRouteRoute
+    }
+    '/methodology/obdx': {
+      id: '/methodology/obdx'
+      path: '/obdx'
+      fullPath: '/methodology/obdx'
+      preLoaderRoute: typeof MethodologyObdxRouteImport
+      parentRoute: typeof MethodologyRouteRoute
+    }
+    '/methodology/k9x': {
+      id: '/methodology/k9x'
+      path: '/k9x'
+      fullPath: '/methodology/k9x'
+      preLoaderRoute: typeof MethodologyK9xRouteImport
+      parentRoute: typeof MethodologyRouteRoute
     }
     '/auth/callback': {
       id: '/auth/callback'
@@ -543,6 +601,19 @@ declare module '@tanstack/solid-router' {
   }
 }
 
+interface MethodologyRouteRouteChildren {
+  MethodologyK9xRoute: typeof MethodologyK9xRoute
+  MethodologyObdxRoute: typeof MethodologyObdxRoute
+}
+
+const MethodologyRouteRouteChildren: MethodologyRouteRouteChildren = {
+  MethodologyK9xRoute: MethodologyK9xRoute,
+  MethodologyObdxRoute: MethodologyObdxRoute,
+}
+
+const MethodologyRouteRouteWithChildren =
+  MethodologyRouteRoute._addFileChildren(MethodologyRouteRouteChildren)
+
 interface MyCollectionsRouteRouteChildren {
   MyCollectionsIdRouteRoute: typeof MyCollectionsIdRouteRoute
   MyCollectionsIndexRoute: typeof MyCollectionsIndexRoute
@@ -697,6 +768,7 @@ const StagesRouteRouteWithChildren = StagesRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MethodologyRouteRoute: MethodologyRouteRouteWithChildren,
   MyRouteRoute: MyRouteRouteWithChildren,
   StagesRouteRoute: StagesRouteRouteWithChildren,
   AuthCallbackRoute: AuthCallbackRoute,

@@ -8,6 +8,7 @@ export const organizerUser: UserProfileResponseDTO = {
   image: TRANSPARENT_PNG,
   name: "Olivia Organizer",
   organizer: true,
+  subscriptions: { eventIds: [] },
 };
 
 export const competitorUser: UserProfileResponseDTO = {
@@ -15,6 +16,7 @@ export const competitorUser: UserProfileResponseDTO = {
   image: TRANSPARENT_PNG,
   name: "Carlos Competitor",
   organizer: false,
+  subscriptions: { eventIds: [] },
 };
 
 export const mockUser = organizerUser;

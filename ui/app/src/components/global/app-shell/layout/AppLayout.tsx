@@ -1,10 +1,20 @@
 import { useLocation } from "@tanstack/solid-router";
 import type { ParentProps } from "solid-js";
-import { createEffect, createSignal, lazy, onCleanup, onMount, Show, Suspense } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  lazy,
+  onCleanup,
+  onMount,
+  Show,
+  Suspense,
+} from "solid-js";
 import Navigation from "@/components/global/app-shell/layout/navigation/Navigation";
 import AppBreadcrumbs from "@/components/global/app-shell/layout/AppBreadcrumbs";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useAuthLoading, useAuthUser } from "@/stores/auth/auth";
 import { useOffline } from "@/stores/network/network";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -127,15 +137,14 @@ export default function AppLayout(props: ParentProps) {
               <Suspense fallback={null}>
                 <PendingCollectionsDialog />
               </Suspense>
-              <Suspense fallback={null}>
-                <NotificationsDialog />
-              </Suspense>
               <Show when={!currentUser().organizer}>
                 <AtomDialog
                   closeButtonText={i18n.t("GLOBAL.APP_LAYOUT.CLOSE_DIALOG")}
                   content={
                     <Suspense fallback={null}>
-                      <OrganizerForm onClose={() => setOpenOrganizerForm(false)} />
+                      <OrganizerForm
+                        onClose={() => setOpenOrganizerForm(false)}
+                      />
                     </Suspense>
                   }
                   onOpenChange={setOpenOrganizerForm}
@@ -143,10 +152,15 @@ export default function AppLayout(props: ParentProps) {
                   title={i18n.t("GLOBAL.APP_LAYOUT.ORGANIZER_REQUEST")}
                   triggerClass="atom-dialog__trigger--ghost"
                   trigger={
-                    <span>{i18n.t("GLOBAL.APP_LAYOUT.WANT_TO_BE_ORGANIZER")}</span>
+                    <span>
+                      {i18n.t("GLOBAL.APP_LAYOUT.WANT_TO_BE_ORGANIZER")}
+                    </span>
                   }
                 />
               </Show>
+              <Suspense fallback={null}>
+                <NotificationsDialog />
+              </Suspense>
               <FloatingShareButton />
               <AtomPopover
                 trigger={

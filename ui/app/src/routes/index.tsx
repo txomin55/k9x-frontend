@@ -183,7 +183,10 @@ function EntryRoutePage() {
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_2")}</p>
         <p>{i18n.t("HOME.WHAT_IS_DESCRIPTION_3")}</p>
         <div class="landing-page__methodology">
-          <Link class="landing-page__logo-link" to="/">
+          <Link
+            class="landing-page__logo-link"
+            to={AppRoutePath.METHODOLOGY_K9X as "/methodology/k9x"}
+          >
             <img
               alt={i18n.t("HOME.METHODOLOGY_LINK_ALT")}
               class="landing-page__logo-link-image"
@@ -198,7 +201,10 @@ function EntryRoutePage() {
           <span class="landing-page__disciplines-title">
             {i18n.t("HOME.SUPPORTED_DISCIPLINES_TITLE")}
           </span>
-          <Link class="landing-page__logo-link" to="/">
+          <Link
+            class="landing-page__logo-link"
+            to={AppRoutePath.METHODOLOGY_OBDX as "/methodology/obdx"}
+          >
             <img
               alt={i18n.t("HOME.DISCIPLINE_OBDX_ALT")}
               class="landing-page__logo-link-image"

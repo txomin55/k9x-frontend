@@ -8,7 +8,7 @@ export type AtomDialogProps = {
   triggerClass?: string;
   title?: JSX.Element;
   description?: JSX.Element;
-  content: JSX.Element;
+  content: JSX.Element | (() => JSX.Element);
   closeButtonText?: string;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -47,7 +47,9 @@ export default function AtomDialog(props: AtomDialogProps) {
               {props.description}
             </Dialog.Description>
           </Show>
-          <div class="atom-dialog__body">{props.content}</div>
+          <div class="atom-dialog__body">
+            {props.content as JSX.Element}
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

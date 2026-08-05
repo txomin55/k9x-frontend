@@ -14,11 +14,15 @@ interface RawPushEnvelope {
   metadata?: Record<string, string>;
 }
 
+// Prefix to grep for in the service worker console (DevTools > Application > Service Workers > inspect).
+const LOG_PREFIX = "[k9x-push]";
+
 const parseEnvelope = (event): RawPushEnvelope => {
   if (!event.data) return {};
   try {
     return event.data.json() as RawPushEnvelope;
   } catch {
+    console.warn(`${LOG_PREFIX} payload is not JSON:`, event.data.text?.());
     return {};
   }
 };
@@ -29,7 +33,16 @@ export const registerPushHandler = (scope) => {
 
   scope.addEventListener("push", (event) => {
     const { type, metadata } = parseEnvelope(event);
-    if (!type || !isNotificationType(type)) return;
+
+    // A push whose type this build does not know about is dropped. Logged rather than swallowed: it means
+    // the backend sends a kind the service worker bundle predates, and the symptom is a push that simply
+    // never appears.
+    if (!type || !isNotificationType(type)) {
+      console.warn(`${LOG_PREFIX} dropped: unknown notification type`, type);
+      return;
+    }
+
+    console.info(`${LOG_PREFIX} received ${type}`, metadata);
 
     // Network payload: `type` is validated by the guard; its metadata is trusted to match the contract.
     const typedMetadata = (metadata ??
@@ -37,22 +50,28 @@ export const registerPushHandler = (scope) => {
 
     event.waitUntil(
       (async () => {
-        // The app persists the active language's notification strings on every load, so by the time a
-        // push can arrive (which requires having opened the app to subscribe) this record exists.
-        const record = await readActiveNotificationTranslations();
-        const { title, body, url } = renderNotification(
-          type,
-          typedMetadata,
-          record?.translations ?? {},
-        );
+        try {
+          // The app persists the active language's notification strings on every load, so by the time a
+          // push can arrive (which requires having opened the app to subscribe) this record exists.
+          const record = await readActiveNotificationTranslations();
+          const { title, body, url } = renderNotification(
+            type,
+            typedMetadata,
+            record?.translations ?? {},
+          );
 
-        await scope.registration.showNotification(title, {
-          body,
-          icon: iconUrl,
-          badge: iconUrl,
-          // `notification-click.ts` reads `data.url` to open/focus the app on click.
-          data: { url },
-        });
+          await scope.registration.showNotification(title, {
+            body,
+            icon: iconUrl,
+            badge: iconUrl,
+            // `notification-click.ts` reads `data.url` to open/focus the app on click.
+            data: { url },
+          });
+          console.info(`${LOG_PREFIX} shown ${type}`);
+        } catch (error) {
+          // Without this the rejection is invisible: the browser only sees a failed waitUntil.
+          console.error(`${LOG_PREFIX} failed to show ${type}`, error);
+        }
       })(),
     );
   });

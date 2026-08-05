@@ -11,6 +11,8 @@ export enum AppRoutePath {
   COMPETITION_DETAIL = "/my/competitions/$id",
   COMPETITION_STAGE_DETAIL = "/my/competitions/$id/stages/$stageId",
   COMPETITION_EVENT_DETAIL = "/my/competitions/$id/stages/$stageId/events/$eventId",
+  METHODOLOGY_K9X = "/methodology/k9x",
+  METHODOLOGY_OBDX = "/methodology/obdx",
   NOT_FOUND = "/404.html",
   MY_COLLECTIONS = "/my/collections",
   COLLECTION_DETAIL = "/my/collections/$id",

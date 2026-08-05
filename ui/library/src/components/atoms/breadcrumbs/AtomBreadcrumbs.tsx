@@ -12,7 +12,7 @@ interface Crumbs {
 
 export interface AtomBreadcrumbsInfo {
   trigger: JSX.Element;
-  content: JSX.Element;
+  content: JSX.Element | (() => JSX.Element);
   title?: string;
 }
 

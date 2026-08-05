@@ -23,7 +23,7 @@ import RankBadge from "@/components/common/rank-badge/RankBadge";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import {useSearchParam} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
-import {isStageLive} from "@/utils/stage";
+import {isStageLive, STAGE_INFO_TAB_PARAM, STAGE_INFO_TABS} from "@/utils/stage";
 import {canSeeClassification} from "@/utils/event";
 import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -117,10 +117,7 @@ const createEmptyEnrollDraft = (): EnrollDraft => ({
   bih: false,
 });
 
-const TABS = {
-  EVENTS: "EVENTS",
-  NOTIFICATIONS: "NOTIFICATIONS",
-};
+const TABS = STAGE_INFO_TABS;
 
 function StageInfoPage() {
   const i18n = useI18n();
@@ -168,6 +165,13 @@ function StageInfoPage() {
     "",
     "push",
   );
+  const [tabParam, setTabParam] = useSearchParam(
+    STAGE_INFO_TAB_PARAM,
+    TABS.EVENTS,
+  );
+  // An unknown value in the URL falls back to the events tab instead of leaving every tab unselected.
+  const selectedTab = () =>
+    tabParam() === TABS.NOTIFICATIONS ? TABS.NOTIFICATIONS : TABS.EVENTS;
   const dialogOpen = () => !!selectedEventId();
   const selectedEventName = createMemo(
     () =>
@@ -440,6 +444,8 @@ function StageInfoPage() {
 
             <AtomTabs
               defaultValue={TABS.EVENTS}
+              value={selectedTab()}
+              onChange={setTabParam}
               options={stageTabsTitles}
               contents={eventsTabsContents}
             />

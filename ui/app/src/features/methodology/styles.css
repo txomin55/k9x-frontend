@@ -1,0 +1,412 @@
+.methodology-page {
+    display: block;
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 var(--unit-2) var(--unit-8);
+    color: var(--text-primary);
+    line-height: 1.55;
+}
+
+.methodology-page *,
+.methodology-page *::before,
+.methodology-page *::after {
+    box-sizing: border-box;
+}
+
+.methodology-page code {
+    padding: 0 var(--unit-025);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.88em;
+}
+
+/* ---------- header ---------- */
+.methodology-page__header {
+    padding: var(--unit-4) 0 var(--unit-3);
+    border-bottom: 3px solid var(--text-primary);
+}
+
+.methodology-page__brand {
+    color: var(--text-primary);
+    font-size: var(--text-caption-lg);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.methodology-page__brand--k9x {
+    color: var(--primary);
+}
+
+.methodology-page__brand--obdx {
+    color: var(--warning);
+}
+
+.methodology-page__title {
+    margin: var(--unit-05) 0 var(--unit-075);
+    font-size: var(--text-heading-xxl);
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+}
+
+.methodology-page__subtitle {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.methodology-page__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
+    margin-top: var(--unit-2);
+}
+
+.methodology-page__chip {
+    padding: var(--unit-025) var(--unit-075);
+    border: 1px solid;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-caption-lg);
+    font-weight: 800;
+}
+
+.methodology-page__chip small {
+    margin-left: var(--unit-05);
+    font-size: var(--text-caption-sm);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    opacity: 0.85;
+}
+
+/* ---------- sections ---------- */
+.methodology-page__section {
+    padding: var(--unit-4) 0 var(--unit-1);
+    border-bottom: 1px solid var(--border);
+}
+
+.methodology-page__section:last-of-type {
+    border-bottom: 0;
+}
+
+.methodology-page__eyebrow {
+    margin-bottom: var(--unit-025);
+    font-size: var(--text-caption-md);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.methodology-page__eyebrow--k9x {
+    color: var(--primary);
+}
+
+.methodology-page__eyebrow--obdx {
+    color: var(--warning);
+}
+
+.methodology-page__section-title {
+    margin: 0 0 var(--unit-05);
+    font-size: var(--text-heading-lg);
+    font-weight: 800;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.methodology-page__lede {
+    max-width: 72ch;
+    margin: 0 0 var(--unit-2);
+    color: var(--text-secondary);
+}
+
+.methodology-page__figure {
+    container-type: inline-size;
+    margin: 0 0 var(--unit-15);
+    padding: var(--unit-15);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.methodology-page__fig-title {
+    margin-bottom: var(--unit-025);
+    font-size: var(--text-caption-lg);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.methodology-page__fig-sub {
+    margin-bottom: var(--unit-075);
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+}
+
+.methodology-page__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-075) var(--unit-15);
+    margin-bottom: var(--unit-075);
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+}
+
+.methodology-page__legend > span {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-05);
+}
+
+.methodology-page__swatch {
+    flex: none;
+    width: var(--unit-05);
+    height: var(--unit-05);
+    border-radius: 2px;
+}
+
+.methodology-page__swatch--round {
+    border-radius: 50%;
+}
+
+.methodology-page__swatch--line,
+.methodology-page__swatch--dash {
+    flex: none;
+    width: var(--unit-1);
+    height: 0;
+    border-top: 2px solid;
+}
+
+.methodology-page__swatch--dash {
+    border-top-style: dashed;
+}
+
+.methodology-page__swatch--dot {
+    flex: none;
+    width: var(--unit-075);
+    height: var(--unit-075);
+    border: 2px solid var(--surface);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px currentColor;
+}
+
+.methodology-page__chart-box {
+    position: relative;
+    width: 100%;
+    height: 20rem;
+}
+
+.methodology-page__note {
+    margin: var(--unit-15) 0 var(--unit-3);
+    padding-left: var(--unit-075);
+    border-left: 3px solid var(--border-strong);
+    color: var(--text-secondary);
+    font-size: var(--text-body-sm);
+}
+
+.methodology-page__note--k9x {
+    border-left-color: var(--primary);
+}
+
+.methodology-page__note--obdx {
+    border-left-color: var(--warning);
+}
+
+/* ---------- scale svg ---------- */
+.methodology-page__scale {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.methodology-page__scale text {
+    fill: var(--text-secondary);
+    font-size: 12.5px;
+}
+
+.methodology-page__scale text.is-strong {
+    fill: var(--text-primary);
+    font-weight: 700;
+}
+
+.methodology-page__scale text.is-letter {
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.methodology-page__scale .is-disabled {
+    opacity: 0.25;
+    filter: grayscale(1);
+}
+
+/* Literal length on purpose: custom properties are not resolved inside a
+   @container condition, so a token here would silently never match. */
+.methodology-page__scale-compact {
+    display: none;
+}
+
+@container (width < 30rem) {
+    .methodology-page__scale-wide {
+        display: none;
+    }
+
+    .methodology-page__scale-compact {
+        display: block;
+    }
+}
+
+/* ---------- slot filling ---------- */
+
+/* Intrinsic grid, same idiom as docs/full-width-card-grid.md: a column only
+   appears once a whole case fits, so the three cases stack on phone/tablet
+   without a single breakpoint. */
+.methodology-page__slots {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 3)), 1fr)
+    );
+    gap: var(--unit-2);
+}
+
+.methodology-page__slot-case {
+    display: grid;
+    gap: var(--unit-05);
+    align-content: start;
+}
+
+.methodology-page__slot-title {
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+}
+
+.methodology-page__slot-boxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
+}
+
+.methodology-page__slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--unit-7);
+    padding: var(--unit-05) var(--unit-075);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+}
+
+.methodology-page__slot-formula,
+.methodology-page__slot-note {
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+}
+
+.methodology-page__slot-level {
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+}
+
+.methodology-page__slot-min {
+    display: grid;
+    gap: var(--unit-025);
+    margin: var(--unit-15) 0 0;
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+}
+
+/* ---------- controls ---------- */
+.methodology-page__controls {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 3)), 1fr)
+    );
+    align-items: end;
+    gap: var(--unit-15);
+    margin-bottom: var(--unit-15);
+}
+
+.methodology-page__control {
+    min-width: 0;
+    max-width: calc(var(--unit-10) * 4);
+}
+
+/* ---------- table ---------- */
+.methodology-page__table {
+    width: 100%;
+    margin-bottom: var(--unit-15);
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--text-body-sm);
+}
+
+.methodology-page__table th,
+.methodology-page__table td {
+    padding: var(--unit-05) var(--unit-075);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    overflow-wrap: normal;
+    word-break: keep-all;
+}
+
+.methodology-page__table th {
+    color: var(--text-secondary);
+    font-size: var(--text-caption-md);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.methodology-page__table th:last-child,
+.methodology-page__table td:last-child {
+    text-align: right;
+}
+
+/* Fixed layout would split the four columns evenly and force the long headers to
+   break mid-word on a phone; these shares keep every header wrapping at spaces. */
+.methodology-page__table col:nth-child(1) {
+    width: 31%;
+}
+
+.methodology-page__table col:nth-child(2) {
+    width: 12%;
+}
+
+.methodology-page__table col:nth-child(3) {
+    width: 25%;
+}
+
+.methodology-page__table col:nth-child(4) {
+    width: 32%;
+}
+
+.methodology-page__footer {
+    padding-top: var(--unit-3);
+    color: var(--text-muted);
+    font-size: var(--text-caption-md);
+}
+
+@media (max-width: 35rem) {
+    .methodology-page__chart-box {
+        height: 17.5rem;
+    }
+
+    .methodology-page__table {
+        font-size: var(--text-caption-lg);
+    }
+
+    .methodology-page__table th,
+    .methodology-page__table td {
+        padding: var(--unit-05) var(--unit-025);
+    }
+
+    .methodology-page__table th {
+        font-size: var(--text-caption-sm);
+        letter-spacing: 0.04em;
+    }
+}

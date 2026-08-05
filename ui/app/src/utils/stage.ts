@@ -7,6 +7,21 @@ export const STAGE_STATUS = {
   DELETED: "DELETED",
 };
 
+/** Tabs of the public stage page, and the query param that selects one. */
+export const STAGE_INFO_TABS = {
+  EVENTS: "EVENTS",
+  NOTIFICATIONS: "NOTIFICATIONS",
+};
+
+export const STAGE_INFO_TAB_PARAM = "tab";
+
+/**
+ * Link to a stage's public page with its notifications tab already open. Shared by the service worker's
+ * notification catalog and any in-app link, so the param name lives in one place.
+ */
+export const stageNotificationsPath = (stageId: string) =>
+  `/stages/${stageId}/info?${STAGE_INFO_TAB_PARAM}=${STAGE_INFO_TABS.NOTIFICATIONS}`;
+
 export function getMarkerTextColorByStatus(status: string) {
   switch (status) {
     case STAGE_STATUS.CREATED:

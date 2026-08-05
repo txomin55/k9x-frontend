@@ -1,0 +1,901 @@
+{
+  "schemaVersion": 1,
+  "globalScale": {
+    "min": 0,
+    "max": 1000,
+    "automaticCap": 900,
+    "ranges": [
+      {
+        "letter": "E",
+        "min": 0,
+        "max": 200
+      },
+      {
+        "letter": "D",
+        "min": 201,
+        "max": 400
+      },
+      {
+        "letter": "C",
+        "min": 401,
+        "max": 600
+      },
+      {
+        "letter": "B",
+        "min": 601,
+        "max": 800
+      },
+      {
+        "letter": "A",
+        "min": 801,
+        "max": 900
+      },
+      {
+        "letter": "S",
+        "min": 901,
+        "max": 1000,
+        "manual": true,
+        "alwaysInternational": true
+      }
+    ],
+    "internationalSuffix": "+"
+  },
+  "international": {
+    "bonusValue": 10,
+    "bonusValueUnit": "%",
+    "foreignersByTier": [
+      {
+        "tier": 1,
+        "competitors": {
+          "min": 1,
+          "max": 4
+        },
+        "requiredForeigners": 1
+      },
+      {
+        "tier": 2,
+        "competitors": {
+          "min": 5,
+          "max": 9
+        },
+        "requiredForeigners": 1
+      },
+      {
+        "tier": 3,
+        "competitors": {
+          "min": 10,
+          "max": 19
+        },
+        "requiredForeigners": 2
+      },
+      {
+        "tier": 4,
+        "competitors": {
+          "min": 20,
+          "max": 34
+        },
+        "requiredForeigners": 3
+      },
+      {
+        "tier": 5,
+        "competitors": {
+          "min": 35,
+          "max": null
+        },
+        "requiredForeigners": 4
+      }
+    ]
+  },
+  "federations": [
+    {
+      "id": "FCI",
+      "name": "Fédération Cynologique Internationale",
+      "grades": [
+        {
+          "id": "OBDX_FCI_GRADE_1",
+          "name": {
+            "es": "FCI Grade 1",
+            "en": "FCI Grade 1"
+          },
+          "band": {
+            "min": 201,
+            "max": 400
+          },
+          "possibleLetters": [
+            "D",
+            "D+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 20
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 237,
+              "nationalLetter": "D",
+              "internationalRankScore": 257,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 273,
+              "nationalLetter": "D",
+              "internationalRankScore": 293,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 308,
+              "nationalLetter": "D",
+              "internationalRankScore": 328,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 344,
+              "nationalLetter": "D",
+              "internationalRankScore": 364,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 380,
+              "nationalLetter": "D",
+              "internationalRankScore": 400,
+              "internationalLetter": "D+"
+            }
+          ]
+        },
+        {
+          "id": "OBDX_FCI_GRADE_2",
+          "name": {
+            "es": "FCI Grade 2",
+            "en": "FCI Grade 2"
+          },
+          "band": {
+            "min": 401,
+            "max": 600
+          },
+          "possibleLetters": [
+            "C",
+            "C+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 20
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 437,
+              "nationalLetter": "C",
+              "internationalRankScore": 457,
+              "internationalLetter": "C+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 473,
+              "nationalLetter": "C",
+              "internationalRankScore": 493,
+              "internationalLetter": "C+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 508,
+              "nationalLetter": "C",
+              "internationalRankScore": 528,
+              "internationalLetter": "C+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 544,
+              "nationalLetter": "C",
+              "internationalRankScore": 564,
+              "internationalLetter": "C+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 580,
+              "nationalLetter": "C",
+              "internationalRankScore": 600,
+              "internationalLetter": "C+"
+            }
+          ]
+        },
+        {
+          "id": "OBDX_FCI_GRADE_3",
+          "name": {
+            "es": "FCI Grade 3",
+            "en": "FCI Grade 3"
+          },
+          "band": {
+            "min": 601,
+            "max": 900
+          },
+          "possibleLetters": [
+            "B",
+            "B+",
+            "A",
+            "A+"
+          ],
+          "letterCrossover": {
+            "at": 800,
+            "from": "B",
+            "to": "A"
+          },
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 30
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 655,
+              "nationalLetter": "B",
+              "internationalRankScore": 685,
+              "internationalLetter": "B+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 709,
+              "nationalLetter": "B",
+              "internationalRankScore": 739,
+              "internationalLetter": "B+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 762,
+              "nationalLetter": "B",
+              "internationalRankScore": 792,
+              "internationalLetter": "B+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 816,
+              "nationalLetter": "A",
+              "internationalRankScore": 846,
+              "internationalLetter": "A+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 870,
+              "nationalLetter": "A",
+              "internationalRankScore": 900,
+              "internationalLetter": "A+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ENCI",
+      "name": "Ente Nazionale della Cinofilia Italiana",
+      "grades": [
+        {
+          "id": "OBDX_ENCI_PREDEBUTTANTI",
+          "name": {
+            "es": "ENCI Predebuttanti",
+            "en": "ENCI Predebuttanti"
+          },
+          "band": {
+            "min": 50,
+            "max": 100
+          },
+          "possibleLetters": [
+            "E",
+            "E+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 5
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 59,
+              "nationalLetter": "E",
+              "internationalRankScore": 64,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 68,
+              "nationalLetter": "E",
+              "internationalRankScore": 73,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 77,
+              "nationalLetter": "E",
+              "internationalRankScore": 82,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 86,
+              "nationalLetter": "E",
+              "internationalRankScore": 91,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 95,
+              "nationalLetter": "E",
+              "internationalRankScore": 100,
+              "internationalLetter": "E+"
+            }
+          ]
+        },
+        {
+          "id": "OBDX_ENCI_DEBUTTANTI",
+          "name": {
+            "es": "ENCI Debuttanti",
+            "en": "ENCI Debuttanti"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E",
+            "E+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 10
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 118,
+              "nationalLetter": "E",
+              "internationalRankScore": 128,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 136,
+              "nationalLetter": "E",
+              "internationalRankScore": 146,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 154,
+              "nationalLetter": "E",
+              "internationalRankScore": 164,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 172,
+              "nationalLetter": "E",
+              "internationalRankScore": 182,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 190,
+              "nationalLetter": "E",
+              "internationalRankScore": 200,
+              "internationalLetter": "E+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RSCE",
+      "name": "Real Sociedad Canina de España",
+      "grades": [
+        {
+          "id": "OBDX_RSCE_DEBUTANTE",
+          "name": {
+            "es": "RSCE Debutante",
+            "en": "RSCE Debutante"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E",
+            "E+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 10
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 118,
+              "nationalLetter": "E",
+              "internationalRankScore": 128,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 136,
+              "nationalLetter": "E",
+              "internationalRankScore": 146,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 154,
+              "nationalLetter": "E",
+              "internationalRankScore": 164,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 172,
+              "nationalLetter": "E",
+              "internationalRankScore": 182,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 190,
+              "nationalLetter": "E",
+              "internationalRankScore": 200,
+              "internationalLetter": "E+"
+            }
+          ]
+        },
+        {
+          "id": "OBDX_RSCE_GRADE_1",
+          "name": {
+            "es": "RSCE Grado 1",
+            "en": "RSCE Grade 1"
+          },
+          "band": {
+            "min": 201,
+            "max": 400
+          },
+          "possibleLetters": [
+            "D",
+            "D+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 20
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 237,
+              "nationalLetter": "D",
+              "internationalRankScore": 257,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 273,
+              "nationalLetter": "D",
+              "internationalRankScore": 293,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 308,
+              "nationalLetter": "D",
+              "internationalRankScore": 328,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 344,
+              "nationalLetter": "D",
+              "internationalRankScore": 364,
+              "internationalLetter": "D+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 380,
+              "nationalLetter": "D",
+              "internationalRankScore": 400,
+              "internationalLetter": "D+"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "CPC",
+      "name": "CPC",
+      "grades": [
+        {
+          "id": "CPC_COBS",
+          "name": {
+            "es": "COBS",
+            "en": "COBS"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E",
+            "E+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 10
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 118,
+              "nationalLetter": "E",
+              "internationalRankScore": 128,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 136,
+              "nationalLetter": "E",
+              "internationalRankScore": 146,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 154,
+              "nationalLetter": "E",
+              "internationalRankScore": 164,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 172,
+              "nationalLetter": "E",
+              "internationalRankScore": 182,
+              "internationalLetter": "E+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 190,
+              "nationalLetter": "E",
+              "internationalRankScore": 200,
+              "internationalLetter": "E+"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "meritCurve": {
+    "context": {
+      "configuration": "OBDX_FCI_GRADE_3",
+      "eventScore": 800,
+      "band": {
+        "min": 601,
+        "max": 900
+      },
+      "maxScore": 320,
+      "qualifications": [
+        {
+          "id": "B",
+          "nameEn": "G",
+          "score": 192
+        },
+        {
+          "id": "MB",
+          "nameEn": "VG",
+          "score": 224
+        },
+        {
+          "id": "EXC",
+          "nameEn": "EXC",
+          "top": true,
+          "score": 256
+        }
+      ],
+      "parameters": {
+        "unlockPct": 10,
+        "kneeShare": 0.85,
+        "floorBelowFirstQualification": 600
+      }
+    },
+    "series": [
+      {
+        "id": "floor",
+        "points": [
+          {
+            "x": 150,
+            "y": 600
+          },
+          {
+            "x": 191,
+            "y": 600
+          }
+        ]
+      },
+      {
+        "id": "curve",
+        "points": [
+          {
+            "x": 192,
+            "y": 620.9
+          },
+          {
+            "x": 224,
+            "y": 697.02
+          },
+          {
+            "x": 256,
+            "y": 773.14
+          },
+          {
+            "x": 288,
+            "y": 786.57
+          },
+          {
+            "x": 320,
+            "y": 800
+          }
+        ]
+      },
+      {
+        "id": "knee",
+        "points": [
+          {
+            "x": 256,
+            "y": 773.14
+          }
+        ]
+      }
+    ]
+  }
+}

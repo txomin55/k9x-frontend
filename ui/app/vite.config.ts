@@ -45,6 +45,8 @@ export default defineConfig(({ mode }) => {
     publicDir: "static",
     build: {
       sourcemap: true,
+      assetsInlineLimit: (filePath: string) =>
+        filePath.includes("assets/breadcrumb-info/") ? false : undefined,
       rollupOptions: {
         external: [
           "*jest*",

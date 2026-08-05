@@ -74,4 +74,24 @@ describe("AtomDialog", () => {
       expect(screen.queryByText("Dialog content")).not.toBeInTheDocument();
     });
   });
+
+  test("does not build function content until the dialog is opened", async () => {
+    const user = userEvent.setup();
+    const build = vi.fn(() => <div>Lazy content</div>);
+
+    render(() => (
+      <AtomDialog
+        trigger={<span>Open dialog</span>}
+        title="Dialog title"
+        content={build}
+      />
+    ));
+
+    expect(build).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Open dialog" }));
+
+    expect(await screen.findByText("Lazy content")).toBeInTheDocument();
+    expect(build).toHaveBeenCalledTimes(1);
+  });
 });

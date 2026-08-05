@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 404" width="410" height="404" fill="none">
+    <rect width="410" height="404" rx="60" fill="#ffffff"/>
+    <text
+            x="0" y="310"
+            font-family="'Barlow Condensed', 'Arial Narrow', Impact, sans-serif"
+            font-weight="900"
+            font-size="260"
+            fill="#1e40af"
+            letter-spacing="-30"
+    >K9
+    </text>
+    <text
+            x="290" y="310"
+            font-family="'Barlow Condensed', 'Arial Narrow', Impact, sans-serif"
+            font-weight="900"
+            font-size="180"
+            fill="#0f172a"
+    >X
+    </text>
+</svg>

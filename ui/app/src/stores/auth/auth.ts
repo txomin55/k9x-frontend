@@ -1,15 +1,15 @@
-import {AppRoutePath} from "@/components/global/app-shell/paths";
+import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
   UserProfileResponseDTO,
 } from "@/services/secured/fetch-user-data/fetchUserData";
-import type {AuthState} from "@/stores/auth/auth.types";
-import {ACCESS_TOKEN_KEY, refreshAccessToken} from "@/utils/http/client";
-import {clearLocalFirstQueryCache} from "@/utils/local-first/query_snapshots/localFirstQueryCache";
-import {clearLocalFirstData} from "@/utils/local-first/storage/localFirstDatabase";
-import {createAppStore} from "@/utils/store/createAppStore";
-import {stripBasePath} from "@/utils/paths/app-paths";
+import type { AuthState } from "@/stores/auth/auth.types";
+import { ACCESS_TOKEN_KEY, refreshAccessToken } from "@/utils/http/client";
+import { clearLocalFirstQueryCache } from "@/utils/local-first/query_snapshots/localFirstQueryCache";
+import { clearLocalFirstData } from "@/utils/local-first/storage/localFirstDatabase";
+import { createAppStore } from "@/utils/store/createAppStore";
+import { stripBasePath } from "@/utils/paths/app-paths";
 
 const { getState, setState, useAppStore } = createAppStore<AuthState>({
   user: null,
@@ -107,6 +107,9 @@ const useAuthLoading = () => useAuth((state) => state.loading);
 
 const isOrganizer = () => Boolean(getState().user?.organizer);
 
+/** The current profile outside of a reactive scope, for services that need to read or patch it. */
+const getAuthUser = () => getState().user;
+
 const hasAccessToken = () =>
   typeof globalThis !== "undefined" &&
   Boolean(globalThis.localStorage?.getItem(ACCESS_TOKEN_KEY));
@@ -114,6 +117,7 @@ const hasAccessToken = () =>
 export {
   clearAuth,
   fetchUserIfAuthenticated,
+  getAuthUser,
   hasAccessToken,
   isOrganizer,
   setUser,

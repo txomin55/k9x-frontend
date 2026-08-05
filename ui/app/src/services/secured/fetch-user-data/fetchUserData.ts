@@ -10,7 +10,7 @@ export type {
   UserModel,
 } from "@/services/secured/fetch-user-data/fetchUserData.types";
 
-const USER_SNAPSHOT_ID = "user";
+export const USER_SNAPSHOT_ID = "user";
 
 export const getUserQueryKey = () => ["user", getCurrentLocale()] as const;
 
