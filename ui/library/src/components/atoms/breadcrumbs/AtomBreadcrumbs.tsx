@@ -26,6 +26,7 @@ export interface AtomBreadCrumbLinkProps {
   onNavigate?: (route: string) => void;
   route: string;
   showSeparator: boolean;
+  disabled?: boolean;
   children: JSX.Element;
 }
 
@@ -35,7 +36,7 @@ const AtomBreadCrumbLink = (props: AtomBreadCrumbLinkProps) => (
       href={props.route}
       class="breadcrumbs__link"
       onClick={(event) => {
-        if (!props.onNavigate) {
+        if (!props.onNavigate || props.disabled) {
           return;
         }
 
@@ -63,7 +64,8 @@ export default function (props: AtomBreadcrumbsProps) {
         <For each={props.crumbs}>
           {(crumb, idx) => (
             <AtomBreadCrumbLink
-              onNavigate={crumb.loading ? undefined : props.onNavigate}
+              onNavigate={props.onNavigate}
+              disabled={crumb.loading}
               route={crumb.route}
               showSeparator={isNotLastElement(idx)}
             >
