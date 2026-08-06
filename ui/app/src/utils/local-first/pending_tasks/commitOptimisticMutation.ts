@@ -23,6 +23,7 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   payload,
   rollbackPayload,
   rollback,
+  sendsBody = false,
   url,
 }: {
   entityId: string;
@@ -33,12 +34,15 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
   payload?: unknown;
   rollbackPayload: TRollbackPayload;
   rollback: (payload: TRollbackPayload) => Promise<void>;
+  sendsBody?: boolean;
   url: string;
 }) => {
+  const body = method === "DELETE" && !sendsBody ? undefined : payload;
+
   if (!shouldQueueOfflineMutation()) {
     try {
       await rawRequest({
-        body: method === "DELETE" ? undefined : payload,
+        body,
         method,
         path: url,
       });
@@ -76,11 +80,12 @@ export const commitOptimisticMutation = async <TRollbackPayload>({
     method,
     payload,
     request: createSerializableRequest({
-      body: method === "DELETE" ? undefined : payload,
+      body,
       method,
       path: url,
     }),
     rollbackPayload,
+    sendsBody,
     status: "pending",
     timestamp,
     updatedAt: timestamp,

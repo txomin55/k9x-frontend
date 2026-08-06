@@ -13,7 +13,8 @@ const pendingTaskHandlers = new Map<string, PendingTaskHandler>();
 
 const executePendingTask = (task: PendingTask) =>
   rawRequest<unknown>({
-    body: task.method === "DELETE" ? undefined : task.payload,
+    body:
+      task.method === "DELETE" && !task.sendsBody ? undefined : task.payload,
     method: task.method,
     path: task.url,
   });

@@ -16,6 +16,11 @@ export interface PendingTask {
   payload: unknown;
   request?: SerializableRequest;
   rollbackPayload?: unknown;
+  /**
+   * DELETEs identify their target through the path, so their payload is not sent as a body by default.
+   * Set this for the rare endpoint whose target only fits in a body (e.g. a push endpoint URL).
+   */
+  sendsBody?: boolean;
   status: PendingTaskStatus;
   timestamp: number;
   updatedAt: number;

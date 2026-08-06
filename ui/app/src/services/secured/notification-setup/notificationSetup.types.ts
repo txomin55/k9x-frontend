@@ -3,3 +3,7 @@ export interface PushSubscriptionRequestDTO {
   p256dh: string;
   auth: string;
 }
+
+export interface PushUnsubscribeRequestDTO {
+  endpoint: string;
+}

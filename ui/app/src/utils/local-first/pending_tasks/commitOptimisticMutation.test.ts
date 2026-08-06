@@ -135,6 +135,52 @@ describe("commitOptimisticMutation", () => {
     expect(rollback).not.toHaveBeenCalled();
   });
 
+  it("sends and queues the payload of a DELETE that identifies its target through the body", async () => {
+    shouldQueueOfflineMutation.mockReturnValue(false);
+
+    await commitOptimisticMutation({
+      entityId: "https://fcm/endpoint",
+      entityType: "notification-setup",
+      method: "DELETE",
+      payload: { endpoint: "https://fcm/endpoint" },
+      rollback: vi.fn(),
+      rollbackPayload: null,
+      sendsBody: true,
+      url: "/secured/notification-setup",
+    });
+
+    expect(rawRequest).toHaveBeenCalledWith({
+      body: { endpoint: "https://fcm/endpoint" },
+      method: "DELETE",
+      path: "/secured/notification-setup",
+    });
+
+    shouldQueueOfflineMutation.mockReturnValue(true);
+    createPendingTaskId.mockReturnValue("task-id");
+    createSerializableRequest.mockReturnValue({});
+    requestPendingTasksBackgroundSync.mockResolvedValue(true);
+
+    await commitOptimisticMutation({
+      entityId: "https://fcm/endpoint",
+      entityType: "notification-setup",
+      method: "DELETE",
+      payload: { endpoint: "https://fcm/endpoint" },
+      rollback: vi.fn(),
+      rollbackPayload: null,
+      sendsBody: true,
+      url: "/secured/notification-setup",
+    });
+
+    expect(createSerializableRequest).toHaveBeenCalledWith({
+      body: { endpoint: "https://fcm/endpoint" },
+      method: "DELETE",
+      path: "/secured/notification-setup",
+    });
+    expect(enqueuePendingTask).toHaveBeenCalledWith(
+      expect.objectContaining({ sendsBody: true }),
+    );
+  });
+
   it("runs rollback when the direct request fails", async () => {
     const rollback = vi.fn();
     const error = new Error("boom");

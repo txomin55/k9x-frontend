@@ -19,6 +19,7 @@
   "GLOBAL.NAVIGATION.CLOSE_DIALOG": "Cerrar diálogo",
   "GLOBAL.NAVIGATION.CONTACT_US": "Contáctanos",
   "GLOBAL.NAVIGATION.NOTIFICATIONS": "Notificaciones",
+  "GLOBAL.NAVIGATION.NOTIFICATIONS_UNAVAILABLE": "No se han podido activar las notificaciones en este dispositivo.",
   "GLOBAL.NAVIGATION.LOGOUT": "Cerrar sesión",
   "GLOBAL.NAVIGATION.SEND": "Enviar",
   "GLOBAL.FORM.SENT": "Formulario enviado",

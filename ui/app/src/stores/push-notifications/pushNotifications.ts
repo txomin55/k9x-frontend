@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import {
+  removeNotificationSetup,
   setNotificationSetup,
   toPushSubscriptionRequest,
 } from "@/services/secured/notification-setup/notificationSetup";
@@ -9,6 +10,8 @@ import {
   isPushNotificationSupported,
   unsubscribeFromPushNotifications,
 } from "@/utils/notifications/notifications";
+import { translate } from "@/stores/i18n/i18n";
+import { showToast } from "@/stores/toast/toast";
 
 const PUSH_PREFERENCE_KEY = "k9x_push_notifications_enabled";
 
@@ -83,25 +86,48 @@ const enablePushNotificationsSetup = async () => {
   return true;
 };
 
+/**
+ * Dropping the browser subscription is local and always succeeds, so the checkbox stays off even if the
+ * server never hears about it: the row is pruned anyway the next time a push to that endpoint comes back
+ * 410 Gone. When offline the removal is queued and replayed on reconnect.
+ */
 const disablePushNotificationsSetup = async () => {
-  await unsubscribeFromPushNotifications();
+  const endpoint = await unsubscribeFromPushNotifications();
 
   persistPushPreference(false);
   setPushNotificationsEnabled(false);
+
+  if (!endpoint) return;
+
+  await removeNotificationSetup({ endpoint });
 };
 
+/**
+ * The checkbox reflects the user's intent immediately and the work happens behind it. Only enabling can
+ * be rejected — a denied permission prompt, or a first-time subscribe with no connection to the push
+ * service — and that is the one case that flips the checkbox back.
+ */
 const togglePushNotifications = async (enabled: boolean) => {
   if (pushNotificationsBusy()) return;
 
+  const previouslyEnabled = pushNotificationsEnabled();
+
   setPushNotificationsBusy(true);
+  setPushNotificationsEnabled(enabled);
 
   try {
-    if (enabled) {
-      await enablePushNotificationsSetup();
+    if (!enabled) {
+      await disablePushNotificationsSetup();
       return;
     }
 
-    await disablePushNotificationsSetup();
+    const granted = await enablePushNotificationsSetup().catch(() => false);
+
+    if (!granted) {
+      persistPushPreference(previouslyEnabled);
+      setPushNotificationsEnabled(previouslyEnabled);
+      showToast(translate("GLOBAL.NAVIGATION.NOTIFICATIONS_UNAVAILABLE"));
+    }
   } finally {
     setPushNotificationsBusy(false);
   }
