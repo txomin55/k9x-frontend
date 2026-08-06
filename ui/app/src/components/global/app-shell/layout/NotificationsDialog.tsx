@@ -11,6 +11,7 @@ import {
 import { formatDateTime } from "@/utils/date";
 import { useI18n } from "@/stores/i18n/i18n";
 import { renderNotificationWith } from "@/utils/service-worker/events/notification-catalog";
+import RichText from "@/components/common/rich-text/RichText";
 import type { NotificationResponseDTO } from "@/services/secured/notifications/notifications.types";
 
 export default function NotificationsDialog() {
@@ -88,7 +89,9 @@ export default function NotificationsDialog() {
                       }}
                     >
                       <span class="text-heading-xs">{content.title}</span>
-                      <span class="text-caption-md">{content.body}</span>
+                      <span class="text-caption-md">
+                        <RichText content={content.body} />
+                      </span>
                       <time class="text-caption-sm">
                         {formatDateTime(notification.timestamp)}
                       </time>

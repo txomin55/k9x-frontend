@@ -6,7 +6,8 @@ import {
   type AtomComboboxOption,
 } from "@lib/components/atoms/combobox/AtomCombobox";
 import AtomTextArea from "@lib/components/atoms/text-area/AtomTextArea";
-import { createMemo } from "solid-js";
+import { createMemo, Show } from "solid-js";
+import RichText from "@/components/common/rich-text/RichText";
 import { useI18n } from "@/stores/i18n/i18n";
 import "./styles.css";
 
@@ -80,6 +81,19 @@ export default function NotificationEditorForm(
         value={props.draft.content}
         onChange={handleContentChange}
       />
+      <p class="notification-editor-form__format text-caption-sm">
+        {i18n.t("MY.COMPETITIONS.NOTIFICATION_EDITOR.FORMAT_HINT")}
+      </p>
+      {/* The announcement reaches everyone at once, so the organizer sees the rendered result before sending
+          instead of discovering a stray marker afterwards. */}
+      <Show when={props.draft.content.trim()}>
+        <div class="notification-editor-form__preview">
+          <span class="text-caption-md">
+            {i18n.t("MY.COMPETITIONS.NOTIFICATION_EDITOR.PREVIEW")}
+          </span>
+          <RichText content={props.draft.content} />
+        </div>
+      </Show>
       <div class="notification-editor-form__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.NOTIFICATION_EDITOR.CANCEL")}

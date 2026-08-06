@@ -354,6 +354,8 @@
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT": "Mensaje",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT_PLACEHOLDER": "¿Qué quieres anunciar?",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT_HINT": "Al menos {{min}} caracteres.",
+  "MY.COMPETITIONS.NOTIFICATION_EDITOR.FORMAT_HINT": "Formato: *negrita*, _cursiva_, ~tachado~, las líneas que empiezan por - salen como viñetas y los enlaces se detectan solos.",
+  "MY.COMPETITIONS.NOTIFICATION_EDITOR.PREVIEW": "Vista previa",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.NOTIFY": "Notificar",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CANCEL": "Cancelar",
   "MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS": "Participantes",

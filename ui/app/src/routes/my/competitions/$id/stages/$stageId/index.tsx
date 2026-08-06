@@ -67,6 +67,7 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
+import RichText from "@/components/common/rich-text/RichText";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
 import NotificationEditorForm, {
@@ -768,7 +769,7 @@ function CompetitionStageDetailBody(props: {
       id: "content",
       accessorFn: (notification) => notification.content,
       header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATION_CONTENT"),
-      cell: (info) => info.row.original.content,
+      cell: (info) => <RichText content={info.row.original.content} inline />,
     },
     {
       id: "events",
@@ -798,7 +799,7 @@ function CompetitionStageDetailBody(props: {
                 {formatDateTime(notification().timestamp)}
               </span>
             }
-            description={notification().content}
+            description={<RichText content={notification().content} />}
             content={
               <Show when={notification().eventIds.length > 0}>
                 <div class="stage-detail__notification-events">

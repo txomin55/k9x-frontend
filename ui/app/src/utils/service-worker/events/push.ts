@@ -7,6 +7,7 @@ import type {
   NotificationType,
 } from "@/utils/service-worker/events/notification-types";
 import { readActiveNotificationTranslations } from "@/utils/local-first/notification_translations/notificationTranslationsStore";
+import { stripRichTextMarkers } from "@/utils/rich-text/richText";
 import { resolveAppPath } from "@/utils/paths/app-paths";
 
 interface RawPushEnvelope {
@@ -61,7 +62,9 @@ export const registerPushHandler = (scope) => {
           );
 
           await scope.registration.showNotification(title, {
-            body,
+            // A Web Push body is plain text, so an organizer's *bold* would reach the tray with the
+            // asterisks in it. The in-app list renders the markers instead of dropping them.
+            body: stripRichTextMarkers(body),
             icon: iconUrl,
             badge: iconUrl,
             // `notification-click.ts` reads `data.url` to open/focus the app on click.

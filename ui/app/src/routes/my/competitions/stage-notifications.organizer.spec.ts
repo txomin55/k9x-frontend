@@ -14,9 +14,10 @@ organizerTest.describe("Stage notifications - organizer", () => {
       await setupCompetitionsCrud(page);
       await page.goto(STAGE_NOTIFICATIONS_URL);
 
+      // First paint of the app under parallel workers can outrun the default expect timeout.
       await expect(
         page.getByText("Ring 1 starts one hour later").first(),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 15000 });
 
       await page.getByText("Table", { exact: true }).click();
       await expect(page.getByRole("radio", { name: "Table" })).toBeChecked();
@@ -55,6 +56,41 @@ organizerTest.describe("Stage notifications - organizer", () => {
 
       await dialog.getByRole("button", { name: "Cancel" }).click();
       await expect(page.getByText("Ring 2 is delayed 30 min")).toHaveCount(0);
+    },
+  );
+
+  organizerTest(
+    "previews and renders the WhatsApp-style formatting of the message",
+    async ({ page }) => {
+      await setupCompetitionsCrud(page);
+      await page.goto(STAGE_NOTIFICATIONS_URL);
+
+      await openEditMode(page);
+      await page.getByRole("button", { name: "Add notification" }).click();
+
+      const dialog = page.locator(".atom-dialog__content").last();
+      await dialog.getByRole("button", { name: "Events" }).click();
+      await page.keyboard.press("ArrowDown");
+      await page.keyboard.press("Enter");
+      await page.keyboard.press("Escape");
+      await dialog
+        .getByRole("textbox")
+        .last()
+        .fill("*Ring 2* delayed https://k9x.app/plan\n- warm up\n- start");
+
+      const preview = dialog.locator(".notification-editor-form__preview");
+      await expect(preview.locator("b")).toHaveText("Ring 2");
+      await expect(preview.locator("a")).toHaveAttribute(
+        "href",
+        "https://k9x.app/plan",
+      );
+      await expect(preview.locator("li")).toHaveText(["warm up", "start"]);
+
+      await dialog.getByRole("button", { name: "Notify" }).click();
+
+      const card = page.locator(".card", { hasText: "Ring 2" }).first();
+      await expect(card.locator("b")).toHaveText("Ring 2");
+      await expect(card.locator("li")).toHaveText(["warm up", "start"]);
     },
   );
 

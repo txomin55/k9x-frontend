@@ -20,6 +20,7 @@ import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
+import RichText from "@/components/common/rich-text/RichText";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import {useSearchParam} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
@@ -381,7 +382,7 @@ function StageInfoPage() {
                       {formatDateTime(notification().timestamp)}
                     </span>
                   }
-                  description={notification().content}
+                  description={<RichText content={notification().content} />}
                   content={
                     <Show when={notification().eventIds.length > 0}>
                       <div class="stage-info__notification--events">

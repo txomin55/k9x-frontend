@@ -354,6 +354,8 @@
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT": "Message",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT_PLACEHOLDER": "What do you want to announce?",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CONTENT_HINT": "At least {{min}} characters.",
+  "MY.COMPETITIONS.NOTIFICATION_EDITOR.FORMAT_HINT": "Formatting: *bold*, _italic_, ~strikethrough~, lines starting with - become bullets, and links are detected on their own.",
+  "MY.COMPETITIONS.NOTIFICATION_EDITOR.PREVIEW": "Preview",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.NOTIFY": "Notify",
   "MY.COMPETITIONS.NOTIFICATION_EDITOR.CANCEL": "Cancel",
   "MY.COMPETITIONS.STAGE_DETAIL.PARTICIPANTS": "Participants",
