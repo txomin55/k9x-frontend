@@ -1,0 +1,22 @@
+.stage-notifications-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.stage-notifications-toggle .icon-toggle {
+    width: var(--unit-3);
+    height: var(--unit-3);
+}
+
+.stage-notifications-toggle .icon-toggle .atom-svg-icon {
+    width: var(--unit-15);
+    height: var(--unit-15);
+}
+
+.stage-notifications-toggle__login {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--unit-2);
+    max-width: 20rem;
+}

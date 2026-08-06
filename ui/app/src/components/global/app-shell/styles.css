@@ -234,6 +234,11 @@
     display: block;
 }
 
+.app-layout__user-img--menu .navigation-tools__notifications {
+    display: flex;
+    align-items: center;
+}
+
 .app-layout__user-img--menu .navigation-tools__bottom {
     display: flex;
     flex-wrap: wrap;

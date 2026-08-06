@@ -10,12 +10,6 @@
     align-items: center;
 }
 
-.stage-card__notifications .icon-toggle--active {
-    border-color: var(--primary-border);
-    background: var(--primary-soft);
-    color: var(--primary-hover);
-}
-
 .stage-card__meta {
     display: flex;
     flex-direction: column;

@@ -6,7 +6,8 @@ import AtomSelect, {
 } from "@lib/components/atoms/select/AtomSelect";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
-import { createSignal, Show } from "solid-js";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
+import { createSignal, onMount, Show } from "solid-js";
 import { useNavigate } from "@tanstack/solid-router";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { clearAuth, useAuthUser } from "@/stores/auth/auth";
@@ -16,6 +17,13 @@ import { queryClient } from "@/utils/http/query-client";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import {
+  isPushNotificationSupported,
+  pushNotificationsBusy,
+  pushNotificationsEnabled,
+  syncPushNotificationsState,
+  togglePushNotifications,
+} from "@/stores/push-notifications/pushNotifications";
 import sunIcon from "@/assets/miscelaneous/sun.svg";
 import moonIcon from "@/assets/miscelaneous/moon.svg";
 
@@ -45,6 +53,12 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
 
   const selectedLocale = () =>
     localeOptions.find((option) => option.value === i18n.locale()) ?? null;
+
+  const pushSupported = isPushNotificationSupported();
+
+  onMount(() => {
+    if (pushSupported) void syncPushNotificationsState();
+  });
 
   const handleLogout = async () => {
     try {
@@ -93,6 +107,18 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
           </CircleButton>
         </div>
       </div>
+
+      <Show when={user() && pushSupported}>
+        <div class="navigation-tools__divider" />
+        <div class="navigation-tools__notifications">
+          <AtomCheckbox
+            checked={pushNotificationsEnabled()}
+            disabled={pushNotificationsBusy()}
+            label={i18n.t("GLOBAL.NAVIGATION.NOTIFICATIONS")}
+            setChecked={(checked) => void togglePushNotifications(checked)}
+          />
+        </div>
+      </Show>
 
       <Show when={user()}>
         <div class="navigation-tools__divider" />

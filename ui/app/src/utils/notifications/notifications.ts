@@ -4,6 +4,7 @@ import {
   nativeGetPushSubscription,
   nativeRequestNotificationPermission,
   nativeSubscribeToPushManager,
+  nativeUnsubscribeFromPushManager,
 } from "@/utils/service-worker/native_features/notifications/push-notifications";
 
 const requestNotificationPermission = async () => {
@@ -54,4 +55,41 @@ const enablePushNotifications = async (applicationServerKey: Uint8Array) => {
   };
 };
 
-export { requestNotificationPermission, enablePushNotifications };
+const getPushNotificationsState = async () => {
+  if (!isPushNotificationSupported()) {
+    return { permission: "denied" as NotificationPermission, subscription: null };
+  }
+
+  const permission = nativeGetNotificationPermission();
+
+  if (permission !== "granted") {
+    return { permission, subscription: null };
+  }
+
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = registration
+    ? await nativeGetPushSubscription(registration)
+    : null;
+
+  return { permission, subscription };
+};
+
+const unsubscribeFromPushNotifications = async () => {
+  if (!isPushNotificationSupported()) return false;
+
+  const registration = await navigator.serviceWorker.ready;
+  if (!registration) return false;
+
+  const subscription = await nativeGetPushSubscription(registration);
+  if (!subscription) return false;
+
+  return await nativeUnsubscribeFromPushManager(subscription);
+};
+
+export {
+  requestNotificationPermission,
+  enablePushNotifications,
+  getPushNotificationsState,
+  isPushNotificationSupported,
+  unsubscribeFromPushNotifications,
+};

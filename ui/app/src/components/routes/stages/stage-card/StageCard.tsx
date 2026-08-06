@@ -5,14 +5,11 @@ import AtomButton, {
 import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
-import IconToggleButton from "@/components/common/icon-toggle-button/IconToggleButton";
+import StageNotificationsToggle from "@/components/common/stage-notifications-toggle/StageNotificationsToggle";
 import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
-import { updateEventSubscriptions } from "@/services/secured/subscriptions/subscriptions";
 import { useNavigate } from "@tanstack/solid-router";
-import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
-import bellIcon from "@/assets/miscelaneous/bell.svg";
 import { isStageLive, STAGE_STATUS } from "@/utils/stage";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
@@ -34,25 +31,8 @@ export interface StageCardProps {
 export default function StageCard(props: StageCardProps) {
   const navigate = useNavigate();
   const i18n = useI18n();
-  const user = useAuthUser();
-  const [togglingNotifications, setTogglingNotifications] = createSignal(false);
 
   const eventIds = () => props.events.map((event) => event.id);
-  const subscribedEventIds = () => user()?.subscriptions?.eventIds ?? [];
-
-  /** The bell is lit only when every event of the stage is subscribed, since it toggles them all at once. */
-  const notificationsEnabled = () =>
-    eventIds().length > 0 &&
-    eventIds().every((id) => subscribedEventIds().includes(id));
-
-  const toggleNotifications = () => {
-    if (togglingNotifications()) return;
-
-    setTogglingNotifications(true);
-    void updateEventSubscriptions(eventIds(), !notificationsEnabled()).finally(
-      () => setTogglingNotifications(false),
-    );
-  };
 
   const navigateToStageInfo = (stageId: string) =>
     void navigate({
@@ -72,16 +52,9 @@ export default function StageCard(props: StageCardProps) {
         </div>
       }
       topRight={
-        <Show when={user() && props.status !== STAGE_STATUS.FINISHED}>
+        <Show when={props.status !== STAGE_STATUS.FINISHED}>
           <div class="stage-card__notifications">
-            <IconToggleButton
-              src={bellIcon}
-              active={notificationsEnabled()}
-              disabled={togglingNotifications()}
-              activeLabel={i18n.t("STAGES.STAGE_CARD.UNNOTIFY")}
-              inactiveLabel={i18n.t("STAGES.STAGE_CARD.NOTIFY")}
-              onToggle={toggleNotifications}
-            />
+            <StageNotificationsToggle eventIds={eventIds()} />
           </div>
         </Show>
       }

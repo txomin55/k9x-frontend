@@ -32,7 +32,7 @@
 
 .icon-toggle--active {
   border-radius: var(--radius-full);
-  border-color: var(--accent-border);
-  background: var(--accent-soft);
-  color: var(--accent);
+  border-color: var(--primary-border);
+  background: var(--primary-soft);
+  color: var(--primary-hover);
 }

@@ -3,6 +3,7 @@ import { defaultClassification } from "@test/api-mocks/classification";
 import { defaultCompetitions } from "@test/api-mocks/competitions";
 import { resolveDogByIdPayload } from "@test/api-mocks/dogById";
 import { defaultDogs } from "@test/api-mocks/dogs";
+import { defaultJudges } from "@test/api-mocks/judges";
 import { mockAccessToken } from "@test/api-mocks/login";
 import { logoutPayload } from "@test/api-mocks/logout";
 import { defaultStageDetail } from "@test/api-mocks/stageDetail";
@@ -39,8 +40,29 @@ export default async function defaultApiResponses(page: Page) {
     }),
     setRouteResponses(page, {
       method: "GET",
+      payload: defaultJudges,
+      pathname: "/secured/judges",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
       payload: resolveDogByIdPayload,
       pathname: "/secured/dogs/*",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: [],
+      pathname: "/secured/notifications",
+    }),
+    setRouteResponses(page, {
+      method: "PATCH",
+      payload: "",
+      pathname: "/secured/subscriptions",
+      status: 204,
+    }),
+    setRouteResponses(page, {
+      method: "POST",
+      payload: {},
+      pathname: "/secured/set-notification-setup",
     }),
     setRouteResponses(page, {
       method: "POST",

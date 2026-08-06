@@ -40,8 +40,13 @@ async function nativeSubscribeToPushManager(
   });
 }
 
+async function nativeUnsubscribeFromPushManager(subscription: PushSubscription) {
+  return await subscription.unsubscribe();
+}
+
 export {
   nativeGetNotificationPermission,
+  nativeUnsubscribeFromPushManager,
   nativeDisplayNotification,
   nativeGetPushSubscription,
   nativeRequestNotificationPermission,

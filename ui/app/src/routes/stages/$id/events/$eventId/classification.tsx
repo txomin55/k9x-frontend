@@ -23,6 +23,7 @@ import {
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
+import AtomSelect, {type AtomSelectOption,} from "@lib/components/atoms/select/AtomSelect";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -52,6 +53,11 @@ export const Route = createFileRoute(
 const CONTROLS_KEYS = {
   LIST: "LIST",
   TABLE: "TABLE",
+};
+
+const CLASSIFICATION_SORTS = {
+  SCORE: "SCORE",
+  START_ORDER: "START_ORDER",
 };
 
 function ClassificationSkeleton() {
@@ -244,6 +250,37 @@ function EventClassificationPage() {
     const ids = competitorFilterIdSet();
     if (!ids.size) return competitors();
     return competitors().filter((competitor) => ids.has(competitor.dog.id));
+  });
+
+  const [sortValue, setSortValue] = useSearchParam(
+    "sort",
+    CLASSIFICATION_SORTS.SCORE,
+  );
+
+  const sortOptions = createMemo<AtomSelectOption[]>(() => [
+    {
+      label: t("STAGES.CLASSIFICATION.SORT_BY_SCORE"),
+      value: CLASSIFICATION_SORTS.SCORE,
+    },
+    {
+      label: t("STAGES.CLASSIFICATION.SORT_BY_START_ORDER"),
+      value: CLASSIFICATION_SORTS.START_ORDER,
+    },
+  ]);
+
+  const selectedSortOption = createMemo(
+    () =>
+      sortOptions().find((option) => option.value === sortValue()) ??
+      sortOptions()[0],
+  );
+
+  /** Sorting is applied on top of the competitor filter, so both work together. */
+  const sortedCompetitors = createMemo(() => {
+    const list = filteredCompetitors();
+    if (sortValue() !== CLASSIFICATION_SORTS.START_ORDER) return list;
+    return [...list].sort(
+      (first, second) => first.startOrder - second.startOrder,
+    );
   });
 
   let previousPositions = new Map<string, number>();
@@ -497,7 +534,7 @@ function EventClassificationPage() {
         "overflow-y": "auto",
       }}
     >
-      <For each={filteredCompetitors()}>
+      <For each={sortedCompetitors()}>
         {(item) => (
           <ObdxClassificationCard
             competitor={item}
@@ -520,7 +557,7 @@ function EventClassificationPage() {
       style={{ height: `${listHeight()}px` }}
     >
       <AtomTable<StageEventClassificationItemResponseDTO>
-        data={filteredCompetitors()}
+        data={sortedCompetitors()}
         columns={columns()}
         getRowCanExpand={() => true}
         expandOnRowClick
@@ -547,7 +584,7 @@ function EventClassificationPage() {
     if (!data || isExporting()) return;
     setIsExporting(true);
     try {
-      await exportClassificationPdf(data, filteredCompetitors(), t);
+      await exportClassificationPdf(data, sortedCompetitors(), t);
     } finally {
       setIsExporting(false);
     }
@@ -688,6 +725,17 @@ function EventClassificationPage() {
           />
         );
 
+        const sortSelect = () => (
+          <AtomSelect
+            label={t("STAGES.CLASSIFICATION.SORT_BY")}
+            options={sortOptions()}
+            value={selectedSortOption()}
+            onChange={(option) =>
+              setSortValue(option?.value ?? CLASSIFICATION_SORTS.SCORE)
+            }
+          />
+        );
+
         return (
           <div class="page classification">
             <Show
@@ -711,6 +759,7 @@ function EventClassificationPage() {
                   <Show when={competitorOptions().length}>
                     <div class="obdx-clf__filter obdx-clf__filter-row">
                       {filterCombobox()}
+                      <Show when={isLoggedIn()}>{sortSelect()}</Show>
                       <RotateDeviceHint />
                     </div>
                   </Show>
@@ -740,7 +789,10 @@ function EventClassificationPage() {
                         {scoreCalculationBlock()}
                         {judgesBlock()}
                         <Show when={isLoggedIn() && competitorOptions().length}>
-                          <div class="obdx-clf__filter">{filterCombobox()}</div>
+                          <div class="obdx-clf__filter">
+                            {filterCombobox()}
+                            {sortSelect()}
+                          </div>
                         </Show>
                         {exportButton()}
                       </div>
@@ -773,7 +825,7 @@ function EventClassificationPage() {
               fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
             >
               <Show
-                when={filteredCompetitors().length}
+                when={sortedCompetitors().length}
                 fallback={
                   <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
                 }
