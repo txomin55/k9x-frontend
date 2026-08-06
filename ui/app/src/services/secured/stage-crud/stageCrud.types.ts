@@ -1,5 +1,6 @@
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type { StageNotificationResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 
 export interface CreateStageRequestDTO {
   competitionId: string;
@@ -22,6 +23,7 @@ export interface StageEditorModel {
   events: EventDetailResponseDTO[];
   id: string;
   name: string;
+  notifications: StageNotificationResponseDTO[];
   status?: string;
 }
 

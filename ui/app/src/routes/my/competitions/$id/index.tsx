@@ -248,6 +248,7 @@ function CompetitionDetailBody(props: {
         events: [],
         id: generateEntityId("stage"),
         name: "",
+        notifications: [],
       });
       return;
     }
@@ -314,6 +315,7 @@ function CompetitionDetailBody(props: {
       events: [],
       id: draft.id ?? generateEntityId("stage"),
       name: draft.name ?? "",
+      notifications: [],
     });
     setStageDialogParam("new");
   };

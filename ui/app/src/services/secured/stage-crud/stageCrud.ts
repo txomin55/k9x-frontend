@@ -42,6 +42,7 @@ const mergeApiStageWithPayload = (
     events: previousStage?.events ?? [],
     id: nextStageId,
     name: payload.name ?? previousStage?.name ?? "",
+    notifications: previousStage?.notifications ?? [],
     status: previousStage?.status ?? STAGE_STATUS.DRAFT,
   };
 };
@@ -84,6 +85,7 @@ export const toApiStage = (
     }),
   id: stage.id ?? "",
   name: stage.name ?? "",
+  notifications: stage.notifications ?? [],
   status: stage.status,
 });
 

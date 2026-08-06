@@ -33,16 +33,26 @@ import {
   canEditEvent,
   toEventEditorDraft,
 } from "@/utils/event";
-import { canCreateEvent, canDeleteStage, canEditStage } from "@/utils/stage";
+import {
+  canCreateEvent,
+  canDeleteStage,
+  canEditStage,
+  STAGE_INFO_TAB_PARAM,
+  STAGE_INFO_TABS,
+} from "@/utils/stage";
 import {
   formatDateLabel,
+  formatDateTime,
   oneWeekBefore,
   parseDateInputValue,
   toDateInputValue,
 } from "@/utils/date";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import AtomButton, {
   BUTTON_TYPES,
@@ -59,11 +69,19 @@ import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import Card from "@lib/components/molecules/card/Card";
 import EventEditorForm from "@/components/routes/my/competitions/$id/stages/$stageid/event-editor-form/EventEditorForm";
+import NotificationEditorForm, {
+  createEmptyNotificationDraft,
+  isNotificationDraftSendable,
+  type NotificationEditorDraft,
+} from "@/components/routes/my/competitions/$id/stages/$stageid/notification-editor-form/NotificationEditorForm";
+import { createStageNotification } from "@/services/secured/stage-notifications/stageNotifications";
+import type { AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
 import {
   StageEditorModel,
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
+import type { StageNotificationResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { generateEntityId } from "@/utils/id/generateEntityId";
@@ -263,14 +281,14 @@ function CompetitionStageDetailContentContainer(props: {
             }
           >
             <CompetitionStageDetailBody
-            createDefaultEvent={props.createDefaultEvent}
-            onCreateEvent={props.onCreateEvent}
-            onDelete={handleDelete}
-            onDeleteEvent={handleDeleteEvent}
-            onUpdateEvent={props.onUpdateEvent}
-            onUpdateStage={props.onUpdateStage}
-            stage={stageAccessor}
-          />
+              createDefaultEvent={props.createDefaultEvent}
+              onCreateEvent={props.onCreateEvent}
+              onDelete={handleDelete}
+              onDeleteEvent={handleDeleteEvent}
+              onUpdateEvent={props.onUpdateEvent}
+              onUpdateStage={props.onUpdateStage}
+              stage={stageAccessor}
+            />
           </Show>
         </Show>
       </Suspense>
@@ -279,6 +297,8 @@ function CompetitionStageDetailContentContainer(props: {
 }
 
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
+
+const TABS = STAGE_INFO_TABS;
 
 function CompetitionStageDetailBody(props: {
   createDefaultEvent: (stageId: string) => CreateEventRequestDTO;
@@ -315,9 +335,19 @@ function CompetitionStageDetailBody(props: {
     eventParam() && eventParam() !== "new" ? eventParam() : null;
   const [eventDialogDraft, setEventDialogDraft] =
     createSignal<EventEditorDraft | null>(null);
+  const [tabParam, setTabParam] = useSearchParam(
+    STAGE_INFO_TAB_PARAM,
+    TABS.EVENTS,
+  );
+  // An unknown value in the URL falls back to the events tab instead of leaving every tab unselected.
+  const selectedTab = () =>
+    tabParam() === TABS.NOTIFICATIONS ? TABS.NOTIFICATIONS : TABS.EVENTS;
 
   createEffect(() => {
-    if (eventParam()) setIsEditing(true);
+    if (!eventParam()) return;
+
+    setIsEditing(true);
+    setTabParam(TABS.EVENTS);
   });
 
   createEffect(() => {
@@ -346,6 +376,7 @@ function CompetitionStageDetailBody(props: {
     if (isEditing()) return;
 
     closeEventEditor();
+    closeNotificationEditor();
   });
 
   const openEventEditor = (event: EventDetailResponseDTO) => {
@@ -475,6 +506,42 @@ function CompetitionStageDetailBody(props: {
   };
 
   const [view, setView] = createSignal<string>(VIEW.LIST);
+  const [notificationsView, setNotificationsView] = createSignal<string>(
+    VIEW.LIST,
+  );
+  const [isNotifying, setIsNotifying] = createSignal(false);
+  const [notificationDraft, setNotificationDraft] =
+    createSignal<NotificationEditorDraft>(createEmptyNotificationDraft());
+  const notificationEventOptions = createMemo<AtomComboboxOption[]>(() =>
+    props.stage().events.map((event) => ({
+      label: event.name,
+      value: event.id,
+    })),
+  );
+
+  const openNotificationEditor = () => {
+    setNotificationDraft(createEmptyNotificationDraft());
+    setIsNotifying(true);
+  };
+
+  const closeNotificationEditor = () => {
+    setIsNotifying(false);
+    setNotificationDraft(createEmptyNotificationDraft());
+  };
+
+  const sendNotification = () => {
+    const draft = notificationDraft();
+
+    if (!isNotificationDraftSendable(draft)) return;
+
+    const stage = props.stage();
+
+    closeNotificationEditor();
+    void createStageNotification(stage, {
+      content: draft.content.trim(),
+      eventIds: draft.eventIds,
+    });
+  };
 
   const eventTableActions = (
     event: EventDetailResponseDTO,
@@ -508,7 +575,9 @@ function CompetitionStageDetailBody(props: {
             />
           </AtomButton>
           <AtomDialog
-            closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
+            closeButtonText={i18n.t(
+              "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
+            )}
             content={
               <Show when={eventDialogDraft()}>
                 {(draft) => (
@@ -674,6 +743,159 @@ function CompetitionStageDetailBody(props: {
     },
   ]);
 
+  const notifications = createMemo(() =>
+    [...props.stage().notifications].sort(
+      (first, second) => second.timestamp - first.timestamp,
+    ),
+  );
+  // The API identifies the affected events by id only, so names are resolved from the stage's own events.
+  const eventNameById = createMemo(
+    () => new Map(props.stage().events.map((event) => [event.id, event.name])),
+  );
+  const affectedEventNames = (eventIds: string[]) =>
+    eventIds.map((eventId) => eventNameById().get(eventId) ?? eventId);
+
+  const notificationColumns = createMemo<
+    ColumnDef<StageNotificationResponseDTO, any>[]
+  >(() => [
+    {
+      id: "date",
+      accessorFn: (notification) => notification.timestamp,
+      header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATION_DATE"),
+      cell: (info) => formatDateTime(info.row.original.timestamp),
+    },
+    {
+      id: "content",
+      accessorFn: (notification) => notification.content,
+      header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATION_CONTENT"),
+      cell: (info) => info.row.original.content,
+    },
+    {
+      id: "events",
+      header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATION_EVENTS"),
+      enableSorting: false,
+      cell: (info) => (
+        <div class="stage-detail__notification-events">
+          <For each={affectedEventNames(info.row.original.eventIds)}>
+            {(eventName) => (
+              <span class="stage-detail__notification-event text-caption-sm">
+                {eventName}
+              </span>
+            )}
+          </For>
+        </div>
+      ),
+    },
+  ]);
+
+  const notificationListContent = () => (
+    <div class="stage-detail__notifications">
+      <Index each={notifications()}>
+        {(notification) => (
+          <Card
+            topLeft={
+              <span class="text-caption-md">
+                {formatDateTime(notification().timestamp)}
+              </span>
+            }
+            description={notification().content}
+            content={
+              <Show when={notification().eventIds.length > 0}>
+                <div class="stage-detail__notification-events">
+                  <For each={affectedEventNames(notification().eventIds)}>
+                    {(eventName) => (
+                      <span class="stage-detail__notification-event text-caption-sm">
+                        {eventName}
+                      </span>
+                    )}
+                  </For>
+                </div>
+              </Show>
+            }
+          />
+        )}
+      </Index>
+    </div>
+  );
+
+  const notificationTableContent = () => (
+    <div class="stage-detail__notifications-table">
+      <AtomTable<StageNotificationResponseDTO>
+        data={notifications()}
+        columns={notificationColumns()}
+        getRowId={(row, index) => `${row.timestamp}-${index}`}
+      />
+    </div>
+  );
+
+  const notificationControls = createMemo(() => [
+    {
+      value: VIEW.LIST,
+      text: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.LIST"),
+      content: notificationListContent,
+    },
+    {
+      value: VIEW.TABLE,
+      text: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.TABLE"),
+      content: notificationTableContent,
+    },
+  ]);
+
+  const tabsTitles = createMemo(() => [
+    {
+      value: TABS.EVENTS,
+      content: <span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}</span>,
+    },
+    {
+      value: TABS.NOTIFICATIONS,
+      content: (
+        <span>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATIONS")}</span>
+      ),
+    },
+  ]);
+
+  const tabsContents = createMemo(() => [
+    {
+      value: TABS.EVENTS,
+      content: (
+        <Show
+          when={props.stage().events.length > 0}
+          fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS")}</p>}
+        >
+          <AtomSegmentedControl
+            title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS_BY")}
+            control={view()}
+            onControlChange={setView}
+            controls={controls()}
+          />
+        </Show>
+      ),
+    },
+    {
+      value: TABS.NOTIFICATIONS,
+      content: (
+        <Show
+          when={notifications().length > 0}
+          fallback={
+            <p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NO_NOTIFICATIONS")}</p>
+          }
+        >
+          <AtomSegmentedControl
+            title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NOTIFICATIONS_BY")}
+            control={notificationsView()}
+            onControlChange={setNotificationsView}
+            controls={notificationControls()}
+          />
+        </Show>
+      ),
+    },
+  ]);
+
+  // Inside the edit menu the stage is already editable, so the announcement action only depends on the tab.
+  const hasAddAction = () =>
+    selectedTab() === TABS.NOTIFICATIONS ||
+    canCreateEvent(props.stage().status);
+
   return (
     <div class="page stage-detail">
       <header class="stage-detail__header">
@@ -716,27 +938,24 @@ function CompetitionStageDetailBody(props: {
       </header>
 
       <section class="stage-detail__content">
-        <div class="stage-detail__content--events">
-          <span class="text-heading-md">
-            {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS")}
-          </span>
-        </div>
-        <Show
-          when={props.stage().events.length > 0}
-          fallback={<p>{i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NO_EVENTS")}</p>}
-        >
-          <AtomSegmentedControl
-            title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.EVENTS_BY")}
-            control={view()}
-            onControlChange={setView}
-            controls={controls()}
-          />
-        </Show>
+        <AtomTabs
+          defaultValue={TABS.EVENTS}
+          value={selectedTab()}
+          onChange={setTabParam}
+          options={tabsTitles()}
+          contents={tabsContents()}
+        />
       </section>
       <Show when={canEditStage(props.stage().status)}>
         <Show when={isEditing() && menuOpen()}>
           <Show when={canDeleteStage(props.stage().status)}>
-            <div class="floating-action floating-action--level-3">
+            <div
+              class="floating-action"
+              classList={{
+                "floating-action--level-3": hasAddAction(),
+                "floating-action--level-2": !hasAddAction(),
+              }}
+            >
               <ConfirmActionButton
                 text={props.stage().name}
                 onConfirm={props.onDelete}
@@ -754,47 +973,89 @@ function CompetitionStageDetailBody(props: {
               </ConfirmActionButton>
             </div>
           </Show>
-          <Show when={canCreateEvent(props.stage().status)}>
+          <Show when={hasAddAction()}>
             <div class="floating-action floating-action--level-2">
-              <AtomDialog
-                closeButtonText={i18n.t(
-                  "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
-                )}
-                content={
-                  <Show when={eventDialogDraft()}>
-                    {(draft) => (
-                      <EventEditorForm
-                        draft={draft()}
-                        onCancel={closeEventEditor}
-                        onChange={setEventDialogDraft}
-                        onSave={saveEventEditor}
-                        isCreate
-                      />
+              <Show
+                when={selectedTab() === TABS.NOTIFICATIONS}
+                fallback={
+                  <AtomDialog
+                    closeButtonText={i18n.t(
+                      "MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG",
                     )}
-                  </Show>
+                    content={
+                      <Show when={eventDialogDraft()}>
+                        {(draft) => (
+                          <EventEditorForm
+                            draft={draft()}
+                            onCancel={closeEventEditor}
+                            onChange={setEventDialogDraft}
+                            onSave={saveEventEditor}
+                            isCreate
+                          />
+                        )}
+                      </Show>
+                    }
+                    onOpenChange={handleCreateDialogOpenChange}
+                    open={isCreatingEvent()}
+                    title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
+                    triggerClass="floating-action__trigger"
+                    trigger={
+                      <>
+                        <span class="floating-action__label">
+                          {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
+                        </span>
+                        <span class="floating-action__circle">
+                          <AtomSvgIcon
+                            src={plusIcon}
+                            alt={i18n.t(
+                              "MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT",
+                            )}
+                            tinted
+                          />
+                        </span>
+                      </>
+                    }
+                  />
                 }
-                onOpenChange={handleCreateDialogOpenChange}
-                open={isCreatingEvent()}
-                title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_EVENT")}
-                triggerClass="floating-action__trigger"
-                trigger={
-                  <>
-                    <span class="floating-action__label">
-                      {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
-                    </span>
-                    <span class="floating-action__circle">
-                      <AtomSvgIcon
-                        src={plusIcon}
-                        alt={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_EVENT")}
-                        tinted
-                      />
-                    </span>
-                  </>
-                }
-              />
+              >
+                <button
+                  class="floating-action__trigger"
+                  onClick={openNotificationEditor}
+                >
+                  <span class="floating-action__label">
+                    {i18n.t("MY.COMPETITIONS.STAGE_DETAIL.ADD_NOTIFICATION")}
+                  </span>
+                  <span class="floating-action__circle floating-action__circle--secondary">
+                    <AtomSvgIcon
+                      src={plusIcon}
+                      alt={i18n.t(
+                        "MY.COMPETITIONS.STAGE_DETAIL.ADD_NOTIFICATION",
+                      )}
+                      tinted
+                    />
+                  </span>
+                </button>
+              </Show>
             </div>
           </Show>
         </Show>
+        <AtomDialog
+          closeButtonText={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.CLOSE_DIALOG")}
+          content={
+            <NotificationEditorForm
+              draft={notificationDraft()}
+              eventOptions={notificationEventOptions()}
+              onCancel={closeNotificationEditor}
+              onChange={setNotificationDraft}
+              onNotify={sendNotification}
+            />
+          }
+          onOpenChange={(isOpen) =>
+            isOpen ? setIsNotifying(true) : closeNotificationEditor()
+          }
+          open={isNotifying()}
+          title={i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NEW_NOTIFICATION")}
+        />
         <FloatingEditMenu
           editing={isEditing()}
           menuOpen={menuOpen()}

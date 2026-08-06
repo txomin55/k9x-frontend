@@ -38,7 +38,12 @@ export default function FloatingEditMenu(props: FloatingEditMenuProps) {
             aria-label={props.editing ? props.viewLabel : props.editLabel}
             onClick={() => props.onEditToggle()}
           >
-            <span class="floating-action__circle">
+            <span
+              class="floating-action__circle"
+              classList={{
+                "floating-action__circle--ghost": props.editing,
+              }}
+            >
               <AtomSvgIcon
                 src={props.editing ? arrowBackIcon : pencilIcon}
                 alt={props.editing ? props.viewLabel : props.editLabel}

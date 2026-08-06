@@ -10,6 +10,12 @@ node_modules
 .env.local
 .env.*.local
 
+# Per-mode Vite env files (vite --mode <name>). Untracked: each environment keeps its own copy,
+# and the CI/Vercel builds must provide the VITE_* variables themselves. Only the template is
+# tracked. Nothing here is secret (the Google client_secret lives only in the backend).
+ui/app/.env.*
+!ui/app/.env.example
+
 # Log files
 yarn-debug.log*
 yarn-error.log*

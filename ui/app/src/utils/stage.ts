@@ -7,7 +7,7 @@ export const STAGE_STATUS = {
   DELETED: "DELETED",
 };
 
-/** Tabs of the public stage page, and the query param that selects one. */
+/** Tabs of the stage pages (public info and organizer detail), and the query param that selects one. */
 export const STAGE_INFO_TABS = {
   EVENTS: "EVENTS",
   NOTIFICATIONS: "NOTIFICATIONS",

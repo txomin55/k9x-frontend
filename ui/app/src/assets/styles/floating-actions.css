@@ -78,6 +78,10 @@
 }
 
 .floating-action__circle {
+    --circle-background: var(--primary);
+    --circle-background-hover: var(--primary-hover);
+    --circle-background-active: var(--primary-active);
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -85,7 +89,7 @@
     width: var(--circle-size-md);
     height: var(--circle-size-md);
 
-    background: var(--primary);
+    background: var(--circle-background);
     color: var(--text-inverted);
     border-radius: var(--radius-full);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
@@ -93,8 +97,37 @@
     transition: background-color 200ms, transform 200ms;
 }
 
+/* Destructive actions keep their colour on hover/active, only the scale reacts. */
 .floating-action__circle--danger {
-    background: var(--error);
+    --circle-background: var(--error);
+    --circle-background-hover: var(--error);
+    --circle-background-active: var(--error);
+}
+
+/* Secondary: an action that is not the affirmative one of the page (sending an
+   announcement) takes the outline treatment of AtomButton's accent type instead of
+   claiming the primary colour.
+   `box-sizing` is local (k9x is content-box) so the border does not grow the circle. */
+.floating-action__circle--secondary {
+    --circle-background: var(--surface);
+    --circle-background-hover: var(--accent-soft);
+    --circle-background-active: var(--surface-muted);
+
+    box-sizing: border-box;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
+}
+
+/* Ghost: the lightest step of the stack — for leaving a mode rather than doing
+   something (back to view mode). Muted fill, muted icon and a shallower shadow so
+   it reads as the quietest circle of the group. */
+.floating-action__circle--ghost {
+    --circle-background: var(--surface-muted);
+    --circle-background-hover: var(--surface-hover);
+    --circle-background-active: var(--border);
+
+    color: var(--text-secondary);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .floating-action__circle .atom-svg-icon {
@@ -114,18 +147,14 @@
     transform: scale(0.96);
 }
 
-.floating-action__trigger:hover:not(:disabled)
-    .floating-action__circle:not(.floating-action__circle--danger),
-.floating-action .atom-dialog__trigger:hover
-    .floating-action__circle:not(.floating-action__circle--danger) {
-    background: var(--primary-hover);
+.floating-action__trigger:hover:not(:disabled) .floating-action__circle,
+.floating-action .atom-dialog__trigger:hover .floating-action__circle {
+    background: var(--circle-background-hover);
 }
 
-.floating-action__trigger:active:not(:disabled)
-    .floating-action__circle:not(.floating-action__circle--danger),
-.floating-action .atom-dialog__trigger:active
-    .floating-action__circle:not(.floating-action__circle--danger) {
-    background: var(--primary-active);
+.floating-action__trigger:active:not(:disabled) .floating-action__circle,
+.floating-action .atom-dialog__trigger:active .floating-action__circle {
+    background: var(--circle-background-active);
 }
 
 /* Disabled add pill (e.g. añadir ejercicio sin jueces) */

@@ -66,3 +66,35 @@
     align-items: center;
     gap: var(--unit-1);
 }
+
+.stage-detail__notifications-table {
+    margin-top: var(--unit-1);
+}
+
+.stage-detail__notifications {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+    gap: var(--unit-2);
+    align-items: start;
+}
+
+.stage-detail__notifications > .card {
+    max-width: none;
+    margin-bottom: 0;
+}
+
+.stage-detail__notification-events {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--unit-05);
+}
+
+.stage-detail__notification-event {
+    padding: var(--unit-025) var(--unit-1);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    background-color: var(--surface-muted);
+}

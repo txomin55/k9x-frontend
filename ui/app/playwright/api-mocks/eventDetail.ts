@@ -115,6 +115,7 @@ const buildCompetitions = (): CompetitionResponseDTO[] => [
         name: "Detail Stage",
         dateFrom: 4_102_444_800_000,
         dateTo: 4_102_531_200_000,
+        notifications: [],
         status: "CREATED",
         events: [
           {

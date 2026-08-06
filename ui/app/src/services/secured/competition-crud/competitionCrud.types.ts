@@ -1,4 +1,5 @@
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { StageNotificationResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 
 export interface CompetitionNotificationDetailResponseDTO {
   date: number;
@@ -20,6 +21,7 @@ export interface CompetitionStageDetailResponseDTO {
   events: CompetitionStageEventDetailResponseDTO[];
   id: string;
   name: string;
+  notifications: StageNotificationResponseDTO[];
   status: string;
 }
 

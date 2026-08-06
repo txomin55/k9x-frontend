@@ -52,6 +52,7 @@ const toCompetitionDetailStage = (
     })),
     id: stage.id,
     name: stage.name,
+    notifications: stage.notifications ?? previousStage?.notifications ?? [],
     status: stage.status ?? STAGE_STATUS.DRAFT,
   };
 };

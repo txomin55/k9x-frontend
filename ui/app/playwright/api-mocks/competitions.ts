@@ -21,6 +21,7 @@ export const defaultCompetitions: CompetitionResponseDTO[] = [
         name: "Day 1",
         dateFrom: 1_717_200_000_000,
         dateTo: 1_717_286_400_000,
+        notifications: [],
         events: [
           {
             id: "event-1",
@@ -90,6 +91,7 @@ const competitionWithStage: CompetitionResponseDTO = {
       name: "Existing Trial",
       dateFrom: 1_717_200_000_000,
       dateTo: 1_717_286_400_000,
+      notifications: [],
       status: STAGE_STATUS.CREATED,
       events: [],
     },
@@ -112,6 +114,13 @@ const competitionWithEvent: CompetitionResponseDTO = {
       name: "Event Trial",
       dateFrom: 1_717_200_000_000,
       dateTo: 1_717_286_400_000,
+      notifications: [
+        {
+          timestamp: 1_717_200_000_000,
+          eventIds: ["event-existing-1"],
+          content: "Ring 1 starts one hour later",
+        },
+      ],
       status: STAGE_STATUS.CREATED,
       events: [
         {
@@ -203,6 +212,7 @@ export const setupCompetitionsCrud = (page: Page) => {
           dateFrom: payload.dateFrom ?? 0,
           dateTo: payload.dateTo ?? 0,
           events: [],
+          notifications: [],
           status: STAGE_STATUS.CREATED,
         };
         competition?.stages?.push(stage);
@@ -234,6 +244,25 @@ export const setupCompetitionsCrud = (page: Page) => {
         return "";
       },
       pathname: "/secured/stages/*",
+      status: 204,
+    }),
+    setRouteResponses(page, {
+      method: "POST",
+      payload: (match, request) => {
+        const stage = findStage(match?.[1]);
+        const created = request.postDataJSON() as {
+          content: string;
+          eventIds: string[];
+        }[];
+        stage?.notifications?.push(
+          ...created.map((notification) => ({
+            ...notification,
+            timestamp: 1_717_300_000_000,
+          })),
+        );
+        return "";
+      },
+      pathname: "/secured/stages/*/notifications",
       status: 204,
     }),
     setRouteResponses(page, {
