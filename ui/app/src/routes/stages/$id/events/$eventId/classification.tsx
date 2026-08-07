@@ -40,7 +40,6 @@ import {useAuthUser} from "@/stores/auth/auth";
 import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
 import {useDeviceType} from "@/utils/media-query/useDeviceType";
 import {formatDateTime} from "@/utils/date";
-import {exportClassificationPdf} from "@/utils/classification-pdf";
 import {isOffline} from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
@@ -577,19 +576,6 @@ function EventClassificationPage() {
     </div>
   );
 
-  const [isExporting, setIsExporting] = createSignal(false);
-
-  const handleExportPdf = async () => {
-    const data = clfData();
-    if (!data || isExporting()) return;
-    setIsExporting(true);
-    try {
-      await exportClassificationPdf(data, sortedCompetitors(), t);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   const [controlValue, setControlValue] = useSearchParam(
     "view",
     CONTROLS_KEYS.LIST,
@@ -645,18 +631,6 @@ function EventClassificationPage() {
       }
     >
       {(classification) => {
-        const exportButton = () => (
-          <Show when={competitors().length}>
-            <AtomButton
-              type="ghost"
-              disabled={isExporting()}
-              onClick={handleExportPdf}
-            >
-              {t("STAGES.CLASSIFICATION.EXPORT_PDF")}
-            </AtomButton>
-          </Show>
-        );
-
         const disciplineBlock = () => (
           <div class="classification__discipline">
             <RankBadge rank={classification().rank} />
@@ -747,7 +721,6 @@ function EventClassificationPage() {
                       <span class="text-caption-lg">
                         {classification().competitionName}
                       </span>
-                      {exportButton()}
                     </div>
                     <div class="classification__header--info">
                       {disciplineBlock()}
@@ -794,7 +767,6 @@ function EventClassificationPage() {
                             {sortSelect()}
                           </div>
                         </Show>
-                        {exportButton()}
                       </div>
                     }
                   />

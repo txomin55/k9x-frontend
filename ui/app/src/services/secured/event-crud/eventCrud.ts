@@ -1,5 +1,7 @@
 import { createMemo, getOwner, onMount } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
+import type { BlobResponse } from "@/utils/http/client.types";
+import { downloadBlob } from "@/utils/download/downloadBlob";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import {
@@ -74,6 +76,21 @@ export const useEventById = (id: string, options?: TanstackCreateQuery) =>
     refetchOnMount: options?.refetchOnMount,
     enabled: !!id && id !== "new",
   });
+
+const EXPORT_FALLBACK_FILE_NAME = "event.xlsx";
+
+/**
+ * Downloads the event workbook. The request must go through `rawRequest` rather than a plain link so it
+ * carries the bearer token, hence the blob round-trip instead of navigating to the URL.
+ */
+export const exportEventById = async (id: string) => {
+  const { blob, fileName } = await rawRequest<BlobResponse>({
+    path: `/secured/events/${id}/export`,
+    responseType: "blob",
+  });
+
+  downloadBlob(blob, fileName ?? EXPORT_FALLBACK_FILE_NAME);
+};
 
 const createId = () => generateEntityId("event");
 

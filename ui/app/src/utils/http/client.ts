@@ -88,6 +88,27 @@ const extractErrorMessage = async (
   }
 };
 
+/**
+ * Reads the download name the server suggests. Prefers the RFC 5987 `filename*` form, which is the one
+ * that survives non-ASCII names, and falls back to the plain quoted `filename`.
+ */
+const fileNameFromContentDisposition = (header: string | null) => {
+  if (!header) return undefined;
+
+  const encoded = /filename\*=UTF-8''([^;]+)/i.exec(header);
+  if (encoded) {
+    try {
+      return decodeURIComponent(encoded[1]);
+    } catch {
+      // malformed encoding: fall through to the plain form
+    }
+  }
+
+  const plain = /filename="?([^";]+)"?/i.exec(header);
+
+  return plain ? plain[1] : undefined;
+};
+
 const createSerializableRequest = ({
   body,
   credentials,
@@ -109,6 +130,7 @@ const rawRequest = async <TResponse>({
   headers,
   method = "GET",
   path,
+  responseType = "auto",
   retryOnUnauthorized = auth || path.startsWith("/secured/"),
 }: RequestOptions): Promise<TResponse> => {
   let response: Response;
@@ -150,6 +172,7 @@ const rawRequest = async <TResponse>({
         },
         method,
         path,
+        responseType,
         retryOnUnauthorized: false,
       });
     } catch (error) {
@@ -168,6 +191,15 @@ const rawRequest = async <TResponse>({
 
   if (response.status === 204) {
     return undefined as TResponse;
+  }
+
+  if (responseType === "blob") {
+    return {
+      blob: await response.blob(),
+      fileName: fileNameFromContentDisposition(
+        response.headers.get("content-disposition"),
+      ),
+    } as TResponse;
   }
 
   const contentType = response.headers.get("content-type") ?? "";

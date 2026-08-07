@@ -16,5 +16,12 @@ export type RequestOptions = RequestShape<HeadersInit, string> & {
   body?: unknown;
   credentials?: RequestCredentials;
   path: string;
+  responseType?: "auto" | "blob";
   retryOnUnauthorized?: boolean;
+};
+
+/** What a `responseType: "blob"` request resolves to: the payload plus the server-suggested file name. */
+export type BlobResponse = {
+  blob: Blob;
+  fileName?: string;
 };

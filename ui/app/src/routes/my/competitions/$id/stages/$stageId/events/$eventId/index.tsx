@@ -27,10 +27,12 @@ import EventCompetitorsSection from "@/components/routes/my/competitions/$id/sta
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import {
+  exportEventById,
   prefetchEventById,
   updateApiEventNotCompeting,
   useApiEvent,
 } from "@/services/secured/event-crud/eventCrud";
+import { showToast } from "@/stores/toast/toast";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useApiStage } from "@/services/secured/stage-crud/stageCrud";
 import type {
@@ -62,6 +64,7 @@ import {
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
+import downloadIcon from "@/assets/miscelaneous/download.svg";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
@@ -112,6 +115,28 @@ function CompetitionObdxEventDetailBody(props: {
     });
   const [isEditing, setIsEditing] = createSignal(false);
   const [menuOpen, setMenuOpen] = createSignal(false);
+  const [isExporting, setIsExporting] = createSignal(false);
+
+  const showsEditMenu = () => canManageEvent(props.event().status);
+
+  /**
+   * Export is always available, including on events with no cog at all. When the cog is there it sits
+   * right above it and steps aside as soon as the menu opens, so it never competes with the edit stack.
+   */
+  const showsExportAction = () => !showsEditMenu() || !menuOpen();
+
+  const handleExport = async () => {
+    if (isExporting()) return;
+    setIsExporting(true);
+    showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_STARTING"));
+    try {
+      await exportEventById(props.event().id);
+    } catch {
+      showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_FAILED"));
+    } finally {
+      setIsExporting(false);
+    }
+  };
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
   );
@@ -1095,7 +1120,33 @@ function CompetitionObdxEventDetailBody(props: {
         contents={eventTabsContents()}
       />
 
-      <Show when={canManageEvent(props.event().status)}>
+      <Show when={showsExportAction()}>
+        <div
+          class="floating-action"
+          classList={{
+            "floating-action--level-1": showsEditMenu(),
+            "floating-action--level-0": !showsEditMenu(),
+          }}
+        >
+          <button
+            type="button"
+            class="floating-action__trigger"
+            disabled={isExporting()}
+            aria-label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT")}
+            onClick={() => void handleExport()}
+          >
+            <span class="floating-action__circle floating-action__circle--secondary">
+              <AtomSvgIcon
+                src={downloadIcon}
+                alt={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT")}
+                tinted
+              />
+            </span>
+          </button>
+        </div>
+      </Show>
+
+      <Show when={showsEditMenu()}>
         <Show
           when={
             isEditing() && menuOpen() && canDeleteEvent(props.event().status)

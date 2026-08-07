@@ -32,6 +32,14 @@ El **⚙️ config** (level-0) es el único siempre visible. Controla `menuOpen`
 - Cerrado → solo ⚙️.
 - Abierto + no editando → ⚙️ + lápiz.
 - Abierto + editando → ⚙️ + flecha atrás + añadir + eliminar.
+
+**Acciones ajenas al menú (p. ej. exportar).** No son props de `FloatingEditMenu`: la página
+las renderiza aparte, porque su visibilidad no depende de `canManage<Entidad>`. El patrón
+(estrenado en event, `EXPORT`) es:
+- Siempre visible, también en eventos **sin ⚙️** (usuario que no puede gestionar).
+- Con ⚙️ presente va en **level-1** (justo encima) y **desaparece al abrir el menú**, dejándole
+  el nivel al lápiz. Sin ⚙️ baja a **level-0**.
+- `showsEditMenu() = canManageEvent(status)`; `showsExportAction() = !showsEditMenu() || !menuOpen()`.
 - Pulsar ⚙️ en modo edición **oculta** lápiz/atrás + acciones pero **sigue editando**
   (formulario y acciones de fila siguen activos); volver a pulsar ⚙️ las muestra.
 
