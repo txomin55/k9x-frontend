@@ -14,11 +14,11 @@ const resolveBreed = (payload: Record<string, unknown>) => {
 
 export const defaultDogs: Dog[] = [
   {
-    id: "dog-1",
+    identification: "dog-1",
     name: "Luna",
     image: "https://images.example.test/dogs/dog-1.png",
     breed: { id: "border-collie", name: "Border Collie" },
-    identity: "ES-DOG-1",
+    origin: "ES-DOG-1",
     owner: "Carlos Competitor",
     handler: "Carlos Competitor",
     team: "Team Alpha",
@@ -29,11 +29,11 @@ export const defaultDogs: Dog[] = [
     threeFciGenerationsConfirmed: false,
   },
   {
-    id: "dog-2",
+    identification: "dog-2",
     name: "Koda",
     image: "https://images.example.test/dogs/dog-2.png",
     breed: { id: "labrador", name: "Labrador" },
-    identity: "ES-DOG-2",
+    origin: "ES-DOG-2",
     owner: "Carlos Competitor",
     handler: "Carlos Competitor",
     team: "Team Beta",
@@ -52,7 +52,7 @@ export const defaultDogs: Dog[] = [
 export const setupDogsCrud = (page: Page) => {
   const dogs: Record<string, unknown>[] = defaultDogs.map((dog) => ({ ...dog }));
   const indexOf = (id: string | undefined) =>
-    dogs.findIndex((dog) => dog.id === id);
+    dogs.findIndex((dog) => dog.identification === id);
 
   return Promise.all([
     setRouteResponses(page, {

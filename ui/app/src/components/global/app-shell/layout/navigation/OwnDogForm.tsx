@@ -7,7 +7,7 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { showToast } from "@/stores/toast/toast";
 
 interface OwnDogFormProps {
-  dogId: string;
+  dogIdentification: string;
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ export default function OwnDogForm(props: OwnDogFormProps) {
       {
         "entry.946948767": user()?.email,
         "entry.897265685": description(),
-        "entry.467584706": props.dogId,
+        "entry.467584706": props.dogIdentification,
       },
     );
     props.onClose();

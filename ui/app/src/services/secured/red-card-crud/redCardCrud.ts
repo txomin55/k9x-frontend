@@ -15,7 +15,11 @@ export const registerRedCard = (
   payload: RegisterRedCardRequestDTO,
 ) =>
   commitOptimisticMutation({
-    entityId: [payload.dogId, payload.exerciseId, payload.judgeId].join(":"),
+    entityId: [
+      payload.dogIdentification,
+      payload.exerciseId,
+      payload.judgeId,
+    ].join(":"),
     entityType: RED_CARD_ENTITY_TYPE,
     method: "PUT",
     payload,

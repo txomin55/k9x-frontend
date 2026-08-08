@@ -84,7 +84,7 @@ const createCollection = (score: number): CollectionResponseDTO => ({
           position: 1,
           competitorNumber: 1,
           team: "",
-          identity: "",
+          origin: "",
           country: "",
           status: "",
           breed: { id: "", name: "" },
@@ -136,7 +136,7 @@ describe("collection detail route", () => {
     fireEvent.blur(getScoreInput());
 
     expect(mocks.updateCollectionScore).toHaveBeenCalledWith("event-1", {
-      dogId: "dog-1",
+      dogIdentification: "dog-1",
       eventId: "event-1",
       exerciseId: "exercise-1",
       judgeId: "judge-1",

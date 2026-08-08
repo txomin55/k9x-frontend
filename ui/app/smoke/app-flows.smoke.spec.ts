@@ -39,7 +39,7 @@ test("competition creation journey: build an event from a judge and dog, view in
   registry.judgeIds.push(judge.id);
 
   const dog = await flows.createDog(page);
-  registry.dogIds.push(dog.id);
+  registry.dogIdentifications.push(dog.identification);
 
   const competition = await flows.createCompetition(page);
   registry.competitionIds.push(competition.id);
@@ -66,7 +66,7 @@ test("enroll journey: enroll a dog into the event built in the previous journey"
   page,
 }) => {
   const dog = await flows.createDog(page);
-  registry.dogIds.push(dog.id);
+  registry.dogIdentifications.push(dog.identification);
 
   await flows.enrollDog(page, shared.stageId!, dog.name);
 });
@@ -80,7 +80,7 @@ test("scoring journey: build an event with a dog, enroll the owned dog, add scor
   registry.judgeIds.push(judge.id);
 
   const dog = await flows.createDog(page);
-  registry.dogIds.push(dog.id);
+  registry.dogIdentifications.push(dog.identification);
 
   const competition = await flows.createCompetition(page);
   registry.competitionIds.push(competition.id);
@@ -112,7 +112,7 @@ test("visitor journey: browse the public stages listing, open info, explore a cl
 }) => {
   const { judge, dog, competition, stage } = await flows.buildScoredEvent(page);
   registry.judgeIds.push(judge.id);
-  registry.dogIds.push(dog.id);
+  registry.dogIdentifications.push(dog.identification);
   registry.competitionIds.push(competition.id);
 
   await flows.visitStagesListing(page, stage.title);

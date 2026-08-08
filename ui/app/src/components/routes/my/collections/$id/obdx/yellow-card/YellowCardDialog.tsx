@@ -114,7 +114,7 @@ export default function YellowCardDialog(props: YellowCardDialogProps) {
     }
 
     registerYellowCard(props.eventId, {
-      dogId: props.competitorId,
+      dogIdentification: props.competitorId,
       exerciseId: exercise.value,
       judgeId: judge.value,
     });

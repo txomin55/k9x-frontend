@@ -34,7 +34,7 @@ export interface EventCompetitorResponseDTO {
   position: number;
   competitorNumber: number;
   team: string;
-  identity: string;
+  origin: string;
   owner: string;
   handler: string;
   country: string;
@@ -47,7 +47,7 @@ export interface EventCompetitorResponseDTO {
 }
 
 export interface EventCompetitorRequestDTO {
-  dogId: string;
+  dogIdentification: string;
   position: number;
   competitorNumber: number;
   accepted: boolean;
@@ -56,13 +56,13 @@ export interface EventCompetitorRequestDTO {
 }
 
 export interface UpdateEventNotCompetingRequestDTO {
-  dogId: string;
+  dogIdentification: string;
   notCompeting: boolean;
 }
 
 export interface EventCompetitorDetail {
-  dogId: string;
-  identity: string;
+  dogIdentification: string;
+  origin: string;
   name: string;
   owner: string;
   handler: string;
@@ -111,7 +111,7 @@ export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
 
 /**
  * Raw server payload: competitors arrive as {@link EventCompetitorResponseDTO}
- * (nested `dog`, no flat `dogId`). {@link normalizeEventDetailResponse}
+ * (nested `dog`, no flat `dogIdentification`). {@link normalizeEventDetailResponse}
  * flattens them into the internal {@link EventCompetitorDetail} shape.
  */
 export interface ObdxEventDetailRawResponseDTO extends Omit<
@@ -186,11 +186,11 @@ export interface ApiEventRollbackPayload {
 const normalizeCompetitor = (
   competitor: EventCompetitorResponseDTO,
 ): EventCompetitorDetail => ({
-  dogId: competitor.dog.id,
+  dogIdentification: competitor.dog.id,
   name: competitor.dog.name,
   owner: competitor.owner ?? "",
   handler: competitor.handler ?? "",
-  identity: competitor.identity ?? "",
+  origin: competitor.origin ?? "",
   team: competitor.team ?? "",
   country: competitor.country ?? "",
   breed: competitor.breed?.name ?? "",

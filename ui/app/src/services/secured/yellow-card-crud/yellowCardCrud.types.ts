@@ -1,7 +1,7 @@
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export interface RegisterYellowCardRequestDTO {
-  dogId: string;
+  dogIdentification: string;
   exerciseId: string;
   judgeId: string;
 }

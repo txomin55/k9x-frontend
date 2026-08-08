@@ -5,13 +5,13 @@ import { ACCESS_TOKEN_KEY, SMOKE_API_URL, SMOKE_STATE_PATH } from "./constants";
 export type CreatedEntities = {
   competitionIds: string[];
   judgeIds: string[];
-  dogIds: string[];
+  dogIdentifications: string[];
 };
 
 export const newRegistry = (): CreatedEntities => ({
   competitionIds: [],
   judgeIds: [],
-  dogIds: [],
+  dogIdentifications: [],
 });
 
 const storedToken = (): string | null => {
@@ -57,7 +57,7 @@ export const cleanup = async (entities: CreatedEntities) => {
   for (const id of entities.competitionIds) {
     await remove(`/secured/competitions/${id}`);
   }
-  for (const id of entities.dogIds) {
+  for (const id of entities.dogIdentifications) {
     await remove(`/secured/dogs/${id}`);
   }
   for (const id of entities.judgeIds) {

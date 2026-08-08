@@ -57,8 +57,8 @@ type EventCompetitorsSectionProps = {
   onDeleteCompetitor: (competitorId: string) => void;
   onOpenCompetitorEditor: (competitor: EventCompetitorDetail) => void;
   onCreateCompetitor: () => void;
-  onAcceptCompetitor: (dogId: string) => void;
-  onMarkCompetitorNotCompeting: (dogId: string) => void;
+  onAcceptCompetitor: (dogIdentification: string) => void;
+  onMarkCompetitorNotCompeting: (dogIdentification: string) => void;
 };
 
 export default function EventCompetitorsSection(
@@ -80,34 +80,34 @@ export default function EventCompetitorsSection(
     enabled: () => Boolean(user()),
   });
   const dogOptions = createMemo<AtomSelectOption[]>(() => {
-    const addedDogIds = new Set(
+    const addedDogIdentifications = new Set(
       props.competitors
-        .filter((competitor) => competitor.dogId !== props.editingCompetitorId)
-        .map((competitor) => competitor.dogId),
+        .filter((competitor) => competitor.dogIdentification !== props.editingCompetitorId)
+        .map((competitor) => competitor.dogIdentification),
     );
 
     return (dogsQuery.data ?? [])
-      .filter((dog) => !addedDogIds.has(dog.id))
+      .filter((dog) => !addedDogIdentifications.has(dog.identification))
       .map((dog) => ({
         label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
-        value: dog.id,
+        value: dog.identification,
       }));
   });
   const dogsById = createMemo(() => {
     const map = new Map<string, Dog>();
     for (const dog of dogsQuery.data ?? []) {
-      map.set(dog.id, dog);
+      map.set(dog.identification, dog);
     }
     return map;
   });
   const getCompetitorDetails = (competitor: EventCompetitorDetail) => {
-    const dog = dogsById().get(competitor.dogId);
+    const dog = dogsById().get(competitor.dogIdentification);
 
     return {
       name: dog?.name ?? competitor.name,
       breed: dog?.breed.name ?? competitor.breed,
       handler: dog?.handler ?? competitor.handler,
-      identity: dog?.identity ?? competitor.identity,
+      origin: dog?.origin ?? competitor.origin,
       team: dog?.team ?? competitor.team,
       country: dog?.country.id ?? competitor.country,
       sex: dog?.sex,
@@ -184,7 +184,7 @@ export default function EventCompetitorsSection(
             <ConfirmActionButton
               text={details.handler}
               onConfirm={() =>
-                props.onMarkCompetitorNotCompeting(competitor.dogId)
+                props.onMarkCompetitorNotCompeting(competitor.dogIdentification)
               }
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
@@ -195,7 +195,7 @@ export default function EventCompetitorsSection(
           <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
             <ConfirmActionButton
               text={details.handler}
-              onConfirm={() => props.onDeleteCompetitor(competitor.dogId)}
+              onConfirm={() => props.onDeleteCompetitor(competitor.dogIdentification)}
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                 {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
@@ -216,7 +216,7 @@ export default function EventCompetitorsSection(
           <AtomButton
             type={BUTTON_TYPES.ACCENT}
             onClick={() =>
-              openCompetitorCollection(params().eventId, competitor.dogId)
+              openCompetitorCollection(params().eventId, competitor.dogIdentification)
             }
           >
             {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
@@ -224,7 +224,7 @@ export default function EventCompetitorsSection(
         </Show>
         <Show when={canAcceptCompetitorEnroll(competitor.status)}>
           <AtomButton
-            onClick={() => props.onAcceptCompetitor(competitor.dogId)}
+            onClick={() => props.onAcceptCompetitor(competitor.dogIdentification)}
           >
             {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
           </AtomButton>
@@ -245,7 +245,7 @@ export default function EventCompetitorsSection(
             <ConfirmActionButton
               text={details.handler}
               onConfirm={() =>
-                props.onMarkCompetitorNotCompeting(competitor.dogId)
+                props.onMarkCompetitorNotCompeting(competitor.dogIdentification)
               }
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
@@ -260,7 +260,7 @@ export default function EventCompetitorsSection(
           <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
             <ConfirmActionButton
               text={details.handler}
-              onConfirm={() => props.onDeleteCompetitor(competitor.dogId)}
+              onConfirm={() => props.onDeleteCompetitor(competitor.dogIdentification)}
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                 <AtomSvgIcon
@@ -289,7 +289,7 @@ export default function EventCompetitorsSection(
           <AtomButton
             type={BUTTON_TYPES.ACCENT}
             onClick={() =>
-              openCompetitorCollection(params().eventId, competitor.dogId)
+              openCompetitorCollection(params().eventId, competitor.dogIdentification)
             }
           >
             <AtomSvgIcon
@@ -300,7 +300,7 @@ export default function EventCompetitorsSection(
           </AtomButton>
         </Show>
         <Show when={canAcceptCompetitorEnroll(competitor.status)}>
-          <AtomButton onClick={() => props.onAcceptCompetitor(competitor.dogId)}>
+          <AtomButton onClick={() => props.onAcceptCompetitor(competitor.dogIdentification)}>
             <AtomSvgIcon
               src={checkIcon}
               alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
@@ -401,7 +401,7 @@ export default function EventCompetitorsSection(
                   <span class="text-body-sm">
                     {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DOG")}: ${details().name}`}
                   </span>
-                  <span class="text-body-sm">{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.IDENTITY")}: ${details().identity}`}</span>
+                  <span class="text-body-sm">{`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ORIGIN")}: ${details().origin}`}</span>
                   <span class="text-body-sm">
                     {`${i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.TEAM")}: ${details().team}`}{" "}
                     <CountryFlag country={details().country} />
@@ -425,7 +425,7 @@ export default function EventCompetitorsSection(
       <AtomTable<EventCompetitorDetail>
         data={sortedCompetitors()}
         columns={columns()}
-        getRowId={(row) => row.dogId}
+        getRowId={(row) => row.dogIdentification}
       />
     </div>
   );

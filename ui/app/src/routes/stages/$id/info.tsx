@@ -109,12 +109,12 @@ function StageInfoSkeleton() {
 }
 
 type EnrollDraft = {
-  dogId: string;
+  dogIdentification: string;
   bih: boolean;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
-  dogId: "",
+  dogIdentification: "",
   bih: false,
 });
 
@@ -158,7 +158,7 @@ function StageInfoPage() {
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     ownedDogs().map((dog) => ({
       label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
-      value: dog.id,
+      value: dog.identification,
     })),
   );
   const [selectedEventId, setSelectedEventId] = useSearchParam(
@@ -190,12 +190,12 @@ function StageInfoPage() {
   const handleDogChange = (option: AtomSelectOption | null) => {
     updateEnrollDraft((current) => ({
       ...current,
-      dogId: option?.value ?? "",
+      dogIdentification: option?.value ?? "",
     }));
   };
 
-  const selectedDog = (dogId: string) =>
-    ownedDogs().find((dog) => dog.id === dogId);
+  const selectedDog = (dogIdentification: string) =>
+    ownedDogs().find((dog) => dog.identification === dogIdentification);
 
   const openEnrollDialog = (eventId: string) => {
     setEnrollDraft(createEmptyEnrollDraft());
@@ -461,7 +461,7 @@ function StageInfoPage() {
                     placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
                     value={
                       dogOptions().find(
-                        (option) => option.value === enrollDraft().dogId,
+                        (option) => option.value === enrollDraft().dogIdentification,
                       ) ?? null
                     }
                   >
@@ -477,8 +477,8 @@ function StageInfoPage() {
 
                   <Show
                     when={
-                      selectedDog(enrollDraft().dogId) &&
-                      selectedDog(enrollDraft().dogId)?.sex !== "MALE"
+                      selectedDog(enrollDraft().dogIdentification) &&
+                      selectedDog(enrollDraft().dogIdentification)?.sex !== "MALE"
                     }
                   >
                     <AtomCheckbox

@@ -15,7 +15,11 @@ export const registerYellowCard = (
   payload: RegisterYellowCardRequestDTO,
 ) =>
   commitOptimisticMutation({
-    entityId: [payload.dogId, payload.exerciseId, payload.judgeId].join(":"),
+    entityId: [
+      payload.dogIdentification,
+      payload.exerciseId,
+      payload.judgeId,
+    ].join(":"),
     entityType: YELLOW_CARD_ENTITY_TYPE,
     method: "PUT",
     payload,

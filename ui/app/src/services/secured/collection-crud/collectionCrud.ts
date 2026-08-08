@@ -168,7 +168,7 @@ const updateCollectionScoreProjection = (
   ...previousCollection,
   obdx: {
     competitors: previousCollection.obdx.competitors.map((competitorScores) =>
-      competitorScores.competitor.dog.id === payload.dogId
+      competitorScores.competitor.dog.id === payload.dogIdentification
         ? {
             ...competitorScores,
             exercises: competitorScores.exercises.map((exerciseScores) =>
@@ -208,7 +208,7 @@ export const updateCollectionScore = (
     payload,
   );
   const entityId = [
-    payload.dogId,
+    payload.dogIdentification,
     payload.exerciseId,
     payload.judgeId,
     payload.eventId,

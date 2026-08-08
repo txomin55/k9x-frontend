@@ -146,7 +146,7 @@ export type StageEnrollRollbackPayload = {
 };
 
 export type EnrollStageEventRequestDTO = {
-  dogId: string;
+  dogIdentification: string;
   eventId: string;
   bih: boolean;
 };

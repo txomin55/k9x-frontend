@@ -45,21 +45,21 @@ const getJudgeShortName = (name: string) => {
 };
 
 const getPendingScoreKey = ({
-  dogId,
+  dogIdentification,
   exerciseId,
   judgeId,
 }: {
-  dogId: string;
+  dogIdentification: string;
   exerciseId: string;
   judgeId: string;
-}) => `${dogId}:${exerciseId}:${judgeId}`;
+}) => `${dogIdentification}:${exerciseId}:${judgeId}`;
 
 const applyPendingScores = ({
-  dogId,
+  dogIdentification,
   exercises,
   pendingScores,
 }: {
-  dogId: string;
+  dogIdentification: string;
   exercises: ExerciseScoresResponseDTO[];
   pendingScores: Record<string, number>;
 }) =>
@@ -69,7 +69,7 @@ const applyPendingScores = ({
       const pendingScore =
         pendingScores[
           getPendingScoreKey({
-            dogId,
+            dogIdentification,
             exerciseId: exerciseScores.exercise.id,
             judgeId: score.judge.id,
           })
@@ -184,7 +184,7 @@ export default function ObdxCollectionDetail() {
     }
 
     updateApiEventNotCompeting(params().id, {
-      dogId: competitor.value,
+      dogIdentification: competitor.value,
       notCompeting: true,
     });
   };
@@ -218,15 +218,15 @@ export default function ObdxCollectionDetail() {
     if (collectionData.data?.obdx.competitors) {
       const seen: string[] = [];
       for (const c of collectionData.data.obdx.competitors) {
-        const dogId = c.competitor.dog.id;
+        const dogIdentification = c.competitor.dog.id;
 
         for (const e of c.exercises) {
           const touched = e.collectionScores.some(
             (s) => s.score != null && s.score !== 0,
           );
 
-          if (touched && dogId) {
-            seen.push(dogId);
+          if (touched && dogIdentification) {
+            seen.push(dogIdentification);
             break;
           }
         }
@@ -250,7 +250,7 @@ export default function ObdxCollectionDetail() {
     }
 
     return applyPendingScores({
-      dogId: competitorScores.competitor.dog.id ?? "",
+      dogIdentification: competitorScores.competitor.dog.id ?? "",
       exercises: competitorScores.exercises,
       pendingScores: pendingScores(),
     });
@@ -300,7 +300,7 @@ export default function ObdxCollectionDetail() {
       competitorScores.exercises.forEach((exerciseScores) => {
         exerciseScores.collectionScores.forEach((score) => {
           const scoreKey = getPendingScoreKey({
-            dogId: competitorScores.competitor.dog.id ?? "",
+            dogIdentification: competitorScores.competitor.dog.id ?? "",
             exerciseId: exerciseScores.exercise.id,
             judgeId: score.judge.id,
           });

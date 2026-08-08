@@ -22,11 +22,11 @@ import {
 const DOG_SNAPSHOT_PREFIX = "dog:";
 
 export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
-  id: dog.id,
+  identification: dog.identification,
   name: dog.name ?? previousDog?.name ?? "",
   image: dog.image ?? previousDog?.image ?? "",
   breed: dog.breed ?? previousDog?.breed,
-  identity: dog.identity ?? previousDog?.identity,
+  origin: dog.origin ?? previousDog?.origin,
   owner: dog.owner ?? previousDog?.owner,
   handler: dog.handler ?? previousDog?.handler,
   team: dog.team ?? previousDog?.team,
@@ -41,19 +41,19 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
 export const buildNextDogs = (previousDogs: Dog[], dog: Dog) => {
   const nextDog = toDogListItem(
     dog,
-    previousDogs.find(({ id }) => id === dog.id),
+    previousDogs.find(({ identification }) => identification === dog.identification),
   );
-  const existingIndex = previousDogs.findIndex(({ id }) => id === dog.id);
+  const existingIndex = previousDogs.findIndex(({ identification }) => identification === dog.identification);
 
   return existingIndex === -1
     ? [nextDog, ...previousDogs]
     : previousDogs.map((previousDog) =>
-        previousDog.id === dog.id ? nextDog : previousDog,
+        previousDog.identification === dog.identification ? nextDog : previousDog,
       );
 };
 
 export const buildDogsWithoutEntity = (previousDogs: Dog[], id: string) =>
-  previousDogs.filter((dog) => dog.id !== id);
+  previousDogs.filter((dog) => dog.identification !== id);
 
 const getBaseDogsFromCache = () =>
   queryClient.getQueryData<Dog[]>(getDogsQueryKey()) ?? [];
@@ -103,7 +103,7 @@ export const commitDogMutationSuccess = async ({
     syncAllDogsRemoval(entityId);
   } else if (method === "POST" || method === "PUT") {
     syncDogsToCache(visibleDogs);
-    const committedDog = visibleDogs.find((dog) => dog.id === entityId);
+    const committedDog = visibleDogs.find((dog) => dog.identification === entityId);
     if (committedDog) syncAllDogsUpsert(committedDog);
   } else {
     return;

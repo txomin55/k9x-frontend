@@ -488,7 +488,7 @@ function CompetitionStageDetailBody(props: {
 
     props.onUpdateEvent(draft.stageId, draft.id, {
       competitors: draft.competitors.map((competitor) => ({
-        dogId: competitor.dogId,
+        dogIdentification: competitor.dogIdentification,
         position: competitor.position,
         competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,

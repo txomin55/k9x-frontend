@@ -115,10 +115,10 @@ export default function CompetitorEditorForm(
       current
         ? {
             ...current,
-            dogId: option?.value ?? "",
+            dogIdentification: option?.value ?? "",
             name: dog?.name ?? "",
             breed: dog?.breed.name ?? "",
-            identity: dog?.identity ?? "",
+            origin: dog?.origin ?? "",
             country: dog?.country.id ?? "",
             team: dog?.team ?? "",
           }
@@ -133,7 +133,8 @@ export default function CompetitorEditorForm(
       to: "/my/dogs",
     });
 
-  const selectedDog = (dogId: string) => props.dogsById.get(dogId);
+  const selectedDog = (dogIdentification: string) =>
+    props.dogsById.get(dogIdentification);
 
   return (
     <Show when={props.competitorDialogDraft}>
@@ -145,8 +146,9 @@ export default function CompetitorEditorForm(
             options={dogOptions()}
             placeholder={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SELECT_DOG")}
             value={
-              dogOptions().find((option) => option.value === draft().dogId) ??
-              null
+              dogOptions().find(
+                (option) => option.value === draft().dogIdentification,
+              ) ?? null
             }
           >
             <Show when={dogOptions().length === 0}>
@@ -159,7 +161,7 @@ export default function CompetitorEditorForm(
           <div class="competitor-editor-form__info">
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.COUNTRY")}
-              <Show when={selectedDog(draft().dogId)}>
+              <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => (
                   <CountryFlag
                     country={selected().country.id ?? draft().country}
@@ -169,33 +171,33 @@ export default function CompetitorEditorForm(
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SEX")}
-              <Show when={selectedDog(draft().dogId)}>
+              <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => <SexIcon sex={selected().sex} />}
               </Show>
             </span>
             <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CHIP")}
-              <Show when={selectedDog(draft().dogId)}>
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTIFICATION")}
+              <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => (
                   <span class="text-label-sm">
-                    {selected().id ?? draft().dogId}
+                    {selected().identification ?? draft().dogIdentification}
                   </span>
                 )}
               </Show>
             </span>
             <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.IDENTITY")}
-              <Show when={selectedDog(draft().dogId)}>
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.ORIGIN")}
+              <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => (
                   <span class="text-label-sm">
-                    {selected().identity ?? draft().identity}
+                    {selected().origin ?? draft().origin}
                   </span>
                 )}
               </Show>
             </span>
             <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
-              <Show when={selectedDog(draft().dogId)}>
+              <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => (
                   <span class="text-label-sm">
                     {selected().breed.name ?? draft().breed}
@@ -206,7 +208,7 @@ export default function CompetitorEditorForm(
             <div class="competitor-editor-form__info--handler">
               <span class="text-caption-md">
                 {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.HANDLER")}
-                <Show when={selectedDog(draft().dogId)}>
+                <Show when={selectedDog(draft().dogIdentification)}>
                   {(selected) => (
                     <span class="text-label-sm">
                       {selected().handler ?? draft().handler}
@@ -216,7 +218,7 @@ export default function CompetitorEditorForm(
               </span>
               <span class="text-caption-md">
                 {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.TEAM")}
-                <Show when={selectedDog(draft().dogId)}>
+                <Show when={selectedDog(draft().dogIdentification)}>
                   {(selected) => (
                     <span class="text-label-sm">
                       ({selected().team ?? draft().team})
@@ -245,7 +247,7 @@ export default function CompetitorEditorForm(
               minValue={0}
             />
           </div>
-          <Show when={selectedDog(draft().dogId)?.sex !== "MALE"}>
+          <Show when={selectedDog(draft().dogIdentification)?.sex !== "MALE"}>
             <AtomCheckbox
               label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BIH")}
               checked={draft().bih}

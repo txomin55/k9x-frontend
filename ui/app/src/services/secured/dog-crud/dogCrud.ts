@@ -172,11 +172,11 @@ export const useOwnedDogs = (options?: TanstackCreateQuery) =>
   withMergedDogDrafts(createOwnedDogsQuery(options));
 
 const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
-  id: draftDog.id,
+  identification: draftDog.identification,
   name: draftDog.name,
   image: draftDog.image,
   breed: draftDog.breed.id,
-  identity: draftDog.identity,
+  origin: draftDog.origin,
   owner: draftDog.owner,
   handler: draftDog.handler,
   team: draftDog.team,
@@ -193,12 +193,12 @@ export const createDog = (draftDog: Dog, onConflict?: () => void) => {
 
   void (async () => {
     await commitDogMutation({
-      entityId: draftDog.id,
+      entityId: draftDog.identification,
       method: "POST",
       onConflict,
       payload: toCreateDogRequest(draftDog),
       rollbackPayload: await createDogRollbackPayload(
-        draftDog.id,
+        draftDog.identification,
         null,
         previousDogs,
       ),
@@ -225,7 +225,7 @@ const updateDogProjection = (
 
 export const updateDog = (id: string, payload: UpdateDogRequestDTO) => {
   const previousDogs = getVisibleDogs();
-  const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
+  const previousDog = previousDogs.find((dog) => dog.identification === id) ?? null;
 
   if (!previousDog) {
     throw new Error(`Dog ${id} not found`);
@@ -254,7 +254,7 @@ export const updateDog = (id: string, payload: UpdateDogRequestDTO) => {
 
 export const deleteDog = (id: string) => {
   const previousDogs = getVisibleDogs();
-  const previousDog = previousDogs.find((dog) => dog.id === id) ?? null;
+  const previousDog = previousDogs.find((dog) => dog.identification === id) ?? null;
 
   applyDogRemoval(id);
 

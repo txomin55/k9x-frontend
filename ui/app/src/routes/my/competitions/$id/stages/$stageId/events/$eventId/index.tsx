@@ -295,7 +295,7 @@ function CompetitionObdxEventDetailBody(props: {
     return JSON.stringify({
       awards: event.awards.map((award) => award.id),
       competitors: event.competitors.map((competitor) => ({
-        dogId: competitor.dogId,
+        dogIdentification: competitor.dogIdentification,
         position: competitor.position,
         competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,
@@ -315,14 +315,14 @@ function CompetitionObdxEventDetailBody(props: {
 
   const createDefaultCompetitor = (
     order: number,
-    dogId: string,
+    dogIdentification: string,
   ): EventCompetitorDetail => {
     return {
       position: order,
       competitorNumber: order,
       accepted: true,
-      dogId,
-      identity: "",
+      dogIdentification,
+      origin: "",
       name: "",
       owner: "",
       handler: i18n.t("MY.COMPETITIONS.EVENT_DETAIL.DEFAULT_COMPETITOR"),
@@ -373,7 +373,7 @@ function CompetitionObdxEventDetailBody(props: {
     return reorderItems(
       competitors,
       updatedCompetitor,
-      (entry) => entry.dogId,
+      (entry) => entry.dogIdentification,
       (entry, nextOrder) => ({
         ...entry,
         position: nextOrder,
@@ -403,7 +403,7 @@ function CompetitionObdxEventDetailBody(props: {
     competitor: EventCompetitorDetail,
   ): EventCompetitorRequestDTO => {
     return {
-      dogId: competitor.dogId,
+      dogIdentification: competitor.dogIdentification,
       position: competitor.position,
       competitorNumber: competitor.competitorNumber,
       accepted: competitor.accepted,
@@ -659,7 +659,7 @@ function CompetitionObdxEventDetailBody(props: {
   const createCompetitor = () => {
     const draft = competitorDialogDraft();
 
-    if (!draft || !draft.dogId) return;
+    if (!draft || !draft.dogIdentification) return;
 
     const normalizedDraft = {
       ...draft,
@@ -687,7 +687,7 @@ function CompetitionObdxEventDetailBody(props: {
     if (!isCreatingCompetitor()) {
       const draft = competitorDialogDraft();
 
-      if (!draft || !draft.dogId) return;
+      if (!draft || !draft.dogIdentification) return;
 
       const normalizedDraft = {
         ...draft,
@@ -701,19 +701,19 @@ function CompetitionObdxEventDetailBody(props: {
 
       if (!currentEditingCompetitorId) return;
 
-      setEditingCompetitorId(normalizedDraft.dogId);
+      setEditingCompetitorId(normalizedDraft.dogIdentification);
 
       updateDraftEvent(
         (current) => {
           const previousCompetitor = current.competitors.find(
-            (entry) => entry.dogId === currentEditingCompetitorId,
+            (entry) => entry.dogIdentification === currentEditingCompetitorId,
           );
           const orderChanged =
             previousCompetitor &&
             previousCompetitor.position !== normalizedDraft.position;
           const hasConflict = current.competitors.some(
             (entry) =>
-              entry.dogId !== currentEditingCompetitorId &&
+              entry.dogIdentification !== currentEditingCompetitorId &&
               entry.position === normalizedDraft.position,
           );
           const shouldReorder = orderChanged || hasConflict;
@@ -725,7 +725,7 @@ function CompetitionObdxEventDetailBody(props: {
                 normalizedDraft,
               )
             : current.competitors.map((entry) =>
-                entry.dogId === currentEditingCompetitorId
+                entry.dogIdentification === currentEditingCompetitorId
                   ? normalizedDraft
                   : entry,
               );
@@ -815,18 +815,18 @@ function CompetitionObdxEventDetailBody(props: {
     );
 
     setIsCreatingCompetitor(true);
-    setEditingCompetitorId(draft.dogId);
+    setEditingCompetitorId(draft.dogIdentification);
     setCompetitorDialogDraft({
       ...draft,
     });
   };
 
-  const handleDeleteCompetitor = (dogId: string) => {
+  const handleDeleteCompetitor = (dogIdentification: string) => {
     updateDraftEvent(
       (current) => ({
         ...current,
         competitors: current.competitors.filter(
-          (entry) => entry.dogId !== dogId,
+          (entry) => entry.dogIdentification !== dogIdentification,
         ),
       }),
       {
@@ -835,13 +835,13 @@ function CompetitionObdxEventDetailBody(props: {
     );
   };
 
-  const handleAcceptCompetitor = (dogId: string) => {
+  const handleAcceptCompetitor = (dogIdentification: string) => {
     if (!hasConfiguration()) return;
 
     const nextDraftEvent = updateDraftEvent((current) => ({
       ...current,
       competitors: current.competitors.map((entry) =>
-        entry.dogId === dogId
+        entry.dogIdentification === dogIdentification
           ? { ...entry, accepted: true, status: COMPETITOR_STATUS.ENROLLED }
           : entry,
       ),
@@ -853,25 +853,25 @@ function CompetitionObdxEventDetailBody(props: {
     );
   };
 
-  const handleMarkCompetitorNotCompeting = (dogId: string) => {
+  const handleMarkCompetitorNotCompeting = (dogIdentification: string) => {
     if (!hasConfiguration()) return;
 
     const nextDraftEvent = updateDraftEvent((current) => ({
       ...current,
       competitors: current.competitors.map((entry) =>
-        entry.dogId === dogId ? { ...entry, notCompeting: true } : entry,
+        entry.dogIdentification === dogIdentification ? { ...entry, notCompeting: true } : entry,
       ),
     }));
 
     updateApiEventNotCompeting(nextDraftEvent.id, {
-      dogId,
+      dogIdentification,
       notCompeting: true,
     });
   };
 
   const handleOpenCompetitorEditor = (competitor: EventCompetitorDetail) => {
     setIsCreatingCompetitor(false);
-    setEditingCompetitorId(competitor.dogId);
+    setEditingCompetitorId(competitor.dogIdentification);
     setCompetitorDialogDraft({
       ...competitor,
     });

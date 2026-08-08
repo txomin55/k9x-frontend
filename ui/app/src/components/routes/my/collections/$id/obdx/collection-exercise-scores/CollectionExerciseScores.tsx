@@ -54,7 +54,7 @@ function CollectionExerciseScoreInput(props: {
     }
 
     props.onCommitScore({
-      dogId: props.competitorId,
+      dogIdentification: props.competitorId,
       eventId: props.eventId,
       exerciseId: props.exerciseId,
       judgeId: props.score.judge.id,

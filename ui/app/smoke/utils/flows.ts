@@ -124,7 +124,7 @@ export const createDog = async (page: Page) => {
     async () => {
       await page.getByRole("button", { name: "+", exact: true }).click();
       const dialog = page.getByRole("dialog");
-      await dialog.getByLabel("Chip").fill(name.replace(/\D/g, ""));
+      await dialog.getByLabel("Identification").fill(name.replace(/\D/g, ""));
       await dialog.getByLabel("Name", { exact: true }).fill(name);
       await dialog.getByText("Owned", { exact: true }).click();
       await expect(page.getByRole("checkbox", { name: "Owned" })).toBeChecked();
@@ -132,7 +132,7 @@ export const createDog = async (page: Page) => {
       const breedOption = page.locator(".atom-select__item").first();
       await expect(breedOption).toBeVisible();
       await breedOption.click();
-      await dialog.getByLabel("Identifier").fill(name.replace(/\D/g, ""));
+      await dialog.getByLabel("Origin").fill(name.replace(/\D/g, ""));
       await dialog.getByLabel("Withers height (cm)").fill("50");
       await dialog.getByRole("button", { name: "Country" }).click();
       await page.keyboard.type("Spain");

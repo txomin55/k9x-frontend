@@ -36,7 +36,7 @@ const getStageSnapshotId = (stageId: string) => `stage:${stageId}`;
 const buildOptimisticCompetitor = (
   dog: Dog,
 ): StageEventDetailCompetitorResponseDTO => ({
-  dog: { id: dog.id, name: dog.name },
+  dog: { id: dog.identification, name: dog.name },
   owner: dog.owner,
   handler: dog.handler,
   team: dog.team,
@@ -56,7 +56,7 @@ const buildNextStage = (
     }
 
     const ownedDog = getVisibleDogs().find(
-      (dog) => String(dog.id) === String(payload.dogId),
+      (dog) => String(dog.identification) === String(payload.dogIdentification),
     );
 
     if (!ownedDog) {
@@ -66,7 +66,8 @@ const buildNextStage = (
     const nextCompetitor = buildOptimisticCompetitor(ownedDog);
     const eventCompetitors = event.competitors ?? [];
     const existingIndex = eventCompetitors.findIndex(
-      (competitor) => String(competitor?.dog?.id) === String(payload.dogId),
+      (competitor) =>
+        String(competitor?.dog?.id) === String(payload.dogIdentification),
     );
 
     return {

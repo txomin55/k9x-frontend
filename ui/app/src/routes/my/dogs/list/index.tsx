@@ -55,11 +55,11 @@ function MyDogsListPage() {
   const i18n = useI18n();
 
   const buildDogDraft = (isOrganizer: boolean): Dog => ({
-    id: "",
+    identification: "",
     name: i18n.t("MY.DOGS.LIST.DEFAULT_DOG"),
     breed: { id: "", name: i18n.t("MY.DOGS.LIST.DEFAULT_BREED") },
     owned: !isOrganizer,
-    identity: "",
+    origin: "",
     image: "",
     owner: !isOrganizer ? (user()?.email ?? "") : "",
     handler: "",
@@ -98,11 +98,11 @@ function MyDogsListPage() {
     dogParam() && dogParam() !== "new" ? dogParam() : null;
 
   const dogToDraft = (dog: Dog): Dog => ({
-    id: dog.id,
+    identification: dog.identification,
     name: dog.name,
     image: dog.image,
     breed: dog.breed,
-    identity: dog.identity,
+    origin: dog.origin,
     owner: dog.owner,
     handler: dog.handler,
     team: dog.team,
@@ -124,14 +124,14 @@ function MyDogsListPage() {
 
   const openEditDialog = (dog: Dog) => {
     setDraftDog(() => dogToDraft(dog));
-    setDogParam(dog.id);
+    setDogParam(dog.identification);
   };
 
   createEffect(() => {
     const id = editingDogId();
     if (!id) return;
-    const dog = dogsQuery.data?.find((entry) => entry.id === id);
-    if (dog && draftDog().id !== dog.id) {
+    const dog = dogsQuery.data?.find((entry) => entry.identification === id);
+    if (dog && draftDog().identification !== dog.identification) {
       setDraftDog(() => dogToDraft(dog));
     }
   });
@@ -155,7 +155,7 @@ function MyDogsListPage() {
         name: payload.name,
         image: payload.image,
         breed: payload.breed.id,
-        identity: payload.identity,
+        origin: payload.origin,
         owner: payload.owner,
         handler: payload.handler,
         team: payload.team,
@@ -165,7 +165,7 @@ function MyDogsListPage() {
         threeFciGenerationsConfirmed: payload.threeFciGenerationsConfirmed,
       });
     } else {
-      createDog(payload, () => setConflictingDogId(payload.id));
+      createDog(payload, () => setConflictingDogId(payload.identification));
     }
 
     handleCloseDialog();
@@ -230,7 +230,7 @@ function MyDogsListPage() {
         <div class="list-table__actions">
           <ConfirmActionButton
             text={info.row.original.name}
-            onConfirm={() => deleteDog(info.row.original.id)}
+            onConfirm={() => deleteDog(info.row.original.identification)}
           >
             <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
               <AtomSvgIcon
@@ -264,7 +264,7 @@ function MyDogsListPage() {
           <DogCard
             dog={dog}
             onEdit={() => openEditDialog(dog)}
-            onDelete={() => deleteDog(dog.id)}
+            onDelete={() => deleteDog(dog.identification)}
           />
         )}
       </For>
@@ -280,7 +280,7 @@ function MyDogsListPage() {
       <AtomTable<Dog>
         data={myDogs()}
         columns={columns()}
-        getRowId={(row) => row.id}
+        getRowId={(row) => row.identification}
       />
     </div>
   );
@@ -379,7 +379,7 @@ function MyDogsListPage() {
         title={i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
         content={
           <OwnDogForm
-            dogId={ownershipDogId() ?? ""}
+            dogIdentification={ownershipDogId() ?? ""}
             onClose={() => setOwnershipDogId(null)}
           />
         }

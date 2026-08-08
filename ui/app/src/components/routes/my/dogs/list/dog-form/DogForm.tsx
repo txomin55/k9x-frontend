@@ -59,7 +59,7 @@ export default function DogForm(props: DogFormProps) {
 
   const ownerFieldVisible = () => !!user()?.organizer && !props.draft().owned;
 
-  const idError = () => validateRequiredText(props.draft().id);
+  const identificationError = () => validateRequiredText(props.draft().identification);
   const nameError = () => validateRequiredText(props.draft().name);
   const countryError = () =>
     validateRequiredSelection(props.draft().country.id);
@@ -67,7 +67,7 @@ export default function DogForm(props: DogFormProps) {
     ownerFieldVisible() ? validateEmail(props.draft().owner) : null;
 
   const isValid = () =>
-    !idError() && !nameError() && !countryError() && !ownerError();
+    !identificationError() && !nameError() && !countryError() && !ownerError();
 
   const fieldProps = (field: string, error: () => TextFieldError) => ({
     onBlur: () => markTouched(field),
@@ -87,10 +87,10 @@ export default function DogForm(props: DogFormProps) {
       (sexOption) => sexOption.value === props.draft().sex,
     ) ?? null;
 
-  const updateId = (id: string) =>
+  const updateIdentification = (identification: string) =>
     props.onDraftChange((current) => ({
       ...current,
-      id,
+      identification,
     }));
 
   const updateName = (name: string) =>
@@ -112,10 +112,10 @@ export default function DogForm(props: DogFormProps) {
       breed,
     }));
 
-  const updateIdentity = (identity: string) =>
+  const updateOrigin = (origin: string) =>
     props.onDraftChange((current) => ({
       ...current,
-      identity,
+      origin,
     }));
 
   const updateOwner = (owner: string) =>
@@ -164,11 +164,11 @@ export default function DogForm(props: DogFormProps) {
   return (
     <div class="form-grid form-grid--2col">
       <AtomInput
-        label={i18n.t("MY.DOGS.DOG_FORM.CHIP")}
-        value={props.draft().id}
-        onChange={updateId}
+        label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFICATION")}
+        value={props.draft().identification}
+        onChange={updateIdentification}
         disabled={props.isEditMode}
-        {...fieldProps("id", idError)}
+        {...fieldProps("identification", identificationError)}
       />
       <AtomInput
         label={i18n.t("MY.DOGS.DOG_FORM.NAME")}
@@ -193,10 +193,10 @@ export default function DogForm(props: DogFormProps) {
         value={selectedBreedOption()}
       />
       <AtomInput
-        label={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER")}
-        value={props.draft().identity}
-        onChange={updateIdentity}
-        description={i18n.t("MY.DOGS.DOG_FORM.IDENTIFIER_HINT")}
+        label={i18n.t("MY.DOGS.DOG_FORM.ORIGIN")}
+        value={props.draft().origin}
+        onChange={updateOrigin}
+        description={i18n.t("MY.DOGS.DOG_FORM.ORIGIN_HINT")}
       />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.SEX")}

@@ -3,11 +3,11 @@ import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 export type DogSex = "MALE" | "FEMALE";
 
 export interface Dog {
-  id: string;
+  identification: string;
   name: string;
   image: string;
   breed: IdNameDTO;
-  identity: string;
+  origin: string;
   owner: string;
   handler: string;
   team: string;
@@ -19,11 +19,11 @@ export interface Dog {
 }
 
 export interface CreateDogRequestDTO {
-  id: string;
+  identification: string;
   name: string;
   image: string;
   breed: string;
-  identity: string;
+  origin: string;
   owner: string;
   handler: string;
   team: string;
@@ -37,7 +37,7 @@ export interface UpdateDogRequestDTO {
   name: string;
   image: string;
   breed: string;
-  identity: string;
+  origin: string;
   owner: string;
   handler: string;
   team: string;

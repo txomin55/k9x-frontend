@@ -39,7 +39,7 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
           position: 1,
           competitorNumber: 1,
           team: "Team Alpha",
-          identity: "ES-001",
+          origin: "ES-001",
           owner: "Ana Perez",
           handler: "Ana Perez",
           country: "ES",
@@ -59,10 +59,10 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
 
 const applyScore = (
   detail: CollectionResponseDTO,
-  { dogId, exerciseId, judgeId, score }: UpdateCollectionScoreRequestDTO,
+  { dogIdentification, exerciseId, judgeId, score }: UpdateCollectionScoreRequestDTO,
 ) => {
   const target = detail.obdx.competitors
-    .filter((entry) => entry.competitor.dog.id === dogId)
+    .filter((entry) => entry.competitor.dog.id === dogIdentification)
     .flatMap((entry) => entry.exercises)
     .filter((entry) => entry.exercise.id === exerciseId)
     .flatMap((entry) => entry.collectionScores)
@@ -72,10 +72,10 @@ const applyScore = (
 
 const applyNotCompeting = (
   detail: CollectionResponseDTO,
-  { dogId, notCompeting }: UpdateEventNotCompetingRequestDTO,
+  { dogIdentification, notCompeting }: UpdateEventNotCompetingRequestDTO,
 ) => {
   const target = detail.obdx.competitors.find(
-    (entry) => entry.competitor.dog.id === dogId,
+    (entry) => entry.competitor.dog.id === dogIdentification,
   );
   if (target) {
     target.competitor.status = notCompeting

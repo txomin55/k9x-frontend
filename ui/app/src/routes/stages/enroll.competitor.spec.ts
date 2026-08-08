@@ -40,11 +40,11 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
           await route.fallback();
           return;
         }
-        const { dogId } = route.request().postDataJSON();
-        const dog = defaultDogs.find((candidate) => candidate.id === dogId);
+        const { dogIdentification } = route.request().postDataJSON();
+        const dog = defaultDogs.find((candidate) => candidate.identification === dogIdentification);
         if (dog) {
           extraCompetitors.push({
-            dog: { id: dog.id, name: dog.name },
+            dog: { id: dog.identification, name: dog.name },
             owner: dog.owner,
             team: dog.team,
             country: dog.country.id,

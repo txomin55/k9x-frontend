@@ -18,7 +18,8 @@ const CONFIGURATION_ID = "config-1";
 
 const judgeName = (id: string) =>
   defaultJudges.find((judge) => judge.id === id)?.name ?? id;
-const dogById = (id: string) => defaultDogs.find((dog) => dog.id === id);
+const dogByIdentification = (identification: string) =>
+  defaultDogs.find((dog) => dog.identification === identification);
 const awardById = (id: string) =>
   defaultAwards.find((award) => award.id === id);
 
@@ -62,11 +63,11 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
       ],
       competitors: [
         {
-          dog: { id: seedDog.id, name: seedDog.name },
+          dog: { id: seedDog.identification, name: seedDog.name },
           position: 1,
           competitorNumber: 1,
           team: seedDog.team,
-          identity: seedDog.identity,
+          origin: seedDog.origin,
           owner: seedDog.owner,
           handler: seedDog.handler,
           country: seedDog.country.id,
@@ -149,7 +150,7 @@ const applyEventUpdate = (
       judgesIds: string[];
     }[];
     competitors?: {
-      dogId: string;
+      dogIdentification: string;
       position: number;
       competitorNumber: number;
       accepted: boolean;
@@ -181,18 +182,18 @@ const applyEventUpdate = (
     })),
     competitors: (payload.competitors ?? []).map((competitor) => {
       const existing = previous.competitors.find(
-        (entry) => entry.dog.id === competitor.dogId,
+        (entry) => entry.dog.id === competitor.dogIdentification,
       );
-      const dog = dogById(competitor.dogId);
+      const dog = dogByIdentification(competitor.dogIdentification);
       return {
         dog: {
-          id: competitor.dogId,
+          id: competitor.dogIdentification,
           name: dog?.name ?? existing?.dog.name ?? "",
         },
         position: competitor.position,
         competitorNumber: competitor.competitorNumber,
         team: dog?.team ?? existing?.team ?? "",
-        identity: dog?.identity ?? existing?.identity ?? "",
+        origin: dog?.origin ?? existing?.origin ?? "",
         owner: dog?.owner ?? existing?.owner ?? "",
         handler: dog?.handler ?? existing?.handler ?? "",
         country: dog?.country.id ?? existing?.country ?? "",
@@ -245,7 +246,7 @@ export const setupEventDetailCrud = (
       payload: (_match, request) => {
         const payload = request.postDataJSON();
         const target = event.obdx.competitors.find(
-          (entry) => entry.dog.id === payload.dogId,
+          (entry) => entry.dog.id === payload.dogIdentification,
         );
         if (target) {
           target.status = payload.notCompeting ? "NOT_COMPETING" : "ENROLLED";

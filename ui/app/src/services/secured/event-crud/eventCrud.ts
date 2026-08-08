@@ -205,8 +205,8 @@ const toApiCompetitor = (
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
   return {
-    dogId: competitor.dogId ?? previousCompetitor?.dogId ?? "",
-    identity: previousCompetitor?.identity ?? "",
+    dogIdentification: competitor.dogIdentification ?? previousCompetitor?.dogIdentification ?? "",
+    origin: previousCompetitor?.origin ?? "",
     name: previousCompetitor?.name ?? "",
     owner: previousCompetitor?.owner ?? "",
     handler: previousCompetitor?.handler ?? "",
@@ -248,7 +248,7 @@ const mergeApiEventWithPayload = (
     "";
   const previousCompetitorsById = new Map(
     (previousEvent?.competitors ?? []).map((competitor) => [
-      competitor.dogId,
+      competitor.dogIdentification,
       competitor,
     ]),
   );
@@ -285,8 +285,8 @@ const mergeApiEventWithPayload = (
       updatePayload?.competitors.map((competitor) =>
         toApiCompetitor(
           competitor,
-          competitor.dogId
-            ? previousCompetitorsById.get(competitor.dogId)
+          competitor.dogIdentification
+            ? previousCompetitorsById.get(competitor.dogIdentification)
             : undefined,
         ),
       ) ??
@@ -403,7 +403,7 @@ const projectEventNotCompeting = (
   const nextCore = {
     ...event,
     competitors: event.competitors.map((competitor) =>
-      competitor.dogId === payload.dogId
+      competitor.dogIdentification === payload.dogIdentification
         ? { ...competitor, notCompeting: payload.notCompeting }
         : competitor,
     ),
@@ -422,7 +422,7 @@ const projectCollectionNotCompeting = (
   ...collection,
   obdx: {
     competitors: collection.obdx.competitors.map((competitorScores) =>
-      competitorScores.competitor.dog.id === payload.dogId
+      competitorScores.competitor.dog.id === payload.dogIdentification
         ? {
             ...competitorScores,
             competitor: {

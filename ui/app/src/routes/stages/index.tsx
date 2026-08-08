@@ -70,12 +70,12 @@ const SKELETON_ROWS = Array.from(
 );
 
 type EnrollDraft = {
-  dogId: string;
+  dogIdentification: string;
   bih: boolean;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
-  dogId: "",
+  dogIdentification: "",
   bih: false,
 });
 
@@ -405,7 +405,7 @@ function EnrollDialog(props: {
   const dogOptions = createMemo<AtomSelectOption[]>(() =>
     (dogsQuery.data ?? []).map((dog) => ({
       label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
-      value: dog.id,
+      value: dog.identification,
     })),
   );
 
@@ -424,8 +424,8 @@ function EnrollDialog(props: {
   const updateEnrollDraft = (updater: (current: EnrollDraft) => EnrollDraft) =>
     setEnrollDraft((current) => updater(current));
 
-  const selectedDog = (dogId: string) =>
-    (dogsQuery.data ?? []).find((dog) => dog.id === dogId);
+  const selectedDog = (dogIdentification: string) =>
+    (dogsQuery.data ?? []).find((dog) => dog.identification === dogIdentification);
 
   const handleEnroll = async () => {
     await enrollStageEvent(props.stageId, {
@@ -446,14 +446,14 @@ function EnrollDialog(props: {
             onChange={(option) =>
               updateEnrollDraft((current) => ({
                 ...current,
-                dogId: option?.value ?? "",
+                dogIdentification: option?.value ?? "",
               }))
             }
             options={dogOptions()}
             placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
             value={
               dogOptions().find(
-                (option) => option.value === enrollDraft().dogId,
+                (option) => option.value === enrollDraft().dogIdentification,
               ) ?? null
             }
           >
@@ -469,8 +469,8 @@ function EnrollDialog(props: {
 
           <Show
             when={
-              selectedDog(enrollDraft().dogId) &&
-              selectedDog(enrollDraft().dogId)?.sex !== "MALE"
+              selectedDog(enrollDraft().dogIdentification) &&
+              selectedDog(enrollDraft().dogIdentification)?.sex !== "MALE"
             }
           >
             <AtomCheckbox

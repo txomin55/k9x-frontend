@@ -98,7 +98,7 @@ export default function RedCardDialog(props: RedCardDialogProps) {
     }
 
     registerRedCard(props.eventId, {
-      dogId: props.competitorId,
+      dogIdentification: props.competitorId,
       exerciseId: exercise.value,
       judgeId: judge.value,
     });

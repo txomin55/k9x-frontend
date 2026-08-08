@@ -23,7 +23,7 @@ export default function DogCard(props: DogCardProps) {
         </div>
       }
       topRight={<span class="dog-card__breed">{props.dog.breed.name}</span>}
-      description={<span class="text-body-md">{props.dog.identity}</span>}
+      description={<span class="text-body-md">{props.dog.origin}</span>}
       content={
         props.dog.image ? (
           <img

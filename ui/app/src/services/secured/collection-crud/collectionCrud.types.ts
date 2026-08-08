@@ -50,7 +50,7 @@ export interface ExerciseScoresResponseDTO {
 }
 
 export interface UpdateCollectionScoreRequestDTO {
-  dogId: string;
+  dogIdentification: string;
   exerciseId: string;
   judgeId: string;
   eventId: string;
