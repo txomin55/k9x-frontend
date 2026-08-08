@@ -83,9 +83,13 @@ const EXPORT_FALLBACK_FILE_NAME = "event.xlsx";
  * Downloads the event workbook. The request must go through `rawRequest` rather than a plain link so it
  * carries the bearer token, hence the blob round-trip instead of navigating to the URL.
  */
-export const exportEventById = async (id: string) => {
+export const exportEventById = async (
+  id: string,
+  includeClassification = false,
+) => {
+  const query = includeClassification ? "?include_classification=true" : "";
   const { blob, fileName } = await rawRequest<BlobResponse>({
-    path: `/secured/events/${id}/export`,
+    path: `/secured/events/${id}/export${query}`,
     responseType: "blob",
   });
 

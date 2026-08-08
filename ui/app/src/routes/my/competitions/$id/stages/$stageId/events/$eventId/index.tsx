@@ -54,6 +54,7 @@ import {
   canEditEvent,
   canManageEvent,
   COMPETITOR_STATUS,
+  EVENT_STATUS,
   toEventEditorDraft,
 } from "@/utils/event";
 import {
@@ -63,6 +64,8 @@ import {
 } from "@/utils/date";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
+import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
+import AtomButton from "@lib/components/atoms/button/AtomButton";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import downloadIcon from "@/assets/miscelaneous/download.svg";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
@@ -125,17 +128,32 @@ function CompetitionObdxEventDetailBody(props: {
    */
   const showsExportAction = () => !showsEditMenu() || !menuOpen();
 
-  const handleExport = async () => {
+  const [isExportDialogOpen, setIsExportDialogOpen] = createSignal(false);
+
+  /** Only a finished event has a settled classification worth offering. */
+  const canExportClassification = () =>
+    props.event().status === EVENT_STATUS.FINISHED;
+
+  const runExport = async (includeClassification: boolean) => {
     if (isExporting()) return;
     setIsExporting(true);
+    setIsExportDialogOpen(false);
     showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_STARTING"));
     try {
-      await exportEventById(props.event().id);
+      await exportEventById(props.event().id, includeClassification);
     } catch {
       showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_FAILED"));
     } finally {
       setIsExporting(false);
     }
+  };
+
+  const handleExport = () => {
+    if (canExportClassification()) {
+      setIsExportDialogOpen(true);
+      return;
+    }
+    void runExport(false);
   };
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
@@ -1133,7 +1151,7 @@ function CompetitionObdxEventDetailBody(props: {
             class="floating-action__trigger"
             disabled={isExporting()}
             aria-label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT")}
-            onClick={() => void handleExport()}
+            onClick={handleExport}
           >
             <span class="floating-action__circle floating-action__circle--secondary">
               <AtomSvgIcon
@@ -1145,6 +1163,25 @@ function CompetitionObdxEventDetailBody(props: {
           </button>
         </div>
       </Show>
+
+      <AtomDialog
+        open={isExportDialogOpen()}
+        onOpenChange={setIsExportDialogOpen}
+        title={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT")}
+        description={i18n.t(
+          "MY.COMPETITIONS.EVENT_DETAIL.EXPORT_CLASSIFICATION_QUESTION",
+        )}
+        content={
+          <div class="competition-event-detail__export-actions">
+            <AtomButton type="ghost" onClick={() => void runExport(false)}>
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITHOUT_CLASSIFICATION")}
+            </AtomButton>
+            <AtomButton onClick={() => void runExport(true)}>
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITH_CLASSIFICATION")}
+            </AtomButton>
+          </div>
+        }
+      />
 
       <Show when={showsEditMenu()}>
         <Show

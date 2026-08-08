@@ -29,6 +29,17 @@ describe("exportEventById", () => {
     expect(downloadBlob).toHaveBeenCalledWith(blob, "Spring_Cup.xlsx");
   });
 
+  it("asks the backend for the classification only when requested", async () => {
+    rawRequest.mockResolvedValue({ blob: new Blob(["xlsx"]) });
+
+    await exportEventById("event-1", true);
+
+    expect(rawRequest).toHaveBeenCalledWith({
+      path: "/secured/events/event-1/export?include_classification=true",
+      responseType: "blob",
+    });
+  });
+
   it("falls back to a generic name when the response carries no file name", async () => {
     const blob = new Blob(["xlsx"]);
     rawRequest.mockResolvedValue({ blob });

@@ -29,3 +29,10 @@
     gap: var(--unit-1);
     align-items: baseline;
 }
+/* Export dialog: the two choices sit on one row, affirmative (with classification) last. */
+.competition-event-detail__export-actions {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--unit-1);
+}
