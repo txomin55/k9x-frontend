@@ -29,7 +29,7 @@ vi.mock("@/services/secured/ranking-crud/rankingCrud", () => ({
   }),
   useRankingIncludeBys: () => ({
     get data() {
-      return [{ id: RANKING_INCLUDE_BY.NONE, name: "Every result" }];
+      return [{ id: RANKING_INCLUDE_BY.ALL, name: "Every result" }];
     },
   }),
 }));
@@ -79,7 +79,7 @@ const persistedRanking: RankingResponseDTO = {
   name: "Ranking",
   events: [{ id: "event_1", name: "Event 1" }],
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
-  includeBy: RANKING_INCLUDE_BY.NONE,
+  includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
 };
 

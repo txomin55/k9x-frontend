@@ -168,7 +168,7 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
   const handleIncludeByChange = (option: AtomSelectOption | null) => {
     if (!option) return;
 
-    // NONE carries no count, so it is cleared rather than left behind as a stale value.
+    // ALL carries no count, so it is cleared rather than left behind as a stale value.
     emit({
       includeBy: option.value,
       includedCount: includesAll(option.value)
@@ -289,7 +289,7 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
           onChange={handleIncludeByChange}
           disabled={props.disabled || props.includeByOptions.length === 0}
         />
-        {/* NONE counts every result, so the amount only makes sense for the other criteria. */}
+        {/* ALL counts every result, so the amount only makes sense for the other criteria. */}
         <Show when={!includesAll(props.includeBy)}>
           <AtomInput
             label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.INCLUDED_COUNT")}

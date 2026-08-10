@@ -13,7 +13,7 @@ export const defaultRankingGroupBys: IdNameDTO[] = [
 export const defaultRankingIncludeBys: IdNameDTO[] = [
   { id: RANKING_INCLUDE_BY.HIGHEST, name: "Best results" },
   { id: RANKING_INCLUDE_BY.LOWEST, name: "Worst results" },
-  { id: RANKING_INCLUDE_BY.NONE, name: "Every result" },
+  { id: RANKING_INCLUDE_BY.ALL, name: "Every result" },
 ];
 
 export const setupRankingCriteria = (page: Page) =>

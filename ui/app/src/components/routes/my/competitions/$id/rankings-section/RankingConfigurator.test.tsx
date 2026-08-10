@@ -15,7 +15,7 @@ const GROUP_BY_OPTIONS = [
 ];
 
 const INCLUDE_BY_OPTIONS = [
-  { id: RANKING_INCLUDE_BY.NONE, name: "Every result" },
+  { id: RANKING_INCLUDE_BY.ALL, name: "Every result" },
   { id: RANKING_INCLUDE_BY.LOWEST, name: "Worst results" },
 ];
 
@@ -44,7 +44,7 @@ const renderConfigurator = (
       competitions={[competition("competition_1", "Competition 1")]}
       events={[]}
       groupBy={RANKING_GROUP_BY.INDIVIDUAL}
-      includeBy={RANKING_INCLUDE_BY.NONE}
+      includeBy={RANKING_INCLUDE_BY.ALL}
       includedCount={null}
       groupByOptions={GROUP_BY_OPTIONS}
       includeByOptions={INCLUDE_BY_OPTIONS}

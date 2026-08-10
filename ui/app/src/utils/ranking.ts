@@ -9,7 +9,7 @@ export const RANKING_GROUP_BY = {
 export const RANKING_INCLUDE_BY = {
   HIGHEST: "HIGHEST",
   LOWEST: "LOWEST",
-  NONE: "NONE",
+  ALL: "ALL",
 } as const;
 
 export const RANKING_ID_PREFIX = "ranking_";
@@ -32,9 +32,9 @@ export const createDefaultRanking = (
   name,
   eventIds: [],
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
-  includeBy: RANKING_INCLUDE_BY.NONE,
+  includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
 });
 
 export const includesAll = (includeBy: string) =>
-  includeBy === RANKING_INCLUDE_BY.NONE;
+  includeBy === RANKING_INCLUDE_BY.ALL;

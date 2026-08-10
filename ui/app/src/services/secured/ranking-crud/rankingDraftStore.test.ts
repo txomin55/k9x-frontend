@@ -18,7 +18,7 @@ const buildRanking = (
   name: "Ranking",
   events: [{ id: "event_1", name: "Event 1" }],
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
-  includeBy: RANKING_INCLUDE_BY.NONE,
+  includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
   ...overrides,
 });
