@@ -9,6 +9,9 @@
 }
 
 .atom-collapsible {
+    /* Local box-sizing (k9x is content-box overall): without it `width: 100%` plus the 1px border makes
+       the collapsible 2px wider than its container, which surfaces as a horizontal scrollbar on the page. */
+    box-sizing: border-box;
     width: 100%;
     background: var(--surface);
     color: var(--text-primary);

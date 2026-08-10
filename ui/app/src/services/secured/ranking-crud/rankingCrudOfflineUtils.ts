@@ -13,6 +13,7 @@ import {
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
+import { invalidateRankingClassification } from "@/services/fetch-rankings/fetchRankings";
 import type {
   RankingResponseDTO,
   RankingRollbackPayload,
@@ -119,6 +120,7 @@ export const commitRankingMutationSuccess = async ({
     syncRankingToCache(entityId, null);
     await removeQuerySnapshot(getRankingSnapshotId(entityId));
     replaceRankingDraft(entityId, null, null);
+    await invalidateRankingClassification(entityId);
     return;
   }
 
@@ -131,6 +133,10 @@ export const commitRankingMutationSuccess = async ({
   syncRankingToCache(entityId, visibleRanking);
   replaceRankingDraft(entityId, visibleRanking, visibleRanking);
   await saveRankingSnapshot(entityId, visibleRanking);
+  // The results are derived from the events and criteria, so once the new configuration is stored the
+  // public results have to be read again. Done here rather than at the call site so it also covers a
+  // mutation replayed from the offline queue.
+  await invalidateRankingClassification(entityId);
 };
 
 export const commitRankingMutation =

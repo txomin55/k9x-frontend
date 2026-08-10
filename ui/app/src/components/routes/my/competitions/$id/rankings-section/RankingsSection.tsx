@@ -18,6 +18,7 @@ import RankingConfigurator, {
   type RankingCompetitionOption,
   type RankingConfiguratorChange,
 } from "./RankingConfigurator";
+import RankingResults from "./RankingResults";
 import "./styles.css";
 
 export interface RankingsSectionProps {
@@ -83,6 +84,7 @@ export default function RankingsSection(props: RankingsSectionProps) {
       groupBy: defaults.groupBy,
       includeBy: defaults.includeBy,
       includedCount: defaults.includedCount,
+      includeReserves: defaults.includeReserves,
     });
   };
 
@@ -105,8 +107,18 @@ export default function RankingsSection(props: RankingsSectionProps) {
 
     if (!current) return;
 
+    // A ranking cannot be stored without events, so a criteria change made while the list is still empty
+    // only updates the local draft. Deleting is a separate, explicit action: the cog, or removing the last
+    // event through onRemoveLastEvent. Without this, toggling a criterion on an empty draft would wipe it.
     if (change.eventIds.length === 0) {
-      discardRanking();
+      setDraft({
+        ...current,
+        events: [],
+        groupBy: change.groupBy,
+        includeBy: change.includeBy,
+        includedCount: change.includedCount,
+        includeReserves: change.includeReserves,
+      });
       return;
     }
 
@@ -120,6 +132,7 @@ export default function RankingsSection(props: RankingsSectionProps) {
         groupBy: change.groupBy,
         includeBy: change.includeBy,
         includedCount: change.includedCount,
+        includeReserves: change.includeReserves,
       },
       knownEvents(),
     );
@@ -150,17 +163,24 @@ export default function RankingsSection(props: RankingsSectionProps) {
         }
       >
         {(currentRanking) => (
-          <RankingConfigurator
-            competitions={competitions()}
-            events={currentRanking().events}
-            groupBy={currentRanking().groupBy}
-            includeBy={currentRanking().includeBy}
-            includedCount={currentRanking().includedCount}
-            groupByOptions={groupBysQuery.data ?? []}
-            includeByOptions={includeBysQuery.data ?? []}
-            onChange={handleChange}
-            onRemoveLastEvent={discardRanking}
-          />
+          <>
+            <RankingConfigurator
+              competitions={competitions()}
+              events={currentRanking().events}
+              groupBy={currentRanking().groupBy}
+              includeBy={currentRanking().includeBy}
+              includedCount={currentRanking().includedCount}
+              includeReserves={currentRanking().includeReserves}
+              groupByOptions={groupBysQuery.data ?? []}
+              includeByOptions={includeBysQuery.data ?? []}
+              onChange={handleChange}
+              onRemoveLastEvent={discardRanking}
+            />
+            {/* The results come from the public endpoint, so they only exist once the ranking is saved. */}
+            <Show when={persistedRanking()}>
+              <RankingResults rankingId={rankingId()} />
+            </Show>
+          </>
         )}
       </Show>
 

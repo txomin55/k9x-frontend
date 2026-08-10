@@ -14,6 +14,12 @@ vi.mock("@/stores/i18n/i18n", () => ({
   useI18n: () => ({ t: (key: string) => key }),
 }));
 
+// The results are a component of their own with its own test; this suite is about the section's actions.
+vi.mock("@/services/fetch-rankings/fetchRankings", () => ({
+  useRankingClassification: () => ({ data: null, isPending: false }),
+  invalidateRankingClassification: vi.fn(),
+}));
+
 vi.mock("@/services/secured/ranking-crud/rankingCrud", () => ({
   deleteRanking: mocks.deleteRanking,
   saveRanking: mocks.saveRanking,
@@ -81,6 +87,7 @@ const persistedRanking: RankingResponseDTO = {
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
   includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
+  includeReserves: true,
 };
 
 describe("RankingsSection", () => {
@@ -162,6 +169,27 @@ describe("RankingsSection", () => {
     expect(
       queryByText("MY.COMPETITIONS.RANKINGS_SECTION.ADD_RANKING"),
     ).not.toBeInTheDocument();
+  });
+
+  test("a criteria change on an empty draft keeps the draft instead of deleting it", () => {
+    const { container, getByText, queryByText } = renderSection();
+
+    getByText("MY.COMPETITIONS.RANKINGS_SECTION.ADD_RANKING").click();
+
+    // The reserves checkbox is the only criterion reachable with no events yet. Clicked through its control,
+    // which is what a user hits: the underlying input is visually hidden and ignores pointer events.
+    container.querySelector<HTMLElement>(".atom-checkbox__control")!.click();
+
+    // Nothing is stored (the backend rejects an eventless ranking) and nothing is deleted either.
+    expect(mocks.saveRanking).not.toHaveBeenCalled();
+    expect(mocks.deleteRanking).not.toHaveBeenCalled();
+    // The configurator is still on screen: the draft survived.
+    expect(
+      queryByText("MY.COMPETITIONS.RANKINGS_SECTION.EMPTY"),
+    ).not.toBeInTheDocument();
+    expect(
+      getByText("MY.COMPETITIONS.RANKINGS_SECTION.NO_EVENTS"),
+    ).toBeInTheDocument();
   });
 
   test("shows the empty message when there is no ranking", () => {

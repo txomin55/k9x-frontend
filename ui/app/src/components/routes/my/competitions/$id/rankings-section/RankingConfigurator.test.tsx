@@ -46,6 +46,7 @@ const renderConfigurator = (
       groupBy={RANKING_GROUP_BY.INDIVIDUAL}
       includeBy={RANKING_INCLUDE_BY.ALL}
       includedCount={null}
+      includeReserves={true}
       groupByOptions={GROUP_BY_OPTIONS}
       includeByOptions={INCLUDE_BY_OPTIONS}
       onChange={(change) => changes.push(change)}

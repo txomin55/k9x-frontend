@@ -1,5 +1,7 @@
-/* Wrapper */
+/* Wrapper. `position: relative` so the absolutely positioned input below is contained here instead of
+   escaping to the page and landing on top of unrelated controls. */
 .atom-checkbox {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: var(--unit-05);
@@ -7,9 +9,19 @@
     cursor: pointer;
 }
 
-/* Input (ya lo tienes visually hidden) */
+/* Input: visually hidden but kept in the DOM and focusable, because the focus ring below is driven by
+   `:focus-visible` on it. `position: absolute` alone did not hide anything, so the native checkbox was
+   painted over whatever sat next to it. `pointer-events: none` keeps clicks going to the control, which is
+   what Kobalte listens to. */
 .atom-checkbox__input {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Control (la caja) */

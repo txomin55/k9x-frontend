@@ -20,6 +20,7 @@ const buildRanking = (
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
   includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
+  includeReserves: true,
   ...overrides,
 });
 

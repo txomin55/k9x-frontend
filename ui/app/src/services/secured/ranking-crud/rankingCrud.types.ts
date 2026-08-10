@@ -8,6 +8,8 @@ export interface RankingResponseDTO {
   groupBy: string;
   includeBy: string;
   includedCount: number | null;
+  /** Whether competitors entered as reserves count towards the ranking. */
+  includeReserves: boolean;
 }
 
 export interface CreateRankingRequestDTO {
@@ -17,6 +19,7 @@ export interface CreateRankingRequestDTO {
   groupBy: string;
   includeBy: string;
   includedCount: number | null;
+  includeReserves: boolean;
 }
 
 export interface RankingRollbackPayload {

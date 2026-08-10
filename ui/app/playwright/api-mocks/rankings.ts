@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import type { RankingResponseDTO } from "@/services/secured/ranking-crud/rankingCrud.types";
+import type { RankingClassificationResponseDTO } from "@/services/fetch-rankings/fetchRankings.types";
 import { RANKING_INCLUDE_BY, RANKING_GROUP_BY } from "@/utils/ranking";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
@@ -60,4 +61,26 @@ export const setupDeleteRanking = (page: Page) =>
     method: "DELETE",
     payload: "",
     pathname: "/secured/rankings/*",
+  });
+
+/**
+ * The public results endpoint, which also answers 204 when there is no ranking. Distinct pathname from the
+ * secured one: it is not under /secured/.
+ */
+export const setupNoRankingResults = (page: Page) =>
+  setRouteResponses(page, {
+    method: "GET",
+    payload: "",
+    pathname: "/rankings/*",
+    status: 204,
+  });
+
+export const setupRankingResults = (
+  page: Page,
+  results: RankingClassificationResponseDTO,
+) =>
+  setRouteResponses(page, {
+    method: "GET",
+    payload: results,
+    pathname: "/rankings/*",
   });

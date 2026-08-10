@@ -5,6 +5,7 @@ import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { includesAll } from "@/utils/ranking";
+import { invalidateRankingClassification } from "@/services/fetch-rankings/fetchRankings";
 import type {
   CreateRankingRequestDTO,
   RankingResponseDTO,
@@ -108,6 +109,7 @@ const toRankingProjection = (
   groupBy: payload.groupBy,
   includeBy: payload.includeBy,
   includedCount: includesAll(payload.includeBy) ? null : payload.includedCount,
+  includeReserves: payload.includeReserves,
 });
 
 /**
@@ -135,6 +137,11 @@ export const saveRanking = (
     await commitRankingMutation({
       entityId: draftRanking.rankingId,
       method: "POST",
+      // The results are derived from the events and criteria, so they have to be read again once the new
+      // configuration is stored. onCommitted is the online path; a mutation replayed from the offline queue
+      // goes through commitRankingMutationSuccess instead.
+      onCommitted: () =>
+        invalidateRankingClassification(draftRanking.rankingId),
       payload,
       rollbackPayload: await createRankingRollbackPayload(
         draftRanking.rankingId,
@@ -156,6 +163,7 @@ export const deleteRanking = (id: string) => {
     await commitRankingMutation({
       entityId: id,
       method: "DELETE",
+      onCommitted: () => invalidateRankingClassification(id),
       rollbackPayload: await createRankingRollbackPayload(id, previousRanking),
       url: `/secured/rankings/${id}`,
     });

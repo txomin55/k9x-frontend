@@ -2,6 +2,7 @@ import { createMemo, createSignal, For, Show } from "solid-js";
 import AtomSelect, {
   type AtomSelectOption,
 } from "@lib/components/atoms/select/AtomSelect";
+import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -29,6 +30,7 @@ export interface RankingConfiguratorChange {
   groupBy: string;
   includeBy: string;
   includedCount: number | null;
+  includeReserves: boolean;
 }
 
 export interface RankingConfiguratorProps {
@@ -42,6 +44,7 @@ export interface RankingConfiguratorProps {
   groupBy: string;
   includeBy: string;
   includedCount: number | null;
+  includeReserves: boolean;
   groupByOptions: IdNameDTO[];
   includeByOptions: IdNameDTO[];
   disabled?: boolean;
@@ -133,6 +136,7 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
       groupBy: props.groupBy,
       includeBy: props.includeBy,
       includedCount: props.includedCount,
+      includeReserves: props.includeReserves,
       ...change,
     });
   };
@@ -300,6 +304,16 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
             onChange={handleIncludedCountChange}
           />
         </Show>
+      </div>
+
+      {/* A toggle, not a field: kept out of the field grid so it never shares a row with the inputs. */}
+      <div class="ranking-configurator__toggle">
+        <AtomCheckbox
+          checked={props.includeReserves}
+          disabled={props.disabled}
+          label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.INCLUDE_RESERVES")}
+          setChecked={(includeReserves) => emit({ includeReserves })}
+        />
       </div>
     </div>
   );

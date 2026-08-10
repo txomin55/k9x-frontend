@@ -21,6 +21,10 @@
 }
 
 /* Adding the event is the affirmative action of this form, so it keeps the primary colour. */
+.ranking-configurator__toggle {
+  display: flex;
+}
+
 .ranking-configurator__add {
   appearance: none;
   display: inline-flex;
@@ -122,4 +126,186 @@
 .ranking-configurator__empty {
   margin: 0;
   color: var(--text-secondary);
+}
+
+/* ---- Ranking results: a collapsible per group, matrix inside ---- */
+
+.ranking-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  margin-top: var(--unit-3);
+}
+
+.ranking-results__title {
+  margin: 0;
+  font-size: var(--text-label-lg);
+}
+
+.ranking-results__loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+}
+
+.ranking-results__empty {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+/* Column legend for the collapsed rows. Same grid as the trigger summary so they line up. */
+.ranking-results__header,
+.ranking-results__summary {
+  display: grid;
+  grid-template-columns: var(--unit-5) 1fr auto;
+  align-items: center;
+  gap: var(--unit-1);
+}
+
+.ranking-results__header {
+  padding: 0 var(--unit-1);
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  text-transform: uppercase;
+}
+
+.ranking-results__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ranking-results__summary {
+  width: 100%;
+}
+
+.ranking-results__position {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--unit-025);
+  font-weight: var(--font-weight-bold);
+}
+
+.ranking-results__tied {
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+}
+
+.ranking-results__criterion {
+  text-align: left;
+}
+
+.ranking-results__total {
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Wide rankings scroll inside their own container instead of pushing the page sideways. */
+.ranking-results__matrix {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* The matrix sizes to its content and scrolls inside its own container: that way the competitor names are
+   always shown in full and every event column gets the same width, instead of squeezing either of them. */
+.ranking-results__matrix table {
+  border-collapse: collapse;
+  table-layout: auto;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* The competitor column stays pinned while the event scores scroll under it, and reads as a label column:
+   muted background like the headers, while the scores keep the white content surface. The background must be
+   opaque for the pinning to work, otherwise the scrolled scores show through. */
+.ranking-results__matrix thead th:first-child,
+.ranking-results__matrix tbody th[scope="row"] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface-muted);
+  white-space: nowrap;
+}
+
+/* Every event column gets the same width so the scores line up down the matrix. The header text wraps
+   instead of stretching its column: with table-layout auto a nowrap heading would widen the column and the
+   uniform width would be lost. */
+.ranking-results__matrix th:not(:first-child),
+.ranking-results__matrix td:not(:first-child) {
+  width: calc(var(--unit-10) + var(--unit-2));
+  min-width: calc(var(--unit-10) + var(--unit-2));
+  max-width: calc(var(--unit-10) + var(--unit-2));
+}
+
+.ranking-results__matrix thead th:not(:first-child) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ranking-results__matrix th,
+.ranking-results__matrix td {
+  padding: var(--unit-05);
+  border-bottom: 1px solid var(--border-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ranking-results__matrix thead th {
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  font-weight: 500;
+}
+
+.ranking-results__matrix tbody th[scope="row"],
+.ranking-results__matrix thead th:first-child {
+  text-align: left;
+  padding-right: var(--unit-2);
+}
+
+/* Competitor names read as labels, like the column headers, so the scores are what stands out. */
+.ranking-results__matrix tbody th[scope="row"] {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Same colour formula as the classification score chips, with the rating pinned: green (--success, the top
+   of the rating scale) for what counts, red (--error) for what does not. */
+.ranking-results__cell {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: var(--unit-4);
+
+  padding: var(--unit-025) var(--unit-05);
+  border: 1px solid color-mix(in srgb, var(--rating-color) 48%, var(--surface));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--rating-color) 20%, var(--surface));
+  color: color-mix(in oklab, var(--rating-color), var(--text-primary) 24%);
+
+  font: inherit;
+  font-size: var(--text-caption-md);
+  font-weight: var(--font-weight-bold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.ranking-results__cell.is-counted {
+  --rating-color: var(--success);
+}
+
+/* Does not count, whether because there is no score or because the inclusion criterion left it out. */
+.ranking-results__cell.is-excluded {
+  --rating-color: var(--error);
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.ranking-results__cell.is-counted:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--success) 80%, var(--surface));
 }

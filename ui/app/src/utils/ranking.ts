@@ -34,6 +34,8 @@ export const createDefaultRanking = (
   groupBy: RANKING_GROUP_BY.INDIVIDUAL,
   includeBy: RANKING_INCLUDE_BY.ALL,
   includedCount: null,
+  // Reserves count by default: excluding people is an explicit choice, not a silent one.
+  includeReserves: true,
 });
 
 export const includesAll = (includeBy: string) =>
