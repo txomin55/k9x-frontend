@@ -1,4 +1,5 @@
 import { createMemo, createSignal, Show } from "solid-js";
+import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -33,6 +34,9 @@ export default function RankingsSection(props: RankingsSectionProps) {
   // A local draft, not a POST: a ranking with no events would be rejected by the backend, so the first
   // save waits until the first event is picked.
   const [draft, setDraft] = createSignal<RankingResponseDTO | null>(null);
+  // Buffer for what is being typed in the name field: the value is only stored on blur, so a rename is one
+  // POST instead of one per keystroke.
+  const [nameBuffer, setNameBuffer] = createSignal<string | null>(null);
 
   const rankingId = createMemo(() =>
     props.competition ? getRankingId(props.competition.id) : "",
@@ -72,10 +76,8 @@ export default function RankingsSection(props: RankingsSectionProps) {
 
     if (!competition) return;
 
-    const defaults = createDefaultRanking(
-      competition.id,
-      i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.DEFAULT_NAME"),
-    );
+    // The name is typed, so a new ranking starts unnamed and the field shows its placeholder.
+    const defaults = createDefaultRanking(competition.id, "");
 
     setDraft({
       rankingId: defaults.rankingId,
@@ -90,6 +92,7 @@ export default function RankingsSection(props: RankingsSectionProps) {
 
   const discardRanking = () => {
     setDraft(null);
+    setNameBuffer(null);
 
     if (persistedRanking()) {
       deleteRanking(rankingId());
@@ -101,6 +104,50 @@ export default function RankingsSection(props: RankingsSectionProps) {
       competition.stages.flatMap((stage) => stage.events),
     ),
   );
+
+  // An unnamed ranking would be rejected by the backend, so a blank field falls back to the generic name.
+  const resolveName = (name: string) =>
+    name.trim() || i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.DEFAULT_NAME");
+
+  const displayedName = () => nameBuffer() ?? ranking()?.name ?? "";
+
+  const handleNameChange = (name: string) => {
+    setNameBuffer(name);
+
+    // The draft is local, so it can follow every keystroke: only the persisted ranking waits for the blur.
+    const current = draft();
+
+    if (current) setDraft({ ...current, name });
+  };
+
+  const commitName = () => {
+    const name = nameBuffer();
+
+    setNameBuffer(null);
+
+    const current = ranking();
+
+    if (name === null || !current || name === current.name) return;
+
+    // Same rule as the criteria: with no events there is nothing to store yet, so the name stays local.
+    if (current.events.length === 0) {
+      setDraft({ ...current, name });
+      return;
+    }
+
+    saveRanking(
+      {
+        rankingId: current.rankingId,
+        name: resolveName(name),
+        eventIds: current.events.map((event) => event.id),
+        groupBy: current.groupBy,
+        includeBy: current.includeBy,
+        includedCount: current.includedCount,
+        includeReserves: current.includeReserves,
+      },
+      knownEvents(),
+    );
+  };
 
   const handleChange = (change: RankingConfiguratorChange) => {
     const current = ranking();
@@ -127,7 +174,7 @@ export default function RankingsSection(props: RankingsSectionProps) {
     const nextRanking = saveRanking(
       {
         rankingId: current.rankingId,
-        name: current.name,
+        name: resolveName(current.name),
         eventIds: change.eventIds,
         groupBy: change.groupBy,
         includeBy: change.includeBy,
@@ -164,8 +211,20 @@ export default function RankingsSection(props: RankingsSectionProps) {
       >
         {(currentRanking) => (
           <>
+            <div class="rankings-section__name">
+              <AtomInput
+                label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.NAME")}
+                placeholder={i18n.t(
+                  "MY.COMPETITIONS.RANKINGS_SECTION.DEFAULT_NAME",
+                )}
+                value={displayedName()}
+                onChange={handleNameChange}
+                onBlur={commitName}
+              />
+            </div>
             <RankingConfigurator
               competitions={competitions()}
+              hideCompetitionWhenSingle
               events={currentRanking().events}
               groupBy={currentRanking().groupBy}
               includeBy={currentRanking().includeBy}
@@ -211,7 +270,7 @@ export default function RankingsSection(props: RankingsSectionProps) {
             }
           >
             <ConfirmActionButton
-              text={ranking()?.name}
+              text={resolveName(ranking()?.name ?? "")}
               onConfirm={discardRanking}
             >
               <span class="floating-action__label">

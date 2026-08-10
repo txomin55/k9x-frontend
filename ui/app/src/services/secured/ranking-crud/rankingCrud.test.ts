@@ -5,6 +5,16 @@ const mocks = vi.hoisted(() => ({
   invalidateRankingClassification: vi.fn(),
   applyRankingUpsert: vi.fn(),
   applyRankingRemoval: vi.fn(),
+  invalidateQueries: vi.fn(),
+}));
+
+vi.mock("@/utils/http/query-client", () => ({
+  queryClient: {
+    invalidateQueries: mocks.invalidateQueries,
+    setQueryData: vi.fn(),
+    getQueryData: vi.fn(),
+    fetchQuery: vi.fn(),
+  },
 }));
 
 vi.mock("@/services/secured/ranking-crud/rankingCrudOfflineUtils", () => ({
@@ -45,6 +55,7 @@ describe("rankingCrud results refresh", () => {
   beforeEach(() => {
     mocks.commitRankingMutation.mockReset();
     mocks.invalidateRankingClassification.mockReset();
+    mocks.invalidateQueries.mockReset();
     // Stand in for the online path, which is the one that calls onCommitted.
     mocks.commitRankingMutation.mockImplementation(async ({ onCommitted }) => {
       await onCommitted?.();
@@ -78,5 +89,23 @@ describe("rankingCrud results refresh", () => {
     await flush();
 
     expect(mocks.invalidateRankingClassification).not.toHaveBeenCalled();
+  });
+
+  it("reads the ranking list again once a save commits, so the list reflects it", async () => {
+    saveRanking(payload);
+    await flush();
+
+    expect(mocks.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ["rankings"],
+    });
+  });
+
+  it("reads the ranking list again once a delete commits", async () => {
+    deleteRanking(RANKING_ID);
+    await flush();
+
+    expect(mocks.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: ["rankings"],
+    });
   });
 });

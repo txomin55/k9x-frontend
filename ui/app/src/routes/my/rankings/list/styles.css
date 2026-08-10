@@ -1,0 +1,50 @@
+.rankings-list.card-list {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+  );
+}
+
+.rankings-list.card-list > .card {
+  max-width: none;
+}
+
+.rankings-list__table {
+  margin-top: var(--unit-1);
+}
+
+.rankings-list__name {
+  font-weight: var(--font-weight-semibold);
+}
+
+.rankings-list__events {
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  white-space: nowrap;
+}
+
+.rankings-list__editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-2);
+}
+
+.rankings-list__editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--unit-1);
+}
+
+/* Same shape as the judge and dog card actions: plain buttons, left aligned. The shared
+   .list-table__actions is not used here because it squares and rounds them for icon-only use. */
+.rankings-list__actions {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--unit-1);
+}
+
+/* View is pushed to the far right, away from the destructive and edit actions. */
+.rankings-list__view {
+  margin-left: auto;
+}

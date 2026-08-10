@@ -14,6 +14,7 @@ import {
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type {
   CompetitionResponseDTO,
+  SelectableCompetitionResponseDTO,
   UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
@@ -29,6 +30,8 @@ import { COMPETITION_STATUS } from "@/utils/competition";
 import {
   COMPETITIONS_SNAPSHOT_ID,
   getCompetitionsQueryKey,
+  getSelectableCompetitionsQueryKey,
+  SELECTABLE_COMPETITIONS_SNAPSHOT_ID,
 } from "@/services/secured/competition-crud/competitionCrudConstants";
 
 export type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
@@ -278,4 +281,50 @@ export const useCompetition = () => {
     updateCompetition,
     createDefaultCompetition,
   };
+};
+
+const refreshSelectableCompetitionsSnapshot = async () => {
+  const competitions = await rawRequest<SelectableCompetitionResponseDTO[]>({
+    path: "/secured/competitions/selectable",
+  });
+
+  await saveQuerySnapshot(SELECTABLE_COMPETITIONS_SNAPSHOT_ID, competitions);
+  queryClient.setQueryData(getSelectableCompetitionsQueryKey(), competitions);
+
+  return competitions;
+};
+
+const selectableCompetitionsQuery = defineQuery({
+  fetcher: () =>
+    fetchWithOfflineSnapshot(
+      SELECTABLE_COMPETITIONS_SNAPSHOT_ID,
+      refreshSelectableCompetitionsSnapshot,
+    ),
+  queryKey: ["competitions", "selectable"] as const,
+});
+
+/**
+ * Every non-deleted competition with its trials and events, ids and names only. Feeds the ranking editor,
+ * which may group events from competitions the organizer did not create.
+ */
+export const useSelectableCompetitions = (options?: TanstackCreateQuery) =>
+  selectableCompetitionsQuery.useQuery({
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+    refetchOnMount: options?.refetchOnMount,
+  });
+
+export const prefetchSelectableCompetitions = (
+  options?: TanstackCreateQuery,
+) => {
+  const { queryFn, queryKey } = selectableCompetitionsQuery.options();
+
+  return queryClient.fetchQuery({
+    queryKey,
+    queryFn,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+  });
 };

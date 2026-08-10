@@ -6,6 +6,7 @@ export enum AppRoutePath {
   EVENT_INFO = "/stages/$id/info",
   EVENT_CLASSIFICATIONS = "/stages/$id/events/$eventId/classifications",
   MY_COMPETITIONS = "/my/competitions",
+  MY_RANKINGS = "/my/rankings",
   MY_JUDGES = "/my/judges",
   MY_DOGS = "/my/dogs",
   COMPETITION_DETAIL = "/my/competitions/$id",

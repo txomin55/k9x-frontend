@@ -1,5 +1,10 @@
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 
+export const RANKINGS_SNAPSHOT_ID = "rankings";
+
+export const getRankingsQueryKey = () =>
+  ["rankings", getCurrentLocale()] as const;
+
 export const RANKING_SNAPSHOT_PREFIX = "ranking:";
 
 export const getRankingSnapshotId = (id: string) =>

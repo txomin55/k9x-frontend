@@ -54,6 +54,12 @@ export default function Navigation() {
             {i18n.t("GLOBAL.NAVIGATION.COMPETITIONS")}
           </Link>
           <Link
+            to={AppRoutePath.MY_RANKINGS as never}
+            activeProps={{ class: "navigation__link--active" }}
+          >
+            {i18n.t("GLOBAL.NAVIGATION.RANKINGS")}
+          </Link>
+          <Link
             to={AppRoutePath.MY_JUDGES as never}
             activeProps={{ class: "navigation__link--active" }}
           >

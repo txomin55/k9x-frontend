@@ -59,8 +59,10 @@ const renderConfigurator = (
 };
 
 describe("RankingConfigurator", () => {
-  test("hides the competition select when there is only one competition", () => {
-    const { getByText, queryByText } = renderConfigurator();
+  test("hides the competition select with one competition only when asked to", () => {
+    const { getByText, queryByText } = renderConfigurator({
+      hideCompetitionWhenSingle: true,
+    });
 
     expect(
       queryByText("MY.COMPETITIONS.RANKINGS_SECTION.COMPETITION"),
@@ -72,11 +74,21 @@ describe("RankingConfigurator", () => {
 
   test("shows the competition select as soon as there is more than one", () => {
     const { getByText } = renderConfigurator({
+      hideCompetitionWhenSingle: true,
       competitions: [
         competition("competition_1", "Competition 1"),
         competition("competition_2", "Competition 2"),
       ],
     });
+
+    expect(
+      getByText("MY.COMPETITIONS.RANKINGS_SECTION.COMPETITION"),
+    ).toBeInTheDocument();
+  });
+
+  test("keeps the competition select with a single competition by default", () => {
+    // The standalone editor always picks a competition explicitly before its trials.
+    const { getByText } = renderConfigurator();
 
     expect(
       getByText("MY.COMPETITIONS.RANKINGS_SECTION.COMPETITION"),

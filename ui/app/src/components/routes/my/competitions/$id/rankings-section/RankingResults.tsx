@@ -24,9 +24,9 @@ const formatScore = (score: number) => Math.round(score * 100) / 100;
 export default function RankingResults(props: RankingResultsProps) {
   const i18n = useI18n();
   const navigate = useNavigate();
-  const resultsQuery = useRankingClassification(props.rankingId, {
-    refetchOnMount: false,
-  });
+  // No refetchOnMount opt-out: the component is mounted fresh by the viewer dialog, so opening it always
+  // reads the results again.
+  const resultsQuery = useRankingClassification(props.rankingId);
   const [openGroupIds, setOpenGroupIds] = createSignal<string[]>([]);
 
   const results = () => resultsQuery.data ?? null;

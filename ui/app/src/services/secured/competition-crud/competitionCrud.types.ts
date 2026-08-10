@@ -48,3 +48,16 @@ export interface CompetitionRollbackPayload {
   previousCompetition: CompetitionResponseDTO | null;
   previousCompetitions: CompetitionResponseDTO[] | null;
 }
+
+/** Ids and names only, for pickers: competition -> trial -> event, all of them not deleted. */
+export interface SelectableStageResponseDTO {
+  id: string;
+  name: string;
+  events: IdNameDTO[];
+}
+
+export interface SelectableCompetitionResponseDTO {
+  id: string;
+  name: string;
+  stages: SelectableStageResponseDTO[];
+}

@@ -8,6 +8,7 @@ import { includesAll } from "@/utils/ranking";
 import { invalidateRankingClassification } from "@/services/fetch-rankings/fetchRankings";
 import type {
   CreateRankingRequestDTO,
+  RankingListItemResponseDTO,
   RankingResponseDTO,
 } from "./rankingCrud.types";
 import {
@@ -20,7 +21,9 @@ import {
 } from "./rankingCrudOfflineUtils";
 import {
   getRankingQueryKey,
+  getRankingsQueryKey,
   getRankingSnapshotId,
+  RANKINGS_SNAPSHOT_ID,
   RANKING_INCLUDE_BYS_SNAPSHOT_ID,
   RANKING_GROUP_BYS_SNAPSHOT_ID,
   getRankingIncludeBysQueryKey,
@@ -28,6 +31,53 @@ import {
 } from "./rankingCrudConstants";
 import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { mergeRankingWithDraft } from "./rankingDraftStore";
+
+const refreshRankingsSnapshot = async () => {
+  const rankings = await rawRequest<RankingListItemResponseDTO[]>({
+    path: "/secured/rankings",
+  });
+
+  await saveQuerySnapshot(RANKINGS_SNAPSHOT_ID, rankings);
+  queryClient.setQueryData(getRankingsQueryKey(), rankings);
+
+  return rankings;
+};
+
+const rankingsQuery = defineQuery({
+  fetcher: () =>
+    fetchWithOfflineSnapshot(RANKINGS_SNAPSHOT_ID, refreshRankingsSnapshot),
+  queryKey: ["rankings"] as const,
+});
+
+export const prefetchRankings = (options?: TanstackCreateQuery) => {
+  const { queryFn, queryKey } = rankingsQuery.options();
+
+  return queryClient.fetchQuery({
+    queryKey,
+    queryFn,
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+  });
+};
+
+export const useRankings = (options?: TanstackCreateQuery) =>
+  rankingsQuery.useQuery({
+    staleTime: options?.staleTime,
+    gcTime: options?.gcTime,
+    networkMode: "always",
+    refetchOnMount: options?.refetchOnMount,
+    get enabled() {
+      return options?.enabled ? options.enabled() : true;
+    },
+  } as never);
+
+/**
+ * The list is a projection of the rankings, so it is stale after any write. Invalidated rather than patched
+ * in place: a create or delete changes both membership and the event counts.
+ */
+export const invalidateRankings = () =>
+  queryClient.invalidateQueries({ queryKey: ["rankings"] });
 
 const refreshRankingSnapshot = async (id: string) => {
   // The endpoint answers 204 when the competition has no ranking yet, and rawRequest turns that into
@@ -140,8 +190,11 @@ export const saveRanking = (
       // The results are derived from the events and criteria, so they have to be read again once the new
       // configuration is stored. onCommitted is the online path; a mutation replayed from the offline queue
       // goes through commitRankingMutationSuccess instead.
-      onCommitted: () =>
-        invalidateRankingClassification(draftRanking.rankingId),
+      onCommitted: async () => {
+        await invalidateRankingClassification(draftRanking.rankingId);
+        // The list shows the name and the event count, so it is stale after a save too.
+        await invalidateRankings();
+      },
       payload,
       rollbackPayload: await createRankingRollbackPayload(
         draftRanking.rankingId,
@@ -163,7 +216,10 @@ export const deleteRanking = (id: string) => {
     await commitRankingMutation({
       entityId: id,
       method: "DELETE",
-      onCommitted: () => invalidateRankingClassification(id),
+      onCommitted: async () => {
+        await invalidateRankingClassification(id);
+        await invalidateRankings();
+      },
       rollbackPayload: await createRankingRollbackPayload(id, previousRanking),
       url: `/secured/rankings/${id}`,
     });

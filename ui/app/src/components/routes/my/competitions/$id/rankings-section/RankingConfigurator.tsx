@@ -48,6 +48,12 @@ export interface RankingConfiguratorProps {
   groupByOptions: IdNameDTO[];
   includeByOptions: IdNameDTO[];
   disabled?: boolean;
+  /**
+   * Hides the competition select while there is only one competition to choose from. Meant for the
+   * competition tab, where the competition is already the context. The standalone editor leaves it off so a
+   * competition is always picked explicitly before its trials.
+   */
+  hideCompetitionWhenSingle?: boolean;
   onChange: (change: RankingConfiguratorChange) => void;
   /** Removing the last event deletes the ranking, so the page owns that decision. */
   onRemoveLastEvent: () => void;
@@ -190,8 +196,12 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
   return (
     <div class="ranking-configurator">
       <div class="ranking-configurator__picker">
-        {/* A single competition means there is nothing to choose, so the select stays out of the way. */}
-        <Show when={props.competitions.length > 1}>
+        {/* Only hidden when the caller says the competition is already implied and there is just one. */}
+        <Show
+          when={
+            props.competitions.length > 1 || !props.hideCompetitionWhenSingle
+          }
+        >
           <AtomSelect
             label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.COMPETITION")}
             placeholder={i18n.t(

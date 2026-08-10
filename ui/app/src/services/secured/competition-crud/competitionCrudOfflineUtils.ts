@@ -47,8 +47,9 @@ export const buildCompetitionsWithoutEntity = (
 ) => previousCompetitions.filter((competition) => competition.id !== id);
 
 const getBaseCompetitionsFromCache = () =>
-  queryClient.getQueryData<CompetitionResponseDTO[]>(getCompetitionsQueryKey()) ??
-  [];
+  queryClient.getQueryData<CompetitionResponseDTO[]>(
+    getCompetitionsQueryKey(),
+  ) ?? [];
 
 export const getVisibleCompetitions = () =>
   mergeCompetitionsWithDrafts(getBaseCompetitionsFromCache());
@@ -102,10 +103,14 @@ export const commitCompetitionMutationSuccess = async ({
 
 export const readCompetitionsSnapshot = () =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
-    getPersistedQuerySnapshot<CompetitionResponseDTO[]>(COMPETITIONS_SNAPSHOT_ID),
+    getPersistedQuerySnapshot<CompetitionResponseDTO[]>(
+      COMPETITIONS_SNAPSHOT_ID,
+    ),
   );
 
-export const saveCompetitionsSnapshot = (competitions: CompetitionResponseDTO[]) =>
+export const saveCompetitionsSnapshot = (
+  competitions: CompetitionResponseDTO[],
+) =>
   removeQuerySnapshotsByPrefix("competition:").then(() =>
     saveQuerySnapshot(COMPETITIONS_SNAPSHOT_ID, competitions),
   );

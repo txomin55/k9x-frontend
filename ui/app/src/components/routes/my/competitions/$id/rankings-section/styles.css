@@ -2,6 +2,12 @@
   color: var(--text-secondary);
 }
 
+/* A single short field, so it keeps a modest width instead of stretching across the section. */
+.rankings-section__name {
+  max-width: min(100%, calc(var(--unit-10) * 2));
+  margin-bottom: var(--unit-2);
+}
+
 .ranking-configurator {
   display: flex;
   flex-direction: column;
