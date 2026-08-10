@@ -149,4 +149,5 @@ export type EnrollStageEventRequestDTO = {
   dogIdentification: string;
   eventId: string;
   bih: boolean;
+  primer: string;
 };

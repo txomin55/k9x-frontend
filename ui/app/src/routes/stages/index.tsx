@@ -48,6 +48,7 @@ import AtomButton, {
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
+import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
 import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import "./styles.css";
@@ -72,11 +73,13 @@ const SKELETON_ROWS = Array.from(
 type EnrollDraft = {
   dogIdentification: string;
   bih: boolean;
+  primer: string;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
   dogIdentification: "",
   bih: false,
+  primer: "",
 });
 
 type EnrollHandler = (stageId: string, eventId: string) => void;
@@ -484,6 +487,17 @@ function EnrollDialog(props: {
               }
             />
           </Show>
+
+          <AtomInput
+            label={i18n.t("STAGES.INFO.PRIMER")}
+            value={enrollDraft().primer}
+            onChange={(value) =>
+              updateEnrollDraft((current) => ({
+                ...current,
+                primer: value,
+              }))
+            }
+          />
 
           <div class="stage-info__enroll-form-actions">
             <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onClose}>

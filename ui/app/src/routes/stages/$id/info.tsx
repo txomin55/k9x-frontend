@@ -10,6 +10,7 @@ import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
+import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect";
 import {useAuthUser} from "@/stores/auth/auth";
@@ -111,11 +112,13 @@ function StageInfoSkeleton() {
 type EnrollDraft = {
   dogIdentification: string;
   bih: boolean;
+  primer: string;
 };
 
 const createEmptyEnrollDraft = (): EnrollDraft => ({
   dogIdentification: "",
   bih: false,
+  primer: "",
 });
 
 const TABS = STAGE_INFO_TABS;
@@ -492,6 +495,17 @@ function StageInfoPage() {
                       }
                     />
                   </Show>
+
+                  <AtomInput
+                    label={i18n.t("STAGES.INFO.PRIMER")}
+                    value={enrollDraft().primer}
+                    onChange={(value) =>
+                      updateEnrollDraft((current) => ({
+                        ...current,
+                        primer: value,
+                      }))
+                    }
+                  />
 
                   <div class="stage-info__enroll-form-actions">
                     <AtomButton

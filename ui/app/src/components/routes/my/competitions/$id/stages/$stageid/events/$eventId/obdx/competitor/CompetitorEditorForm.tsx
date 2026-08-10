@@ -2,6 +2,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "library/src/components/atoms/button/AtomButton";
 import AtomCheckbox from "library/src/components/atoms/checkbox/AtomCheckbox";
+import AtomInput from "library/src/components/atoms/input/AtomInput";
 import {
   AtomCombobox,
   type AtomComboboxOption,
@@ -86,6 +87,16 @@ export default function CompetitorEditorForm(
     );
 
     props.onCommitCompetitor();
+  };
+  const setPrimer = (value: string) => {
+    props.onCompetitorDraftChange((current) =>
+      current
+        ? {
+            ...current,
+            primer: value,
+          }
+        : current,
+    );
   };
   const setReserve = (value: boolean) => {
     props.onCompetitorDraftChange((current) =>
@@ -196,6 +207,14 @@ export default function CompetitorEditorForm(
               </Show>
             </span>
             <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.LICENSE")}
+              <Show when={selectedDog(draft().dogIdentification)}>
+                {(selected) => (
+                  <span class="text-label-sm">{selected().license}</span>
+                )}
+              </Show>
+            </span>
+            <span class="text-caption-md">
               {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.BREED")}
               <Show when={selectedDog(draft().dogIdentification)}>
                 {(selected) => (
@@ -254,6 +273,12 @@ export default function CompetitorEditorForm(
               setChecked={setBih}
             />
           </Show>
+          <AtomInput
+            label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.PRIMER")}
+            value={draft().primer}
+            onChange={setPrimer}
+            onBlur={props.onCommitCompetitor}
+          />
           <AtomCheckbox
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.RESERVE")}
             checked={draft().reserve}

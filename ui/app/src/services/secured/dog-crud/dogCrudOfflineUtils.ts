@@ -27,6 +27,7 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   image: dog.image ?? previousDog?.image ?? "",
   breed: dog.breed ?? previousDog?.breed,
   origin: dog.origin ?? previousDog?.origin,
+  license: dog.license ?? previousDog?.license,
   owner: dog.owner ?? previousDog?.owner,
   handler: dog.handler ?? previousDog?.handler,
   team: dog.team ?? previousDog?.team,

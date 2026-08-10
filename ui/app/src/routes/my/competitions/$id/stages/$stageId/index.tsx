@@ -493,6 +493,7 @@ function CompetitionStageDetailBody(props: {
         competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,
         bih: competitor.bih,
+        primer: competitor.primer,
         reserve: competitor.reserve,
       })),
       configurationId: draft.configuration.id,

@@ -300,6 +300,7 @@ function CompetitionObdxEventDetailBody(props: {
         competitorNumber: competitor.competitorNumber,
         accepted: competitor.accepted,
         bih: competitor.bih,
+        primer: competitor.primer,
         reserve: competitor.reserve,
       })),
       configuration: event.configuration,
@@ -332,6 +333,7 @@ function CompetitionObdxEventDetailBody(props: {
       status: "",
       notCompeting: false,
       bih: false,
+      primer: "",
       reserve: false,
     };
   };
@@ -408,6 +410,7 @@ function CompetitionObdxEventDetailBody(props: {
       competitorNumber: competitor.competitorNumber,
       accepted: competitor.accepted,
       bih: competitor.bih,
+      primer: competitor.primer,
       reserve: competitor.reserve,
     };
   };

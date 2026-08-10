@@ -8,6 +8,7 @@ export interface Dog {
   image: string;
   breed: IdNameDTO;
   origin: string;
+  license: string;
   owner: string;
   handler: string;
   team: string;
@@ -24,6 +25,7 @@ export interface CreateDogRequestDTO {
   image: string;
   breed: string;
   origin: string;
+  license: string;
   owner: string;
   handler: string;
   team: string;
@@ -38,6 +40,7 @@ export interface UpdateDogRequestDTO {
   image: string;
   breed: string;
   origin: string;
+  license: string;
   owner: string;
   handler: string;
   team: string;

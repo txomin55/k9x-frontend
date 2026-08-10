@@ -177,6 +177,7 @@ const toCreateDogRequest = (draftDog: Dog): CreateDogRequestDTO => ({
   image: draftDog.image,
   breed: draftDog.breed.id,
   origin: draftDog.origin,
+  license: draftDog.license,
   owner: draftDog.owner,
   handler: draftDog.handler,
   team: draftDog.team,

@@ -222,6 +222,7 @@ const toApiCompetitor = (
       : (previousCompetitor?.status ?? ""),
     notCompeting: previousCompetitor?.notCompeting ?? false,
     bih: competitor.bih ?? previousCompetitor?.bih ?? false,
+    primer: competitor.primer ?? previousCompetitor?.primer ?? "",
     reserve: competitor.reserve ?? previousCompetitor?.reserve ?? false,
   };
 };

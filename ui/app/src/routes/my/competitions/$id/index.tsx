@@ -29,7 +29,7 @@ import {
   useApiStage,
 } from "@/services/secured/stage-crud/stageCrud";
 import { canDeleteCompetition, canEditCompetition } from "@/utils/competition";
-import { toUndefinedIfBlank } from "@/utils/date";
+import { toUndefinedIfBlank, tomorrow } from "@/utils/date";
 import {
   validateRequiredSelection,
   validateRequiredText,
@@ -243,8 +243,8 @@ function CompetitionDetailBody(props: {
     if (param === "new") {
       setStageDialogDraft({
         competitionId: competition.id,
-        dateFrom: Date.now(),
-        dateTo: Date.now(),
+        dateFrom: tomorrow(),
+        dateTo: tomorrow(),
         events: [],
         id: generateEntityId("stage"),
         name: "",
@@ -310,8 +310,8 @@ function CompetitionDetailBody(props: {
 
     setStageDialogDraft({
       competitionId: draft.competitionId ?? competition.id,
-      dateFrom: Date.now(),
-      dateTo: Date.now(),
+      dateFrom: tomorrow(),
+      dateTo: tomorrow(),
       events: [],
       id: draft.id ?? generateEntityId("stage"),
       name: draft.name ?? "",

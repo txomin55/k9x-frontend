@@ -64,7 +64,9 @@ export default function DogForm(props: DogFormProps) {
   const countryError = () =>
     validateRequiredSelection(props.draft().country.id);
   const ownerError = () =>
-    ownerFieldVisible() ? validateEmail(props.draft().owner) : null;
+    ownerFieldVisible() && props.draft().owner?.trim()
+      ? validateEmail(props.draft().owner)
+      : null;
 
   const isValid = () =>
     !identificationError() && !nameError() && !countryError() && !ownerError();
@@ -116,6 +118,12 @@ export default function DogForm(props: DogFormProps) {
     props.onDraftChange((current) => ({
       ...current,
       origin,
+    }));
+
+  const updateLicense = (license: string) =>
+    props.onDraftChange((current) => ({
+      ...current,
+      license,
     }));
 
   const updateOwner = (owner: string) =>
@@ -197,6 +205,11 @@ export default function DogForm(props: DogFormProps) {
         value={props.draft().origin}
         onChange={updateOrigin}
         description={i18n.t("MY.DOGS.DOG_FORM.ORIGIN_HINT")}
+      />
+      <AtomInput
+        label={i18n.t("MY.DOGS.DOG_FORM.LICENSE")}
+        value={props.draft().license}
+        onChange={updateLicense}
       />
       <AtomSelect
         label={i18n.t("MY.DOGS.DOG_FORM.SEX")}

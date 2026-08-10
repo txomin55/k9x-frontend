@@ -72,6 +72,10 @@ export function defaultStagesDateRange() {
   };
 }
 
+export function tomorrow() {
+  return Date.now() + ONE_DAY_IN_MS;
+}
+
 export function oneWeekBefore(timestamp: number) {
   return timestamp - 7 * ONE_DAY_IN_MS;
 }
