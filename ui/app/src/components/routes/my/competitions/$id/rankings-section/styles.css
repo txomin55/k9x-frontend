@@ -1,0 +1,125 @@
+.rankings-section__empty {
+  color: var(--text-secondary);
+}
+
+.ranking-configurator {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-2);
+}
+
+/* The cascade and its add button share a row on wide viewports and stack on narrow ones. */
+.ranking-configurator__picker,
+.ranking-configurator__criteria {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, calc(var(--unit-10) * 2)), 1fr)
+  );
+  gap: var(--unit-2);
+  align-items: end;
+}
+
+/* Adding the event is the affirmative action of this form, so it keeps the primary colour. */
+.ranking-configurator__add {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--unit-05);
+
+  padding: var(--unit-05) var(--unit-1);
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: var(--text-inverted);
+
+  font: inherit;
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  cursor: pointer;
+
+  transition: background-color 200ms;
+}
+
+.ranking-configurator__add:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.ranking-configurator__add:active:not(:disabled) {
+  background: var(--primary-active);
+}
+
+.ranking-configurator__add:disabled {
+  cursor: not-allowed;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+}
+
+.ranking-configurator__add-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ranking-configurator__add-icon .atom-svg-icon {
+  width: var(--icon-size-sm);
+  height: var(--icon-size-sm);
+  display: block;
+}
+
+/* Same chip language as AtomCombobox's multi-select tags. */
+.ranking-configurator__events {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--unit-05);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ranking-configurator__event {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--unit-05);
+
+  padding: 0 var(--unit-05);
+  height: 24px;
+
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+
+  font-size: var(--text-label-sm);
+}
+
+.ranking-configurator__event-remove {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ranking-configurator__event-remove:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.ranking-configurator__event-remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ranking-configurator__empty {
+  margin: 0;
+  color: var(--text-secondary);
+}

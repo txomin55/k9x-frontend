@@ -9,6 +9,7 @@ import { logoutPayload } from "@test/api-mocks/logout";
 import { defaultStageDetail } from "@test/api-mocks/stageDetail";
 import { defaultStages } from "@test/api-mocks/stages";
 import { mockUser } from "@test/api-mocks/user";
+import { setupNoRanking, setupRankingCriteria } from "@test/api-mocks/rankings";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
 export default async function defaultApiResponses(page: Page) {
@@ -91,4 +92,9 @@ export default async function defaultApiResponses(page: Page) {
       status: 204,
     }),
   ]);
+
+  // Registered after the others because Playwright matches routes newest first: the "/secured/rankings/*"
+  // glob has to go in before the criteria paths, or it would swallow them.
+  await setupNoRanking(page);
+  await setupRankingCriteria(page);
 }

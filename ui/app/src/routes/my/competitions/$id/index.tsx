@@ -16,6 +16,8 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import CompetitionInfo from "@/components/routes/my/competitions/$id/competition-info/CompetitionInfo";
 import StagesSection from "@/components/routes/my/competitions/$id/stages-section/StagesSection";
+import RankingsSection from "@/components/routes/my/competitions/$id/rankings-section/RankingsSection";
+import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import {
   useCompetition,
   useCompetitions,
@@ -28,7 +30,12 @@ import {
   toApiStage,
   useApiStage,
 } from "@/services/secured/stage-crud/stageCrud";
-import { canDeleteCompetition, canEditCompetition } from "@/utils/competition";
+import {
+  canDeleteCompetition,
+  canEditCompetition,
+  COMPETITION_DETAIL_TAB_PARAM,
+  COMPETITION_DETAIL_TABS,
+} from "@/utils/competition";
 import { toUndefinedIfBlank, tomorrow } from "@/utils/date";
 import {
   validateRequiredSelection,
@@ -218,6 +225,15 @@ function CompetitionDetailBody(props: {
   const [address, setAddress] = createSignal(
     props.competition()?.address ?? "",
   );
+  const [tabParam, setTabParam] = useSearchParam(
+    COMPETITION_DETAIL_TAB_PARAM,
+    COMPETITION_DETAIL_TABS.STAGES,
+    "replace",
+  );
+  const selectedTab = () =>
+    tabParam() === COMPETITION_DETAIL_TABS.RANKINGS
+      ? COMPETITION_DETAIL_TABS.RANKINGS
+      : COMPETITION_DETAIL_TABS.STAGES;
   const [stageDialogParam, setStageDialogParam] = useSearchParam(
     "stageDialog",
     "",
@@ -377,6 +393,53 @@ function CompetitionDetailBody(props: {
     });
   };
 
+  const tabsTitles = createMemo(() => [
+    {
+      value: COMPETITION_DETAIL_TABS.STAGES,
+      content: <span>{i18n.t("MY.COMPETITIONS.DETAIL.TABS.STAGES")}</span>,
+    },
+    {
+      value: COMPETITION_DETAIL_TABS.RANKINGS,
+      content: <span>{i18n.t("MY.COMPETITIONS.DETAIL.TABS.RANKINGS")}</span>,
+    },
+  ]);
+
+  const tabsContents = createMemo(() => [
+    {
+      value: COMPETITION_DETAIL_TABS.STAGES,
+      content: (
+        <StagesSection
+          draft={stageDialogDraft}
+          editingStageId={editingStageId()}
+          isEditing={isEditing()}
+          onCloseStageEditor={closeStageEditor}
+          onDeleteStage={getOnDeleteStage()}
+          onNavigateToStage={onNavigateToStage}
+          onOpenStageEditor={openStageEditor}
+          onSaveStageEditor={saveStageEditor}
+          onUpdateStageDialogDraft={updateStageDialogDraft}
+          stages={sortedStages()}
+        />
+      ),
+    },
+    {
+      value: COMPETITION_DETAIL_TABS.RANKINGS,
+      // Guarded so the section never mounts without a competition: its ranking query key is derived from
+      // the competition id and is fixed at mount time.
+      content: (
+        <Show when={props.competition()}>
+          {(competition) => (
+            <RankingsSection
+              competition={competition()}
+              showsEditMenu={canEditCompetition(competition().status)}
+              menuOpen={menuOpen()}
+            />
+          )}
+        </Show>
+      ),
+    },
+  ]);
+
   const commitCompetitionEdits = () => {
     if (!isEditing()) return;
 
@@ -422,17 +485,12 @@ function CompetitionDetailBody(props: {
         status={props.competition()?.status}
         title={title()}
       />
-      <StagesSection
-        draft={stageDialogDraft}
-        editingStageId={editingStageId()}
-        isEditing={isEditing()}
-        onCloseStageEditor={closeStageEditor}
-        onDeleteStage={getOnDeleteStage()}
-        onNavigateToStage={onNavigateToStage}
-        onOpenStageEditor={openStageEditor}
-        onSaveStageEditor={saveStageEditor}
-        onUpdateStageDialogDraft={updateStageDialogDraft}
-        stages={sortedStages()}
+      <AtomTabs
+        defaultValue={COMPETITION_DETAIL_TABS.STAGES}
+        value={selectedTab()}
+        onChange={setTabParam}
+        options={tabsTitles()}
+        contents={tabsContents()}
       />
       <Show when={canEditCompetition(props.competition()?.status)}>
         <Show when={isEditing() && menuOpen()}>
@@ -452,45 +510,49 @@ function CompetitionDetailBody(props: {
               </ConfirmActionButton>
             </div>
           </Show>
-          <div class="floating-action floating-action--level-2">
-            <AtomDialog
-              closeButtonText={i18n.t(
-                "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
-              )}
-              content={
-                <StageEditorForm
-                  draft={stageDialogDraft}
-                  onCancel={closeStageEditor}
-                  onDraftChange={updateStageDialogDraft}
-                  onSave={saveStageEditor}
-                />
-              }
-              onOpenChange={(isOpen) => {
-                if (isOpen) {
-                  openNewStageEditor();
-                } else {
-                  closeStageEditor();
+          {/* Adding a trial belongs to the trials tab; the rankings tab has its own action, rendered by
+              the section itself outside this menu. */}
+          <Show when={selectedTab() === COMPETITION_DETAIL_TABS.STAGES}>
+            <div class="floating-action floating-action--level-2">
+              <AtomDialog
+                closeButtonText={i18n.t(
+                  "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+                )}
+                content={
+                  <StageEditorForm
+                    draft={stageDialogDraft}
+                    onCancel={closeStageEditor}
+                    onDraftChange={updateStageDialogDraft}
+                    onSave={saveStageEditor}
+                  />
                 }
-              }}
-              open={isCreatingStage()}
-              title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
-              triggerClass="floating-action__trigger"
-              trigger={
-                <>
-                  <span class="floating-action__label">
-                    {i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
-                  </span>
-                  <span class="floating-action__circle">
-                    <AtomSvgIcon
-                      src={plusIcon}
-                      alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
-                      tinted
-                    />
-                  </span>
-                </>
-              }
-            />
-          </div>
+                onOpenChange={(isOpen) => {
+                  if (isOpen) {
+                    openNewStageEditor();
+                  } else {
+                    closeStageEditor();
+                  }
+                }}
+                open={isCreatingStage()}
+                title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.NEW_STAGE")}
+                triggerClass="floating-action__trigger"
+                trigger={
+                  <>
+                    <span class="floating-action__label">
+                      {i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
+                    </span>
+                    <span class="floating-action__circle">
+                      <AtomSvgIcon
+                        src={plusIcon}
+                        alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.ADD_STAGE")}
+                        tinted
+                      />
+                    </span>
+                  </>
+                }
+              />
+            </div>
+          </Show>
         </Show>
         <FloatingEditMenu
           editing={isEditing()}

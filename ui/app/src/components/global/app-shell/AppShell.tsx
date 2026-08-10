@@ -14,6 +14,10 @@ import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { prefetchCountries } from "@/services/secured/country-crud/countryCrud";
 import { prefetchBreeds } from "@/services/secured/breed-crud/breedCrud";
+import {
+  prefetchRankingIncludeBys,
+  prefetchRankingGroupBys,
+} from "@/services/secured/ranking-crud/rankingCrud";
 import { useI18n } from "@/stores/i18n/i18n";
 import { fetchUserIfAuthenticated, useAuthUser } from "@/stores/auth/auth";
 import { initNetworkStore } from "@/stores/network/network";
@@ -50,6 +54,15 @@ export default function AppShell() {
           gcTime: 2 * 60 * 1000,
         });
         void prefetchAllDogs({
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        });
+        // Warms the ranking criteria into IndexedDB so the Rankings tab still has its selects offline.
+        void prefetchRankingGroupBys({
+          refetchOnMount: false,
+          gcTime: 2 * 60 * 1000,
+        });
+        void prefetchRankingIncludeBys({
           refetchOnMount: false,
           gcTime: 2 * 60 * 1000,
         });

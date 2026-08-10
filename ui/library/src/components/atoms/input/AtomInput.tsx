@@ -13,7 +13,15 @@ export type AtomInputProps = {
   placeholder?: string;
   min?: string;
   max?: string;
-  type?: "text" | "email" | "password" | "search" | "tel" | "url" | "date";
+  type?:
+    | "text"
+    | "email"
+    | "password"
+    | "search"
+    | "tel"
+    | "url"
+    | "date"
+    | "number";
   disabled?: boolean;
   required?: boolean;
   readOnly?: boolean;
