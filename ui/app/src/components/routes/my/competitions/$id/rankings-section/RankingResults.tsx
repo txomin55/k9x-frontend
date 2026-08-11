@@ -2,7 +2,9 @@ import { useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
+import NameFilter from "@/components/common/name-filter/NameFilter";
 import { useI18n } from "@/stores/i18n/i18n";
+import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useRankingClassification } from "@/services/fetch-rankings/fetchRankings";
 import type {
   RankingClassificationCellResponseDTO,
@@ -28,10 +30,25 @@ export default function RankingResults(props: RankingResultsProps) {
   // reads the results again.
   const resultsQuery = useRankingClassification(props.rankingId);
   const [openGroupIds, setOpenGroupIds] = createSignal<string[]>([]);
+  const [nameFilter, setNameFilter] = createSignal("");
 
   const results = () => resultsQuery.data ?? null;
   const events = createMemo(() => results()?.events ?? []);
-  const groups = createMemo(() => results()?.groups ?? []);
+  const allGroups = createMemo(() => results()?.groups ?? []);
+
+  /**
+   * The filter matches the criterion only (team, country, or the competitor itself under individual
+   * grouping); groups are always shown whole. Positions and totals stay the real ones from the backend:
+   * filtering never recomputes the ranking.
+   */
+  const groups = createMemo(() => {
+    if (!nameFilter().trim()) {
+      return allGroups();
+    }
+    const matches = buildNameMatcher(nameFilter());
+
+    return allGroups().filter((group) => matches(group.name));
+  });
 
   const isOpen = (groupId: string) => openGroupIds().includes(groupId);
 
@@ -84,8 +101,12 @@ export default function RankingResults(props: RankingResultsProps) {
   );
 
   const groupMatrix = (group: RankingClassificationGroupResponseDTO) => (
-    // Scrolls on its own so a ranking with many events never makes the page scroll sideways.
-    <div class="ranking-results__matrix">
+    // Scrolls on its own so a ranking with many events never makes the page scroll sideways. The event count
+    // feeds the mobile min-width of the table, which CSS cannot derive on its own.
+    <div
+      class="ranking-results__matrix"
+      style={{ "--ranking-events": events().length }}
+    >
       <table>
         <thead>
           <tr>
@@ -97,13 +118,7 @@ export default function RankingResults(props: RankingResultsProps) {
           <For each={group.members}>
             {(member) => (
               <tr>
-                <th scope="row">
-                  {/* Inner span because max-width does not apply to table cells in auto layout, which is
-                      what the mobile matrix uses; without it long dog names spill over the scores. */}
-                  <span class="ranking-results__competitor" title={member.name}>
-                    {member.name}
-                  </span>
-                </th>
+                <th scope="row">{member.name}</th>
                 <For each={events()}>
                   {(event) => {
                     const cell = () => cellFor(member.cells, event.id);
@@ -159,7 +174,7 @@ export default function RankingResults(props: RankingResultsProps) {
         }
       >
         <Show
-          when={groups().length > 0}
+          when={allGroups().length > 0}
           fallback={
             <p class="ranking-results__empty">
               {i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.NO_RESULTS")}
@@ -169,25 +184,43 @@ export default function RankingResults(props: RankingResultsProps) {
           <h3 class="ranking-results__title">
             {i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.RESULTS")}
           </h3>
-          <div class="ranking-results__header">
-            <span>{i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.POSITION")}</span>
-            <span>{i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.CRITERION")}</span>
-            <span>{i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.TOTAL")}</span>
+          <div class="ranking-results__filter">
+            <NameFilter
+              label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.CRITERION")}
+              value={nameFilter()}
+              onChange={setNameFilter}
+            />
           </div>
-          <ul class="ranking-results__groups">
-            <For each={groups()}>
-              {(group) => (
-                <li class="ranking-results__group">
-                  <AtomCollapsible
-                    open={isOpen(group.id)}
-                    onOpenChange={(open) => toggleGroup(group.id, open)}
-                    trigger={groupTrigger(group)}
-                    content={groupMatrix(group)}
-                  />
-                </li>
-              )}
-            </For>
-          </ul>
+          <Show
+            when={groups().length}
+            fallback={
+              <p class="ranking-results__empty">
+                {i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.NO_MATCHES")}
+              </p>
+            }
+          >
+            <div class="ranking-results__header">
+              <span>{i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.POSITION")}</span>
+              <span>
+                {i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.CRITERION")}
+              </span>
+              <span>{i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.TOTAL")}</span>
+            </div>
+            <ul class="ranking-results__groups">
+              <For each={groups()}>
+                {(group) => (
+                  <li class="ranking-results__group">
+                    <AtomCollapsible
+                      open={isOpen(group.id)}
+                      onOpenChange={(open) => toggleGroup(group.id, open)}
+                      trigger={groupTrigger(group)}
+                      content={groupMatrix(group)}
+                    />
+                  </li>
+                )}
+              </For>
+            </ul>
+          </Show>
         </Show>
       </Show>
     </section>

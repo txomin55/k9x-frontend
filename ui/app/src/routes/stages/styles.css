@@ -69,6 +69,10 @@
     color: var(--text-secondary);
 }
 
+.stages-table__rankings-mark {
+    color: var(--text-secondary);
+}
+
 .stages-table__expander {
     display: inline-flex;
     align-items: center;

@@ -128,6 +128,12 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
           </div>
         )}
       </Index>
+      {/* Informative only: which rankings, and their results, live behind each event. */}
+      <Show when={props.stage.includesRankings}>
+        <span class="stages-map-marker-popup__rankings text-caption-md">
+          {i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
+        </span>
+      </Show>
       <div class="stages-map-marker-popup__actions">
         <AtomButton
           type={BUTTON_TYPES.ACCENT}

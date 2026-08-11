@@ -96,9 +96,6 @@ function CompetitionDetailSkeleton() {
         </div>
 
         <div class="stages-section">
-          <div class="stages-section__title">
-            <AtomSkeleton width="6rem" height="var(--text-heading-sm)" />
-          </div>
           <div class="stages-section__stages">
             <For each={Array.from({ length: 3 })}>
               {() => (

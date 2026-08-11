@@ -38,6 +38,7 @@ import { Route as MyCompetitionsListIndexRouteImport } from './routes/my/competi
 import { Route as MyCompetitionsIdIndexRouteImport } from './routes/my/competitions/$id/index'
 import { Route as MyCollectionsListIndexRouteImport } from './routes/my/collections/list/index'
 import { Route as StagesIdEventsEventIdRouteRouteImport } from './routes/stages/$id/events/$eventId/route'
+import { Route as StagesIdEventsEventIdRankingsRouteImport } from './routes/stages/$id/events/$eventId/rankings'
 import { Route as StagesIdEventsEventIdClassificationRouteImport } from './routes/stages/$id/events/$eventId/classification'
 import { Route as MyCompetitionsIdStagesStageIdRouteRouteImport } from './routes/my/competitions/$id/stages/$stageId/route'
 import { Route as MyCompetitionsIdStagesStageIdIndexRouteImport } from './routes/my/competitions/$id/stages/$stageId/index'
@@ -189,6 +190,12 @@ const StagesIdEventsEventIdRouteRoute =
     path: '/events/$eventId',
     getParentRoute: () => StagesIdRouteRoute,
   } as any)
+const StagesIdEventsEventIdRankingsRoute =
+  StagesIdEventsEventIdRankingsRouteImport.update({
+    id: '/rankings',
+    path: '/rankings',
+    getParentRoute: () => StagesIdEventsEventIdRouteRoute,
+  } as any)
 const StagesIdEventsEventIdClassificationRoute =
   StagesIdEventsEventIdClassificationRouteImport.update({
     id: '/classification',
@@ -246,6 +253,7 @@ export interface FileRoutesByFullPath {
   '/my/rankings/list/': typeof MyRankingsListIndexRoute
   '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdRouteRouteWithChildren
   '/stages/$id/events/$eventId/classification': typeof StagesIdEventsEventIdClassificationRoute
+  '/stages/$id/events/$eventId/rankings': typeof StagesIdEventsEventIdRankingsRoute
   '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
   '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
@@ -273,6 +281,7 @@ export interface FileRoutesByTo {
   '/my/judges/list': typeof MyJudgesListIndexRoute
   '/my/rankings/list': typeof MyRankingsListIndexRoute
   '/stages/$id/events/$eventId/classification': typeof StagesIdEventsEventIdClassificationRoute
+  '/stages/$id/events/$eventId/rankings': typeof StagesIdEventsEventIdRankingsRoute
   '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdIndexRoute
   '/my/competitions/$id/stages/$stageId/events/$eventId': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
@@ -309,6 +318,7 @@ export interface FileRoutesById {
   '/my/rankings/list/': typeof MyRankingsListIndexRoute
   '/my/competitions/$id/stages/$stageId': typeof MyCompetitionsIdStagesStageIdRouteRouteWithChildren
   '/stages/$id/events/$eventId/classification': typeof StagesIdEventsEventIdClassificationRoute
+  '/stages/$id/events/$eventId/rankings': typeof StagesIdEventsEventIdRankingsRoute
   '/my/competitions/$id/stages/$stageId/': typeof MyCompetitionsIdStagesStageIdIndexRoute
   '/my/competitions/$id/stages/$stageId/events/$eventId/': typeof MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute
 }
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/my/rankings/list/'
     | '/my/competitions/$id/stages/$stageId'
     | '/stages/$id/events/$eventId/classification'
+    | '/stages/$id/events/$eventId/rankings'
     | '/my/competitions/$id/stages/$stageId/'
     | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesByTo: FileRoutesByTo
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/my/judges/list'
     | '/my/rankings/list'
     | '/stages/$id/events/$eventId/classification'
+    | '/stages/$id/events/$eventId/rankings'
     | '/my/competitions/$id/stages/$stageId'
     | '/my/competitions/$id/stages/$stageId/events/$eventId'
   id:
@@ -408,6 +420,7 @@ export interface FileRouteTypes {
     | '/my/rankings/list/'
     | '/my/competitions/$id/stages/$stageId'
     | '/stages/$id/events/$eventId/classification'
+    | '/stages/$id/events/$eventId/rankings'
     | '/my/competitions/$id/stages/$stageId/'
     | '/my/competitions/$id/stages/$stageId/events/$eventId/'
   fileRoutesById: FileRoutesById
@@ -625,6 +638,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof StagesIdEventsEventIdRouteRouteImport
       parentRoute: typeof StagesIdRouteRoute
     }
+    '/stages/$id/events/$eventId/rankings': {
+      id: '/stages/$id/events/$eventId/rankings'
+      path: '/rankings'
+      fullPath: '/stages/$id/events/$eventId/rankings'
+      preLoaderRoute: typeof StagesIdEventsEventIdRankingsRouteImport
+      parentRoute: typeof StagesIdEventsEventIdRouteRoute
+    }
     '/stages/$id/events/$eventId/classification': {
       id: '/stages/$id/events/$eventId/classification'
       path: '/classification'
@@ -796,12 +816,14 @@ const MyRouteRouteWithChildren =
 
 interface StagesIdEventsEventIdRouteRouteChildren {
   StagesIdEventsEventIdClassificationRoute: typeof StagesIdEventsEventIdClassificationRoute
+  StagesIdEventsEventIdRankingsRoute: typeof StagesIdEventsEventIdRankingsRoute
 }
 
 const StagesIdEventsEventIdRouteRouteChildren: StagesIdEventsEventIdRouteRouteChildren =
   {
     StagesIdEventsEventIdClassificationRoute:
       StagesIdEventsEventIdClassificationRoute,
+    StagesIdEventsEventIdRankingsRoute: StagesIdEventsEventIdRankingsRoute,
   }
 
 const StagesIdEventsEventIdRouteRouteWithChildren =

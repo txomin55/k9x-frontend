@@ -7,6 +7,7 @@ import type {
 import {createEffect, createMemo, createSignal, For, onCleanup, onMount, Show,} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
+import EventRankingsLink from "@/components/routes/stages/event-rankings-link/EventRankingsLink";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
@@ -767,6 +768,10 @@ function EventClassificationPage() {
                             {sortSelect()}
                           </div>
                         </Show>
+                        <EventRankingsLink
+                          stageId={params().id}
+                          eventId={params().eventId}
+                        />
                       </div>
                     }
                   />

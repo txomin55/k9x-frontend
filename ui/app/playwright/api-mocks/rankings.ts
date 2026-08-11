@@ -84,3 +84,18 @@ export const setupRankingResults = (
     payload: results,
     pathname: "/rankings/*",
   });
+
+/** An event has no rankings by default. */
+export const setupNoEventRankings = (page: Page) =>
+  setRouteResponses(page, {
+    method: "GET",
+    payload: [],
+    pathname: "/stages/*/events/*/rankings",
+  });
+
+export const setupEventRankings = (page: Page, rankings: IdNameDTO[]) =>
+  setRouteResponses(page, {
+    method: "GET",
+    payload: rankings,
+    pathname: "/stages/*/events/*/rankings",
+  });

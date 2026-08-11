@@ -10,6 +10,7 @@ import { defaultStageDetail } from "@test/api-mocks/stageDetail";
 import { defaultStages } from "@test/api-mocks/stages";
 import { mockUser } from "@test/api-mocks/user";
 import {
+  setupNoEventRankings,
   setupNoRanking,
   setupNoRankingResults,
   setupRankingCriteria,
@@ -99,6 +100,7 @@ export default async function defaultApiResponses(page: Page) {
 
   // Registered after the others because Playwright matches routes newest first: the "/secured/rankings/*"
   // glob has to go in before the criteria paths, or it would swallow them.
+  await setupNoEventRankings(page);
   await setupNoRanking(page);
   await setupNoRankingResults(page);
   await setupRankingCriteria(page);

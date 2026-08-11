@@ -12,6 +12,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
+import EventRankingsLink from "@/components/routes/stages/event-rankings-link/EventRankingsLink";
 import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect";
 import {useAuthUser} from "@/stores/auth/auth";
 import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
@@ -355,6 +356,10 @@ function StageInfoPage() {
                           </ul>
                         </Show>
                       }
+                    />
+                    <EventRankingsLink
+                      stageId={params().id}
+                      eventId={event().id}
                     />
                   </div>
                 }

@@ -15,6 +15,8 @@ import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
 
 export interface StageCardProps {
+  /** Whether any event of the trial is included in a ranking. */
+  includesRankings?: boolean;
   address?: string;
   country: string;
   competitionName?: string;
@@ -93,6 +95,12 @@ export default function StageCard(props: StageCardProps) {
           >
             {i18n.t("STAGES.STAGE_CARD.INFO")}
           </AtomButton>
+          {/* Informative only: which rankings, and their results, live behind each event. */}
+          <Show when={props.includesRankings}>
+            <span class="stage-card__rankings">
+              {i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
+            </span>
+          </Show>
         </div>
       }
     />

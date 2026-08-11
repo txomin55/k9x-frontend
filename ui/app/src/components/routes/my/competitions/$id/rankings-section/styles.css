@@ -216,13 +216,12 @@
   overflow-x: auto;
 }
 
-/* The matrix sizes to its content and scrolls inside its own container: that way the competitor names are
-   always shown in full and every event column gets the same width, instead of squeezing either of them. */
+/* Fixed layout, like the classification detail: the competitor column takes a roomy fixed width and the
+   event columns share the rest evenly, so they spread across the table instead of bunching up on one side. */
 .ranking-results__matrix table {
   border-collapse: collapse;
-  table-layout: auto;
-  width: max-content;
-  min-width: 100%;
+  table-layout: fixed;
+  width: 100%;
 }
 
 /* The competitor column stays pinned while the event scores scroll under it, and reads as a label column:
@@ -234,19 +233,13 @@
   left: 0;
   z-index: 1;
   background: var(--surface-muted);
-  white-space: nowrap;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  overflow-wrap: anywhere;
 }
 
-/* Every event column gets the same width so the scores line up down the matrix. The header text wraps
-   instead of stretching its column: with table-layout auto a nowrap heading would widen the column and the
-   uniform width would be lost. */
-.ranking-results__matrix th:not(:first-child),
-.ranking-results__matrix td:not(:first-child) {
-  width: calc(var(--unit-10) + var(--unit-2));
-  min-width: calc(var(--unit-10) + var(--unit-2));
-  max-width: calc(var(--unit-10) + var(--unit-2));
-}
-
+/* No width on the event columns: under a fixed layout they split the remaining space equally. */
 .ranking-results__matrix thead th:not(:first-child) {
   white-space: normal;
   overflow-wrap: anywhere;
@@ -257,6 +250,10 @@
   padding: var(--unit-05);
   border-bottom: 1px solid var(--border-muted);
   text-align: center;
+}
+
+/* Scores never wrap; the competitor column wraps instead of stretching, like the classification detail. */
+.ranking-results__matrix td {
   white-space: nowrap;
 }
 
@@ -323,4 +320,42 @@
 
 .ranking-results__cell.is-counted:hover:not(:disabled) {
   border-color: color-mix(in srgb, var(--success) 80%, var(--surface));
+}
+
+@media (max-width: 619.98px) {
+  /* Below 620px the layout stays fixed — the only sizing table cells actually respect — and the table gets a
+     floor of 72px per event (the count comes from the component via --ranking-events), so with many events it
+     scrolls inside the matrix while the competitor column keeps its compact width. Auto layout is not an
+     option here: it hands any leftover width to the label column, which is exactly the bug this avoids. */
+  .ranking-results__matrix table {
+    min-width: calc(
+      var(--unit-10) + var(--unit-4) + var(--ranking-events, 1) * 72px
+    );
+  }
+
+  /* Same compact width the classification detail gives its pinned exercise column below 620px, so the score
+     columns keep as much room as possible. */
+  .ranking-results__matrix thead th:first-child,
+  .ranking-results__matrix tbody th[scope="row"] {
+    width: calc(var(--unit-10) + var(--unit-4));
+    min-width: calc(var(--unit-10) + var(--unit-4));
+    max-width: calc(var(--unit-10) + var(--unit-4));
+  }
+}
+
+/* Between 500 and 620px there is room for a wider competitor column than the compact mobile one, exactly as
+   the classification detail does. */
+@media (min-width: 500px) and (max-width: 619.98px) {
+  .ranking-results__matrix thead th:first-child,
+  .ranking-results__matrix tbody th[scope="row"] {
+    width: calc(var(--unit-10) * 2);
+    min-width: calc(var(--unit-10) * 2);
+    max-width: calc(var(--unit-10) * 2);
+  }
+}
+
+/* Same searchable multi-select the classification page uses, kept to a readable width instead of stretching
+   across the whole section. */
+.ranking-results__filter {
+  max-width: min(100%, calc(var(--unit-10) * 3));
 }

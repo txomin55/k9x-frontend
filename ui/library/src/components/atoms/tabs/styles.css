@@ -70,15 +70,7 @@
     outline: none;
 }
 
-.atom-tabs [role="tabpanel"] > div {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--unit-1);
-    padding: var(--unit-2);
-    color: var(--text-primary);
-}
-
-.atom-tabs [role="tabpanel"]:focus-visible > div {
+.atom-tabs [role="tabpanel"]:focus-visible {
     box-shadow: 0 0 0 3px var(--accent-soft);
 }
 

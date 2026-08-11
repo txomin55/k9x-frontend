@@ -13,6 +13,8 @@ export interface StageEventSummaryResponseDTO {
 }
 
 export interface StageSummaryResponseDTO {
+  /** Whether any event of the trial is included in a ranking. */
+  includesRankings?: boolean;
   country: string;
   dateFrom: number;
   dateTo: number;

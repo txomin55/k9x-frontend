@@ -161,6 +161,11 @@
     gap: var(--unit-2);
 }
 
+.stages-map-marker-popup__rankings {
+    align-self: flex-end;
+    color: var(--text-secondary);
+}
+
 .stages-map-marker-popup__actions {
     display: flex;
     width: 100%;

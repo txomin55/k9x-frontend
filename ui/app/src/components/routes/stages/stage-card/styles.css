@@ -94,3 +94,10 @@
     gap: var(--unit-05);
     align-items: flex-end;
 }
+/* Sits at the right end of the footer, opposite the info action. */
+.stage-card__rankings {
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  white-space: nowrap;
+}

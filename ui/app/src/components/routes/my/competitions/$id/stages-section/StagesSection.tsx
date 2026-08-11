@@ -259,17 +259,17 @@ export default function StagesSection(props: StagesSectionProps) {
 
   return (
     <div class="stages-section">
-      <div class="stages-section__title">
-        <span class="text-heading-sm">
-          {i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES")}
-        </span>
-      </div>
-      <AtomSegmentedControl
-        title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES_BY")}
-        control={view()}
-        onControlChange={setView}
-        controls={controls()}
-      />
+      <Show
+        when={(props.stages ?? []).length > 0}
+        fallback={<p>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.NO_STAGES")}</p>}
+      >
+        <AtomSegmentedControl
+          title={i18n.t("MY.COMPETITIONS.STAGES_SECTION.STAGES_BY")}
+          control={view()}
+          onControlChange={setView}
+          controls={controls()}
+        />
+      </Show>
     </div>
   );
 }

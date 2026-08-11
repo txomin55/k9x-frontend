@@ -2,7 +2,7 @@ import { useMatches, useNavigate } from "@tanstack/solid-router";
 import { Component, createMemo, createSignal, onCleanup } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
-import { resolveBreadcrumb } from "@/utils/router/breadcrumbs";
+import { resolveBreadcrumbs } from "@/utils/router/breadcrumbs";
 import { queryClient } from "@/utils/http/query-client";
 import InfoIcon from "@/components/common/info-icon/InfoIcon";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -27,26 +27,40 @@ export default function AppBreadcrumbs() {
   const breadcrumbs = createMemo<BreadcrumbItem[]>(() => {
     cacheVersion();
 
-    return matches()
-      .map((match) => {
+    const list = matches();
+
+    // A breadcrumb root starts the trail over, dropping the ancestors' crumbs.
+    let start = 0;
+    for (let i = list.length - 1; i >= 0; i--) {
+      if (list[i].staticData?.breadcrumbRoot) {
+        start = i;
+        break;
+      }
+    }
+
+    return list
+      .slice(start)
+      .flatMap((match): (BreadcrumbItem | null)[] => {
         const definition = match.staticData?.breadcrumb;
 
-        if (!definition) return null;
+        if (!definition) return [null];
 
-        const breadcrumb = resolveBreadcrumb(definition, match);
+        const crumbs = resolveBreadcrumbs(definition, match);
 
-        if (!breadcrumb) {
-          return {
-            route: match.pathname,
-            text: "",
-            loading: true,
-          };
+        if (!crumbs) {
+          return [
+            {
+              route: match.pathname,
+              text: "",
+              loading: true,
+            },
+          ];
         }
 
-        return {
-          route: breadcrumb.route ?? match.pathname,
-          text: breadcrumb.label,
-        };
+        return crumbs.map((crumb) => ({
+          route: crumb.route ?? match.pathname,
+          text: crumb.label,
+        }));
       })
       .filter(
         (breadcrumb): breadcrumb is BreadcrumbItem => breadcrumb !== null,
@@ -59,6 +73,9 @@ export default function AppBreadcrumbs() {
     for (let i = list.length - 1; i >= 0; i--) {
       const info = list[i].staticData?.breadcrumbInfo;
       if (info) return info;
+      // A breadcrumb root drops the ancestors' crumbs, so their info would be about a page that is no
+      // longer in the trail.
+      if (list[i].staticData?.breadcrumbRoot) break;
     }
 
     return null;

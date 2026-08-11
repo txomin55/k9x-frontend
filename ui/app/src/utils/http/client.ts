@@ -40,11 +40,16 @@ class NetworkRequestError extends Error {
 
 const getApiBaseUrl = () => import.meta.env.VITE_APP_API_ADDRESS;
 
-const buildHeaders = (path: string, headers?: HeadersInit) => {
+/**
+ * The bearer token goes to every /secured/ path, and to a public one only when the caller opts in with
+ * `auth`: some public endpoints answer differently for a known user, and this keeps it visible where the
+ * token travels.
+ */
+const buildHeaders = (path: string, headers?: HeadersInit, auth = false) => {
   const nextHeaders = new Headers(headers);
   nextHeaders.set("Accept-language", getCurrentLocale());
 
-  if (path.startsWith("/secured/")) {
+  if (path.startsWith("/secured/") || auth) {
     const token = globalThis.localStorage.getItem(ACCESS_TOKEN_KEY);
     if (token) {
       nextHeaders.set("Authorization", `Bearer ${token}`);
@@ -72,8 +77,7 @@ const extractErrorMessage = async (
 
     if (contentType.includes("application/json")) {
       const data = (await response.json()) as Record<string, unknown> | null;
-      const message =
-        data?.msg ?? data?.message ?? data?.error ?? data?.detail;
+      const message = data?.msg ?? data?.message ?? data?.error ?? data?.detail;
 
       return typeof message === "string" && message.length > 0
         ? message
@@ -110,6 +114,7 @@ const fileNameFromContentDisposition = (header: string | null) => {
 };
 
 const createSerializableRequest = ({
+  auth = false,
   body,
   credentials,
   headers,
@@ -118,7 +123,7 @@ const createSerializableRequest = ({
 }: RequestOptions): SerializableRequest => ({
   body: serializeBody(body),
   credentials,
-  headers: serializeHeaders(buildHeaders(path, headers)),
+  headers: serializeHeaders(buildHeaders(path, headers, auth)),
   method,
   url: `${getApiBaseUrl()}${path}`,
 });
@@ -137,6 +142,7 @@ const rawRequest = async <TResponse>({
 
   try {
     const request = createSerializableRequest({
+      auth,
       body,
       credentials,
       headers,

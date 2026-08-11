@@ -224,6 +224,7 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
               organizer={stage.organizer}
               address={stage?.location?.address}
               events={stage.events ?? []}
+              includesRankings={stage.includesRankings}
               onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
             />
           )}
@@ -254,6 +255,14 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
           <div class="stages-table__name-cell">
             <div class="stages-table__name-row">
               <span class="text-heading-xs">{stage.name}</span>
+              <Show when={stage.includesRankings}>
+                <span
+                  class="stages-table__rankings-mark"
+                  title={i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
+                >
+                  *
+                </span>
+              </Show>
               <Show when={stage.status && isStageLive(stage.status)}>
                 <StatusBadge status={stage.status!} dotMode />
               </Show>
