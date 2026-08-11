@@ -169,7 +169,9 @@ describe("RankingResults", () => {
     const absent = cellsOf(container).find((cell) => cell.textContent === "—");
 
     expect(absent).toBeDisabled();
-    expect(absent).toHaveClass("is-excluded");
+    // Grey, not red: there is no result to call bad.
+    expect(absent).toHaveClass("is-empty");
+    expect(absent).not.toHaveClass("is-excluded");
   });
 
   test("shows a score left out by the criterion as excluded but still clickable", () => {

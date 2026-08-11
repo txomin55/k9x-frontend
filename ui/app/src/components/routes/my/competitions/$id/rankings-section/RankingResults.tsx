@@ -116,7 +116,9 @@ export default function RankingResults(props: RankingResultsProps) {
                           class="ranking-results__cell"
                           classList={{
                             "is-counted": counts(),
-                            "is-excluded": !counts(),
+                            // A discarded score is red; no score at all is simply absent, so it stays grey.
+                            "is-excluded": !counts() && score() !== null,
+                            "is-empty": score() === null,
                           }}
                           // A score that does not count is still a real result, so it stays clickable; only a
                           // cell with no score at all has no classification to open.

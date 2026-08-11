@@ -305,10 +305,19 @@
   --rating-color: var(--success);
 }
 
-/* Does not count, whether because there is no score or because the inclusion criterion left it out. */
+/* Scored but left out by the inclusion criterion. */
 .ranking-results__cell.is-excluded {
   --rating-color: var(--error);
   text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* No score at all: the competitor did not take part, so it reads as absent rather than as a bad result.
+   Same grey treatment the classification chips use for a value that does not apply. */
+.ranking-results__cell.is-empty {
+  background: var(--surface-muted);
+  border-color: var(--border-muted);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
