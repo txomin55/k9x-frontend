@@ -86,6 +86,7 @@
   "STAGES.INDEX.STATUS": "Status",
   "STAGES.INDEX.SEE_DETAIL": "See detail",
   "STAGES.INDEX.CLOSE": "Close",
+  "STAGES.INDEX.NO_STAGES": "No trials for the selected dates.",
   "MY.DOGS.BREADCRUMB": "Dogs",
   "MY.DOGS.BREADCRUMB_INFO": "Here you can register and manage the dogs under your name so you can enroll them in trials.",
   "MY.DOGS.BREADCRUMB_INFO_2": "Use the search field to filter your dogs by name.",

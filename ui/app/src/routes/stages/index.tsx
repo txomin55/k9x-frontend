@@ -207,8 +207,14 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
 
   return (
     <Show
-      when={!(!!user() && filteredStages().length === 0)}
-      fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
+      when={filteredStages().length > 0}
+      fallback={
+        <p>
+          {user()
+            ? i18n.t("COMMON.NAME_FILTER.NO_MATCHES")
+            : i18n.t("STAGES.INDEX.NO_STAGES")}
+        </p>
+      }
     >
       <div class="card-list">
         <For each={filteredStages()}>
@@ -313,6 +319,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
       <AtomTable<StageSummaryResponseDTO>
         data={filteredStages()}
         columns={columns()}
+        emptyMessage={i18n.t("STAGES.INDEX.NO_STAGES")}
         getRowCanExpand={() => true}
         expandOnRowClick
         renderSubComponent={(row) => (

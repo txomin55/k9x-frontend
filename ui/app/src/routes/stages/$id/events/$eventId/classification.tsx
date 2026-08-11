@@ -730,6 +730,10 @@ function EventClassificationPage() {
                   </div>
                   {scoreCalculationBlock()}
                   {judgesBlock()}
+                  <EventRankingsLink
+                    stageId={params().id}
+                    eventId={params().eventId}
+                  />
                   <Show when={competitorOptions().length}>
                     <div class="obdx-clf__filter obdx-clf__filter-row">
                       {filterCombobox()}

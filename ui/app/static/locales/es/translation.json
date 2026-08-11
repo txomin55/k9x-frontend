@@ -86,6 +86,7 @@
   "STAGES.INDEX.STATUS": "Estado",
   "STAGES.INDEX.SEE_DETAIL": "Ver detalle",
   "STAGES.INDEX.CLOSE": "Cerrar",
+  "STAGES.INDEX.NO_STAGES": "No hay pruebas para las fechas seleccionadas.",
   "MY.DOGS.BREADCRUMB": "Perros",
   "MY.DOGS.BREADCRUMB_INFO": "Aquí puedes dar de alta y gestionar los perros registrados a tu nombre para poder inscribirlos en las pruebas.",
   "MY.DOGS.BREADCRUMB_INFO_2": "Con el campo de búsqueda filtras tus perros por nombre.",
