@@ -48,6 +48,7 @@ const persistNotificationTranslations = async () => {
 enum TranslationLocale {
   EN = "en",
   ES = "es",
+  PT = "pt",
 }
 
 const locales = Object.values(TranslationLocale);

@@ -35,6 +35,7 @@ export type NavigationUserMenuProps = {
 const LOCALE_COUNTRIES: Record<string, string> = {
   en: "gb",
   es: "es",
+  pt: "pt",
 };
 
 export default function NavigationUserMenu(props: NavigationUserMenuProps) {
