@@ -43,6 +43,9 @@ export default defineConfig(({ mode }) => {
       },
     },
     publicDir: "static",
+    optimizeDeps: {
+      include: ["source-map-js"],
+    },
     build: {
       sourcemap: true,
       assetsInlineLimit: (filePath: string) =>

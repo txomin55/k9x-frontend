@@ -217,9 +217,12 @@ function EventClassificationPage() {
 
   const ITEM_HEIGHT = 220;
   const MAX_VIEWPORT_ITEMS = 6;
+  const LIST_HEIGHT_SETTLE_FRAMES = 30;
+  const LIST_HEIGHT_STABLE_FRAMES = 3;
 
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
   const [tableEl, setTableEl] = createSignal<HTMLDivElement>();
+  const [pageEl, setPageEl] = createSignal<HTMLDivElement>();
   const [listHeight, setListHeight] = createSignal(
     ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
   );
@@ -395,6 +398,33 @@ function EventClassificationPage() {
     setListHeight(height);
   };
 
+  let settleFrame: number | undefined;
+
+  const settleListHeight = () => {
+    if (settleFrame !== undefined) cancelAnimationFrame(settleFrame);
+
+    let remaining = LIST_HEIGHT_SETTLE_FRAMES;
+    let stable = 0;
+    let previous = listHeight();
+
+    const step = () => {
+      updateListHeight();
+      const current = listHeight();
+      stable = current === previous ? stable + 1 : 0;
+      previous = current;
+      remaining -= 1;
+
+      if (stable >= LIST_HEIGHT_STABLE_FRAMES || remaining <= 0) {
+        settleFrame = undefined;
+        return;
+      }
+
+      settleFrame = requestAnimationFrame(step);
+    };
+
+    settleFrame = requestAnimationFrame(step);
+  };
+
   onMount(() => {
     updateListHeight();
     window.addEventListener("resize", updateListHeight);
@@ -402,6 +432,27 @@ function EventClassificationPage() {
     onCleanup(() => {
       window.removeEventListener("resize", updateListHeight);
       window.removeEventListener("scroll", updateListHeight);
+      if (settleFrame !== undefined) cancelAnimationFrame(settleFrame);
+    });
+  });
+
+  createEffect(() => {
+    const el = pageEl();
+    if (!el) return;
+
+    let pendingFrame: number | undefined;
+    const observer = new ResizeObserver(() => {
+      if (pendingFrame !== undefined) return;
+      pendingFrame = requestAnimationFrame(() => {
+        pendingFrame = undefined;
+        updateListHeight();
+      });
+    });
+
+    observer.observe(el);
+    onCleanup(() => {
+      observer.disconnect();
+      if (pendingFrame !== undefined) cancelAnimationFrame(pendingFrame);
     });
   });
 
@@ -598,16 +649,14 @@ function EventClassificationPage() {
     },
   ]);
 
-  // Pinning, expanding a card/row, and switching tabs all change how much
-  // vertical space is taken above the list, so the available height needs
-  // recalculating each time. Deferred to the next frame so it reads the
-  // layout after the DOM has actually settled.
   createEffect(() => {
     openIds();
     pinnedOpenIds();
     pinnedIds();
     controlValue();
-    requestAnimationFrame(updateListHeight);
+    competitorFilterIds();
+    sortValue();
+    settleListHeight();
   });
 
   return (
@@ -712,7 +761,7 @@ function EventClassificationPage() {
         );
 
         return (
-          <div class="page classification">
+          <div class="page classification" ref={setPageEl}>
             <Show
               when={isMobile()}
               fallback={
@@ -753,6 +802,7 @@ function EventClassificationPage() {
                 </div>
                 <div class="classification__mobile-collapsible-row">
                   <AtomCollapsible
+                    onOpenChange={settleListHeight}
                     trigger={
                       <span class="text-caption-lg">
                         {classification().competitionName}
