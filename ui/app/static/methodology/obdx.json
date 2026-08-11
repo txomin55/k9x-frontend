@@ -3,7 +3,7 @@
   "globalScale": {
     "min": 0,
     "max": 1000,
-    "automaticCap": 900,
+    "automaticCap": 1000,
     "ranges": [
       {
         "letter": "E",
@@ -34,7 +34,6 @@
         "letter": "S",
         "min": 901,
         "max": 1000,
-        "manual": true,
         "alwaysInternational": true
       }
     ],
@@ -356,6 +355,92 @@
               "nationalLetter": "A",
               "internationalRankScore": 900,
               "internationalLetter": "A+"
+            }
+          ]
+        },
+        {
+          "id": "OBDX_FCI_SPECIAL_EVENTS",
+          "name": {
+            "es": "FCI Special Events",
+            "en": "FCI Special Events"
+          },
+          "band": {
+            "min": 901,
+            "max": 1000
+          },
+          "possibleLetters": [
+            "S+"
+          ],
+          "internationalBonus": {
+            "bonusValue": 10,
+            "bonusValueUnit": "%",
+            "points": 10
+          },
+          "tiers": [
+            {
+              "tier": 1,
+              "competitors": {
+                "min": 1,
+                "max": 4
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 18,
+              "nationalRankScore": 919,
+              "nationalLetter": "S+",
+              "internationalRankScore": 929,
+              "internationalLetter": "S+"
+            },
+            {
+              "tier": 2,
+              "competitors": {
+                "min": 5,
+                "max": 9
+              },
+              "requiredForeigners": 1,
+              "tierContributionPctOfRange": 36,
+              "nationalRankScore": 937,
+              "nationalLetter": "S+",
+              "internationalRankScore": 947,
+              "internationalLetter": "S+"
+            },
+            {
+              "tier": 3,
+              "competitors": {
+                "min": 10,
+                "max": 19
+              },
+              "requiredForeigners": 2,
+              "tierContributionPctOfRange": 54,
+              "nationalRankScore": 954,
+              "nationalLetter": "S+",
+              "internationalRankScore": 964,
+              "internationalLetter": "S+"
+            },
+            {
+              "tier": 4,
+              "competitors": {
+                "min": 20,
+                "max": 34
+              },
+              "requiredForeigners": 3,
+              "tierContributionPctOfRange": 72,
+              "nationalRankScore": 972,
+              "nationalLetter": "S+",
+              "internationalRankScore": 982,
+              "internationalLetter": "S+"
+            },
+            {
+              "tier": 5,
+              "competitors": {
+                "min": 35,
+                "max": null
+              },
+              "requiredForeigners": 4,
+              "tierContributionPctOfRange": 90,
+              "nationalRankScore": 990,
+              "nationalLetter": "S+",
+              "internationalRankScore": 1000,
+              "internationalLetter": "S+"
             }
           ]
         }

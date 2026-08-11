@@ -1,4 +1,4 @@
-import { createMemo, createSignal, Show } from "solid-js";
+import { createMemo, createSignal, Show, Suspense } from "solid-js";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -20,6 +20,7 @@ import RankingConfigurator, {
   type RankingConfiguratorChange,
 } from "./RankingConfigurator";
 import RankingResults from "./RankingResults";
+import RankingsSectionSkeleton from "./RankingsSectionSkeleton";
 import "./styles.css";
 
 export interface RankingsSectionProps {
@@ -29,7 +30,24 @@ export interface RankingsSectionProps {
   menuOpen: boolean;
 }
 
+/**
+ * The queries live in the body, one level below this boundary: reading them suspends the owner that holds
+ * the read, so keeping them here would hand the suspension to the page and blank the whole competition
+ * detail instead of just this section.
+ */
 export default function RankingsSection(props: RankingsSectionProps) {
+  return (
+    <Suspense fallback={<RankingsSectionSkeleton />}>
+      <RankingsSectionBody
+        competition={props.competition}
+        showsEditMenu={props.showsEditMenu}
+        menuOpen={props.menuOpen}
+      />
+    </Suspense>
+  );
+}
+
+function RankingsSectionBody(props: RankingsSectionProps) {
   const i18n = useI18n();
   // A local draft, not a POST: a ranking with no events would be rejected by the backend, so the first
   // save waits until the first event is picked.

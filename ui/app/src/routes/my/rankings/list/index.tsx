@@ -4,6 +4,7 @@ import AtomButton, {
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, {
   type ColumnDef,
@@ -64,14 +65,41 @@ function MyRankingsRoute() {
     <Suspense
       fallback={
         <Page>
-          <div class="rankings-list card-list">
-            <CardListSkeleton count={6} />
-          </div>
+          <RankingsListSkeleton />
         </Page>
       }
     >
       <MyRankingsListPage />
     </Suspense>
+  );
+}
+
+/** Filter, view switch and card grid: everything the list shows once the rankings are read. */
+function RankingsListSkeleton() {
+  return (
+    <>
+      <div class="rankings-list__skeleton-filter ranking-skeleton__field">
+        <AtomSkeleton width="40%" height="var(--text-caption-md)" />
+        <AtomSkeleton height="var(--unit-5)" radius="var(--radius-md)" />
+      </div>
+      <div class="rankings-list__skeleton-tabs">
+        <AtomSkeleton
+          variant="rectangular"
+          width="5rem"
+          height="var(--unit-4)"
+          radius="var(--radius-full)"
+        />
+        <AtomSkeleton
+          variant="rectangular"
+          width="5rem"
+          height="var(--unit-4)"
+          radius="var(--radius-full)"
+        />
+      </div>
+      <div class="rankings-list card-list">
+        <CardListSkeleton count={6} />
+      </div>
+    </>
   );
 }
 
@@ -439,11 +467,7 @@ function MyRankingsListPage() {
           rankingsQuery.data?.length ||
           (!rankingsQuery.isPending && !rankingsQuery.isFetching)
         }
-        fallback={
-          <div class="rankings-list card-list">
-            <CardListSkeleton count={6} />
-          </div>
-        }
+        fallback={<RankingsListSkeleton />}
       >
         <Show
           when={rankingsQuery.data?.length}

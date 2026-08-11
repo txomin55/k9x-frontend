@@ -48,3 +48,15 @@
 .rankings-list__view {
   margin-left: auto;
 }
+
+/* Placeholders for the filter and the list/table switch, above the card grid. */
+.rankings-list__skeleton-filter {
+  max-width: min(100%, calc(var(--unit-10) * 3));
+  margin-bottom: var(--unit-2);
+}
+
+.rankings-list__skeleton-tabs {
+  display: flex;
+  gap: var(--unit-1);
+  margin-bottom: var(--unit-1);
+}

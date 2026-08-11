@@ -56,7 +56,7 @@ La escala 0–1000 y sus seis letras. Fuente: `ObdxRank`.
 {
   "min": 0,
   "max": 1000,
-  "automaticCap": 900,          // ObdxRank.MAX_AUTOMATIC_SCORE: la fórmula nunca lo supera
+  "automaticCap": 1000,         // ObdxRank.MAX_AUTOMATIC_SCORE: la fórmula nunca lo supera
   "internationalSuffix": "+",
   "ranges": [
     { "letter": "E", "min": 0,   "max": 200 },
@@ -65,7 +65,7 @@ La escala 0–1000 y sus seis letras. Fuente: `ObdxRank`.
     { "letter": "B", "min": 601, "max": 800 },
     { "letter": "A", "min": 801, "max": 900 },
     { "letter": "S", "min": 901, "max": 1000,
-      "manual": true, "alwaysInternational": true }
+      "alwaysInternational": true }
   ]
 }
 ```
@@ -77,11 +77,12 @@ La escala 0–1000 y sus seis letras. Fuente: `ObdxRank`.
 | `internationalSuffix` | `string` | Sufijo de letra internacional. |
 | `ranges[].letter` | `"E"\|"D"\|"C"\|"B"\|"A"\|"S"` | Ordenadas de menor a mayor. |
 | `ranges[].min` / `max` | `int` | Inclusivos y contiguos: `min` = `max` anterior + 1. |
-| `ranges[].manual` | `bool?` | Solo `true` en S. La página la pinta atenuada. |
-| `ranges[].alwaysInternational` | `bool?` | Solo `true` en S. |
+| `ranges[].alwaysInternational` | `bool?` | Solo `true` en S: cualquier score de 901–1000 se pinta `S+`. |
 
 Las seis letras deben venir siempre, aunque la federación seleccionada no pueda
-alcanzarlas: quién puede llegar a cada una se deduce de `possibleLetters`.
+alcanzarlas: quién puede llegar a cada una se deduce de `possibleLetters`. La S
+solo la alcanza `OBDX_FCI_SPECIAL_EVENTS`, así que en las federaciones sin esa
+configuración la página la pinta atenuada.
 
 ### `international`
 

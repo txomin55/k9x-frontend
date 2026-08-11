@@ -57,17 +57,9 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
     () =>
       new Set(
         federation().grades.flatMap((candidate) =>
-          candidate.possibleLetters
-            .map((letter) => letter.replace(
-              props.data.globalScale.internationalSuffix,
-              "",
-            ))
-            .filter(
-              (letter) =>
-                !props.data.globalScale.ranges.some(
-                  (range) => range.letter === letter && range.manual,
-                ),
-            ),
+          candidate.possibleLetters.map((letter) =>
+            letter.replace(props.data.globalScale.internationalSuffix, ""),
+          ),
         ),
       ),
   );
@@ -158,18 +150,15 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
     enabledLetters: enabledLetters(),
     gradeName: (item: Grade) => localized(item.name),
     grades: federation().grades,
-    manualLabel: (range: GlobalScaleRange) =>
-      i18n.t("METHODOLOGY.OBDX.S1_MANUAL_S", {
-        letter: range.letter,
-        min: range.min,
-        max: range.max,
-      }),
-    manualTooltip: i18n.t("METHODOLOGY.OBDX.S1_MANUAL_S_TOOLTIP", {
-      cap: props.data.globalScale.automaticCap,
-      letter:
-        props.data.globalScale.ranges.find((range) => range.manual)?.letter ??
-        "",
-    }),
+    letterTooltip: (range: GlobalScaleRange) =>
+      range.alwaysInternational
+        ? i18n.t("METHODOLOGY.OBDX.S1_SPECIAL_S_TOOLTIP", {
+            letter: range.letter,
+            suffix: props.data.globalScale.internationalSuffix,
+            min: range.min,
+            max: range.max,
+          })
+        : undefined,
     scale: props.data.globalScale,
   }));
 

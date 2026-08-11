@@ -8,7 +8,6 @@ export type GlobalScaleRange = {
   letter: RankLetter;
   min: number;
   max: number;
-  manual?: boolean;
   alwaysInternational?: boolean;
 };
 

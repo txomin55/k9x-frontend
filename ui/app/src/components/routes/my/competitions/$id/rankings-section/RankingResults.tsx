@@ -1,7 +1,6 @@
 import { useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
-import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import { useI18n } from "@/stores/i18n/i18n";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
@@ -11,6 +10,7 @@ import type {
   RankingClassificationEventResponseDTO,
   RankingClassificationGroupResponseDTO,
 } from "@/services/fetch-rankings/fetchRankings.types";
+import RankingResultsSkeleton from "./RankingResultsSkeleton";
 import "./styles.css";
 
 export interface RankingResultsProps {
@@ -162,17 +162,9 @@ export default function RankingResults(props: RankingResultsProps) {
   );
 
   return (
-    <section class="ranking-results">
-      <Show
-        when={!resultsQuery.isPending}
-        fallback={
-          <div class="ranking-results__loading">
-            <AtomSkeleton height="var(--unit-4)" />
-            <AtomSkeleton height="var(--unit-4)" />
-            <AtomSkeleton height="var(--unit-4)" />
-          </div>
-        }
-      >
+    // The placeholder brings its own section: it stands in for the whole block, not for its contents.
+    <Show when={!resultsQuery.isPending} fallback={<RankingResultsSkeleton />}>
+      <section class="ranking-results">
         <Show
           when={allGroups().length > 0}
           fallback={
@@ -222,7 +214,7 @@ export default function RankingResults(props: RankingResultsProps) {
             </ul>
           </Show>
         </Show>
-      </Show>
-    </section>
+      </section>
+    </Show>
   );
 }

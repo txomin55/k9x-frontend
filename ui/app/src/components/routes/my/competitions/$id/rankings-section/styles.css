@@ -148,12 +148,6 @@
   font-size: var(--text-label-lg);
 }
 
-.ranking-results__loading {
-  display: flex;
-  flex-direction: column;
-  gap: var(--unit-1);
-}
-
 .ranking-results__empty {
   margin: 0;
   color: var(--text-secondary);
@@ -358,4 +352,36 @@
    across the whole section. */
 .ranking-results__filter {
   max-width: min(100%, calc(var(--unit-10) * 3));
+}
+
+/* ---- Loading placeholders ---- */
+
+/* A label line over the field box, the shape every AtomInput/AtomSelect in these screens has. */
+.ranking-skeleton__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
+}
+
+/* Same box as .atom-collapsible plus its trigger padding, so a collapsed group row and its placeholder
+   measure exactly the same and the swap to data shifts nothing. */
+.ranking-results__group-skeleton {
+  box-sizing: border-box;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--unit-1);
+
+  padding: var(--unit-1) var(--unit-2);
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.ranking-results__group-skeleton > .ranking-results__summary {
+  flex: 1;
+  min-width: 0;
 }

@@ -1,12 +1,14 @@
 import AtomSelect, {
   type AtomSelectOption,
 } from "@lib/components/atoms/select/AtomSelect";
+import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { createFileRoute, useParams } from "@tanstack/solid-router";
 import i18nGlobal from "i18next";
 import { createEffect, createMemo, Show, Suspense } from "solid-js";
 import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import RankingResults from "@/components/routes/my/competitions/$id/rankings-section/RankingResults";
+import RankingResultsSkeleton from "@/components/routes/my/competitions/$id/rankings-section/RankingResultsSkeleton";
 import {
   getCachedEventRankingName,
   useEventRankings,
@@ -36,6 +38,36 @@ export const Route = createFileRoute("/stages/$id/events/$eventId/rankings")({
 
 function EventRankingsPage() {
   const i18n = useI18n();
+
+  return (
+    <Page>
+      <PageSeo
+        title={i18n.t("STAGES.EVENT_RANKINGS.TITLE")}
+        description={i18n.t("STAGES.EVENT_RANKINGS.DESCRIPTION")}
+      />
+      <h1>{i18n.t("STAGES.EVENT_RANKINGS.TITLE")}</h1>
+      {/* The query is created and read inside the child, so the wait is caught here and the heading stays. */}
+      <Suspense fallback={<EventRankingsSkeleton />}>
+        <EventRankingsContent />
+      </Suspense>
+    </Page>
+  );
+}
+
+function EventRankingsSkeleton() {
+  return (
+    <>
+      <div class="ranking-skeleton__field">
+        <AtomSkeleton width="30%" height="var(--text-caption-md)" />
+        <AtomSkeleton height="var(--unit-5)" radius="var(--radius-md)" />
+      </div>
+      <RankingResultsSkeleton />
+    </>
+  );
+}
+
+function EventRankingsContent() {
+  const i18n = useI18n();
   const params = useParams({ from: "/stages/$id/events/$eventId/rankings" });
   const rankingsQuery = useEventRankings(params().id, params().eventId);
   const [selected, setSelected] = useSearchParam("ranking", "", "replace");
@@ -62,30 +94,21 @@ function EventRankingsPage() {
     options().find((option) => option.value === selected()) ?? null;
 
   return (
-    <Page>
-      <PageSeo
-        title={i18n.t("STAGES.EVENT_RANKINGS.TITLE")}
-        description={i18n.t("STAGES.EVENT_RANKINGS.DESCRIPTION")}
+    <Show
+      when={options().length}
+      fallback={<p>{i18n.t("STAGES.EVENT_RANKINGS.NO_RANKINGS")}</p>}
+    >
+      <AtomSelect
+        label={i18n.t("STAGES.EVENT_RANKINGS.RANKING")}
+        placeholder={i18n.t("STAGES.EVENT_RANKINGS.SELECT_RANKING")}
+        options={options()}
+        value={selectedOption()}
+        onChange={(option) => setSelected(option?.value ?? "")}
       />
-      <h1>{i18n.t("STAGES.EVENT_RANKINGS.TITLE")}</h1>
-      <Suspense>
-        <Show
-          when={options().length}
-          fallback={<p>{i18n.t("STAGES.EVENT_RANKINGS.NO_RANKINGS")}</p>}
-        >
-          <AtomSelect
-            label={i18n.t("STAGES.EVENT_RANKINGS.RANKING")}
-            placeholder={i18n.t("STAGES.EVENT_RANKINGS.SELECT_RANKING")}
-            options={options()}
-            value={selectedOption()}
-            onChange={(option) => setSelected(option?.value ?? "")}
-          />
-          {/* Keyed on the selection so switching ranking remounts and reads the new results. */}
-          <Show when={selected()} keyed>
-            {(rankingId) => <RankingResults rankingId={rankingId} />}
-          </Show>
-        </Show>
-      </Suspense>
-    </Page>
+      {/* Keyed on the selection so switching ranking remounts and reads the new results. */}
+      <Show when={selected()} keyed>
+        {(rankingId) => <RankingResults rankingId={rankingId} />}
+      </Show>
+    </Show>
   );
 }

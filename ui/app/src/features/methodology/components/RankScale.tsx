@@ -52,8 +52,7 @@ type Props = {
   grades: Grade[];
   enabledLetters: Set<string>;
   gradeName: (grade: Grade) => string;
-  manualLabel: (range: GlobalScaleRange) => string;
-  manualTooltip: string;
+  letterTooltip: (range: GlobalScaleRange) => string | undefined;
   ariaLabel: string;
   compact?: boolean;
 };
@@ -68,11 +67,7 @@ export default function RankScale(props: Props) {
     ((value - props.scale.min) / (props.scale.max - props.scale.min)) *
       layout().track;
 
-  const manualRanges = createMemo(() =>
-    props.scale.ranges.filter((range) => range.manual),
-  );
-
-  const rows = createMemo(() => props.grades.length + manualRanges().length);
+  const rows = createMemo(() => props.grades.length);
 
   const height = createMemo(
     () =>
@@ -160,12 +155,11 @@ export default function RankScale(props: Props) {
           const width = () =>
             Math.max(position(range.max) - x() - SEGMENT_GAP, 1);
           const enabled = () => props.enabledLetters.has(range.letter);
+          const tooltip = () => props.letterTooltip(range);
 
           return (
             <g classList={{ "is-disabled": !enabled() }}>
-              <Show when={range.manual}>
-                <title>{props.manualTooltip}</title>
-              </Show>
+              <Show when={tooltip()}>{(text) => <title>{text()}</title>}</Show>
               <rect
                 fill={colors.bg}
                 height={layout().letterHeight}
@@ -238,52 +232,6 @@ export default function RankScale(props: Props) {
                 grade.band.max,
                 grade.band.min,
               )}
-            </g>
-          );
-        }}
-      </For>
-
-      <For each={manualRanges()}>
-        {(range, index) => {
-          const y = () => rowY(props.grades.length + index());
-
-          return (
-            <g>
-              <title>{props.manualTooltip}</title>
-              <rect
-                fill={RANK_COLORS[range.letter].bg}
-                height={layout().rowHeight}
-                rx="4"
-                stroke={RANK_COLORS[range.letter].fg}
-                stroke-width="0.5"
-                width={Math.max(
-                  position(range.max) - position(range.min) - 1,
-                  1,
-                )}
-                x={position(range.min)}
-                y={y()}
-              />
-              <Show
-                when={!layout().labelAbove}
-                fallback={
-                  <text
-                    class="is-strong"
-                    x={layout().pad}
-                    y={y() - LABEL_OFFSET}
-                  >
-                    {props.manualLabel(range)}
-                  </text>
-                }
-              >
-                <text
-                  dominant-baseline="central"
-                  text-anchor="end"
-                  x={position(range.min) - LABEL_GAP}
-                  y={y() + layout().rowHeight / 2}
-                >
-                  {props.manualLabel(range)}
-                </text>
-              </Show>
             </g>
           );
         }}

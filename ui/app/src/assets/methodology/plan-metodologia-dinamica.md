@@ -41,7 +41,7 @@ k9x-backend                                  k9x-frontend (SolidJS)
 
 | Bloque JSON | Fuente en dominio | Nota |
 |---|---|---|
-| `globalScale.ranges` | `ObdxRank` (`fromScore`, rangos por letra) | Incluir `automaticCap = ObdxRank.MAX_AUTOMATIC_SCORE` y la marca `manual`/`alwaysInternational` de S |
+| `globalScale.ranges` | `ObdxRank` (`fromScore`, rangos por letra) | Incluir `automaticCap = ObdxRank.MAX_AUTOMATIC_SCORE` y la marca `alwaysInternational` de S |
 | `international.foreignersByTier` | `ObdxEventRank.requiredForeignCompetitors` | **Única fuente de verdad** del 1/1/2/3/4 |
 | `international.foreignDefinition` / `threshold` | Constantes de texto (ver §5, decidir si van aquí o al i18n del front) |
 | `federations[].grades[]` | `ObdxConfigurationsRankThresholds` | Agrupar por federación parseando el `configuration_id` (`OBDX_FCI_*`, `OBDX_ENCI_*`, `OBDX_RSCE_*`, `CPC_*`), ignorando sufijo de versión `\.V\d+$` |
@@ -131,8 +131,8 @@ const enabledLetters = createMemo(() => {
 ```
 
 - `<RankScale/>`: letra deshabilitada → segmento con `opacity: .25` + `filter: grayscale(1)`, sin tooltip.
-  **S siempre deshabilitada** (`manual: true`) pero con tooltip propio explicando el seed — es información,
-  no ruido.
+  **S solo habilitada en las federaciones con configuración Special Events** y con tooltip propio
+  explicando que es exclusiva de esa configuración — es información, no ruido.
 - Las franjas de configuración que se pintan bajo la escala: **solo las de la federación seleccionada**.
   Posicionamiento lineal `x = pad + value * scale` desde `band.min/max` — cero coordenadas hardcodeadas.
 

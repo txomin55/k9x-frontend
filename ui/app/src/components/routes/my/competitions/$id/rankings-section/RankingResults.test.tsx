@@ -244,7 +244,7 @@ describe("RankingResults", () => {
     const { container } = renderResults();
 
     expect(
-      container.querySelector(".ranking-results__loading"),
+      container.querySelector(".ranking-results__group-skeleton"),
     ).toBeInTheDocument();
   });
 });
