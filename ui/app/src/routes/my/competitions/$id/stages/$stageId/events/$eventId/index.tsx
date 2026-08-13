@@ -99,6 +99,7 @@ function CompetitionObdxEventDetailBody(props: {
   onDelete: () => void;
   onUpdate: (eventId: string, event: UpdateEventRequestDTO) => void;
   stageDateFrom?: number;
+  suggestedCommissioner?: string;
 }) {
   const i18n = useI18n();
   const params = useParams({
@@ -158,6 +159,17 @@ function CompetitionObdxEventDetailBody(props: {
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
   );
+
+  /**
+   * The commissioner is stored per event but is the same person across the events of a trial, so an event
+   * without one proposes the latest sibling's. It only fills the field in: nothing reaches the backend until
+   * the organizer saves.
+   */
+  createEffect(() => {
+    const suggestion = props.suggestedCommissioner;
+    if (!suggestion || draftEvent().commissioner) return;
+    updateDraftEvent((current) => ({ ...current, commissioner: suggestion }));
+  });
   const [name, setName] = createSignal(props.event().name);
   const [isCreatingCompetitor, setIsCreatingCompetitor] = createSignal(false);
   const [editingCompetitorId, setEditingCompetitorId] = createSignal<
@@ -417,6 +429,7 @@ function CompetitionObdxEventDetailBody(props: {
 
   const createDefaultJudge = (): EventJudgeDetailResponseDTO => ({
     collectorEmail: "",
+    mainJudge: false,
     name: "",
     id: generateEntityId("judge"),
   });
@@ -448,9 +461,11 @@ function CompetitionObdxEventDetailBody(props: {
     judges: event.judges.map((judge) => ({
       collectorEmail: judge.collectorEmail,
       id: judge.id,
+      mainJudge: judge.mainJudge,
     })),
     name: eventName,
     scoreCalculation: event.scoreCalculation,
+    commissioner: event.commissioner,
   });
 
   const persistEventEdits = (
@@ -1133,6 +1148,32 @@ function CompetitionObdxEventDetailBody(props: {
         />
       </Show>
 
+      <Show
+        when={canEditDetails()}
+        fallback={
+          <div class="competition-event-detail__content--calculation">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
+            </span>
+            <span class="text-caption-lg">
+              {draftEvent().commissioner || "-"}
+            </span>
+          </div>
+        }
+      >
+        <AtomInput
+          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
+          description={i18n.t(
+            "MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP",
+          )}
+          value={draftEvent().commissioner ?? ""}
+          onChange={(value) =>
+            updateDraftEvent((current) => ({ ...current, commissioner: value }))
+          }
+          onBlur={() => persistEventEdits(draftEvent())}
+        />
+      </Show>
+
       <AtomTabs
         defaultValue={TABS.JUDGES}
         value={currentTab()}
@@ -1390,6 +1431,14 @@ function CompetitionEventDetailPage() {
 
   const getStageDateFrom = () => stage()?.dateFrom;
 
+  /** Latest sibling event of the trial that has a commissioner; the stage lists its events in creation order. */
+  const getSuggestedCommissioner = () =>
+    (stage()?.events ?? [])
+      .filter(
+        (event) => event.id !== params().eventId && !!event.obdx?.commissioner,
+      )
+      .at(-1)?.obdx?.commissioner;
+
   createEffect(() => {
     if (params().eventId !== "new" || hasCreatedDraftEvent) return;
 
@@ -1414,6 +1463,7 @@ function CompetitionEventDetailPage() {
           onDelete={onDelete}
           onUpdate={onUpdate}
           stageDateFrom={getStageDateFrom()}
+          suggestedCommissioner={getSuggestedCommissioner()}
         />
       )}
     </ObdxCompetitionEventDetailBodyWrapper>

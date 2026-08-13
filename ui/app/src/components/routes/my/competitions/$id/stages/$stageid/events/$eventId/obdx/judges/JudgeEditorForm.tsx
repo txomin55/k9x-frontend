@@ -6,6 +6,7 @@ import {
   AtomCombobox,
   type AtomComboboxOption,
 } from "library/src/components/atoms/combobox/AtomCombobox";
+import AtomCheckbox from "library/src/components/atoms/checkbox/AtomCheckbox";
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import { createSignal, Show } from "solid-js";
@@ -25,6 +26,8 @@ type JudgeEditorFormProps = {
   onCreate: () => void;
   judgeOptions: AtomSelectOption[];
   displaySave?: boolean;
+  /** Name of the judge already flagged as main, when it is not this one. */
+  mainJudgeTakenBy?: string;
 };
 
 export default function JudgeEditorForm(props: JudgeEditorFormProps) {
@@ -45,6 +48,11 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
           }
         : current,
     );
+  };
+
+  const setMainJudge = (mainJudge: boolean) => {
+    props.onDraftChange((current) => (current ? { ...current, mainJudge } : current));
+    props.onCommit();
   };
 
   const judgeOptions = (): AtomComboboxOption[] =>
@@ -110,6 +118,23 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         }}
         onChange={updateField("collectorEmail")}
       />
+      <div class="judge-editor-form__main-judge">
+        <AtomCheckbox
+          label={i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.MAIN_JUDGE")}
+          checked={props.draft().mainJudge}
+          setChecked={setMainJudge}
+          disabled={!!props.mainJudgeTakenBy}
+        />
+        <Show when={props.mainJudgeTakenBy}>
+          {(takenBy) => (
+            <span class="judge-editor-form__main-judge-hint">
+              {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.MAIN_JUDGE_TAKEN", {
+                name: takenBy(),
+              })}
+            </span>
+          )}
+        </Show>
+      </div>
       <div class="judge-editor-form__actions">
         <AtomButton onClick={props.onCancel} type={BUTTON_TYPES.ACCENT}>
           {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CLOSE")}

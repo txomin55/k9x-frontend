@@ -12,6 +12,7 @@ import trashIcon from "@/assets/miscelaneous/trash.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import MainJudgeIndicator from "@/components/common/main-judge-indicator/MainJudgeIndicator";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
@@ -101,6 +102,18 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
     return i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EDIT_JUDGE");
   };
 
+  /**
+   * Name of the judge already holding the main-judge box, if it is not the one being edited. The domain
+   * rejects a second main judge, so the dialog blocks it instead of letting the save fail.
+   */
+  const mainJudgeTakenBy = (draft: EventJudgeDetailResponseDTO | null) => {
+    const other = props.judges.find(
+      (judge) => judge.mainJudge && judge.id !== draft?.id,
+    );
+
+    return other ? getJudgeName(other.id) : undefined;
+  };
+
   const columns = createMemo<ColumnDef<EventJudgeDetailResponseDTO, any>[]>(
     () => {
       const cols: ColumnDef<EventJudgeDetailResponseDTO, any>[] = [
@@ -112,6 +125,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
             <div class="list-table__name">
               <CountryFlag country={getJudgeCountry(info.row.original.id)} />
               <span>{getJudgeName(info.row.original.id)}</span>
+              <Show when={info.row.original.mainJudge}>
+                <MainJudgeIndicator />
+              </Show>
             </div>
           ),
         },
@@ -171,6 +187,14 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                 <CountryFlag country={getJudgeCountry(judge().id)} />
                 <span>{getJudgeName(judge().id)}</span>
               </div>
+            }
+            topRight={
+              judge().mainJudge ? (
+                <div class="event-judges-section__judge-main">
+                  <MainJudgeIndicator />
+                  <span>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.MAIN_JUDGE")}</span>
+                </div>
+              ) : undefined
             }
             description={
               <p>{`${i18n.t("MY.COMPETITIONS.EVENT_JUDGES.EMAIL")}: ${judge().collectorEmail}`}</p>
@@ -278,6 +302,7 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
                 }}
                 judgeOptions={judgeOptions()}
                 displaySave={props.isCreatingJudge}
+                mainJudgeTakenBy={mainJudgeTakenBy(draft())}
               />
             )}
           </Show>

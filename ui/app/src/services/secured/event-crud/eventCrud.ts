@@ -96,6 +96,24 @@ export const exportEventById = async (
   downloadBlob(blob, fileName ?? EXPORT_FALLBACK_FILE_NAME);
 };
 
+const EVENT_PROOF_FALLBACK_FILE_NAME = "event-proof.pdf";
+
+/**
+ * Downloads the printable working-booklet proof of one competitor. Same blob round-trip as the workbook
+ * export: the request needs the bearer token, so it cannot be a plain link.
+ */
+export const downloadEventProof = async (
+  eventId: string,
+  competitorId: string,
+) => {
+  const { blob, fileName } = await rawRequest<BlobResponse>({
+    path: `/secured/events/${eventId}/competitors/${encodeURIComponent(competitorId)}/event-proof`,
+    responseType: "blob",
+  });
+
+  downloadBlob(blob, fileName ?? EVENT_PROOF_FALLBACK_FILE_NAME);
+};
+
 const createId = () => generateEntityId("event");
 
 const toApiExercise = (
@@ -197,6 +215,7 @@ const toApiJudge = (
 ): EventJudgeDetailResponseDTO => ({
   collectorEmail: judge.collectorEmail ?? previousJudge?.collectorEmail ?? "",
   id: judge.id ?? previousJudge?.id ?? "",
+  mainJudge: judge.mainJudge ?? previousJudge?.mainJudge ?? false,
   name: previousJudge?.name ?? "",
 });
 

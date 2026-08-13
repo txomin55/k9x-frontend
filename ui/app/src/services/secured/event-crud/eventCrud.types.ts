@@ -26,6 +26,7 @@ export interface UpdateEventRequestDTO {
   name: string;
   enrollmentDeadline: number;
   scoreCalculation: string;
+  commissioner?: string;
   awards?: string[];
 }
 
@@ -104,6 +105,7 @@ export interface ObdxEventDetailResponseDTO {
   name: string;
   status: string;
   scoreCalculation: string;
+  commissioner?: string;
   awards: IdNameDTO[];
   rank?: string;
 }
@@ -154,12 +156,14 @@ export interface EventExerciseRequestDTO {
 export interface EventJudgeDetailResponseDTO {
   collectorEmail: string;
   id: string;
+  mainJudge: boolean;
   name: string;
 }
 
 export interface EventJudgeDetailRequestDTO {
   collectorEmail: string;
   id: string;
+  mainJudge: boolean;
 }
 
 export interface EventEditorDraft {
@@ -174,6 +178,7 @@ export interface EventEditorDraft {
   stageId: string;
   status: string;
   scoreCalculation: string;
+  commissioner?: string;
   awards: IdNameDTO[];
 }
 

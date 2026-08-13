@@ -45,6 +45,7 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
           id: "judge-1",
           name: judgeName("judge-1"),
           collectorEmail: "alpha@k9x.test",
+          mainJudge: true,
         },
       ],
       exercises: [
@@ -140,8 +141,9 @@ const applyEventUpdate = (
     name: string;
     enrollmentDeadline: number;
     scoreCalculation: string;
+    commissioner?: string;
     awards?: string[];
-    judges?: { id: string; collectorEmail: string }[];
+    judges?: { id: string; collectorEmail: string; mainJudge?: boolean }[];
     exercises?: {
       id: string;
       name: string;
@@ -164,6 +166,7 @@ const applyEventUpdate = (
     name: payload.name,
     enrollmentDeadline: payload.enrollmentDeadline,
     scoreCalculation: payload.scoreCalculation,
+    commissioner: payload.commissioner,
     awards: (payload.awards ?? []).map((id) => ({
       id,
       name: awardById(id)?.name ?? id,
@@ -171,6 +174,7 @@ const applyEventUpdate = (
     judges: (payload.judges ?? []).map((judge) => ({
       id: judge.id,
       collectorEmail: judge.collectorEmail,
+      mainJudge: judge.mainJudge ?? false,
       name: judgeName(judge.id),
     })),
     exercises: (payload.exercises ?? []).map((exercise) => ({
