@@ -5,6 +5,7 @@ import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import { useI18n } from "@/stores/i18n/i18n";
+import { useAuthUser } from "@/stores/auth/auth";
 import { STAGE_STATUS } from "@/utils/stage";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import "./styles.css";
@@ -31,6 +32,17 @@ type StagesFiltersProps = {
 };
 
 export default function StagesFilters(props: StagesFiltersProps) {
+  const user = useAuthUser();
+
+  return (
+    <Show when={Boolean(user())}>
+      <StagesFiltersFields {...props} />
+    </Show>
+  );
+}
+
+/** Split out so the secured countries query only runs once the login gate above lets it through. */
+function StagesFiltersFields(props: StagesFiltersProps) {
   const i18n = useI18n();
   const device = useDeviceType();
   const isMobile = () => device() === "mobile";

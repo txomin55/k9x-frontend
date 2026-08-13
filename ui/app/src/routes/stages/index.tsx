@@ -539,8 +539,6 @@ function EnrollDialog(props: {
 function StagesIndexPage() {
   const { isOffline } = useOffline();
   const i18n = useI18n();
-  const user = useAuthUser();
-  const isLoggedIn = () => !!user();
 
   const [selectedStageId, setSelectedStageId] = useSearchParam(
     "enrollStage",
@@ -620,26 +618,22 @@ function StagesIndexPage() {
           title={i18n.t("STAGES.INDEX.META_TITLE")}
           description={i18n.t("STAGES.INDEX.META_DESCRIPTION")}
         />
-        <Show when={isLoggedIn()}>
-          <StagesFiltersConnected
-            name={nameFilter()}
-            country={countryFilter()}
-            status={statusFilter()}
-            dateFrom={dateFromValue()}
-            dateTo={dateToValue()}
-            onNameChange={setNameFilter}
-            onCountryChange={setCountryFilter}
-            onStatusChange={setStatusFilter}
-            onDateFromChange={(value) =>
-              setDateFromFilter(
-                value ? String(parseDateInputValue(value, 0)) : "",
-              )
-            }
-            onDateToChange={(value) =>
-              setDateToFilter(value ? String(parseDateInputValue(value, 0)) : "")
-            }
-          />
-        </Show>
+        <StagesFiltersConnected
+          name={nameFilter()}
+          country={countryFilter()}
+          status={statusFilter()}
+          dateFrom={dateFromValue()}
+          dateTo={dateToValue()}
+          onNameChange={setNameFilter}
+          onCountryChange={setCountryFilter}
+          onStatusChange={setStatusFilter}
+          onDateFromChange={(value) =>
+            setDateFromFilter(value ? String(parseDateInputValue(value, 0)) : "")
+          }
+          onDateToChange={(value) =>
+            setDateToFilter(value ? String(parseDateInputValue(value, 0)) : "")
+          }
+        />
         <AtomSegmentedControl
           title={i18n.t("STAGES.INDEX.STAGES_BY")}
           control={controlValue()}
