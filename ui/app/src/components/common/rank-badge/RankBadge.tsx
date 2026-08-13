@@ -20,8 +20,7 @@ const RANK_CONFIG: Record<string, StatusConfig> = {
 };
 
 export default function RankBadge(props: RankBadgeProps) {
-  const letter = () => props.rank?.replaceAll("+", "");
-  const hasPlus = () => Boolean(props.rank?.includes("+"));
+  const letter = () => props.rank;
   const type = () => {
     const key = letter();
     return key ? RANK_CONFIG[key]?.type : undefined;
@@ -30,12 +29,7 @@ export default function RankBadge(props: RankBadgeProps) {
   return (
     <Show when={props.rank}>
       <AtomBadge textValue={props.rank} type={type()}>
-        <span class="rank-badge__content">
-          {letter()}
-          <Show when={hasPlus()}>
-            <span class="rank-badge__plus">+</span>
-          </Show>
-        </span>
+        <span class="rank-badge__content">{letter()}</span>
       </AtomBadge>
     </Show>
   );
