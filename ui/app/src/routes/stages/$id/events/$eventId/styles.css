@@ -174,34 +174,9 @@
     color: var(--text-secondary);
 }
 
-.obdx-clf__filter {
-    padding-top: var(--unit-1);
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-}
-
 .obdx-clf__list > .card,
 .obdx-clf__pinned > .card {
     max-width: none;
-}
-
-.obdx-clf__filter-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: flex-end;
-    gap: var(--unit-2);
-}
-
-.obdx-clf__filter-row .atom-select {
-    flex: 0 0 12rem;
-    min-width: 0;
-}
-
-.obdx-clf__filter-row > :first-child {
-    flex: 1 1 16rem;
-    min-width: 0;
 }
 
 .obdx-clf__list {
@@ -235,3 +210,17 @@
     border-bottom: 1px solid var(--border);
 }
 
+
+/* Notice shown in place of the results when the picked ranking is only readable with a session, same box as
+   the informative banners in the collection detail. */
+.event-rankings__banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--unit-2);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary);
+}

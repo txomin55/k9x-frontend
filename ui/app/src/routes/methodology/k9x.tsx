@@ -3,4 +3,7 @@ import K9xMethodologyPage from "@/features/methodology/K9xMethodologyPage";
 
 export const Route = createFileRoute("/methodology/k9x")({
   component: K9xMethodologyPage,
+  staticData: {
+    breadcrumb: "METHODOLOGY.K9X.BRAND",
+  },
 });

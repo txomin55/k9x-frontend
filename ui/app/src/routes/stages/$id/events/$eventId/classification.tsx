@@ -23,8 +23,10 @@ import {
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import {AtomCombobox, type AtomComboboxOption,} from "@lib/components/atoms/combobox/AtomCombobox";
-import AtomSelect, {type AtomSelectOption,} from "@lib/components/atoms/select/AtomSelect";
+import {type AtomComboboxOption} from "@lib/components/atoms/combobox/AtomCombobox";
+import {type AtomSelectOption} from "@lib/components/atoms/select/AtomSelect";
+import ClassificationFilters
+  from "@/components/routes/stages/$id/events/$eventId/classification-filters/ClassificationFilters";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -37,7 +39,6 @@ import RotateDeviceHint from "@/components/common/rotate-device-hint/RotateDevic
 import PinButton
   from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
 import {useI18n} from "@/stores/i18n/i18n";
-import {useAuthUser} from "@/stores/auth/auth";
 import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
 import {useDeviceType} from "@/utils/media-query/useDeviceType";
 import {formatDateTime} from "@/utils/date";
@@ -166,8 +167,6 @@ function EventClassificationPage() {
   const params = useParams({
     from: "/stages/$id/events/$eventId/classification",
   });
-  const user = useAuthUser();
-  const isLoggedIn = () => Boolean(user());
 
   const classificationQuery = useEventClassification(
     params().id,
@@ -734,28 +733,15 @@ function EventClassificationPage() {
           </Show>
         );
 
-        const filterCombobox = () => (
-          <AtomCombobox
-            multiple
-            label={t("STAGES.CLASSIFICATION.FILTER_COMPETITORS")}
-            placeholder={t(
-              "STAGES.CLASSIFICATION.FILTER_COMPETITORS_PLACEHOLDER",
-            )}
-            options={competitorOptions()}
-            value={selectedCompetitorOptions()}
-            onChange={(options) =>
-              setCompetitorFilterIds(options.map((option) => option.value))
-            }
-          />
-        );
-
-        const sortSelect = () => (
-          <AtomSelect
-            label={t("STAGES.CLASSIFICATION.SORT_BY")}
-            options={sortOptions()}
-            value={selectedSortOption()}
-            onChange={(option) =>
-              setSortValue(option?.value ?? CLASSIFICATION_SORTS.SCORE)
+        const filters = () => (
+          <ClassificationFilters
+            competitorOptions={competitorOptions()}
+            selectedCompetitorOptions={selectedCompetitorOptions()}
+            onCompetitorsChange={setCompetitorFilterIds}
+            sortOptions={sortOptions()}
+            selectedSortOption={selectedSortOption()}
+            onSortChange={(value) =>
+              setSortValue(value ?? CLASSIFICATION_SORTS.SCORE)
             }
           />
         );
@@ -783,13 +769,7 @@ function EventClassificationPage() {
                     stageId={params().id}
                     eventId={params().eventId}
                   />
-                  <Show when={competitorOptions().length}>
-                    <div class="obdx-clf__filter obdx-clf__filter-row">
-                      {filterCombobox()}
-                      <Show when={isLoggedIn()}>{sortSelect()}</Show>
-                      <RotateDeviceHint />
-                    </div>
-                  </Show>
+                  {filters()}
                 </>
               }
             >
@@ -816,12 +796,7 @@ function EventClassificationPage() {
                         {disciplineBlock()}
                         {scoreCalculationBlock()}
                         {judgesBlock()}
-                        <Show when={isLoggedIn() && competitorOptions().length}>
-                          <div class="obdx-clf__filter">
-                            {filterCombobox()}
-                            {sortSelect()}
-                          </div>
-                        </Show>
+                        {filters()}
                         <EventRankingsLink
                           stageId={params().id}
                           eventId={params().eventId}

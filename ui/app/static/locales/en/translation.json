@@ -779,5 +779,6 @@
   "STAGES.EVENT_RANKINGS.DESCRIPTION": "Rankings that include this event and their results.",
   "STAGES.EVENT_RANKINGS.RANKING": "Ranking",
   "STAGES.EVENT_RANKINGS.SELECT_RANKING": "Select a ranking",
-  "STAGES.EVENT_RANKINGS.NO_RANKINGS": "There are no rankings available for this event."
+  "STAGES.EVENT_RANKINGS.NO_RANKINGS": "There are no rankings available for this event.",
+  "STAGES.EVENT_RANKINGS.LOGIN_REQUIRED": "This ranking is only visible to signed-in users. Log in to see its results."
 }

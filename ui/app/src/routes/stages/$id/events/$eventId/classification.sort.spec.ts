@@ -142,3 +142,41 @@ loggedOutTest.describe("Classification sorting - logged out", () => {
     ).toHaveCount(0);
   });
 });
+
+loggedOutTest.describe("Classification filters - logged out on desktop", () => {
+  loggedOutTest.use({ viewport: { width: 1280, height: 900 } });
+
+  loggedOutTest(
+    "shows neither the filter nor the sort select",
+    async ({ page }) => {
+      await mockClassification(page);
+      await page.goto(CLASSIFICATION_URL);
+
+      await expect(
+        page.locator(".obdx-clf__list .obdx-clf__position").first(),
+      ).toBeVisible();
+
+      await expect(
+        page.getByRole("combobox", { name: "Filter competitors" }),
+      ).toHaveCount(0);
+      await expect(page.getByLabel("Sort by")).toHaveCount(0);
+    },
+  );
+});
+
+competitorTest.describe("Classification filters - logged in on desktop", () => {
+  competitorTest.use({ viewport: { width: 1280, height: 900 } });
+
+  competitorTest(
+    "shows the filter row without opening a collapsible",
+    async ({ page }) => {
+      await mockClassification(page);
+      await page.goto(CLASSIFICATION_URL);
+
+      await expect(
+        page.getByRole("combobox", { name: "Filter competitors" }),
+      ).toBeVisible();
+      await expect(page.getByLabel("Sort by")).toBeVisible();
+    },
+  );
+});

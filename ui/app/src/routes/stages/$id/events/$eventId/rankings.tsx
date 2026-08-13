@@ -15,6 +15,10 @@ import {
 } from "@/services/fetch-rankings/fetchRankings";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import "./styles.css";
+
+/** Marks a combo entry whose ranking came back without an identifier, so it cannot be opened as a visitor. */
+const LOCKED_VALUE_PREFIX = "login-required:";
 
 export const Route = createFileRoute("/stages/$id/events/$eventId/rankings")({
   component: EventRankingsPage,
@@ -73,21 +77,28 @@ function EventRankingsContent() {
   const [selected, setSelected] = useSearchParam("ranking", "", "replace");
 
   /**
-   * A ranking that does not belong to a competition arrives without an identifier for an anonymous visitor,
-   * so there is nothing to open: those are left out of the combo rather than offered and then failing.
+   * A ranking that does not belong to a competition arrives without an identifier for an anonymous visitor.
+   * It is still offered in the combo, under a placeholder value, so the visitor can see it exists; picking it
+   * explains that a session is needed instead of silently hiding it.
    */
   const options = createMemo<AtomSelectOption[]>(() =>
-    (rankingsQuery.data ?? [])
-      .filter((ranking) => !!ranking.id)
-      .map((ranking) => ({ label: ranking.name, value: ranking.id })),
+    (rankingsQuery.data ?? []).map((ranking, index) => ({
+      label: ranking.name,
+      value: ranking.id || `${LOCKED_VALUE_PREFIX}${index}`,
+    })),
   );
 
-  // Preselect the first one so the page shows results without an extra click.
+  const isLocked = (value: string) => value.startsWith(LOCKED_VALUE_PREFIX);
+
+  // Preselect the first readable one so the page shows results without an extra click, falling back to the
+  // first locked entry when every ranking needs a session.
   createEffect(() => {
     const available = options();
-    if (available.length && !available.some((o) => o.value === selected())) {
-      setSelected(available[0].value);
+    if (!available.length || available.some((o) => o.value === selected())) {
+      return;
     }
+    const readable = available.find((option) => !isLocked(option.value));
+    setSelected((readable ?? available[0]).value);
   });
 
   const selectedOption = () =>
@@ -107,7 +118,18 @@ function EventRankingsContent() {
       />
       {/* Keyed on the selection so switching ranking remounts and reads the new results. */}
       <Show when={selected()} keyed>
-        {(rankingId) => <RankingResults rankingId={rankingId} />}
+        {(rankingId) => (
+          <Show
+            when={!isLocked(rankingId)}
+            fallback={
+              <div class="event-rankings__banner">
+                {i18n.t("STAGES.EVENT_RANKINGS.LOGIN_REQUIRED")}
+              </div>
+            }
+          >
+            <RankingResults rankingId={rankingId} />
+          </Show>
+        )}
       </Show>
     </Show>
   );
