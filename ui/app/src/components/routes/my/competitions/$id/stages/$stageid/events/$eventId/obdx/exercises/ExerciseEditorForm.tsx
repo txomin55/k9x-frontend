@@ -10,7 +10,7 @@ import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumbe
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import {
   EventExerciseDetailResponseDTO,
-  EventJudgeDetailResponseDTO
+  EventJudgeDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
 import { createMemo, Show } from "solid-js";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -136,18 +136,6 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
 
   return (
     <div class="form-grid">
-      <Show when={props.eventJudges.length > 1}>
-        <div class="form-grid__full">
-          <AtomCombobox
-            multiple
-            label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
-            placeholder={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES")}
-            options={judgeOptions()}
-            value={selectedJudgeOptions()}
-            onChange={setJudges}
-          />
-        </div>
-      </Show>
       <div class="form-grid__full">
         <div class="form-grid form-grid--2col">
           <AtomCombobox
@@ -188,6 +176,20 @@ export default function ExerciseEditorForm(props: ExerciseEditorFormProps) {
           )}
         />
       </div>
+      <Show when={props.eventJudges.length > 1}>
+        <div class="form-grid__full">
+          <AtomCombobox
+            multiple
+            label={i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.JUDGES")}
+            placeholder={i18n.t(
+              "MY.COMPETITIONS.EXERCISE_EDITOR.SELECT_JUDGES",
+            )}
+            options={judgeOptions()}
+            value={selectedJudgeOptions()}
+            onChange={setJudges}
+          />
+        </div>
+      </Show>
       <div class="form-grid__actions">
         <AtomButton type={BUTTON_TYPES.ACCENT} onClick={props.onCancel}>
           {i18n.t("MY.COMPETITIONS.EXERCISE_EDITOR.CLOSE")}

@@ -29,6 +29,7 @@ export const toEventEditorDraft = (
   scoreCalculation: event.scoreCalculation,
   awards: event.awards.map((award) => ({ ...award })),
   commissioner: event.commissioner ?? "",
+  category: event.category ?? "",
 });
 
 export const EVENT_STATUS = {

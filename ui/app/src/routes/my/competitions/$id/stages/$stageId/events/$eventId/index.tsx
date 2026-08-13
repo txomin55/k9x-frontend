@@ -78,6 +78,7 @@ import EventConfigurationSection from "@/components/routes/my/competitions/$id/s
 import ObdxCompetitionEventDetailBodyWrapper from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/ObdxCompetitionEventDetailBodyWrapper";
 import { useConfigurations } from "@/services/secured/configurations/configurations";
 import { useAwards } from "@/services/secured/award-crud/awardCrud";
+import { useCategories } from "@/services/secured/category-crud/categoryCrud";
 import AtomSelect, {
   type AtomSelectOption,
 } from "@lib/components/atoms/select/AtomSelect";
@@ -207,6 +208,24 @@ function CompetitionObdxEventDetailBody(props: {
     refetchOnMount: false,
     gcTime: 2 * 60 * 1000,
   });
+  const categoriesQuery = useCategories(draftEvent().discipline.id, {
+    refetchOnMount: false,
+    gcTime: 2 * 60 * 1000,
+  });
+
+  const categoryOptions = createMemo<AtomSelectOption[]>(() =>
+    (categoriesQuery.data ?? []).map(({ id, name }) => ({
+      label: name,
+      value: id,
+    })),
+  );
+
+  const selectedCategoryOption = createMemo<AtomSelectOption | null>(
+    () =>
+      categoryOptions().find(
+        (option) => option.value === draftEvent().category,
+      ) ?? null,
+  );
 
   const awardOptions = createMemo<AtomComboboxOption[]>(() =>
     (awardsQuery.data ?? []).map(({ id, name }) => ({
@@ -335,6 +354,8 @@ function CompetitionObdxEventDetailBody(props: {
       judges: event.judges,
       name: event.name,
       scoreCalculation: event.scoreCalculation,
+      category: event.category ?? "",
+      commissioner: event.commissioner ?? "",
       status: event.status,
     });
   };
@@ -479,6 +500,7 @@ function CompetitionObdxEventDetailBody(props: {
     name: eventName,
     scoreCalculation: event.scoreCalculation,
     commissioner: event.commissioner,
+    category: event.category,
   });
 
   const persistEventEdits = (
@@ -1051,6 +1073,39 @@ function CompetitionObdxEventDetailBody(props: {
           })
         }
       />
+
+      <Show
+        when={canEditDetails()}
+        fallback={
+          <div class="competition-event-detail__content--calculation">
+            <span class="text-caption-md">
+              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
+            </span>
+            <span class="text-caption-lg">
+              {selectedCategoryOption()?.label ?? "-"}
+            </span>
+          </div>
+        }
+      >
+        <AtomSelect
+          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
+          placeholder={i18n.t(
+            "MY.COMPETITIONS.EVENT_DETAIL.CATEGORY_PLACEHOLDER",
+          )}
+          options={categoryOptions()}
+          value={selectedCategoryOption()}
+          onChange={(option) =>
+            option &&
+            updateDraftEvent(
+              (current) => ({
+                ...current,
+                category: option.value,
+              }),
+              { persist: true },
+            )
+          }
+        />
+      </Show>
 
       <Show
         when={canEditDetails()}

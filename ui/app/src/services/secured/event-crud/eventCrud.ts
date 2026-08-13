@@ -337,6 +337,8 @@ const mergeApiEventWithPayload = (
       updatePayload?.scoreCalculation ??
       previousEvent?.scoreCalculation ??
       SCORE_CALCULATION.AVG,
+    category: updatePayload?.category ?? previousEvent?.category,
+    commissioner: updatePayload?.commissioner ?? previousEvent?.commissioner,
     stage: {
       id: nextStageId,
       name: nextStageName,

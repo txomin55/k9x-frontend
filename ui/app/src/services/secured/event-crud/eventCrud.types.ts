@@ -27,6 +27,7 @@ export interface UpdateEventRequestDTO {
   enrollmentDeadline: number;
   scoreCalculation: string;
   commissioner?: string;
+  category?: string;
   awards?: string[];
 }
 
@@ -106,6 +107,7 @@ export interface ObdxEventDetailResponseDTO {
   status: string;
   scoreCalculation: string;
   commissioner?: string;
+  category?: string;
   awards: IdNameDTO[];
   rank?: string;
 }
@@ -179,6 +181,7 @@ export interface EventEditorDraft {
   status: string;
   scoreCalculation: string;
   commissioner?: string;
+  category?: string;
   awards: IdNameDTO[];
 }
 
