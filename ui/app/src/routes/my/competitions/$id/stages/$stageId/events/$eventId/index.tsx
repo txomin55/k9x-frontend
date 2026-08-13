@@ -27,6 +27,7 @@ import EventCompetitorsSection from "@/components/routes/my/competitions/$id/sta
 import EventExercisesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/exercises/EventExercisesSection";
 import EventJudgesSection from "@/components/routes/my/competitions/$id/stages/$stageid/events/$eventId/obdx/judges/EventJudgesSection";
 import {
+  downloadEventProof,
   exportEventById,
   prefetchEventById,
   updateApiEventNotCompeting,
@@ -149,13 +150,25 @@ function CompetitionObdxEventDetailBody(props: {
     }
   };
 
-  const handleExport = () => {
-    if (canExportClassification()) {
-      setIsExportDialogOpen(true);
-      return;
+  /**
+   * Its own action rather than a companion of the workbook export: rendering a strip per competitor is real
+   * work for the server, so it only happens when the organizer actually wants to print the booklets.
+   */
+  const runProofExport = async () => {
+    if (isExporting()) return;
+    setIsExporting(true);
+    setIsExportDialogOpen(false);
+    showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_PROOF_STARTING"));
+    try {
+      await downloadEventProof(props.event().id);
+    } catch {
+      showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_PROOF_FAILED"));
+    } finally {
+      setIsExporting(false);
     }
-    void runExport(false);
   };
+
+  const handleExport = () => setIsExportDialogOpen(true);
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
   );
@@ -877,7 +890,9 @@ function CompetitionObdxEventDetailBody(props: {
     const nextDraftEvent = updateDraftEvent((current) => ({
       ...current,
       competitors: current.competitors.map((entry) =>
-        entry.dogIdentification === dogIdentification ? { ...entry, notCompeting: true } : entry,
+        entry.dogIdentification === dogIdentification
+          ? { ...entry, notCompeting: true }
+          : entry,
       ),
     }));
 
@@ -1163,9 +1178,7 @@ function CompetitionObdxEventDetailBody(props: {
       >
         <AtomInput
           label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
-          description={i18n.t(
-            "MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP",
-          )}
+          description={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP")}
           value={draftEvent().commissioner ?? ""}
           onChange={(value) =>
             updateDraftEvent((current) => ({ ...current, commissioner: value }))
@@ -1212,17 +1225,42 @@ function CompetitionObdxEventDetailBody(props: {
         open={isExportDialogOpen()}
         onOpenChange={setIsExportDialogOpen}
         title={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT")}
-        description={i18n.t(
-          "MY.COMPETITIONS.EVENT_DETAIL.EXPORT_CLASSIFICATION_QUESTION",
-        )}
+        description={
+          canExportClassification()
+            ? i18n.t(
+                "MY.COMPETITIONS.EVENT_DETAIL.EXPORT_CLASSIFICATION_QUESTION",
+              )
+            : i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_QUESTION")
+        }
         content={
-          <div class="competition-event-detail__export-actions">
-            <AtomButton type="ghost" onClick={() => void runExport(false)}>
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITHOUT_CLASSIFICATION")}
-            </AtomButton>
-            <AtomButton onClick={() => void runExport(true)}>
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITH_CLASSIFICATION")}
-            </AtomButton>
+          <div class="competition-event-detail__export-choices">
+            <div class="competition-event-detail__export-actions">
+              <Show
+                when={canExportClassification()}
+                fallback={
+                  <AtomButton onClick={() => void runExport(false)}>
+                    {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WORKBOOK")}
+                  </AtomButton>
+                }
+              >
+                <AtomButton type="accent" onClick={() => void runExport(false)}>
+                  {i18n.t(
+                    "MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITHOUT_CLASSIFICATION",
+                  )}
+                </AtomButton>
+                <AtomButton onClick={() => void runExport(true)}>
+                  {i18n.t(
+                    "MY.COMPETITIONS.EVENT_DETAIL.EXPORT_WITH_CLASSIFICATION",
+                  )}
+                </AtomButton>
+              </Show>
+            </div>
+            <div class="competition-event-detail__export-actions">
+              <span />
+              <AtomButton type="accent" onClick={() => void runProofExport()}>
+                {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EXPORT_EVENT_PROOF")}
+              </AtomButton>
+            </div>
           </div>
         }
       />

@@ -100,12 +100,3 @@
     gap: var(--unit-1);
     align-items: center;
 }
-
-/* View mode: the proof download stays left, scores (the primary action) right. */
-.event-competitors-section__competitors--view-actions {
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    gap: var(--unit-1);
-    align-items: center;
-}

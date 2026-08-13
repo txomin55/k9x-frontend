@@ -99,15 +99,12 @@ export const exportEventById = async (
 const EVENT_PROOF_FALLBACK_FILE_NAME = "event-proof.pdf";
 
 /**
- * Downloads the printable working-booklet proof of one competitor. Same blob round-trip as the workbook
- * export: the request needs the bearer token, so it cannot be a plain link.
+ * Downloads the printable working-booklet proofs of an event: one strip per competitor, in a single PDF. Same
+ * blob round-trip as the workbook export, because the request needs the bearer token.
  */
-export const downloadEventProof = async (
-  eventId: string,
-  competitorId: string,
-) => {
+export const downloadEventProof = async (eventId: string) => {
   const { blob, fileName } = await rawRequest<BlobResponse>({
-    path: `/secured/events/${eventId}/competitors/${encodeURIComponent(competitorId)}/event-proof`,
+    path: `/secured/events/${eventId}/event-proof`,
     responseType: "blob",
   });
 

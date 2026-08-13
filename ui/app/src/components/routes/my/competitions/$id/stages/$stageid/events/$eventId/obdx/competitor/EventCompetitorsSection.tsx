@@ -11,7 +11,6 @@ import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
 import checkIcon from "@/assets/miscelaneous/check.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
-import downloadIcon from "@/assets/miscelaneous/download.svg";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
@@ -22,8 +21,6 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
-import { downloadEventProof } from "@/services/secured/event-crud/eventCrud";
-import { showToast } from "@/stores/toast/toast";
 import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
@@ -76,26 +73,6 @@ export default function EventCompetitorsSection(
   });
   const showUnverifiedOnly = () => Boolean(search().unverified);
 
-  const [downloadingProofFor, setDownloadingProofFor] = createSignal<string | null>(
-    null,
-  );
-
-  /**
-   * The proof is a per-competitor download, so the guard is per competitor too: two handlers waiting at the
-   * ring can ask for their own strips at the same time.
-   */
-  const downloadProof = async (dogIdentification: string) => {
-    if (downloadingProofFor()) return;
-    setDownloadingProofFor(dogIdentification);
-    showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_PROOF_STARTING"));
-    try {
-      await downloadEventProof(params().eventId, dogIdentification);
-    } catch {
-      showToast(i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_PROOF_FAILED"));
-    } finally {
-      setDownloadingProofFor(null);
-    }
-  };
 
   const user = useAuthUser();
   const dogsQuery = useAllDogs({
@@ -235,16 +212,8 @@ export default function EventCompetitorsSection(
         </AtomButton>
       </div>
     ) : (
-      // The booklet proof sits on the left with the quiet style; scores is the primary action, on the right.
-      <div class="event-competitors-section__competitors--view-actions">
+      <>
         <Show when={canSeeCompetitorScores(props.eventStatus)}>
-          <AtomButton
-            type={BUTTON_TYPES.ACCENT}
-            disabled={downloadingProofFor() === competitor.dogIdentification}
-            onClick={() => void downloadProof(competitor.dogIdentification)}
-          >
-            {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EVENT_PROOF")}
-          </AtomButton>
           <AtomButton
             type={BUTTON_TYPES.PRIMARY}
             onClick={() =>
@@ -261,7 +230,7 @@ export default function EventCompetitorsSection(
             {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
           </AtomButton>
         </Show>
-      </div>
+      </>
     );
   };
 
@@ -318,17 +287,6 @@ export default function EventCompetitorsSection(
     ) : (
       <div class="list-table__actions">
         <Show when={canSeeCompetitorScores(props.eventStatus)}>
-          <AtomButton
-            type={BUTTON_TYPES.ACCENT}
-            disabled={downloadingProofFor() === competitor.dogIdentification}
-            onClick={() => void downloadProof(competitor.dogIdentification)}
-          >
-            <AtomSvgIcon
-              src={downloadIcon}
-              alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.EVENT_PROOF")}
-              tinted
-            />
-          </AtomButton>
           <AtomButton
             type={BUTTON_TYPES.PRIMARY}
             onClick={() =>
