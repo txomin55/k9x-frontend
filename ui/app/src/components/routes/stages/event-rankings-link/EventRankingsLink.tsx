@@ -1,4 +1,6 @@
-import AtomButton from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 import { useEventRankings } from "@/services/fetch-rankings/fetchRankings";
@@ -25,6 +27,7 @@ export default function EventRankingsLink(props: EventRankingsLinkProps) {
     <Show when={rankingsQuery.data?.length}>
       <div class="event-rankings-link">
         <AtomButton
+          type={BUTTON_TYPES.ACCENT}
           onClick={() =>
             navigate({
               to: "/stages/$id/events/$eventId/rankings",
