@@ -21,8 +21,14 @@ const X_STEPS = 10;
 export default function MeritCurve(props: Props) {
   let canvas: HTMLCanvasElement | undefined;
 
+  /**
+   * Chart.js normalises point objects in place, so it must never be handed the query store's own arrays —
+   * Solid rejects that with "Cannot mutate a Store directly". Hence the plain copy.
+   */
   const seriesById = (id: string) =>
-    props.meritCurve.series.find((series) => series.id === id)?.points ?? [];
+    (props.meritCurve.series.find((series) => series.id === id)?.points ?? []).map(
+      (point) => ({ x: point.x, y: point.y }),
+    );
 
   const config = createMemo<ChartConfiguration>(() => {
     isDark();

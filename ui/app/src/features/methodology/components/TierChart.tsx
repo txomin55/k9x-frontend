@@ -2,21 +2,30 @@ import { createMemo } from "solid-js";
 import type { ChartConfiguration, TooltipItem } from "chart.js";
 import { isDark } from "@/stores/theme/theme";
 import { useChart } from "../charts/useChart";
-import { AXIS_FONT, readChartTheme, SERIES_COLORS } from "../theme";
+import {
+  AXIS_FONT,
+  rankBarBorder,
+  rankBarColor,
+  readChartTheme,
+} from "../theme";
 import type { Grade } from "../types";
 
 type Props = {
   grade: Grade;
   tierLabels: string[];
+  categoryLabel: (categoryId: string) => string;
   axisLabel: string;
-  nationalTooltip: (score: number) => string;
-  internationalTooltip: (score: number) => string;
+  tooltip: (category: string, score: number) => string;
 };
 
-const BAR_PERCENTAGE = 0.55;
+const BAR_PERCENTAGE = 0.8;
 const AXIS_MARGIN = 5;
 const AXIS_STEPS = 5;
 
+/**
+ * One grouped bar per category across the competitor tiers. Championship rounds come out as a flat row of
+ * equal bars, which is exactly the point: a final is worth the same however many competitors turn up.
+ */
 export default function TierChart(props: Props) {
   let canvas: HTMLCanvasElement | undefined;
 
@@ -24,64 +33,52 @@ export default function TierChart(props: Props) {
     isDark();
 
     const theme = readChartTheme();
-    const { band, tiers } = props.grade;
+    const { band, categories } = props.grade;
 
     return {
       type: "bar",
       data: {
         labels: props.tierLabels,
-        datasets: [
-          {
-            label: "base",
-            data: tiers.map(() => band.min),
-            backgroundColor: "rgba(0,0,0,0)",
-            barPercentage: BAR_PERCENTAGE,
-          },
-          {
-            label: "tier",
-            data: tiers.map((tier) => tier.nationalRankScore - band.min),
-            backgroundColor: SERIES_COLORS.blue,
-            barPercentage: BAR_PERCENTAGE,
-          },
-          {
-            label: "international",
-            data: tiers.map(
-              (tier) => tier.internationalRankScore - tier.nationalRankScore,
-            ),
-            backgroundColor: SERIES_COLORS.obdx,
-            borderRadius: { topLeft: 4, topRight: 4 },
-            barPercentage: BAR_PERCENTAGE,
-          },
-        ],
+        datasets: categories.map((category, index) => ({
+          label: props.categoryLabel(category.id),
+          data: category.tiers.map((tier) => tier.rankScore),
+          // Per bar, not per dataset: a sub-band may straddle a letter boundary.
+          backgroundColor: category.tiers.map((tier) =>
+            rankBarColor(tier.letter, index, categories.length),
+          ),
+          borderColor: category.tiers.map((tier) => rankBarBorder(tier.letter)),
+          borderWidth: 1,
+          borderRadius: { topLeft: 4, topRight: 4 },
+          barPercentage: BAR_PERCENTAGE,
+        })),
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          // The page renders its own HTML legend above the canvas, as every other figure does.
           legend: { display: false },
           tooltip: {
-            filter: (item: TooltipItem<"bar">) => item.datasetIndex > 0,
             callbacks: {
               label: (item: TooltipItem<"bar">) => {
-                const tier = tiers[item.dataIndex];
+                const category = categories[item.datasetIndex];
 
-                if (!tier) return "";
+                if (!category) return "";
 
-                return item.datasetIndex === 1
-                  ? props.nationalTooltip(tier.nationalRankScore)
-                  : props.internationalTooltip(tier.internationalRankScore);
+                return props.tooltip(
+                  props.categoryLabel(category.id),
+                  category.tiers[item.dataIndex]?.rankScore ?? 0,
+                );
               },
             },
           },
         },
         scales: {
           x: {
-            stacked: true,
             grid: { display: false },
             ticks: { color: theme.tick, autoSkip: false },
           },
           y: {
-            stacked: true,
             min: band.min - AXIS_MARGIN,
             max: band.max + AXIS_MARGIN,
             grid: { color: theme.grid },

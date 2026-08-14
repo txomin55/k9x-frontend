@@ -2,6 +2,7 @@ import { createMemo, createSignal, For, Show, Suspense } from "solid-js";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import { useI18n } from "@/stores/i18n/i18n";
 import PageSeo from "@/components/common/page-seo/PageSeo";
+import RankBadge from "@/components/common/rank-badge/RankBadge";
 import { useObdxMethodology } from "./api";
 import FederationSelector from "./components/FederationSelector";
 import MeritCurve from "./components/MeritCurve";
@@ -9,17 +10,23 @@ import MethodologyHeader from "./components/MethodologyHeader";
 import MethodologySection from "./components/MethodologySection";
 import RankScale from "./components/RankScale";
 import TierChart from "./components/TierChart";
-import { RANK_COLORS, SERIES_COLORS } from "./theme";
+import {
+  RANK_COLORS,
+  rankBarBorder,
+  rankBarColor,
+  SERIES_COLORS,
+} from "./theme";
 import type {
   CompetitorRange,
-  GlobalScaleRange,
   Grade,
+  GradeCategory,
   LocalizedText,
   ObdxMethodology,
 } from "./types";
 import "./styles.css";
 
 const DEFAULT_FEDERATION = "FCI";
+const VALUE_SEPARATOR = " · ";
 
 function MethodologySkeleton() {
   return (
@@ -53,16 +60,17 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
       federation().grades[0]!,
   );
 
+  /** Only the selected grade's letters stay lit; the rest of the scale is dimmed, not hidden. */
   const enabledLetters = createMemo(
-    () =>
-      new Set(
-        federation().grades.flatMap((candidate) =>
-          candidate.possibleLetters.map((letter) =>
-            letter.replace(props.data.globalScale.internationalSuffix, ""),
-          ),
-        ),
-      ),
+    () => new Set<string>(grade().possibleLetters),
   );
+
+  const categoryName = (categoryId: string) => {
+    const category = props.data.categories.find(
+      (candidate) => candidate.id === categoryId,
+    );
+    return category ? localized(category.name) : categoryId;
+  };
 
   const meritGrade = createMemo(() =>
     props.data.federations
@@ -133,7 +141,7 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
   };
 
   const tierLabels = createMemo(() =>
-    grade().tiers.map((tier, index) =>
+    props.data.tiers.map((tier, index) =>
       competitorsLabel(tier.competitors, tier.tier, index, {
         first: "METHODOLOGY.CHART.TIER_LABEL_FIRST",
         range: "METHODOLOGY.CHART.TIER_LABEL_RANGE",
@@ -141,6 +149,24 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
       }),
     ),
   );
+
+  /** Header hint for the score column: the tier brackets the three values correspond to. */
+  const tierHint = createMemo(() =>
+    props.data.tiers
+      .map((tier, index) =>
+        competitorsLabel(tier.competitors, tier.tier, index, {
+          first: "METHODOLOGY.CHART.TABLE_COMP_FIRST",
+          range: "METHODOLOGY.CHART.TABLE_COMP_RANGE",
+          last: "METHODOLOGY.CHART.TABLE_COMP_LAST",
+        }),
+      )
+      .join(VALUE_SEPARATOR),
+  );
+
+  /** A sub-band normally sits inside one letter, but it may straddle a boundary — hence a list. */
+  const lettersOf = (category: GradeCategory) => [
+    ...new Set(category.tiers.map((tier) => tier.letter)),
+  ];
 
   const scaleProps = createMemo(() => ({
     ariaLabel: i18n.t("METHODOLOGY.OBDX.S1_FIG", {
@@ -150,16 +176,8 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
     enabledLetters: enabledLetters(),
     gradeName: (item: Grade) => localized(item.name),
     grades: federation().grades,
-    letterTooltip: (range: GlobalScaleRange) =>
-      range.alwaysInternational
-        ? i18n.t("METHODOLOGY.OBDX.S1_SPECIAL_S_TOOLTIP", {
-            letter: range.letter,
-            suffix: props.data.globalScale.internationalSuffix,
-            min: range.min,
-            max: range.max,
-          })
-        : undefined,
     scale: props.data.globalScale,
+    selectedGradeId: grade().id,
   }));
 
   const meritTickLabel = (value: number) => {
@@ -269,10 +287,7 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
       <MethodologySection
         discipline="obdx"
         eyebrow={i18n.t("METHODOLOGY.OBDX.S2_EYEBROW")}
-        lede={i18n.t("METHODOLOGY.OBDX.S2_LEDE", {
-          bonus: props.data.international.bonusValue,
-          suffix: props.data.globalScale.internationalSuffix,
-        })}
+        lede={i18n.t("METHODOLOGY.OBDX.S2_LEDE")}
         note={i18n.t("METHODOLOGY.OBDX.S2_NOTE")}
         title={i18n.t("METHODOLOGY.OBDX.S2_TITLE")}
       >
@@ -289,25 +304,24 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
             })}
           </div>
           <div class="methodology-page__legend">
-            <span>
-              <span
-                class="methodology-page__swatch"
-                style={{ background: SERIES_COLORS.blue }}
-              />
-              <span>{i18n.t("METHODOLOGY.OBDX.S2_LEG_TIER")}</span>
-            </span>
-            <span>
-              <span
-                class="methodology-page__swatch"
-                style={{ background: SERIES_COLORS.obdx }}
-              />
-              <span>
-                {i18n.t("METHODOLOGY.OBDX.S2_LEG_INTL", {
-                  bonus: grade().internationalBonus.bonusValue,
-                  suffix: props.data.globalScale.internationalSuffix,
-                })}
-              </span>
-            </span>
+            <For each={grade().categories}>
+              {(category, index) => (
+                <span>
+                  <span
+                    class="methodology-page__swatch"
+                    style={{
+                      background: rankBarColor(
+                        category.tiers[0]!.letter,
+                        index(),
+                        grade().categories.length,
+                      ),
+                      "border-color": rankBarBorder(category.tiers[0]!.letter),
+                    }}
+                  />
+                  <span>{categoryName(category.id)}</span>
+                </span>
+              )}
+            </For>
           </div>
           <TierChart
             axisLabel={i18n.t("METHODOLOGY.CHART.TIER_AXIS", {
@@ -315,53 +329,56 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
               min: grade().band.min,
               max: grade().band.max,
             })}
+            categoryLabel={categoryName}
             grade={grade()}
-            internationalTooltip={(score) =>
-              i18n.t("METHODOLOGY.CHART.TOOLTIP_TIER_INTL", { score })
-            }
-            nationalTooltip={(score) =>
-              i18n.t("METHODOLOGY.CHART.TOOLTIP_TIER_NATIONAL", { score })
-            }
             tierLabels={tierLabels()}
+            tooltip={(category, score) =>
+              i18n.t("METHODOLOGY.CHART.TOOLTIP_TIER", { category, score })
+            }
           />
         </figure>
+        {/* The per-tier detail is the chart's job; here one row per category, so the championship rounds
+            state their single score once instead of repeating it across three identical columns. */}
         <table class="methodology-page__table">
-            <colgroup>
-              <col />
-              <col />
-              <col />
-              <col />
-            </colgroup>
-            <thead>
-              <tr>
-                <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_COMP")}</th>
-                <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_TIER")}</th>
-                <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_TIERCONTRIB")}</th>
-                <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_FOREIGN")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <For each={grade().tiers}>
-                {(tier, index) => (
-                  <tr>
-                    <td>
-                      {competitorsLabel(tier.competitors, tier.tier, index(), {
-                        first: "METHODOLOGY.CHART.TABLE_COMP_FIRST",
-                        range: "METHODOLOGY.CHART.TABLE_COMP_RANGE",
-                        last: "METHODOLOGY.CHART.TABLE_COMP_LAST",
-                      })}
-                    </td>
-                    <td>{tier.tier}</td>
-                    <td>
-                      {i18n.t("METHODOLOGY.CHART.TIER_PCT", {
-                        pct: tier.tierContributionPctOfRange,
-                      })}
-                    </td>
-                    <td>{tier.requiredForeigners}</td>
-                  </tr>
-                )}
-              </For>
-            </tbody>
+          <colgroup>
+            <col />
+            <col />
+            <col />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_CATEGORY")}</th>
+              <th>
+                {i18n.t("METHODOLOGY.OBDX.S2_TH_SCORES")}
+                <small class="methodology-page__th-hint">{tierHint()}</small>
+              </th>
+              <th>{i18n.t("METHODOLOGY.OBDX.S2_TH_LETTER")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <For each={grade().categories}>
+              {(category) => (
+                <tr>
+                  <td>{categoryName(category.id)}</td>
+                  <td>
+                    {/* A championship round is a single point, so it states its score once. */}
+                    <Show when={!category.fixed} fallback={category.subBand.min}>
+                      {category.tiers
+                        .map((tier) => tier.rankScore)
+                        .join(VALUE_SEPARATOR)}
+                    </Show>
+                  </td>
+                  <td>
+                    <span class="methodology-page__ranks">
+                      <For each={lettersOf(category)}>
+                        {(letter) => <RankBadge rank={letter} />}
+                      </For>
+                    </span>
+                  </td>
+                </tr>
+              )}
+            </For>
+          </tbody>
         </table>
       </MethodologySection>
 
@@ -379,13 +396,13 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
           <div class="methodology-page__fig-title">
             {i18n.t("METHODOLOGY.OBDX.S3_FIG", {
               grade: meritGradeName(),
+              category: categoryName(props.data.meritCurve.context.category),
               score: props.data.meritCurve.context.eventScore,
             })}
           </div>
           <div class="methodology-page__fig-sub">
             {i18n.t("METHODOLOGY.OBDX.S3_FIGSUB", {
-              min: props.data.meritCurve.context.band.min,
-              max: props.data.meritCurve.context.band.max,
+              floor: props.data.meritCurve.context.gradeFloor,
               maxScore: props.data.meritCurve.context.maxScore,
               qualifications: qualificationsSummary(),
             })}

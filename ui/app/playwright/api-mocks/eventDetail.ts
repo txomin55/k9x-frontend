@@ -34,6 +34,8 @@ const buildRawEvent = (eventStatus: string): EventDetailRawResponseDTO => {
       stage: { id: EVENT_DETAIL_STAGE_ID, name: "Detail Stage" },
       enrollmentDeadline: 1_717_200_000_000,
       scoreCalculation: "AVG",
+      // Deliberately not the editor's CLUB default, so a spec can tell a real round-trip from the fallback.
+      category: "OPEN",
       awards: [],
       configuration: {
         federation: FEDERATION,
@@ -142,6 +144,7 @@ const applyEventUpdate = (
     enrollmentDeadline: number;
     scoreCalculation: string;
     commissioner?: string;
+    category?: string;
     awards?: string[];
     judges?: { id: string; collectorEmail: string; mainJudge?: boolean }[];
     exercises?: {
@@ -167,6 +170,7 @@ const applyEventUpdate = (
     enrollmentDeadline: payload.enrollmentDeadline,
     scoreCalculation: payload.scoreCalculation,
     commissioner: payload.commissioner,
+    category: payload.category,
     awards: (payload.awards ?? []).map((id) => ({
       id,
       name: awardById(id)?.name ?? id,
@@ -210,6 +214,23 @@ const applyEventUpdate = (
       };
     }),
   };
+};
+
+/**
+ * The breadcrumb (and the stage listing) read the event's name from the competition cache, not from the
+ * event detail, so a write that only updates the detail reads back stale after a reload.
+ */
+const syncEventSummary = (
+  competitions: CompetitionResponseDTO[],
+  event: EventDetailRawResponseDTO,
+) => {
+  competitions
+    .flatMap((competition) => competition.stages)
+    .flatMap((stage) => stage.events)
+    .filter((summary) => summary.id === event.obdx.id)
+    .forEach((summary) => {
+      summary.name = event.obdx.name;
+    });
 };
 
 /**
@@ -265,6 +286,7 @@ export const setupEventDetailCrud = (
       method: "PUT",
       payload: (_match, request) => {
         applyEventUpdate(event, request.postDataJSON());
+        syncEventSummary(competitions, event);
         return "";
       },
       pathname: "/secured/obdx/events/*",

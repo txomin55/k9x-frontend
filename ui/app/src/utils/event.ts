@@ -1,6 +1,13 @@
 import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
 import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 
+/**
+ * The category is mandatory on the backend and drives the event's rank score, so an event that carries none
+ * (an older one, or one never edited since the field was added) falls back to the lowest tier rather than
+ * being sent empty and rejected.
+ */
+export const DEFAULT_EVENT_CATEGORY = "CLUB";
+
 export const toEventEditorDraft = (
   event: EventDetailResponseDTO,
   stageDateFrom?: number,
@@ -29,7 +36,7 @@ export const toEventEditorDraft = (
   scoreCalculation: event.scoreCalculation,
   awards: event.awards.map((award) => ({ ...award })),
   commissioner: event.commissioner ?? "",
-  category: event.category ?? "",
+  category: event.category || DEFAULT_EVENT_CATEGORY,
 });
 
 export const EVENT_STATUS = {

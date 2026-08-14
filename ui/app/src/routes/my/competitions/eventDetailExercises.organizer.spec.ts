@@ -1,4 +1,4 @@
-import { expect } from "@playwright/test";
+import { expect, type Page } from "@playwright/test";
 import { organizerTest } from "@test/utils/authFixtures";
 import {
   EVENT_DETAIL_COMPETITION_ID,
@@ -11,6 +11,10 @@ import { openEditMode } from "@test/utils/detailEditMenu";
 
 const EVENT_DETAIL_URL = `/my/competitions/${EVENT_DETAIL_COMPETITION_ID}/stages/${EVENT_DETAIL_STAGE_ID}/events/${EVENT_DETAIL_ID}`;
 
+/** The list renders an exercise as "#1 Heel work", so the name alone never matches exactly. */
+const exerciseNamed = (page: Page, name: string) =>
+  page.getByText(new RegExp(`^#\\d+\\s+${name}$`));
+
 organizerTest.describe("Event detail exercises (write) - organizer", () => {
   organizerTest(
     "adds an exercise optimistically, queues it offline, and rehydrates on reload",
@@ -20,7 +24,7 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
-      await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
+      await expect(exerciseNamed(page, "Heel work")).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
@@ -41,12 +45,12 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
           await dialog.getByRole("button", { name: "Create" }).click();
         },
         assertOptimistic: async () => {
-          await expect(page.getByText("Recall", { exact: true })).toBeVisible();
+          await expect(exerciseNamed(page, "Recall")).toBeVisible();
         },
         assertRehydrated: async () => {
           // A reload resets AtomTabs to its default (Judges) tab.
           await page.getByRole("tab", { name: "Exercises" }).click();
-          await expect(page.getByText("Recall", { exact: true })).toBeVisible();
+          await expect(exerciseNamed(page, "Recall")).toBeVisible();
         },
       });
     },
@@ -60,7 +64,7 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
-      await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
+      await expect(exerciseNamed(page, "Heel work")).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
@@ -95,7 +99,7 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
       await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
-      await expect(page.getByText("Heel work", { exact: true })).toBeVisible();
+      await expect(exerciseNamed(page, "Heel work")).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
@@ -112,13 +116,13 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
         },
         assertOptimistic: async () => {
           await expect(
-            page.getByText("Heel work", { exact: true }),
+            exerciseNamed(page, "Heel work"),
           ).toHaveCount(0);
         },
         assertRehydrated: async () => {
           await page.getByRole("tab", { name: "Exercises" }).click();
           await expect(
-            page.getByText("Heel work", { exact: true }),
+            exerciseNamed(page, "Heel work"),
           ).toHaveCount(0);
         },
       });

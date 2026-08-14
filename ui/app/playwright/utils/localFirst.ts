@@ -35,19 +35,32 @@ export const readPendingTasks = (page: Page) =>
     { db: LOCAL_FIRST_DB, store: PENDING_TASKS_STORE },
   );
 
+type RequestMatch = { method: string; urlIncludes: string };
+
+const matches = (
+  request: { method: () => string; url: () => string },
+  match: RequestMatch,
+) =>
+  request.method() === match.method && request.url().includes(match.urlIncludes);
+
 /** Records the URLs of requests matching a method + url substring as they fire. */
-export const trackRequests = (
-  page: Page,
-  match: { method: string; urlIncludes: string },
-) => {
+export const trackRequests = (page: Page, match: RequestMatch) => {
   const urls: string[] = [];
   page.on("request", (request) => {
-    if (
-      request.method() === match.method &&
-      request.url().includes(match.urlIncludes)
-    ) {
-      urls.push(request.url());
-    }
+    if (matches(request, match)) urls.push(request.url());
+  });
+  return urls;
+};
+
+/**
+ * Records matching requests only once the server has answered them. Reloading on the *request* alone
+ * races the flush: navigation aborts the in-flight call, the mock never applies it, and the reload reads
+ * back the pre-mutation state.
+ */
+export const trackCompletedRequests = (page: Page, match: RequestMatch) => {
+  const urls: string[] = [];
+  page.on("response", (response) => {
+    if (matches(response.request(), match)) urls.push(response.url());
   });
   return urls;
 };
@@ -88,6 +101,7 @@ export const verifyLocalFirstWrite = async (
   options: LocalFirstWriteOptions,
 ) => {
   const mutationRequests = trackRequests(page, options.mutation);
+  const flushedMutations = trackCompletedRequests(page, options.mutation);
 
   await goOffline(page, context);
   await options.performMutation();
@@ -101,7 +115,7 @@ export const verifyLocalFirstWrite = async (
   ).not.toHaveLength(0);
 
   await goOnline(context);
-  await expect.poll(() => mutationRequests.length).toBeGreaterThan(0);
+  await expect.poll(() => flushedMutations.length).toBeGreaterThan(0);
 
   await page.reload();
   await (options.assertRehydrated ?? options.assertOptimistic)();

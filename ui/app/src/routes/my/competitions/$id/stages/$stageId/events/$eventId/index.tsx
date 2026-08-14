@@ -55,6 +55,7 @@ import {
   canEditEvent,
   canManageEvent,
   COMPETITOR_STATUS,
+  DEFAULT_EVENT_CATEGORY,
   EVENT_STATUS,
   toEventEditorDraft,
 } from "@/utils/event";
@@ -354,7 +355,7 @@ function CompetitionObdxEventDetailBody(props: {
       judges: event.judges,
       name: event.name,
       scoreCalculation: event.scoreCalculation,
-      category: event.category ?? "",
+      category: event.category || DEFAULT_EVENT_CATEGORY,
       commissioner: event.commissioner ?? "",
       status: event.status,
     });

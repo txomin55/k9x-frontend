@@ -15,8 +15,10 @@ const selectFirstOption = async (
   page: Page,
   trigger: import("@playwright/test").Locator,
 ) => {
+  // Covers every placeholder the design system emits: "Select an option", "Select a country",
+  // "Select the event category". Without the last one the retry loop gives up after a failed click.
   const isUnselected = async () =>
-    /Select an option|Select a /i.test((await trigger.innerText()) ?? "");
+    /Select (an option|a |the )/i.test((await trigger.innerText()) ?? "");
 
   for (let attempt = 0; attempt < 5; attempt++) {
     const option = page.getByRole("option").first();
@@ -253,6 +255,15 @@ export const setEventConfiguration = async (
   const configuration = page.getByRole("button", { name: /Grade/ });
   await expect(configuration).toBeEnabled();
   await waitForEventWrite(page, () => selectFirstOption(page, configuration));
+
+  // The category is mandatory on the backend and drives the event's rank score. Picking it here is what
+  // proves the catalogue and the domain enum still agree on their ids: a mismatch leaves this trigger on
+  // its placeholder instead of failing silently in production. Same shape as the selects above — a button
+  // whose accessible name is the label plus the current value.
+  const category = page.getByRole("button", { name: /^Category/ });
+  await expect(category).toBeEnabled();
+  await waitForEventWrite(page, () => selectFirstOption(page, category));
+  await expect(category).not.toContainText(/Select the event category/i);
 
   await expect(page.getByLabel("Enrollment deadline")).toBeEnabled();
   await waitForEventWrite(page, () => setEnrollmentDeadline(page));

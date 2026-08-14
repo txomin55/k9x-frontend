@@ -8,51 +8,50 @@ export type GlobalScaleRange = {
   letter: RankLetter;
   min: number;
   max: number;
-  alwaysInternational?: boolean;
 };
 
 export type GlobalScale = {
   min: number;
   max: number;
-  automaticCap: number;
   ranges: GlobalScaleRange[];
-  internationalSuffix: string;
 };
 
-export type ForeignersByTier = {
+/** Competitor-count tier, the layer that positions an event inside its category sub-band. */
+export type TierDefinition = {
   tier: number;
   competitors: CompetitorRange;
-  requiredForeigners: number;
 };
 
-export type International = {
-  bonusValue: number;
-  bonusValueUnit: string;
-  foreignersByTier: ForeignersByTier[];
+export type CategoryId = "CLUB" | "OPEN" | "WC_Q" | "WC_SEMI" | "WC_FINAL";
+
+export type Category = {
+  id: CategoryId;
+  name: LocalizedText;
+  /** World championship rounds are fixed points: the competitor count does not move them. */
+  championship: boolean;
 };
 
-export type GradeTier = {
+export type GradeCategoryTier = {
   tier: number;
   competitors: CompetitorRange;
-  requiredForeigners: number;
-  tierContributionPctOfRange: number;
-  nationalRankScore: number;
-  nationalLetter: string;
-  internationalRankScore: number;
-  internationalLetter: string;
+  rankScore: number;
+  letter: RankLetter;
+};
+
+export type GradeCategory = {
+  id: CategoryId;
+  subBand: { min: number; max: number };
+  /** `true` when the sub-band is a single point, i.e. a championship round. */
+  fixed: boolean;
+  tiers: GradeCategoryTier[];
 };
 
 export type Grade = {
   id: string;
   name: LocalizedText;
   band: { min: number; max: number };
-  possibleLetters: string[];
-  internationalBonus: {
-    bonusValue: number;
-    bonusValueUnit: string;
-    points: number;
-  };
-  tiers: GradeTier[];
+  possibleLetters: RankLetter[];
+  categories: GradeCategory[];
 };
 
 export type Federation = {
@@ -71,8 +70,10 @@ export type Qualification = {
 export type MeritCurve = {
   context: {
     configuration: string;
+    category: CategoryId;
     eventScore: number;
-    band: { min: number; max: number };
+    /** The grade's floor, which every competitor of that grade is measured from. */
+    gradeFloor: number;
     maxScore: number;
     qualifications: Qualification[];
     parameters: {
@@ -87,7 +88,8 @@ export type MeritCurve = {
 export type ObdxMethodology = {
   schemaVersion: number;
   globalScale: GlobalScale;
-  international: International;
+  tiers: TierDefinition[];
+  categories: Category[];
   federations: Federation[];
   meritCurve: MeritCurve;
 };

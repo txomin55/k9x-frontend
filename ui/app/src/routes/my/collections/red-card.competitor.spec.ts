@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { competitorTest } from "@test/utils/authFixtures";
 import { setupCollectionRedCard } from "@test/api-mocks/collections";
 import { verifyLocalFirstWrite } from "@test/utils/localFirst";
+import { dismissPendingCollections } from "@test/utils/pendingCollectionsDialog";
 
 competitorTest.describe("Collection red card (write) - collector", () => {
   competitorTest(
@@ -10,6 +11,7 @@ competitorTest.describe("Collection red card (write) - collector", () => {
       await setupCollectionRedCard(page);
 
       await page.goto("/my/collections/list");
+      await dismissPendingCollections(page);
       await page.getByRole("button", { name: "Collect", exact: true }).click();
 
       const redCardButton = page

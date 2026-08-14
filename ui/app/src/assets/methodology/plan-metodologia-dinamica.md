@@ -1,5 +1,10 @@
 # Plan · Documentación visual de metodología OBDX dinámica (endpoint + SolidJS)
 
+> ⚠️ **Documento histórico.** Describe el modelo de rank anterior: flag `international`, sufijo `+`, 5 tiers y
+> tope automático en 900. Ese modelo ya no existe — hoy la **categoría** del evento (`CLUB`, `OPEN`, `WC_Q`,
+> `WC_SEMI`, `WC_FINAL`) subdivide la franja del grado y hay 3 tiers. La fuente de verdad es
+> `static/methodology/obdx.json` (`schemaVersion: 2`) y, en el backend, `ObdxConfigurationsRankThresholds`.
+
 Objetivo: convertir la página estática `obdx-metodologia-visual.html` en una vista SolidJS alimentada por un
 endpoint del backend, con **selector de federación** y **escala de rangos que deshabilita las letras que la
 federación seleccionada no puede alcanzar**. El contrato de datos es el fichero

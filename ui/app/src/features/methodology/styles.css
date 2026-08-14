@@ -355,6 +355,9 @@
 }
 
 .methodology-page__table th {
+    /* The score header carries a second line of hint text, so headers align to the top rather than
+       floating in the middle of the taller row. */
+    vertical-align: top;
     color: var(--text-secondary);
     font-size: var(--text-caption-md);
     font-weight: 700;
@@ -367,22 +370,34 @@
     text-align: right;
 }
 
-/* Fixed layout would split the four columns evenly and force the long headers to
-   break mid-word on a phone; these shares keep every header wrapping at spaces. */
+/* The score column carries three numbers plus its tier hint, so it takes the room; the letter is a
+   single glyph and only needs to fit its own header. */
 .methodology-page__table col:nth-child(1) {
-    width: 31%;
+    width: 32%;
 }
 
 .methodology-page__table col:nth-child(2) {
-    width: 12%;
+    width: 48%;
 }
 
 .methodology-page__table col:nth-child(3) {
-    width: 25%;
+    width: 20%;
 }
 
-.methodology-page__table col:nth-child(4) {
-    width: 32%;
+.methodology-page__ranks {
+    display: inline-flex;
+    gap: var(--unit-05);
+    align-items: center;
+}
+
+.methodology-page__th-hint {
+    display: block;
+    margin-top: var(--unit-025);
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: var(--text-caption-sm);
+    letter-spacing: 0;
+    text-transform: none;
 }
 
 .methodology-page__footer {

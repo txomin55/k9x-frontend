@@ -5,10 +5,16 @@ import { competitorUser, organizerUser } from "@test/api-mocks/user";
 import { setupBreeds } from "@test/api-mocks/breeds";
 import { setupCountries } from "@test/api-mocks/countries";
 import { setupAwards } from "@test/api-mocks/awards";
+import { setupCategories } from "@test/api-mocks/categories";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
 const seedReferenceData = (page: Page) =>
-  Promise.all([setupBreeds(page), setupCountries(page), setupAwards(page)]);
+  Promise.all([
+    setupBreeds(page),
+    setupCountries(page),
+    setupAwards(page),
+    setupCategories(page),
+  ]);
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 

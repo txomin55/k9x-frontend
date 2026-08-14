@@ -1,11 +1,6 @@
 import { createMemo, For, Show } from "solid-js";
-import { RANK_COLORS } from "../theme";
-import type {
-  GlobalScale,
-  GlobalScaleRange,
-  Grade,
-  RankLetter,
-} from "../types";
+import { rankColors } from "../theme";
+import type { GlobalScale, Grade, RankLetter } from "../types";
 
 /**
  * Two hand-tuned viewBoxes instead of one scaled drawing: an SVG shrunk to phone
@@ -51,8 +46,9 @@ type Props = {
   scale: GlobalScale;
   grades: Grade[];
   enabledLetters: Set<string>;
+  /** Every grade of the federation stays drawn; the ones that are not selected are dimmed. */
+  selectedGradeId: string;
   gradeName: (grade: Grade) => string;
-  letterTooltip: (range: GlobalScaleRange) => string | undefined;
   ariaLabel: string;
   compact?: boolean;
 };
@@ -150,16 +146,14 @@ export default function RankScale(props: Props) {
     >
       <For each={props.scale.ranges}>
         {(range) => {
-          const colors = RANK_COLORS[range.letter];
+          const colors = rankColors(range.letter);
           const x = () => position(range.min);
           const width = () =>
             Math.max(position(range.max) - x() - SEGMENT_GAP, 1);
           const enabled = () => props.enabledLetters.has(range.letter);
-          const tooltip = () => props.letterTooltip(range);
 
           return (
             <g classList={{ "is-disabled": !enabled() }}>
-              <Show when={tooltip()}>{(text) => <title>{text()}</title>}</Show>
               <rect
                 fill={colors.bg}
                 height={layout().letterHeight}
@@ -206,16 +200,17 @@ export default function RankScale(props: Props) {
       <For each={props.grades}>
         {(grade, index) => {
           const y = () => rowY(index());
+          const selected = () => grade.id === props.selectedGradeId;
 
           return (
-            <g>
+            <g classList={{ "is-disabled": !selected() }}>
               <For each={segmentsOf(grade.band.min, grade.band.max)}>
                 {(segment) => (
                   <rect
-                    fill={RANK_COLORS[segment.letter].bg}
+                    fill={rankColors(segment.letter).bg}
                     height={layout().rowHeight}
                     rx="4"
-                    stroke={RANK_COLORS[segment.letter].fg}
+                    stroke={rankColors(segment.letter).fg}
                     stroke-width="0.5"
                     width={Math.max(
                       position(segment.to) - position(segment.from) - 1,
