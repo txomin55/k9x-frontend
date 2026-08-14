@@ -19,6 +19,17 @@
     width: 100%;
 }
 
+.classification__last-updated {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-05);
+}
+
+.classification__header--title > .classification__last-updated {
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
 .classification__header--info > div {
     display: flex;
     gap: var(--unit-1);
@@ -63,6 +74,19 @@
     display: flex;
     align-items: center;
     gap: var(--unit-1);
+}
+
+.classification__config-row {
+    display: flex;
+    align-items: center;
+    gap: var(--unit-1);
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.classification__config-row > .event-rankings-link {
+    margin-top: 0;
+    margin-left: auto;
 }
 
 .classification__mobile-collapsible-row {

@@ -691,6 +691,16 @@ function EventClassificationPage() {
           </div>
         );
 
+        const configurationRow = () => (
+          <div class="classification__config-row">
+            {disciplineBlock()}
+            <EventRankingsLink
+              stageId={params().id}
+              eventId={params().eventId}
+            />
+          </div>
+        );
+
         const lastUpdatedBlock = () => (
           <div class="classification__last-updated">
             <span class="text-caption-sm">
@@ -763,18 +773,14 @@ function EventClassificationPage() {
                       <span class="text-caption-lg">
                         {classification().competitionName}
                       </span>
+                      {lastUpdatedBlock()}
                     </div>
                     <div class="classification__header--info">
-                      {disciplineBlock()}
-                      {lastUpdatedBlock()}
+                      {configurationRow()}
                     </div>
                   </div>
                   {scoreCalculationBlock()}
                   {judgesBlock()}
-                  <EventRankingsLink
-                    stageId={params().id}
-                    eventId={params().eventId}
-                  />
                   {filters()}
                 </>
               }
@@ -799,14 +805,10 @@ function EventClassificationPage() {
                         <span class="text-caption-md">
                           {classification().event.name}
                         </span>
-                        {disciplineBlock()}
+                        {configurationRow()}
                         {scoreCalculationBlock()}
                         {judgesBlock()}
                         {filters()}
-                        <EventRankingsLink
-                          stageId={params().id}
-                          eventId={params().eventId}
-                        />
                       </div>
                     }
                   />
