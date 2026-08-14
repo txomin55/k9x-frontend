@@ -24,6 +24,7 @@ import { ApiEventRollbackPayload, EventDetailResponseDTO } from "@/services/secu
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 import { EVENT_STATUS } from "@/utils/event";
+import reportNonClubEvent from "@/utils/google-forms/reportNonClubEvent";
 
 const promoteEventToCreated = (
   competitions: CompetitionResponseDTO[],
@@ -309,20 +310,25 @@ export const commitApiEventMutationSuccess = async ({
         ),
     );
   } else if (method === "POST" || method === "PUT") {
-    if (method === "POST") {
-      const cachedEvent = queryClient.getQueryData<EventDetailResponseDTO>(
-        getEventByIdQueryKey(eventId),
-      );
+    const cachedEvent = queryClient.getQueryData<EventDetailResponseDTO>(
+      getEventByIdQueryKey(eventId),
+    );
 
-      if (cachedEvent) {
-        const nextCore = { ...cachedEvent.obdx, status: EVENT_STATUS.CREATED };
+    if (method === "POST" && cachedEvent) {
+      const nextCore = { ...cachedEvent.obdx, status: EVENT_STATUS.CREATED };
 
-        queryClient.setQueryData(getEventByIdQueryKey(eventId), {
-          ...nextCore,
-          obdx: nextCore,
-        });
-      }
+      queryClient.setQueryData(getEventByIdQueryKey(eventId), {
+        ...nextCore,
+        obdx: nextCore,
+      });
     }
+
+    reportNonClubEvent({
+      category: cachedEvent?.category,
+      eventId,
+      eventName: cachedEvent?.name,
+      method,
+    });
 
     queryClient.setQueryData<CompetitionResponseDTO[]>(
       getCompetitionsQueryKey(),
