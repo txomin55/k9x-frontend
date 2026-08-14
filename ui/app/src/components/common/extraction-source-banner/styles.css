@@ -1,0 +1,82 @@
+.extraction-banner {
+    width: 100%;
+    /* Local box-sizing (k9x is content-box overall): without it `width: 100%` plus the padding and the 1px
+       border push the banner past its container. */
+    box-sizing: border-box;
+    margin-bottom: var(--unit-05);
+    padding: var(--unit-1) var(--unit-15);
+    border: 1px solid var(--warning-border);
+    border-radius: var(--radius-md);
+    background-color: var(--warning-bg);
+    color: var(--warning-text);
+}
+
+.extraction-banner__body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--unit-1);
+}
+
+.extraction-banner__message {
+    flex: 1 1 14rem;
+    text-align: left;
+}
+
+/* Mobile and tablet: AtomCollapsible carries the box, so the wrapper drops its own skin and repaints the
+   atom in the warning palette instead. */
+.extraction-banner--collapsible {
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.extraction-banner--collapsible .atom-collapsible {
+    border-color: var(--warning-border);
+    background: var(--warning-bg);
+    color: var(--warning-text);
+    border-radius: var(--radius-md);
+}
+
+.extraction-banner--collapsible .atom-collapsible__trigger:hover {
+    background: var(--warning-bg);
+}
+
+.extraction-banner--collapsible .atom-collapsible__indicator,
+.extraction-banner--collapsible .atom-collapsible__trigger[data-expanded] .atom-collapsible__indicator {
+    color: var(--warning-text);
+}
+
+.extraction-banner--collapsible .atom-collapsible__content[data-expanded] {
+    border-top-color: var(--warning-border);
+}
+
+.extraction-banner--collapsible .atom-collapsible__content-inner {
+    color: var(--warning-text);
+}
+
+.extraction-banner__trigger {
+    min-height: var(--unit-6);
+    padding: 0 var(--unit-1);
+    color: var(--warning-text);
+    font-size: var(--text-label-sm);
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    transition: background-color 200ms;
+}
+
+.extraction-banner__trigger > span {
+    padding-bottom: var(--unit-025);
+    border-bottom: 1px solid var(--warning-text);
+}
+
+.extraction-report-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-15);
+}
+
+.extraction-report-form__context {
+    color: var(--text-primary);
+}

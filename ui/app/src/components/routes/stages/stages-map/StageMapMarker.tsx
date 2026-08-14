@@ -20,6 +20,7 @@ import {
 import WrongLocationForm from "@/components/routes/stages/stages-map/WrongLocationForm";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import { useAuthUser } from "@/stores/auth/auth";
@@ -52,6 +53,13 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
   const [openWrongLocationForm, setOpenWrongLocationForm] = createSignal(false);
   return (
     <div class="stages-map-marker-popup">
+      {/* The map popup is the tightest surface of the lot, so the notice starts minimized here. */}
+      <ExtractionSourceBanner
+        source={props.stage.source}
+        context={props.stage.name ?? ""}
+        contextId={props.stage.id}
+        defaultCollapsed
+      />
       <span class="text-caption-lg">{props.stage.competitionName}</span>
       <span class="text-caption-sm">
         {formatStageDateRange(

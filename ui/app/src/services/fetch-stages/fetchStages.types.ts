@@ -1,5 +1,11 @@
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
+/**
+ * Where a competition's data comes from. Trials and events have no source of their own: they inherit the
+ * one of their competition, the same way they inherit its address.
+ */
+export type CompetitionSource = "API" | "EXTRACTION";
+
 export interface StageEventSummaryResponseDTO {
   competitors: number;
   discipline: IdNameDTO;
@@ -25,6 +31,7 @@ export interface StageSummaryResponseDTO {
   name: string;
   status: string;
   organizer: string;
+  source?: CompetitionSource;
 }
 
 export interface CompetitionLocationDetailResponseDTO {
@@ -44,6 +51,7 @@ export interface StageDetailResponseDTO {
   notifications: StageNotificationResponseDTO[];
   organizer: string;
   status?: string;
+  source?: CompetitionSource;
 }
 
 export interface StageEventDetailCompetitorResponseDTO {
@@ -118,6 +126,7 @@ export interface StageEventClassificationResponseDTO {
   lastUpdated: number;
   status: string;
   obdx?: ObdxStageEventClassificationResponseDTO;
+  source?: CompetitionSource;
 }
 
 export interface StageEventClassificationItemResponseDTO {

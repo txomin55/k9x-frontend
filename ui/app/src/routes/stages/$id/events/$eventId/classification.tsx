@@ -31,6 +31,7 @@ import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
@@ -748,6 +749,11 @@ function EventClassificationPage() {
 
         return (
           <div class="page classification" ref={setPageEl}>
+            <ExtractionSourceBanner
+              source={classification().source}
+              context={classification().event.name}
+              contextId={classification().event.id}
+            />
             <Show
               when={isMobile()}
               fallback={

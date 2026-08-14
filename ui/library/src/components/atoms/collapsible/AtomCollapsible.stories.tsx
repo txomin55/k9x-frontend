@@ -27,3 +27,10 @@ export const Basic = {
     ),
   },
 };
+
+export const Small = {
+  args: {
+    ...Basic.args,
+    size: "sm",
+  },
+};

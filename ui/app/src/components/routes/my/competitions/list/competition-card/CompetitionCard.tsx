@@ -3,9 +3,10 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import { useNavigate } from "@tanstack/solid-router";
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { CompetitionStageDetailResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { CompetitionSource } from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatStageDateRange } from "@/utils/date";
 import "./styles.css";
@@ -19,6 +20,7 @@ export interface CompetitionCardProps {
   name: string;
   stages?: CompetitionStageDetailResponseDTO[];
   status: string;
+  source?: CompetitionSource;
 }
 
 export default function CompetitionCard(props: CompetitionCardProps) {
@@ -67,16 +69,24 @@ export default function CompetitionCard(props: CompetitionCardProps) {
         </div>
       }
       actions={
-        <AtomButton
-          type={BUTTON_TYPES.ACCENT}
-          onClick={() =>
-            navigate({
-              href: `/my/competitions/${props.id}`,
-            })
-          }
-        >
-          {i18n.t("MY.COMPETITIONS.COMPETITION_CARD.INFO")}
-        </AtomButton>
+        <div class="competition-card__actions">
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() =>
+              navigate({
+                href: `/my/competitions/${props.id}`,
+              })
+            }
+          >
+            {i18n.t("MY.COMPETITIONS.COMPETITION_CARD.INFO")}
+          </AtomButton>
+          {/* Legend for the * next to the name; the detail view carries the full warning. */}
+          <Show when={props.source === "EXTRACTION"}>
+            <span class="competition-card__extraction-note">
+              {i18n.t("COMMON.EXTRACTION_BANNER.CARD_NOTE")}
+            </span>
+          </Show>
+        </div>
       }
     />
   );

@@ -66,6 +66,7 @@ import {
 } from "@/utils/date";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import FloatingEditMenu from "@/components/common/floating-edit-menu/FloatingEditMenu";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
@@ -1041,6 +1042,11 @@ function CompetitionObdxEventDetailBody(props: {
 
   return (
     <div class="page competition-event-detail__content">
+      <ExtractionSourceBanner
+        source={props.event().source}
+        context={props.event().name}
+        contextId={props.event().id}
+      />
       <header>
         <Show
           when={canEditDetails()}

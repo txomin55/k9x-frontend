@@ -48,6 +48,7 @@ import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
   StageEditorModel,
@@ -467,6 +468,11 @@ function CompetitionDetailBody(props: {
 
   return (
     <div class="page competition-detail">
+      <ExtractionSourceBanner
+        source={props.competition()?.source}
+        context={props.competition()?.name ?? ""}
+        contextId={props.competition()?.id ?? ""}
+      />
       <CompetitionInfo
         address={address()}
         country={country()}

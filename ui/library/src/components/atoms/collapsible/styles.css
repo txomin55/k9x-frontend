@@ -48,6 +48,22 @@
     color var(--motion-fast) ease;
 }
 
+/* sm — same anatomy, less vertical room: for banners and side panels where the header is a single line. */
+.atom-collapsible--sm .atom-collapsible__trigger {
+    padding: var(--unit-025) var(--unit-1);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.2;
+}
+
+.atom-collapsible--sm .atom-collapsible__indicator {
+    font-size: var(--text-body-sm);
+}
+
+.atom-collapsible--sm .atom-collapsible__content-inner {
+    padding: var(--unit-025) var(--unit-1) var(--unit-05);
+    line-height: 1.3;
+}
+
 /* hover */
 .atom-collapsible__trigger:hover {
     background: var(--surface-hover);

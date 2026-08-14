@@ -24,6 +24,7 @@ import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import RichText from "@/components/common/rich-text/RichText";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import {useSearchParam} from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 import {isStageLive, STAGE_INFO_TAB_PARAM, STAGE_INFO_TABS} from "@/utils/stage";
@@ -450,6 +451,11 @@ function StageInfoPage() {
             </div>
             <span class="text-caption-lg">{stage().address}</span>
             <span class="text-caption-md">{stage().organizer}</span>
+            <ExtractionSourceBanner
+              source={stage().source}
+              context={stage().name ?? ""}
+              contextId={stage().id}
+            />
 
             <AtomTabs
               defaultValue={TABS.EVENTS}

@@ -65,6 +65,7 @@ import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
+import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import RankBadge from "@/components/common/rank-badge/RankBadge";
 import RichText from "@/components/common/rich-text/RichText";
@@ -82,7 +83,10 @@ import {
   StageEditorModel,
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
-import type { StageNotificationResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import type {
+  CompetitionSource,
+  StageNotificationResponseDTO,
+} from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { generateEntityId } from "@/utils/id/generateEntityId";
@@ -267,6 +271,11 @@ function CompetitionStageDetailContentContainer(props: {
   const handleDeleteEvent = (eventId: string) =>
     props.onDeleteEvent(eventId, props.stageId);
   const stageAccessor = () => props.stage()!;
+  // A trial has no source of its own: it inherits the one of the competition it hangs from.
+  const competitionSource = () =>
+    competitionsQuery.data?.find(
+      (competition) => competition.id === props.competitionId,
+    )?.source;
 
   return (
     <div class="stage-detail">
@@ -288,6 +297,7 @@ function CompetitionStageDetailContentContainer(props: {
               onDeleteEvent={handleDeleteEvent}
               onUpdateEvent={props.onUpdateEvent}
               onUpdateStage={props.onUpdateStage}
+              source={competitionSource}
               stage={stageAccessor}
             />
           </Show>
@@ -316,6 +326,7 @@ function CompetitionStageDetailBody(props: {
     stageId: string,
     stage: UpdateStageRequestDTO,
   ) => void;
+  source: Accessor<CompetitionSource | undefined>;
   stage: Accessor<StageEditorModel>;
 }) {
   const i18n = useI18n();
@@ -867,6 +878,11 @@ function CompetitionStageDetailBody(props: {
 
   return (
     <div class="page stage-detail">
+      <ExtractionSourceBanner
+        source={props.source()}
+        context={props.stage().name}
+        contextId={props.stage().id}
+      />
       <header class="stage-detail__header">
         <Show
           when={isEditing()}

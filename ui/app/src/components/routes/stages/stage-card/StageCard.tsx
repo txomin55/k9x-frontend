@@ -6,7 +6,10 @@ import { createSignal, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageNotificationsToggle from "@/components/common/stage-notifications-toggle/StageNotificationsToggle";
-import type { StageEventSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
+import type {
+  CompetitionSource,
+  StageEventSummaryResponseDTO,
+} from "@/services/fetch-stages/fetchStages.types";
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -27,6 +30,7 @@ export interface StageCardProps {
   status?: string;
   to: number;
   organizer: string;
+  source?: CompetitionSource;
   onEnroll?: (eventId: string) => void;
 }
 
@@ -95,12 +99,20 @@ export default function StageCard(props: StageCardProps) {
           >
             {i18n.t("STAGES.STAGE_CARD.INFO")}
           </AtomButton>
-          {/* Informative only: which rankings, and their results, live behind each event. */}
-          <Show when={props.includesRankings}>
-            <span class="stage-card__rankings">
-              {i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
-            </span>
-          </Show>
+          <div class="stage-card__legends">
+            {/* The trial detail carries the full warning; here it is a footnote. */}
+            <Show when={props.source === "EXTRACTION"}>
+              <span class="stage-card__legend">
+                {i18n.t("COMMON.EXTRACTION_BANNER.CARD_NOTE")}
+              </span>
+            </Show>
+            {/* Informative only: which rankings, and their results, live behind each event. */}
+            <Show when={props.includesRankings}>
+              <span class="stage-card__legend">
+                {i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
+              </span>
+            </Show>
+          </div>
         </div>
       }
     />

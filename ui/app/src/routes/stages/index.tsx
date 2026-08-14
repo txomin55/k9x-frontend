@@ -231,6 +231,7 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
               address={stage?.location?.address}
               events={stage.events ?? []}
               includesRankings={stage.includesRankings}
+              source={stage.source}
               onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
             />
           )}
@@ -260,15 +261,26 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
         return (
           <div class="stages-table__name-cell">
             <div class="stages-table__name-row">
-              <span class="text-heading-xs">{stage.name}</span>
-              <Show when={stage.includesRankings}>
-                <span
-                  class="stages-table__rankings-mark"
-                  title={i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}
-                >
-                  *
+              {/* Marks read as one token before the name: `*` rankings, `*` extracted, `**` both. */}
+              <Show
+                when={stage.includesRankings || stage.source === "EXTRACTION"}
+              >
+                <span class="stages-table__marks">
+                  <Show when={stage.includesRankings}>
+                    <span title={i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}>
+                      *
+                    </span>
+                  </Show>
+                  <Show when={stage.source === "EXTRACTION"}>
+                    <span
+                      title={i18n.t("COMMON.EXTRACTION_BANNER.MESSAGE_SHORT")}
+                    >
+                      *
+                    </span>
+                  </Show>
                 </span>
               </Show>
+              <span class="text-heading-xs">{stage.name}</span>
               <Show when={stage.status && isStageLive(stage.status)}>
                 <StatusBadge status={stage.status!} dotMode />
               </Show>

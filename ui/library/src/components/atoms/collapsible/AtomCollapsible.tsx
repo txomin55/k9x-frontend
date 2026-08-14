@@ -2,18 +2,22 @@ import * as Collapsible from "@kobalte/core/collapsible";
 import type { JSX } from "solid-js";
 import "./styles.css";
 
+export type AtomCollapsibleSize = "md" | "sm";
+
 export type AtomCollapsibleProps = {
   trigger: JSX.Element;
   content: JSX.Element;
   disabled?: boolean;
   open?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
+  /** `sm` trims the vertical padding of trigger and content, for tight layouts. Defaults to `md`. */
+  size?: AtomCollapsibleSize;
 };
 
 export default function AtomCollapsible(props: AtomCollapsibleProps) {
   return (
     <Collapsible.Root
-      class="atom-collapsible"
+      class={`atom-collapsible${props.size === "sm" ? " atom-collapsible--sm" : ""}`}
       disabled={props.disabled}
       onOpenChange={props.onOpenChange}
       open={props.open}
