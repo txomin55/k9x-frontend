@@ -15,6 +15,11 @@ import {
 } from "@/services/fetch-rankings/fetchRankings";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import BreadcrumbInfoSlides from "@/components/common/breadcrumb-info/BreadcrumbInfoSlides";
+import eventRankingsSelector from "@/assets/breadcrumb-info/event-rankings-selector.webp";
+import eventRankingsLogin from "@/assets/breadcrumb-info/event-rankings-login.webp";
+import eventRankingsCriteria from "@/assets/breadcrumb-info/event-rankings-criteria.webp";
+import eventRankingsScores from "@/assets/breadcrumb-info/event-rankings-scores.webp";
 import "./styles.css";
 
 /** Marks a combo entry whose ranking came back without an identifier, so it cannot be opened as a visitor. */
@@ -37,8 +42,43 @@ export const Route = createFileRoute("/stages/$id/events/$eventId/rankings")({
         : undefined;
       return name ? [...crumbs, { label: name }] : crumbs;
     },
+    breadcrumbInfo: EventRankingsBreadcrumbInfo,
   },
 });
+
+function EventRankingsBreadcrumbInfo() {
+  return (
+    <BreadcrumbInfoSlides
+      slides={[
+        [{ keys: ["STAGES.EVENT_RANKINGS.BREADCRUMB_INFO"] }],
+        [
+          {
+            keys: ["STAGES.EVENT_RANKINGS.BREADCRUMB_INFO_2"],
+            image: eventRankingsSelector,
+          },
+        ],
+        [
+          {
+            keys: ["STAGES.EVENT_RANKINGS.BREADCRUMB_INFO_4"],
+            image: eventRankingsCriteria,
+          },
+        ],
+        [
+          {
+            keys: ["STAGES.EVENT_RANKINGS.BREADCRUMB_INFO_5"],
+            image: eventRankingsScores,
+          },
+        ],
+        [
+          {
+            keys: ["STAGES.EVENT_RANKINGS.BREADCRUMB_INFO_3"],
+            image: eventRankingsLogin,
+          },
+        ],
+      ]}
+    />
+  );
+}
 
 function EventRankingsPage() {
   const i18n = useI18n();

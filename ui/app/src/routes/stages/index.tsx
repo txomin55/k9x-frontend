@@ -33,6 +33,7 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { useOffline } from "@/stores/network/network";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { isStageLive } from "@/utils/stage";
 import {
   defaultStagesDateRange,
@@ -200,22 +201,46 @@ function StagesFiltersConnected(props: {
   );
 }
 
-function StagesListView(props: { onEnroll: EnrollHandler }) {
+function StagesLoginHint() {
   const i18n = useI18n();
   const user = useAuthUser();
+  const { isOffline } = useOffline();
+
+  return (
+    <Show when={!user()}>
+      <div class="stages__login-hint">
+        <p class="text-body-sm">{i18n.t("STAGES.INDEX.NO_STAGES_LOGIN_HINT")}</p>
+        <Show when={!isOffline()}>
+          <AtomButton onClick={() => startGoogleInteractiveLogin()}>
+            {i18n.t("STAGES.INDEX.LOGIN")}
+          </AtomButton>
+        </Show>
+      </div>
+    </Show>
+  );
+}
+
+function StagesEmptyState() {
+  const i18n = useI18n();
+  const user = useAuthUser();
+
+  return (
+    <div class="stages__empty">
+      <p>
+        {user()
+          ? i18n.t("COMMON.NAME_FILTER.NO_MATCHES")
+          : i18n.t("STAGES.INDEX.NO_STAGES")}
+      </p>
+      <StagesLoginHint />
+    </div>
+  );
+}
+
+function StagesListView(props: { onEnroll: EnrollHandler }) {
   const { filteredStages } = useFilteredStages();
 
   return (
-    <Show
-      when={filteredStages().length > 0}
-      fallback={
-        <p>
-          {user()
-            ? i18n.t("COMMON.NAME_FILTER.NO_MATCHES")
-            : i18n.t("STAGES.INDEX.NO_STAGES")}
-        </p>
-      }
-    >
+    <Show when={filteredStages().length > 0} fallback={<StagesEmptyState />}>
       <div class="card-list">
         <For each={filteredStages()}>
           {(stage) => (
@@ -342,6 +367,9 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
           />
         )}
       />
+      <Show when={filteredStages().length === 0}>
+        <StagesLoginHint />
+      </Show>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import enrollButton from "@/assets/breadcrumb-info/enroll-button.webp";
 import stageDetailPending from "@/assets/breadcrumb-info/stage-detail-pending.webp";
 import classificationButton from "@/assets/breadcrumb-info/classification-button.webp";
 import stageDetailNotifications from "@/assets/breadcrumb-info/stage-detail-notifications.webp";
+import stageDetailRankings from "@/assets/breadcrumb-info/stage-detail-rankings.webp";
 
 export const Route = createFileRoute("/stages/$id")({
   component: EventDetailLayoutPage,
@@ -55,6 +56,12 @@ function StageDetailBreadcrumbInfo() {
           {
             keys: ["STAGES.DETAIL.BREADCRUMB_INFO_5"],
             image: stageDetailPending,
+          },
+        ],
+        [
+          {
+            keys: ["STAGES.DETAIL.BREADCRUMB_INFO_RANKINGS"],
+            image: stageDetailRankings,
           },
         ],
         [

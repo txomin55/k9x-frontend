@@ -8,6 +8,7 @@ import competitionDetailEditStack from "@/assets/breadcrumb-info/edit-mode-stack
 import competitionDetailActions from "@/assets/breadcrumb-info/competition-detail-actions.webp";
 import stageStatuses from "@/assets/breadcrumb-info/stage-statuses.webp";
 import competitionDetailCardActions from "@/assets/breadcrumb-info/competition-detail-card-actions.webp";
+import competitionDetailRankings from "@/assets/breadcrumb-info/competition-detail-rankings.webp";
 
 export const Route = createFileRoute("/my/competitions/$id")({
   component: CompetitionDetailLayoutPage,
@@ -72,6 +73,16 @@ function CompetitionDetailBreadcrumbInfo() {
             image: competitionDetailCardActions,
           },
         ],
+        [
+          {
+            keys: [
+              "MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_9",
+              "MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_10",
+            ],
+            image: competitionDetailRankings,
+          },
+        ],
+        [{ keys: ["MY.COMPETITIONS.DETAIL.BREADCRUMB_INFO_11"] }],
       ]}
     />
   );

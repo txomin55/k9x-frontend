@@ -34,6 +34,19 @@
     max-width: none;
 }
 
+.stages__empty,
+.stages__login-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--unit-2);
+}
+
+.stages__login-hint p {
+    color: var(--text-secondary);
+    max-width: calc(var(--unit-10) * 5);
+}
+
 .stages-map-wrapper {
     position: relative;
     flex: 1;
