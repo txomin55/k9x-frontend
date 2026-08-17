@@ -50,6 +50,15 @@ export default function AppLayout(props: ParentProps) {
   const device = useDeviceType();
   const isDesktop = () => device() === "laptop";
   const [isNavOpen, setIsNavOpen] = createSignal(false);
+  const [contentEl, setContentEl] = createSignal<HTMLElement>();
+
+  createEffect(() => {
+    const pathname = location().pathname;
+    const el = contentEl();
+    if (!pathname || !el) return;
+    el.scrollTop = 0;
+    globalThis.scrollTo({ top: 0 });
+  });
 
   const toggleMode = () => {
     const nextIsDark = !isDark();
@@ -210,7 +219,7 @@ export default function AppLayout(props: ParentProps) {
           </aside>
         </Show>
 
-        <main class="app-layout__content">
+        <main class="app-layout__content" ref={setContentEl}>
           <AppBreadcrumbs />
           {props.children}
         </main>
