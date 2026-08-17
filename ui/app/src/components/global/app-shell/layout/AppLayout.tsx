@@ -22,7 +22,12 @@ import AtomPopover from "@lib/components/atoms/popover/AtomPopover";
 import ProfileImage from "@lib/components/molecules/profile-image/ProfileImage";
 import WalkthroughDialog from "@/components/global/app-shell/layout/walkthrough/WalkthroughDialog";
 import FloatingShareButton from "@/components/common/floating-share-button/FloatingShareButton";
-import { isDark, setIsDark } from "@/stores/theme/theme";
+import {
+  applyTheme,
+  isDark,
+  readStoredTheme,
+  setIsDark,
+} from "@/stores/theme/theme";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 
@@ -61,23 +66,20 @@ export default function AppLayout(props: ParentProps) {
   });
 
   const toggleMode = () => {
-    const nextIsDark = !isDark();
-    document.documentElement.setAttribute(
-      "data-theme",
-      nextIsDark ? "dark" : "",
-    );
-
-    setIsDark(nextIsDark);
+    setIsDark(!isDark());
   };
 
   createEffect(() => {
     setIsNavOpen(isDesktop());
   });
 
-  const systemDefaultIsDark = globalThis.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
   const mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
+  const systemDefaultIsDark = mediaQuery.matches;
+
+  const followSystemTheme = (event: MediaQueryListEvent) => {
+    if (readStoredTheme() !== undefined) return;
+    applyTheme(event.matches);
+  };
 
   const loginButton = () => (
     <span
@@ -100,14 +102,9 @@ export default function AppLayout(props: ParentProps) {
   const [openOrganizerForm, setOpenOrganizerForm] = createSignal(false);
 
   onMount(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      systemDefaultIsDark ? "dark" : "",
-    );
+    applyTheme(readStoredTheme() ?? systemDefaultIsDark);
 
-    setIsDark(systemDefaultIsDark);
-
-    mediaQuery.addEventListener("change", toggleMode);
+    mediaQuery.addEventListener("change", followSystemTheme);
   });
 
   createEffect(() => {
@@ -118,7 +115,7 @@ export default function AppLayout(props: ParentProps) {
   });
 
   onCleanup(() => {
-    mediaQuery.removeEventListener("change", toggleMode);
+    mediaQuery.removeEventListener("change", followSystemTheme);
   });
 
   return (

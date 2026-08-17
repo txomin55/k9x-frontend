@@ -7,6 +7,34 @@ import type { I18nState, Locale } from "@/stores/i18n/i18n.types";
 
 const NOTIFICATION_KEY_PREFIX = "NOTIFICATION.";
 
+const LOCALE_STORAGE_KEY = "k9x_locale";
+
+const DETECTION_OPTIONS = {
+  order: ["localStorage", "navigator", "htmlTag"],
+  caches: ["localStorage"],
+  lookupLocalStorage: LOCALE_STORAGE_KEY,
+};
+
+const readStoredLocale = () => {
+  if (typeof globalThis === "undefined" || !globalThis.localStorage) return;
+
+  try {
+    return globalThis.localStorage.getItem(LOCALE_STORAGE_KEY) ?? undefined;
+  } catch {
+    // ignore: locale persistence must never break the app
+  }
+};
+
+const persistLocale = (locale: string) => {
+  if (typeof globalThis === "undefined" || !globalThis.localStorage) return;
+
+  try {
+    globalThis.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  } catch {
+    // ignore: locale persistence must never break the app
+  }
+};
+
 /**
  * Persists just the notification strings of the currently active language so the service worker can
  * render push notifications with the app closed. Overwrites whatever was stored, so the dictionary can
@@ -104,7 +132,7 @@ const initI18n = async () => {
   if (initPromise || typeof globalThis === "undefined") return initPromise;
 
   const languageDetector = new LanguageDetector();
-  languageDetector.init();
+  languageDetector.init(undefined, DETECTION_OPTIONS);
 
   i18n.on("loaded", syncTranslationsLoaded);
 
@@ -125,7 +153,8 @@ const initI18n = async () => {
       },
       keySeparator: false,
       nsSeparator: false,
-      lng: normalizeLocale(languageDetector.detect()),
+      detection: DETECTION_OPTIONS,
+      lng: normalizeLocale(readStoredLocale() ?? languageDetector.detect()),
     });
 
   initPromise = bundleReadyPromise.then(() => {
@@ -160,9 +189,11 @@ const useI18n = () => {
     setLocale: async (nextLocale: string) => {
       if (!ready()) return;
       await i18n.changeLanguage(normalizeLocale(nextLocale));
+      const activeLocale = normalizeLocale(i18n.language);
+      persistLocale(activeLocale);
       setState((state) => ({
         ...state,
-        locale: normalizeLocale(i18n.language),
+        locale: activeLocale,
       }));
       await persistNotificationTranslations();
     },
