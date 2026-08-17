@@ -24,8 +24,8 @@
     text-align: left;
 }
 
-/* Mobile and tablet: AtomCollapsible carries the box, so the wrapper drops its own skin and repaints the
-   atom in the warning palette instead. */
+/* AtomCollapsible carries the box, so the wrapper drops its own skin and repaints the atom in the warning
+   palette instead. */
 .extraction-banner--collapsible {
     padding: 0;
     border: none;

@@ -53,12 +53,10 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
   const [openWrongLocationForm, setOpenWrongLocationForm] = createSignal(false);
   return (
     <div class="stages-map-marker-popup">
-      {/* The map popup is the tightest surface of the lot, so the notice starts minimized here. */}
       <ExtractionSourceBanner
         source={props.stage.source}
         context={props.stage.name ?? ""}
         contextId={props.stage.id}
-        defaultCollapsed
       />
       <span class="text-caption-lg">{props.stage.competitionName}</span>
       <span class="text-caption-sm">
