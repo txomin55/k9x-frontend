@@ -233,6 +233,33 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   );
 
   competitorTest(
+    "restores the date range from the session on a later visit",
+    async ({ page }) => {
+      await setupFilterStages(page);
+      await page.goto(AppRoutePath.STAGES);
+      await openFilters(page);
+      await expect(
+        page.getByText("Lisbon Winter Cup", { exact: true }),
+      ).toBeVisible();
+
+      await page.getByLabel("From date").fill("2024-11-01");
+      await expect(page.getByLabel("From date")).toHaveValue("2024-11-01");
+
+      await page.goto(AppRoutePath.STAGES);
+      await openFilters(page);
+
+      await expect(page.getByLabel("From date")).toHaveValue("2024-11-01");
+      await expect(page).toHaveURL(/from=/);
+      await expect(
+        page.getByText("Lisbon Winter Cup", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.getByText("Barcelona Spring Trial", { exact: true }),
+      ).toHaveCount(0);
+    },
+  );
+
+  competitorTest(
     "shows a loading skeleton while the date range reloads",
     async ({ page }) => {
       let delayStages = false;

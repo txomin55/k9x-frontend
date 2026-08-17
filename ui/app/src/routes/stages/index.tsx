@@ -12,6 +12,7 @@ import {
   For,
   Match,
   on,
+  onMount,
   Show,
   Suspense,
   Switch,
@@ -33,7 +34,14 @@ import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useOffline } from "@/stores/network/network";
 import { buildNameMatcher } from "@/utils/filter/nameFilter";
-import { useSearchParam } from "@/utils/search-params/useSearchParam";
+import {
+  useSearchParam,
+  useSetSearchParams,
+} from "@/utils/search-params/useSearchParam";
+import {
+  readStoredFilters,
+  storeFilter,
+} from "@/utils/search-params/filtersSessionStorage";
 import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
 import { isStageLive } from "@/utils/stage";
 import {
@@ -56,6 +64,8 @@ import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
 import "./styles.css";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+const STAGES_DATE_RANGE_STORAGE_KEY = "k9x.stages.date-range";
 
 export const Route = createFileRoute("/stages/")({
   component: StagesIndexPage,
@@ -661,6 +671,24 @@ function StagesIndexPage() {
   const [dateFromFilter, setDateFromFilter] = useSearchParam("from", "");
   const [dateToFilter, setDateToFilter] = useSearchParam("to", "");
 
+  const setSearchParams = useSetSearchParams();
+
+  onMount(() => {
+    const restored = readStoredFilters(STAGES_DATE_RANGE_STORAGE_KEY);
+    if (dateFromFilter() || dateToFilter()) return;
+    if (!restored.from && !restored.to) return;
+
+    setSearchParams({ from: restored.from, to: restored.to });
+  });
+
+  const setPersistedDate =
+    (field: "from" | "to", setValue: (value: string) => void) =>
+    (value: string) => {
+      const timestamp = value ? String(parseDateInputValue(value, 0)) : "";
+      setValue(timestamp);
+      storeFilter(STAGES_DATE_RANGE_STORAGE_KEY, field, timestamp);
+    };
+
   const defaultRange = defaultStagesDateRange();
   const dateFromValue = () =>
     toDateInputValue(parseTimestampParam(dateFromFilter(), defaultRange.from));
@@ -720,14 +748,8 @@ function StagesIndexPage() {
           onNameChange={setNameFilter}
           onCountryChange={setCountryFilter}
           onStatusChange={setStatusFilter}
-          onDateFromChange={(value) =>
-            setDateFromFilter(
-              value ? String(parseDateInputValue(value, 0)) : "",
-            )
-          }
-          onDateToChange={(value) =>
-            setDateToFilter(value ? String(parseDateInputValue(value, 0)) : "")
-          }
+          onDateFromChange={setPersistedDate("from", setDateFromFilter)}
+          onDateToChange={setPersistedDate("to", setDateToFilter)}
         />
         <AtomSegmentedControl
           title={i18n.t("STAGES.INDEX.STAGES_BY")}

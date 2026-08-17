@@ -27,20 +27,37 @@ export function useSearchParam(
   const setValue = (next: string) => {
     const nextValue = String(next);
     if (value() === nextValue) return;
-    queueMicrotask(() =>
-      void navigate({
-        to: ".",
-        search: (prev: SearchRecord) => ({
-          ...prev,
-          [key]: nextValue === defaultValue ? undefined : nextValue,
+    queueMicrotask(
+      () =>
+        void navigate({
+          to: ".",
+          search: (prev: SearchRecord) => ({
+            ...prev,
+            [key]: nextValue === defaultValue ? undefined : nextValue,
+          }),
+          replace: mode === "replace",
+          resetScroll: false,
         }),
-        replace: mode === "replace",
-        resetScroll: false,
-      }),
     );
   };
 
   return [value, setValue] as const;
+}
+
+export function useSetSearchParams(mode: SearchParamMode = "replace") {
+  const navigate = useNavigate();
+
+  return (next: SearchRecord) => {
+    queueMicrotask(
+      () =>
+        void navigate({
+          to: ".",
+          search: (prev: SearchRecord) => ({ ...prev, ...next }),
+          replace: mode === "replace",
+          resetScroll: false,
+        }),
+    );
+  };
 }
 
 export function useSearchParamList(
@@ -70,16 +87,17 @@ export function useSearchParamList(
   const setValue = (next: string[]) => {
     const nextValue = next.map(String).join(",");
     if (value().join(",") === nextValue) return;
-    queueMicrotask(() =>
-      void navigate({
-        to: ".",
-        search: (prev: SearchRecord) => ({
-          ...prev,
-          [key]: next.length ? nextValue : undefined,
+    queueMicrotask(
+      () =>
+        void navigate({
+          to: ".",
+          search: (prev: SearchRecord) => ({
+            ...prev,
+            [key]: next.length ? nextValue : undefined,
+          }),
+          replace: mode === "replace",
+          resetScroll: false,
         }),
-        replace: mode === "replace",
-        resetScroll: false,
-      }),
     );
   };
 
