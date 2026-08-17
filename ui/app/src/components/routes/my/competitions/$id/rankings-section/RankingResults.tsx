@@ -32,7 +32,8 @@ export default function RankingResults(props: RankingResultsProps) {
   const [openGroupIds, setOpenGroupIds] = createSignal<string[]>([]);
   const [nameFilter, setNameFilter] = createSignal("");
 
-  const results = () => resultsQuery.data ?? null;
+  const results = () =>
+    resultsQuery.isPending ? null : (resultsQuery.data ?? null);
   const events = createMemo(() => results()?.events ?? []);
   const allGroups = createMemo(() => results()?.groups ?? []);
 

@@ -379,10 +379,10 @@
             {
               "id": "WC_Q",
               "subBand": {
-                "min": 800,
-                "max": 800
+                "min": 775,
+                "max": 850
               },
-              "fixed": true,
+              "fixed": false,
               "tiers": [
                 {
                   "tier": 1,
@@ -399,8 +399,8 @@
                     "min": 10,
                     "max": 24
                   },
-                  "rankScore": 800,
-                  "letter": "B"
+                  "rankScore": 825,
+                  "letter": "A"
                 },
                 {
                   "tier": 3,
@@ -408,8 +408,8 @@
                     "min": 25,
                     "max": null
                   },
-                  "rankScore": 800,
-                  "letter": "B"
+                  "rankScore": 850,
+                  "letter": "A"
                 }
               ]
             },

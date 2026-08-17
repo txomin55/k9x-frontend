@@ -122,10 +122,12 @@ function EventRankingsContent() {
    * explains that a session is needed instead of silently hiding it.
    */
   const options = createMemo<AtomSelectOption[]>(() =>
-    (rankingsQuery.data ?? []).map((ranking, index) => ({
-      label: ranking.name,
-      value: ranking.id || `${LOCKED_VALUE_PREFIX}${index}`,
-    })),
+    rankingsQuery.isPending
+      ? []
+      : (rankingsQuery.data ?? []).map((ranking, index) => ({
+          label: ranking.name,
+          value: ranking.id || `${LOCKED_VALUE_PREFIX}${index}`,
+        })),
   );
 
   const isLocked = (value: string) => value.startsWith(LOCKED_VALUE_PREFIX);
@@ -145,31 +147,33 @@ function EventRankingsContent() {
     options().find((option) => option.value === selected()) ?? null;
 
   return (
-    <Show
-      when={options().length}
-      fallback={<p>{i18n.t("STAGES.EVENT_RANKINGS.NO_RANKINGS")}</p>}
-    >
-      <AtomSelect
-        label={i18n.t("STAGES.EVENT_RANKINGS.RANKING")}
-        placeholder={i18n.t("STAGES.EVENT_RANKINGS.SELECT_RANKING")}
-        options={options()}
-        value={selectedOption()}
-        onChange={(option) => setSelected(option?.value ?? "")}
-      />
-      {/* Keyed on the selection so switching ranking remounts and reads the new results. */}
-      <Show when={selected()} keyed>
-        {(rankingId) => (
-          <Show
-            when={!isLocked(rankingId)}
-            fallback={
-              <div class="event-rankings__banner">
-                {i18n.t("STAGES.EVENT_RANKINGS.LOGIN_REQUIRED")}
-              </div>
-            }
-          >
-            <RankingResults rankingId={rankingId} />
-          </Show>
-        )}
+    <Show when={!rankingsQuery.isPending} fallback={<EventRankingsSkeleton />}>
+      <Show
+        when={options().length}
+        fallback={<p>{i18n.t("STAGES.EVENT_RANKINGS.NO_RANKINGS")}</p>}
+      >
+        <AtomSelect
+          label={i18n.t("STAGES.EVENT_RANKINGS.RANKING")}
+          placeholder={i18n.t("STAGES.EVENT_RANKINGS.SELECT_RANKING")}
+          options={options()}
+          value={selectedOption()}
+          onChange={(option) => setSelected(option?.value ?? "")}
+        />
+        {/* Keyed on the selection so switching ranking remounts and reads the new results. */}
+        <Show when={selected()} keyed>
+          {(rankingId) => (
+            <Show
+              when={!isLocked(rankingId)}
+              fallback={
+                <div class="event-rankings__banner">
+                  {i18n.t("STAGES.EVENT_RANKINGS.LOGIN_REQUIRED")}
+                </div>
+              }
+            >
+              <RankingResults rankingId={rankingId} />
+            </Show>
+          )}
+        </Show>
       </Show>
     </Show>
   );

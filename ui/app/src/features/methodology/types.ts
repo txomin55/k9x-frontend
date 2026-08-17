@@ -27,7 +27,7 @@ export type CategoryId = "CLUB" | "OPEN" | "WC_Q" | "WC_SEMI" | "WC_FINAL";
 export type Category = {
   id: CategoryId;
   name: LocalizedText;
-  /** World championship rounds are fixed points: the competitor count does not move them. */
+  /** Whether this is a world championship round; only the grade hosting the championship accepts them. */
   championship: boolean;
 };
 
@@ -41,7 +41,7 @@ export type GradeCategoryTier = {
 export type GradeCategory = {
   id: CategoryId;
   subBand: { min: number; max: number };
-  /** `true` when the sub-band is a single point, i.e. a championship round. */
+  /** `true` when the sub-band is a single point (the WC semi-final and final); the qualifier is a real band. */
   fixed: boolean;
   tiers: GradeCategoryTier[];
 };
