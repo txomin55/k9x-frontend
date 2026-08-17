@@ -140,7 +140,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
     async ({ page }) => {
       await setupFilterStages(page);
       await page.goto(AppRoutePath.STAGES);
-    await openFilters(page);
+      await openFilters(page);
       await expect(
         page.getByText("Paris Autumn Open", { exact: true }),
       ).toBeVisible();
@@ -148,7 +148,9 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
       await page.getByRole("button", { name: "Country" }).click();
 
       await expect(page.getByRole("option", { name: "Spain" })).toBeVisible();
-      await expect(page.getByRole("option", { name: "Portugal" })).toBeVisible();
+      await expect(
+        page.getByRole("option", { name: "Portugal" }),
+      ).toBeVisible();
       await expect(page.getByRole("option", { name: "France" })).toBeVisible();
       await expect(page.getByRole("option", { name: "Italy" })).toHaveCount(0);
       await expect(
@@ -231,11 +233,56 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   );
 
   competitorTest(
+    "shows a loading skeleton while the date range reloads",
+    async ({ page }) => {
+      let delayStages = false;
+      await page.route("**/stages?*", async (route) => {
+        if (route.request().method() !== "GET") {
+          await route.fallback();
+          return;
+        }
+        if (delayStages) {
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+        }
+        await route.fulfill({
+          contentType: "application/json",
+          body: JSON.stringify(filterStages),
+        });
+      });
+      await setRouteResponses(page, {
+        method: "GET",
+        pathname: "/secured/countries",
+        payload: countries,
+      });
+
+      await page.goto(AppRoutePath.STAGES);
+      await openFilters(page);
+      await expect(
+        page.getByText("Barcelona Spring Trial", { exact: true }),
+      ).toBeVisible();
+      await expect(page.locator(".atom-skeleton")).toHaveCount(0);
+
+      delayStages = true;
+      await page.getByLabel("From date").fill("2024-01-01");
+
+      await expect(page.locator(".atom-skeleton").first()).toBeVisible();
+      await expect(
+        page.getByText("Barcelona Spring Trial", { exact: true }),
+      ).toHaveCount(0);
+
+      await expect(
+        page.getByText("Barcelona Spring Trial", { exact: true }),
+      ).toBeVisible({ timeout: 20000 });
+      await expect(page.locator(".atom-skeleton")).toHaveCount(0);
+    },
+  );
+
+  competitorTest(
     "shows a no-results message when nothing matches",
     async ({ page }) => {
       await setupFilterStages(page);
       await page.goto(AppRoutePath.STAGES);
-    await openFilters(page);
+      await openFilters(page);
       await expect(
         page.getByText("Barcelona Spring Trial", { exact: true }),
       ).toBeVisible();

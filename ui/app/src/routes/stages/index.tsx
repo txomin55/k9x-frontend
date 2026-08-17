@@ -11,6 +11,7 @@ import {
   createSignal,
   For,
   Match,
+  on,
   Show,
   Suspense,
   Switch,
@@ -87,7 +88,12 @@ type EnrollHandler = (stageId: string, eventId: string) => void;
 
 type StagesQuery = ReturnType<typeof useStages>;
 
-const StagesDataContext = createContext<StagesQuery>();
+type StagesData = {
+  query: StagesQuery;
+  isReloadingRange: () => boolean;
+};
+
+const StagesDataContext = createContext<StagesData>();
 
 function StagesDataProvider(props: ParentProps) {
   const { isOffline } = useOffline();
@@ -103,26 +109,46 @@ function StagesDataProvider(props: ParentProps) {
     gcTime: 5 * 60 * 1000,
   });
 
+  const [isReloadingRange, setIsReloadingRange] = createSignal(false);
+
+  createEffect(
+    on([fromMs, toMs], () => setIsReloadingRange(true), { defer: true }),
+  );
+
+  createEffect(
+    on(
+      () => query.isFetching,
+      (isFetching) => {
+        if (!isFetching) setIsReloadingRange(false);
+      },
+      { defer: true },
+    ),
+  );
+
   return (
-    <StagesDataContext.Provider value={query}>
+    <StagesDataContext.Provider value={{ query, isReloadingRange }}>
       {props.children}
     </StagesDataContext.Provider>
   );
 }
 
-function useStagesQuery(): StagesQuery {
-  const query = useContext(StagesDataContext);
-  if (!query) {
-    throw new Error("useStagesQuery must be used within StagesDataProvider");
+function useStagesData(): StagesData {
+  const data = useContext(StagesDataContext);
+  if (!data) {
+    throw new Error("useStagesData must be used within StagesDataProvider");
   }
-  return query;
+  return data;
+}
+
+function useStagesQuery(): StagesQuery {
+  return useStagesData().query;
 }
 
 function useFilteredStages() {
   const user = useAuthUser();
   const isLoggedIn = () => !!user();
 
-  const fetchedStages = useStagesQuery();
+  const { query: fetchedStages, isReloadingRange } = useStagesData();
 
   const [nameFilter] = useSearchParam("name", "");
   const [countryFilter] = useSearchParam("country", "");
@@ -131,6 +157,8 @@ function useFilteredStages() {
   const [dateToFilter] = useSearchParam("to", "");
 
   const filteredStages = createMemo(() => {
+    if (fetchedStages.isPending) return [];
+
     const stages = fetchedStages.data ?? [];
     if (!isLoggedIn()) return stages;
 
@@ -156,7 +184,12 @@ function useFilteredStages() {
     });
   });
 
-  return { filteredStages, isPending: () => fetchedStages.isPending };
+  const isLoading = () => {
+    if (fetchedStages.isPending || isReloadingRange()) return true;
+    return !(fetchedStages.data?.length || !fetchedStages.isFetching);
+  };
+
+  return { filteredStages, isLoading };
 }
 
 function StagesFiltersConnected(props: {
@@ -174,6 +207,8 @@ function StagesFiltersConnected(props: {
   const fetchedStages = useStagesQuery();
 
   const availableCountries = createMemo(() => {
+    if (fetchedStages.isPending) return [];
+
     const stages = fetchedStages.data ?? [];
     return [
       ...new Set(
@@ -209,7 +244,9 @@ function StagesLoginHint() {
   return (
     <Show when={!user()}>
       <div class="stages__login-hint">
-        <p class="text-body-sm">{i18n.t("STAGES.INDEX.NO_STAGES_LOGIN_HINT")}</p>
+        <p class="text-body-sm">
+          {i18n.t("STAGES.INDEX.NO_STAGES_LOGIN_HINT")}
+        </p>
         <Show when={!isOffline()}>
           <AtomButton onClick={() => startGoogleInteractiveLogin()}>
             {i18n.t("STAGES.INDEX.LOGIN")}
@@ -236,39 +273,49 @@ function StagesEmptyState() {
   );
 }
 
+function StagesListSkeleton() {
+  return (
+    <div class="card-list">
+      <StageCardSkeleton count={3} />
+    </div>
+  );
+}
+
 function StagesListView(props: { onEnroll: EnrollHandler }) {
-  const { filteredStages } = useFilteredStages();
+  const { filteredStages, isLoading } = useFilteredStages();
 
   return (
-    <Show when={filteredStages().length > 0} fallback={<StagesEmptyState />}>
-      <div class="card-list">
-        <For each={filteredStages()}>
-          {(stage) => (
-            <StageCard
-              id={stage.id}
-              country={stage.country ?? ""}
-              name={stage.name}
-              status={stage.status}
-              from={stage.dateFrom ?? 0}
-              to={stage.dateTo ?? 0}
-              competitionName={stage.competitionName ?? ""}
-              organizer={stage.organizer}
-              address={stage?.location?.address}
-              events={stage.events ?? []}
-              includesRankings={stage.includesRankings}
-              source={stage.source}
-              onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
-            />
-          )}
-        </For>
-      </div>
+    <Show when={!isLoading()} fallback={<StagesListSkeleton />}>
+      <Show when={filteredStages().length > 0} fallback={<StagesEmptyState />}>
+        <div class="card-list">
+          <For each={filteredStages()}>
+            {(stage) => (
+              <StageCard
+                id={stage.id}
+                country={stage.country ?? ""}
+                name={stage.name}
+                status={stage.status}
+                from={stage.dateFrom ?? 0}
+                to={stage.dateTo ?? 0}
+                competitionName={stage.competitionName ?? ""}
+                organizer={stage.organizer}
+                address={stage?.location?.address}
+                events={stage.events ?? []}
+                includesRankings={stage.includesRankings}
+                source={stage.source}
+                onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
+              />
+            )}
+          </For>
+        </div>
+      </Show>
     </Show>
   );
 }
 
 function StagesTableView(props: { onEnroll: EnrollHandler }) {
   const i18n = useI18n();
-  const { filteredStages } = useFilteredStages();
+  const { filteredStages, isLoading } = useFilteredStages();
 
   const columns = createMemo<ColumnDef<StageSummaryResponseDTO>[]>(() => [
     {
@@ -352,25 +399,27 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
   ]);
 
   return (
-    <div class="stages-table">
-      <AtomTable<StageSummaryResponseDTO>
-        data={filteredStages()}
-        columns={columns()}
-        emptyMessage={i18n.t("STAGES.INDEX.NO_STAGES")}
-        getRowCanExpand={() => true}
-        expandOnRowClick
-        renderSubComponent={(row) => (
-          <StageCardEventsContent
-            id={row.original.id}
-            events={row.original.events ?? []}
-            onEnroll={(eventId) => props.onEnroll(row.original.id, eventId)}
-          />
-        )}
-      />
-      <Show when={filteredStages().length === 0}>
-        <StagesLoginHint />
-      </Show>
-    </div>
+    <Show when={!isLoading()} fallback={<StagesTableSkeleton />}>
+      <div class="stages-table">
+        <AtomTable<StageSummaryResponseDTO>
+          data={filteredStages()}
+          columns={columns()}
+          emptyMessage={i18n.t("STAGES.INDEX.NO_STAGES")}
+          getRowCanExpand={() => true}
+          expandOnRowClick
+          renderSubComponent={(row) => (
+            <StageCardEventsContent
+              id={row.original.id}
+              events={row.original.events ?? []}
+              onEnroll={(eventId) => props.onEnroll(row.original.id, eventId)}
+            />
+          )}
+        />
+        <Show when={filteredStages().length === 0}>
+          <StagesLoginHint />
+        </Show>
+      </div>
+    </Show>
   );
 }
 
@@ -438,12 +487,14 @@ function StagesMapSkeleton() {
 }
 
 function StagesMapView(props: { onEnroll: EnrollHandler }) {
-  const { filteredStages } = useFilteredStages();
+  const { filteredStages, isLoading } = useFilteredStages();
 
   return (
-    <div class="stages-map-wrapper">
-      <StagesMap stages={filteredStages()} onEnroll={props.onEnroll} />
-    </div>
+    <Show when={!isLoading()} fallback={<StagesMapSkeleton />}>
+      <div class="stages-map-wrapper">
+        <StagesMap stages={filteredStages()} onEnroll={props.onEnroll} />
+      </div>
+    </Show>
   );
 }
 
@@ -484,7 +535,9 @@ function EnrollDialog(props: {
     setEnrollDraft((current) => updater(current));
 
   const selectedDog = (dogIdentification: string) =>
-    (dogsQuery.data ?? []).find((dog) => dog.identification === dogIdentification);
+    (dogsQuery.data ?? []).find(
+      (dog) => dog.identification === dogIdentification,
+    );
 
   const handleEnroll = async () => {
     await enrollStageEvent(props.stageId, {
@@ -668,7 +721,9 @@ function StagesIndexPage() {
           onCountryChange={setCountryFilter}
           onStatusChange={setStatusFilter}
           onDateFromChange={(value) =>
-            setDateFromFilter(value ? String(parseDateInputValue(value, 0)) : "")
+            setDateFromFilter(
+              value ? String(parseDateInputValue(value, 0)) : "",
+            )
           }
           onDateToChange={(value) =>
             setDateToFilter(value ? String(parseDateInputValue(value, 0)) : "")
@@ -692,13 +747,7 @@ function StagesIndexPage() {
             </Suspense>
           </Match>
           <Match when={true}>
-            <Suspense
-              fallback={
-                <div class="card-list">
-                  <StageCardSkeleton count={3} />
-                </div>
-              }
-            >
+            <Suspense fallback={<StagesListSkeleton />}>
               <StagesListView onEnroll={openEnrollDialog} />
             </Suspense>
           </Match>
