@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import { defaultClassification } from "@test/api-mocks/classification";
 import { defaultCompetitions } from "@test/api-mocks/competitions";
 import { resolveDogByIdentificationPayload } from "@test/api-mocks/dogByIdentification";
-import { defaultDogs } from "@test/api-mocks/dogs";
+import { defaultDogs, toDogsPage } from "@test/api-mocks/dogs";
 import { defaultJudges } from "@test/api-mocks/judges";
 import { mockAccessToken } from "@test/api-mocks/login";
 import { logoutPayload } from "@test/api-mocks/logout";
@@ -31,7 +31,11 @@ export default async function defaultApiResponses(page: Page) {
     }),
     setRouteResponses(page, {
       method: "GET",
-      payload: defaultDogs,
+      payload: (_match, request) =>
+        toDogsPage(
+          defaultDogs as unknown as Record<string, unknown>[],
+          request.url(),
+        ),
       pathname: "/secured/dogs",
     }),
     setRouteResponses(page, {

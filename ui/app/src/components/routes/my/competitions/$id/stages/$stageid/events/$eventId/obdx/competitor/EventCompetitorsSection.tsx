@@ -20,7 +20,15 @@ import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndic
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
-import { useAllDogs } from "@/services/secured/dog-crud/dogCrud";
+import {
+  allDogsPages,
+  allDogsSearchPages,
+  loadMoreAllDogs,
+  loadMoreAllDogsSearch,
+  useAllDogs,
+  useAllDogsSearch,
+} from "@/services/secured/dog-crud/dogCrud";
+import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
 import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
@@ -61,6 +69,9 @@ type EventCompetitorsSectionProps = {
   onMarkCompetitorNotCompeting: (dogIdentification: string) => void;
 };
 
+// Short fragments match half the kennel, so below this the box narrows down what is already loaded.
+const MIN_DOG_SEARCH_LENGTH = 3;
+
 export default function EventCompetitorsSection(
   props: EventCompetitorsSectionProps,
 ) {
@@ -80,6 +91,27 @@ export default function EventCompetitorsSection(
     gcTime: 5 * 60 * 1000,
     enabled: () => Boolean(user()),
   });
+
+  // The kennel arrives a page at a time as the box is scrolled. Short fragments are matched against
+  // what is already loaded, in the box itself; from a few characters on the search goes to the server.
+  const [dogSearch, setDogSearch] = createSignal("");
+  const debouncedDogSearch = useDebouncedValue(() => dogSearch().trim());
+  const searchedDogName = () =>
+    debouncedDogSearch().length >= MIN_DOG_SEARCH_LENGTH
+      ? debouncedDogSearch()
+      : "";
+  const isSearchingDogs = () => !!searchedDogName();
+  const dogSearchQuery = useAllDogsSearch(searchedDogName);
+
+  const listedDogs = () =>
+    (isSearchingDogs() ? dogSearchQuery.data : dogsQuery.data) ?? [];
+  const dogPages = () => (isSearchingDogs() ? allDogsSearchPages : allDogsPages);
+  const loadMoreDogs = () => {
+    void (isSearchingDogs()
+      ? loadMoreAllDogsSearch(searchedDogName())
+      : loadMoreAllDogs());
+  };
+
   const dogOptions = createMemo<AtomSelectOption[]>(() => {
     const addedDogIdentifications = new Set(
       props.competitors
@@ -87,7 +119,7 @@ export default function EventCompetitorsSection(
         .map((competitor) => competitor.dogIdentification),
     );
 
-    return (dogsQuery.data ?? [])
+    return listedDogs()
       .filter((dog) => !addedDogIdentifications.has(dog.identification))
       .map((dog) => ({
         label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
@@ -96,7 +128,7 @@ export default function EventCompetitorsSection(
   });
   const dogsById = createMemo(() => {
     const map = new Map<string, Dog>();
-    for (const dog of dogsQuery.data ?? []) {
+    for (const dog of listedDogs()) {
       map.set(dog.identification, dog);
     }
     return map;
@@ -507,6 +539,10 @@ export default function EventCompetitorsSection(
             orderBounds={competitorOrderBounds()}
             dogOptions={dogOptions()}
             dogsById={dogsById()}
+            onDogSearchChange={setDogSearch}
+            onLoadMoreDogs={loadMoreDogs}
+            dogsHaveMore={dogPages().hasMore()}
+            dogsAreLoadingMore={dogPages().state().isLoadingMore}
             displaySave={props.isCreatingCompetitor}
           />
         }

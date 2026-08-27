@@ -35,6 +35,11 @@ type CompetitorDialogContentProps = {
   orderBounds: OrderBounds;
   dogOptions: AtomSelectOption[];
   dogsById: Map<string, Dog>;
+  /** Text typed in the dog box: past a few characters the options are searched for on the server. */
+  onDogSearchChange: (value: string) => void;
+  onLoadMoreDogs: () => void;
+  dogsHaveMore: boolean;
+  dogsAreLoadingMore: boolean;
   displaySave?: boolean;
 };
 
@@ -154,6 +159,10 @@ export default function CompetitorEditorForm(
           <AtomCombobox
             label={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.DOG")}
             onChange={handleDogChange}
+            onInputChange={props.onDogSearchChange}
+            onLoadMore={props.onLoadMoreDogs}
+            hasMore={props.dogsHaveMore}
+            isLoadingMore={props.dogsAreLoadingMore}
             options={dogOptions()}
             placeholder={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SELECT_DOG")}
             value={

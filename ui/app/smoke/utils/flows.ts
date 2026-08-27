@@ -119,6 +119,7 @@ export const createJudge = async (page: Page) => {
 
 export const createDog = async (page: Page) => {
   const name = named("Dog");
+  const identification = name.replace(/\D/g, "");
   await page.goto("/my/dogs/list");
   const body = await captureCreate<{ id: string }>(
     page,
@@ -126,7 +127,7 @@ export const createDog = async (page: Page) => {
     async () => {
       await page.getByRole("button", { name: "+", exact: true }).click();
       const dialog = page.getByRole("dialog");
-      await dialog.getByLabel("Identification").fill(name.replace(/\D/g, ""));
+      await dialog.getByLabel("Identification").fill(identification);
       await dialog.getByLabel("Name", { exact: true }).fill(name);
       await dialog.getByText("Owned", { exact: true }).click();
       await expect(page.getByRole("checkbox", { name: "Owned" })).toBeChecked();
@@ -134,7 +135,7 @@ export const createDog = async (page: Page) => {
       const breedOption = page.locator(".atom-select__item").first();
       await expect(breedOption).toBeVisible();
       await breedOption.click();
-      await dialog.getByLabel("Origin").fill(name.replace(/\D/g, ""));
+      await dialog.getByLabel("Origin").fill(identification);
       await dialog.getByLabel("Withers height (cm)").fill("50");
       await dialog.getByRole("button", { name: "Country" }).click();
       await page.keyboard.type("Spain");
@@ -143,7 +144,7 @@ export const createDog = async (page: Page) => {
     },
   );
   await expect(page.getByText(name, { exact: true })).toBeVisible();
-  return { id: body.id, name };
+  return { id: body.id, name, identification };
 };
 
 export const createCompetition = async (page: Page) => {
@@ -262,8 +263,11 @@ export const setEventConfiguration = async (
   // whose accessible name is the label plus the current value.
   const category = page.getByRole("button", { name: /^Category/ });
   await expect(category).toBeEnabled();
-  await waitForEventWrite(page, () => selectFirstOption(page, category));
-  await expect(category).not.toContainText(/Select the event category/i);
+  const categoryPlaceholder = /Select the event category/i;
+  if (categoryPlaceholder.test(await category.innerText())) {
+    await waitForEventWrite(page, () => selectFirstOption(page, category));
+  }
+  await expect(category).not.toContainText(categoryPlaceholder);
 
   await expect(page.getByLabel("Enrollment deadline")).toBeEnabled();
   await waitForEventWrite(page, () => setEnrollmentDeadline(page));

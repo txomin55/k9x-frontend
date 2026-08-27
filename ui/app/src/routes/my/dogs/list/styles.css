@@ -15,6 +15,57 @@
   max-width: none;
 }
 
+/* Dog cards are all the same height here, tall enough for a name wrapping to three lines: the row
+   spacing is then exactly the grid gap (the card's own bottom margin would double it), and a longer
+   name is clipped rather than spilling over the card below. */
+.dogs-list .virtual-card-grid__row > .card {
+  box-sizing: border-box;
+  height: 100%;
+  max-width: none;
+  margin-bottom: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The actions, and the rule that tops them, sit on the card's bottom edge whatever the name above
+   them takes, so the whole grid lines up row by row. */
+.dogs-list .virtual-card-grid__row > .card > .card__actions {
+  margin-top: auto;
+}
+
+/* An image gives space back rather than pushing the actions out of a card of fixed height. */
+.dogs-list .virtual-card-grid__row > .card > .card__content {
+  min-height: 0;
+  overflow: hidden;
+}
+
 .dogs-list__table {
   margin-top: var(--unit-1);
+}
+
+/* Room to scroll the last row clear of the floating "new dog" button, taken from inside the
+   scroller's own height so it does not push the page past its container. */
+.dogs-list__table .atom-table__scroller {
+  box-sizing: border-box;
+  padding-bottom: var(--unit-8);
+}
+
+/* Columns are fixed, so a long name is cut with an ellipsis instead of wrapping out of its row. */
+.dogs-list__table .list-table__name > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/*
+ * The list scrolls all the way to the bottom of the page: the floating button hovers over it, so the
+ * space normally reserved for it below the content would just be a dead band under the list.
+ */
+.page:has(.dogs-list__overlays) {
+  padding-bottom: var(--unit-1);
+}
+
+.dogs-list__overlays {
+  position: absolute;
 }

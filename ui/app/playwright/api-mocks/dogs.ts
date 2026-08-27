@@ -48,18 +48,56 @@ export const defaultDogs: Dog[] = [
 ];
 
 /**
+ * Answers `/secured/dogs` the way the API does: a page of the list, filtered by name when the query
+ * carries one, and the whole list in one page when no size is asked for.
+ */
+export const toDogsPage = (dogs: Record<string, unknown>[], url: string) => {
+  const params = new URL(url).searchParams;
+  const name = (params.get("name") ?? "").trim().toLowerCase();
+  const matching = name
+    ? dogs.filter((dog) =>
+        String(dog.name ?? "")
+          .toLowerCase()
+          .includes(name),
+      )
+    : dogs;
+
+  const size = params.get("size")
+    ? Number(params.get("size"))
+    : matching.length;
+  const page = params.get("page") ? Number(params.get("page")) : 0;
+  const items = size
+    ? matching.slice(page * size, page * size + size)
+    : matching;
+
+  return {
+    items,
+    page,
+    size,
+    total: matching.length,
+    totalPages: size
+      ? Math.ceil(matching.length / size)
+      : matching.length
+        ? 1
+        : 0,
+  };
+};
+
+/**
  * Stateful `/secured/dogs` mocks so a post-flush reload reflects each write.
  * GET returns the live collection; POST/PUT/DELETE mutate it.
  */
 export const setupDogsCrud = (page: Page) => {
-  const dogs: Record<string, unknown>[] = defaultDogs.map((dog) => ({ ...dog }));
+  const dogs: Record<string, unknown>[] = defaultDogs.map((dog) => ({
+    ...dog,
+  }));
   const indexOf = (id: string | undefined) =>
     dogs.findIndex((dog) => dog.identification === id);
 
   return Promise.all([
     setRouteResponses(page, {
       method: "GET",
-      payload: () => dogs,
+      payload: (_match, request) => toDogsPage(dogs, request.url()),
       pathname: "/secured/dogs",
     }),
     setRouteResponses(page, {

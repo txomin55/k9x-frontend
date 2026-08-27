@@ -1,4 +1,5 @@
 import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
+import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 
 /**
@@ -7,6 +8,12 @@ import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
  * being sent empty and rejected.
  */
 export const DEFAULT_EVENT_CATEGORY = "CLUB";
+
+/**
+ * Same story as the category: the backend resolves the score calculation into an enum without tolerating
+ * null, so an event that has never been configured (its column is still empty) would make the update 500.
+ */
+export const DEFAULT_SCORE_CALCULATION = SCORE_CALCULATION.AVG;
 
 export const toEventEditorDraft = (
   event: EventDetailResponseDTO,
@@ -33,7 +40,7 @@ export const toEventEditorDraft = (
   name: event.name,
   stageId: event.stage.id,
   status: event.status,
-  scoreCalculation: event.scoreCalculation,
+  scoreCalculation: event.scoreCalculation || DEFAULT_SCORE_CALCULATION,
   awards: event.awards.map((award) => ({ ...award })),
   commissioner: event.commissioner ?? "",
   category: event.category || DEFAULT_EVENT_CATEGORY,

@@ -1,6 +1,14 @@
 import {Combobox} from "@kobalte/core/combobox";
-import {createVirtualizer} from "@tanstack/solid-virtual";
-import {createMemo, createSignal, For, type JSX, type ParentProps,} from "solid-js";
+import { useRowWindow } from "../../../utils/virtual/useRowWindow";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  type JSX,
+  type ParentProps,
+} from "solid-js";
 import "./styles.css";
 
 export type AtomComboboxOption = {
@@ -20,6 +28,12 @@ type AtomComboboxBaseProps = {
   errorMessage?: string;
   disabled?: boolean;
   validationState?: "valid" | "invalid";
+  /** Text typed in the box, for callers that go and fetch the options themselves. */
+  onInputChange?: (value: string) => void;
+  /** Called as the list is scrolled near its end, for options that arrive a page at a time. */
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  isLoadingMore?: boolean;
 };
 
 type AtomComboboxSingleProps = AtomComboboxBaseProps & {
@@ -40,13 +54,46 @@ export type AtomComboboxProps = ParentProps<
   AtomComboboxSingleProps | AtomComboboxMultipleProps
 >;
 
+// The next page is asked for a screenful before the end, so it is there by the time the scroll is.
+const LOAD_MORE_MIN_LEAD_PX = 160;
+
 const ITEM_HEIGHT = 36;
 const ITEM_HEIGHT_WITH_CAPTION = 48;
 const OVERSCAN = 5;
 
 export function AtomCombobox(props: AtomComboboxProps) {
   let listboxRef: HTMLUListElement | null = null;
+  const [listbox, setListbox] = createSignal<HTMLUListElement>();
   const [inputValue, setInputValue] = createSignal("");
+
+  const handleInputChange = (value: string) => {
+    setInputValue(value);
+    props.onInputChange?.(value);
+  };
+
+  // The list is only in the document while it is open, so the listener follows the element itself.
+  createEffect(() => {
+    const element = listbox();
+    if (!element || !props.onLoadMore) return;
+
+    const askForMoreAtTheEnd = () => {
+      if (props.hasMore === false || props.isLoadingMore) return;
+
+      const remaining =
+        element.scrollHeight - element.scrollTop - element.clientHeight;
+      const lead = Math.max(LOAD_MORE_MIN_LEAD_PX, element.clientHeight);
+
+      if (remaining <= lead) props.onLoadMore?.();
+    };
+
+    // A first page shorter than the list itself leaves nothing to scroll, so it is asked for up front.
+    askForMoreAtTheEnd();
+    element.addEventListener("scroll", askForMoreAtTheEnd, { passive: true });
+
+    onCleanup(() =>
+      element.removeEventListener("scroll", askForMoreAtTheEnd),
+    );
+  });
 
   const visibleOptions = createMemo(() => {
     const query = inputValue().trim().toLocaleLowerCase();
@@ -59,27 +106,27 @@ export function AtomCombobox(props: AtomComboboxProps) {
     );
   });
 
-  const virtualizer = createVirtualizer({
-    get count() {
-      return visibleOptions().length;
-    },
-    getScrollElement: () => listboxRef,
-    getItemKey: (index) => String(visibleOptions()[index]?.value ?? index),
-    estimateSize: (index) =>
-      visibleOptions()[index]?.caption ? ITEM_HEIGHT_WITH_CAPTION : ITEM_HEIGHT,
-    initialRect: { width: 0, height: ITEM_HEIGHT * 6 },
+  // Options are laid out at one height each, so the rows worth rendering are a division of the scroll
+  // position — and they follow it, which is what keeps the list from going blank past the first screen.
+  const optionHeight = () =>
+    visibleOptions().some((option) => option.caption)
+      ? ITEM_HEIGHT_WITH_CAPTION
+      : ITEM_HEIGHT;
+
+  const rowWindow = useRowWindow({
+    scrollElement: listbox,
+    rowCount: () => visibleOptions().length,
+    rowHeight: optionHeight,
     overscan: OVERSCAN,
   });
 
-  const virtualRows = () => {
-    void visibleOptions();
-    return virtualizer.getVirtualItems().map((row) => ({
-      key: String(row.key),
-      index: row.index,
-      start: row.start,
-      size: row.size,
+  const visibleRows = () =>
+    rowWindow.rows().map((index) => ({
+      key: String(visibleOptions()[index]?.value ?? index),
+      index,
+      start: index * optionHeight(),
+      size: optionHeight(),
     }));
-  };
 
   return (
     <Combobox<AtomComboboxOption>
@@ -104,7 +151,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
       optionValue="value"
       value={props.value as AtomComboboxOption[]}
       onChange={props.onChange as (value: AtomComboboxOption[]) => void}
-      onInputChange={setInputValue}
+      onInputChange={handleInputChange}
       placeholder={props.placeholder}
       virtualized
     >
@@ -162,23 +209,27 @@ export function AtomCombobox(props: AtomComboboxProps) {
       <Combobox.Portal>
         <Combobox.Content class="atom-combobox__content">
           <Combobox.Listbox
-            ref={listboxRef}
+            ref={(element: HTMLUListElement) => {
+              listboxRef = element;
+              setListbox(element);
+            }}
             class="atom-combobox__listbox"
             scrollToItem={(key) => {
-              virtualizer.scrollToIndex(
-                visibleOptions().findIndex((option) => option.value === key),
+              const index = visibleOptions().findIndex(
+                (option) => option.value === key,
               );
+              listbox()?.scrollTo({ top: Math.max(0, index) * optionHeight() });
             }}
           >
             {(items) => (
               <div
                 style={{
-                  height: `${virtualizer.getTotalSize()}px`,
+                  height: `${rowWindow.totalHeight()}px`,
                   width: "100%",
                   position: "relative",
                 }}
               >
-                <For each={virtualRows()}>
+                <For each={visibleRows()}>
                   {(virtualRow) => {
                     const item = items().getItem(String(virtualRow.key));
                     if (!item) return null;

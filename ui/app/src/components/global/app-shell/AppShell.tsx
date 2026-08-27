@@ -9,7 +9,7 @@ import { resolveAppPath } from "@/utils/paths/app-paths";
 import { warmOfflineBundleInBackground } from "@/utils/service-worker/offline_bundle/warmOfflineBundle";
 import { pruneStaleQuerySnapshots } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { prefetchCompetitions } from "@/services/secured/competition-crud/competitionCrud";
-import { prefetchAllDogs, prefetchDogs, prefetchOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
+import { prefetchDogs, prefetchOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
 import { prefetchJudges } from "@/services/secured/judge-crud/judgeCrud";
 import { prefetchCollections } from "@/services/secured/collection-crud/collectionCrud";
 import { prefetchCountries } from "@/services/secured/country-crud/countryCrud";
@@ -50,10 +50,6 @@ export default function AppShell() {
           gcTime: 2 * 60 * 1000,
         });
         void prefetchJudges({
-          refetchOnMount: false,
-          gcTime: 2 * 60 * 1000,
-        });
-        void prefetchAllDogs({
           refetchOnMount: false,
           gcTime: 2 * 60 * 1000,
         });

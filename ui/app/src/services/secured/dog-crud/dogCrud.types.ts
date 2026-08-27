@@ -19,6 +19,15 @@ export interface Dog {
   threeFciGenerationsConfirmed: boolean;
 }
 
+/** One page of the dog list endpoint. `size` equals `total` when the whole list came in one page. */
+export interface DogPageDTO {
+  items: Dog[];
+  page: number;
+  size: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface CreateDogRequestDTO {
   identification: string;
   name: string;

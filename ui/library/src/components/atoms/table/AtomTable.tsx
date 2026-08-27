@@ -10,7 +10,15 @@ import {
   type Row,
   type SortingState,
 } from "@tanstack/solid-table";
-import { createEffect, createSignal, For, onCleanup } from "solid-js";
+import { useRowWindow } from "../../../utils/virtual/useRowWindow";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  Show,
+} from "solid-js";
 import type { JSX } from "solid-js";
 import "./styles.css";
 
@@ -29,6 +37,19 @@ export type AtomTableProps<TData> = {
   getRowCanExpand?: (row: Row<TData>) => boolean;
   renderSubComponent?: (row: Row<TData>) => JSX.Element;
   getRowId?: (row: TData, index: number) => string;
+  /**
+   * Keeps only the visible rows in the DOM, for lists long enough that rendering every row costs.
+   * Rows are laid out at `estimateRowHeight`, and expandable rows are rendered whole, so this is
+   * ignored when a sub component is provided.
+   */
+  virtualized?: boolean;
+  estimateRowHeight?: number;
+  /**
+   * Lays the table out on the column widths declared by `size` instead of on the widths the rendered
+   * cells happen to need — which, with virtualization, would shift as rows scroll in and out. Columns
+   * with no `size` share whatever width is left.
+   */
+  fixedLayout?: boolean;
   expanded?: ExpandedState;
   onExpandedChange?: OnChangeFn<ExpandedState>;
   expandOnRowClick?: boolean;
@@ -37,7 +58,7 @@ export type AtomTableProps<TData> = {
 export default function AtomTable<TData>(props: AtomTableProps<TData>) {
   const [sorting, setSorting] = createSignal<SortingState>([]);
   const [expanded, setExpanded] = createSignal<ExpandedState>({});
-  let scrollerRef: HTMLDivElement | undefined;
+  const [scrollerRef, setScrollerRef] = createSignal<HTMLDivElement>();
   let sentinelRef: HTMLDivElement | undefined;
 
   const table = createSolidTable({
@@ -72,10 +93,39 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
     getExpandedRowModel: getExpandedRowModel(),
   });
 
+  const rows = () => table.getRowModel().rows;
+
+  const isVirtualized = () =>
+    Boolean(props.virtualized) && !props.renderSubComponent;
+
+  const rowHeight = () => props.estimateRowHeight ?? 56;
+
+  const rowWindow = useRowWindow({
+    scrollElement: scrollerRef,
+    rowCount: () => (isVirtualized() ? rows().length : 0),
+    rowHeight,
+  });
+
+  // Rows above and below the window are replaced by two spacer rows, so the scrollbar keeps the size of
+  // the whole table while only the visible rows exist in the DOM.
+  const paddingTop = () => (isVirtualized() ? rowWindow.offsetTop() : 0);
+
+  const paddingBottom = () => (isVirtualized() ? rowWindow.offsetBottom() : 0);
+
+  const renderedRows = createMemo(() =>
+    isVirtualized()
+      ? rowWindow.rows().map((rowIndex) => rows()[rowIndex])
+      : rows(),
+  );
+
   const handleRowClick = (row: Row<TData>, event: MouseEvent) => {
     if (!props.expandOnRowClick || !row.getCanExpand()) return;
     const target = event.target as HTMLElement | null;
-    if (target?.closest('button, a, input, select, textarea, label, [role="button"]'))
+    if (
+      target?.closest(
+        'button, a, input, select, textarea, label, [role="button"]',
+      )
+    )
       return;
     row.toggleExpanded();
   };
@@ -96,7 +146,7 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
           props.onLoadMore?.();
         }
       },
-      { root: scrollerRef ?? null },
+      { root: scrollerRef() ?? null },
     );
 
     observer.observe(sentinelRef);
@@ -106,8 +156,26 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
 
   return (
     <div class={`atom-table ${props.class ?? ""}`.trim()}>
-      <div class="atom-table__scroller" ref={scrollerRef}>
-        <table class="atom-table__table">
+      <div class="atom-table__scroller" ref={setScrollerRef}>
+        <table
+          class="atom-table__table"
+          classList={{ "atom-table__table--fixed": Boolean(props.fixedLayout) }}
+        >
+          <Show when={props.fixedLayout}>
+            <colgroup>
+              <For each={table.getVisibleLeafColumns()}>
+                {(column) => (
+                  <col
+                    style={
+                      column.columnDef.size
+                        ? { width: `${column.columnDef.size}px` }
+                        : undefined
+                    }
+                  />
+                )}
+              </For>
+            </colgroup>
+          </Show>
           <thead class="atom-table__head">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr class="atom-table__row">
@@ -150,18 +218,26 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
           </thead>
 
           <tbody class="atom-table__body">
-            {table.getRowModel().rows.length === 0 ? (
+            <Show when={paddingTop() > 0}>
+              <tr aria-hidden="true" style={{ height: `${paddingTop()}px` }} />
+            </Show>
+            {rows().length === 0 ? (
               <tr class="atom-table__row">
                 <td class="atom-table__empty" colSpan={props.columns.length}>
                   {props.emptyMessage ?? "No data available"}
                 </td>
               </tr>
             ) : (
-              <For each={table.getRowModel().rows}>
+              <For each={renderedRows()}>
                 {(row) => (
                   <>
                     <tr
                       class="atom-table__row"
+                      style={
+                        isVirtualized()
+                          ? { height: `${rowHeight()}px` }
+                          : undefined
+                      }
                       classList={{
                         "atom-table__row--clickable":
                           Boolean(props.expandOnRowClick) && row.getCanExpand(),
@@ -193,6 +269,12 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
                 )}
               </For>
             )}
+            <Show when={paddingBottom() > 0}>
+              <tr
+                aria-hidden="true"
+                style={{ height: `${paddingBottom()}px` }}
+              />
+            </Show>
           </tbody>
         </table>
 

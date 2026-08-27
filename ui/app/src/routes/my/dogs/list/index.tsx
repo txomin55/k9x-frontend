@@ -1,10 +1,20 @@
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import { createFileRoute } from "@tanstack/solid-router";
-import { createEffect, createMemo, createSignal, For, Show, Suspense } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  Show,
+  Suspense,
+} from "solid-js";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -17,18 +27,53 @@ import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import DogForm from "@/components/routes/my/dogs/list/dog-form/DogForm";
 import OwnDogForm from "@/components/global/app-shell/layout/navigation/OwnDogForm";
-import { createDog, deleteDog, updateDog, useDogs } from "@/services/secured/dog-crud/dogCrud";
+import {
+  createDog,
+  deleteDog,
+  dogsSearchPages,
+  loadMoreDogs,
+  loadMoreDogsSearch,
+  myDogsPages,
+  updateDog,
+  useDogs,
+  useDogsSearch,
+} from "@/services/secured/dog-crud/dogCrud";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
-import { buildNameMatcher } from "@/utils/filter/nameFilter";
+import { buildNameContainsMatcher } from "@/utils/filter/nameFilter";
+import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
+import VirtualCardGrid from "@/components/common/virtual-card-grid/VirtualCardGrid";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
-import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
+import { useFillRemainingHeight } from "@/utils/layout/useFillRemainingHeight";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import "./styles.css";
 
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
+
+// Mirrors the card grid's CSS minimum column width, so virtualization wraps rows where the grid did.
+const CARD_MIN_WIDTH_PX = 240;
+// Short fragments match half the kennel, so the search waits until the text says something.
+const MIN_NAME_SEARCH_LENGTH = 3;
+
+// Tall enough for a dog name wrapping to three lines, so every card is the same height whatever it holds.
+const CARD_HEIGHT_PX = 210;
+const TABLE_ROW_HEIGHT_PX = 56;
+// Room to scroll the last row clear of the floating "new dog" button.
+const FLOATING_BUTTON_CLEARANCE_PX = 72;
+
+/**
+ * Column widths for the table view. Only the name column grows: the rest are fixed so the layout does
+ * not jump as virtualized rows scroll in and out, whatever fits on the current screen.
+ */
+const COLUMN_WIDTH = {
+  sex: 64,
+  breed: 168,
+  handler: 176,
+  withers: 96,
+  actions: 112,
+} as const;
 
 export const Route = createFileRoute("/my/dogs/list/")({
   component: MyDogsRoute,
@@ -77,17 +122,40 @@ function MyDogsListPage() {
 
   const [nameFilter, setNameFilter] = createSignal("");
   const [view, setView] = createSignal<string>(VIEW.LIST);
-  const tableFill = useViewportFillHeight();
+  const tableFill = useFillRemainingHeight();
+  const listFill = useFillRemainingHeight();
   const device = useDeviceType();
 
+  // The name travels in the request, so it only reaches the query once the typing settles, and only
+  // once it is long enough to narrow anything down.
+  const debouncedName = useDebouncedValue(() => nameFilter().trim());
+  const searchedName = () =>
+    debouncedName().length >= MIN_NAME_SEARCH_LENGTH ? debouncedName() : "";
+  const isSearching = () => !!searchedName();
+  const searchQuery = useDogsSearch(searchedName);
+
   const myDogs = createMemo(() => {
-    if (!dogsQuery.data) {
-      return [];
+    if (isSearching()) {
+      // Dogs created or edited on this device live as local drafts, which the API knows nothing about,
+      // so the same match the server applied is re-applied over the merged list.
+      const matches = buildNameContainsMatcher(searchedName());
+      return (searchQuery.data ?? []).filter((dog) => matches(dog.name));
     }
 
-    const matches = buildNameMatcher(nameFilter());
-    return dogsQuery.data.filter((dog) => matches(dog.name));
+    return dogsQuery.data ?? [];
   });
+
+  const pages = () => (isSearching() ? dogsSearchPages : myDogsPages);
+  const hasMore = () => pages().hasMore();
+  const isLoadingMore = () => pages().state().isLoadingMore;
+
+  // Both views stay mounted while the other one is shown, and the hidden one reaches "the end of the
+  // list" on its own, so only the view on screen is allowed to pull the next page.
+  const loadMoreFrom = (fromView: string) => () => {
+    if (view() !== fromView) return;
+
+    void (isSearching() ? loadMoreDogsSearch(searchedName()) : loadMoreDogs());
+  };
 
   const [dogParam, setDogParam] = useSearchParam("dog", "", "push");
   const [draftDog, setDraftDog] = createSignal<Dog>(
@@ -133,7 +201,7 @@ function MyDogsListPage() {
   createEffect(() => {
     const id = editingDogId();
     if (!id) return;
-    const dog = dogsQuery.data?.find((entry) => entry.identification === id);
+    const dog = myDogs().find((entry) => entry.identification === id);
     if (dog && draftDog().identification !== dog.identification) {
       setDraftDog(() => dogToDraft(dog));
     }
@@ -194,11 +262,13 @@ function MyDogsListPage() {
         {
           id: "sex",
           header: i18n.t("MY.DOGS.LIST.SEX"),
+          size: COLUMN_WIDTH.sex,
           enableSorting: false,
           cell: (info) => <SexIcon sex={info.row.original.sex} />,
         },
         {
           id: "breed",
+          size: COLUMN_WIDTH.breed,
           accessorFn: (dog) => dog.breed.name,
           header: i18n.t("MY.DOGS.LIST.BREED"),
           cell: (info) => info.row.original.breed.name,
@@ -210,12 +280,14 @@ function MyDogsListPage() {
       cols.push(
         {
           id: "handler",
+          size: COLUMN_WIDTH.handler,
           accessorKey: "handler",
           header: i18n.t("MY.DOGS.LIST.HANDLER"),
           cell: (info) => info.getValue<string>(),
         },
         {
           id: "withers",
+          size: COLUMN_WIDTH.withers,
           accessorKey: "withersCm",
           header: i18n.t("MY.DOGS.LIST.HEIGHT"),
           cell: (info) => {
@@ -229,6 +301,7 @@ function MyDogsListPage() {
     cols.push({
       id: "actions",
       header: () => null,
+      size: COLUMN_WIDTH.actions,
       enableSorting: false,
       cell: (info) => (
         <div class="list-table__actions">
@@ -262,8 +335,19 @@ function MyDogsListPage() {
   });
 
   const listContent = () => (
-    <div class="dogs-list card-list">
-      <For each={myDogs()}>
+    <div ref={listFill.ref}>
+      <VirtualCardGrid
+        class="dogs-list"
+        items={myDogs()}
+        height={listFill.height()}
+        minColumnWidth={CARD_MIN_WIDTH_PX}
+        rowHeight={CARD_HEIGHT_PX}
+        endSpacing={FLOATING_BUTTON_CLEARANCE_PX}
+        hasMore={hasMore()}
+        isLoadingMore={isLoadingMore()}
+        onLoadMore={loadMoreFrom(VIEW.LIST)}
+        loadingMoreMessage={i18n.t("MY.DOGS.LIST.LOADING_MORE")}
+      >
         {(dog) => (
           <DogCard
             dog={dog}
@@ -271,7 +355,7 @@ function MyDogsListPage() {
             onDelete={() => deleteDog(dog.identification)}
           />
         )}
-      </For>
+      </VirtualCardGrid>
     </div>
   );
 
@@ -285,6 +369,13 @@ function MyDogsListPage() {
         data={myDogs()}
         columns={columns()}
         getRowId={(row) => row.identification}
+        virtualized
+        estimateRowHeight={TABLE_ROW_HEIGHT_PX}
+        fixedLayout
+        hasMore={hasMore()}
+        isLoadingMore={isLoadingMore()}
+        loadingMoreMessage={i18n.t("MY.DOGS.LIST.LOADING_MORE")}
+        onLoadMore={loadMoreFrom(VIEW.TABLE)}
       />
     </div>
   );
@@ -326,77 +417,81 @@ function MyDogsListPage() {
         </Show>
       </Show>
 
-      <AtomDialog
-        size="wide"
-        title={
-          editingDogId()
-            ? i18n.t("MY.DOGS.LIST.EDIT_DOG")
-            : i18n.t("MY.DOGS.LIST.NEW_DOG")
-        }
-        content={
-          <DogForm
-            draft={draftDog}
-            onDraftChange={(updater) =>
-              setDraftDog((current) => ({
-                ...updater(current),
-              }))
+      {/* Dialog triggers and the floating button are overlays: kept out of the page flow so
+          they add neither height nor a flex gap to the column the list has to fit in. */}
+      <div class="dogs-list__overlays">
+        <AtomDialog
+          size="wide"
+          title={
+            editingDogId()
+              ? i18n.t("MY.DOGS.LIST.EDIT_DOG")
+              : i18n.t("MY.DOGS.LIST.NEW_DOG")
+          }
+          content={
+            <DogForm
+              draft={draftDog}
+              onDraftChange={(updater) =>
+                setDraftDog((current) => ({
+                  ...updater(current),
+                }))
+              }
+              onCancel={handleCloseDialog}
+              onSave={handleSave}
+              isEditMode={!!editingDogId()}
+            />
+          }
+          open={isDialogOpen()}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              handleCloseDialog();
             }
-            onCancel={handleCloseDialog}
-            onSave={handleSave}
-            isEditMode={!!editingDogId()}
-          />
-        }
-        open={isDialogOpen()}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            handleCloseDialog();
-          }
-        }}
-        trigger={<span aria-hidden />}
-      />
+          }}
+          trigger={<span aria-hidden />}
+        />
 
-      <AtomDialog
-        title={i18n.t("MY.DOGS.LIST.DOG_ALREADY_EXISTS_TITLE")}
-        content={
-          <div class="dogs-list-conflict-dialog__actions">
-            <AtomButton
-              type={BUTTON_TYPES.ACCENT}
-              onClick={() => setConflictingDogId(null)}
-            >
-              {i18n.t("MY.DOGS.LIST.CANCEL")}
-            </AtomButton>
-            <AtomButton onClick={handleTakeOwnership}>
-              {i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
-            </AtomButton>
-          </div>
-        }
-        open={!!conflictingDogId()}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setConflictingDogId(null);
+        <AtomDialog
+          title={i18n.t("MY.DOGS.LIST.DOG_ALREADY_EXISTS_TITLE")}
+          content={
+            <div class="dogs-list-conflict-dialog__actions">
+              <AtomButton
+                type={BUTTON_TYPES.ACCENT}
+                onClick={() => setConflictingDogId(null)}
+              >
+                {i18n.t("MY.DOGS.LIST.CANCEL")}
+              </AtomButton>
+              <AtomButton onClick={handleTakeOwnership}>
+                {i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
+              </AtomButton>
+            </div>
           }
-        }}
-        trigger={<span aria-hidden />}
-      />
+          open={!!conflictingDogId()}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setConflictingDogId(null);
+            }
+          }}
+          trigger={<span aria-hidden />}
+        />
 
-      <AtomDialog
-        title={i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
-        content={
-          <OwnDogForm
-            dogIdentification={ownershipDogId() ?? ""}
-            onClose={() => setOwnershipDogId(null)}
-          />
-        }
-        open={!!ownershipDogId()}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) {
-            setOwnershipDogId(null);
+        <AtomDialog
+          title={i18n.t("MY.DOGS.LIST.TAKE_OWNERSHIP")}
+          content={
+            <OwnDogForm
+              dogIdentification={ownershipDogId() ?? ""}
+              onClose={() => setOwnershipDogId(null)}
+            />
           }
-        }}
-        trigger={<span aria-hidden />}
-      />
+          open={!!ownershipDogId()}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setOwnershipDogId(null);
+            }
+          }}
+          trigger={<span aria-hidden />}
+        />
 
-      <FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
+        <FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
+      </div>
     </Page>
   );
 }
