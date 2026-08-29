@@ -82,3 +82,19 @@
 .dogs-list__overlays {
   position: absolute;
 }
+
+/* On a phone the cards are the whole column, so they are tightened up to fit more of the list on screen. */
+@media (max-width: 767px) {
+  .dogs-list .virtual-card-grid__row > .card {
+    padding: var(--unit-1);
+  }
+
+  .dogs-list .virtual-card-grid__row > .card > .card__description {
+    margin-bottom: var(--unit-05);
+  }
+
+  .dogs-list .virtual-card-grid__row > .card > .card__content {
+    margin-bottom: var(--unit-1);
+    padding: var(--unit-05);
+  }
+}

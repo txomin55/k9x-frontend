@@ -1,6 +1,8 @@
+import { Show } from "solid-js";
 import Card from "@lib/components/molecules/card/Card";
 import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import { useI18n } from "@/stores/i18n/i18n";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
@@ -25,13 +27,20 @@ export default function DogCard(props: DogCardProps) {
       topRight={<span class="dog-card__breed">{props.dog.breed.name}</span>}
       description={<span class="text-body-md">{props.dog.origin}</span>}
       content={
-        props.dog.image ? (
-          <img
-            class="dog-card__image"
-            src={props.dog.image}
-            alt={`Dog ${props.dog.name}`}
-          />
-        ) : undefined
+        <div class="dog-card__facts">
+          <div class="dog-card__fact">
+            <CountryFlag country={props.dog.country.id} />
+            <span class="text-body-sm">{props.dog.country.name}</span>
+          </div>
+          <Show when={props.dog.handler}>
+            <div class="dog-card__fact">
+              <span class="dog-card__fact-label text-caption-sm">
+                {i18n.t("MY.DOGS.LIST.HANDLER")}
+              </span>
+              <span class="text-body-sm">{props.dog.handler}</span>
+            </div>
+          </Show>
+        </div>
       }
       actions={
         <div class="dog-card__actions">

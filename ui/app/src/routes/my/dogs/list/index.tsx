@@ -65,6 +65,8 @@ const MIN_NAME_SEARCH_LENGTH = 3;
 
 // Tall enough for a dog name wrapping to three lines, so every card is the same height whatever it holds.
 const CARD_HEIGHT_PX = 210;
+// On a phone the grid is a single column, so the cards are compact enough to show more than two at once.
+const MOBILE_CARD_HEIGHT_PX = 180;
 const TABLE_ROW_HEIGHT_PX = 56;
 // Room to scroll the last row clear of the floating "new dog" button.
 const FLOATING_BUTTON_CLEARANCE_PX = 72;
@@ -357,7 +359,9 @@ function MyDogsListPage() {
         items={myDogs()}
         height={listFill.height()}
         minColumnWidth={CARD_MIN_WIDTH_PX}
-        rowHeight={CARD_HEIGHT_PX}
+        rowHeight={
+          device() === "mobile" ? MOBILE_CARD_HEIGHT_PX : CARD_HEIGHT_PX
+        }
         endSpacing={FLOATING_BUTTON_CLEARANCE_PX}
         hasMore={hasMore()}
         isLoadingMore={isLoadingMore()}
