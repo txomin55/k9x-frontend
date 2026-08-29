@@ -24,6 +24,18 @@
   border-spacing: 0;
 }
 
+/* The declared column widths are the layout, so content is clipped inside them instead of widening the
+   table into a horizontal scroll. */
+.atom-table__table--fixed {
+  table-layout: fixed;
+}
+
+.atom-table__table--fixed .atom-table__header,
+.atom-table__table--fixed .atom-table__cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Header */
 
 .atom-table__header {
