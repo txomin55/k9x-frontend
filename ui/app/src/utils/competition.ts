@@ -6,12 +6,19 @@ export const COMPETITION_STATUS = {
   DELETED: "DELETED",
 };
 
+// DRAFT is the local, not-yet-synced twin of CREATED: offline the POST never lands, so it must behave the same.
+function isCreatedCompetition(status?: string) {
+  return (
+    status === COMPETITION_STATUS.CREATED || status === COMPETITION_STATUS.DRAFT
+  );
+}
+
 export function canEditCompetition(status?: string) {
-  return status === COMPETITION_STATUS.CREATED;
+  return isCreatedCompetition(status);
 }
 
 export function canDeleteCompetition(status?: string) {
-  return status === COMPETITION_STATUS.CREATED;
+  return isCreatedCompetition(status);
 }
 
 export const COMPETITION_DETAIL_TABS = {

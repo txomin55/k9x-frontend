@@ -62,7 +62,11 @@ export const COMPETITOR_STATUS = {
 };
 
 export function canSeeClassification(status: string) {
-  return ![EVENT_STATUS.CREATED, EVENT_STATUS.DELETED].includes(status);
+  return ![
+    EVENT_STATUS.DRAFT,
+    EVENT_STATUS.CREATED,
+    EVENT_STATUS.DELETED,
+  ].includes(status);
 }
 
 export function canSeeCompetitorScores(eventStatus: string) {
@@ -73,14 +77,19 @@ export function canAcceptCompetitorEnroll(competitorStatus: string) {
   return competitorStatus === COMPETITOR_STATUS.PENDING_ENROLL_ACCEPT;
 }
 
+// DRAFT is the local, not-yet-synced twin of CREATED: offline the POST never lands, so it must behave the same.
 export function canDeleteEvent(status?: string) {
-  return status === EVENT_STATUS.CREATED;
+  return isCreatedEvent(status);
 }
 
 export function canEditEvent(status?: string) {
-  return status === EVENT_STATUS.CREATED;
+  return isCreatedEvent(status);
 }
 
 export function canManageEvent(status?: string) {
-  return [EVENT_STATUS.CREATED, EVENT_STATUS.STARTED].includes(status ?? "");
+  return isCreatedEvent(status) || status === EVENT_STATUS.STARTED;
+}
+
+function isCreatedEvent(status?: string) {
+  return status === EVENT_STATUS.CREATED || status === EVENT_STATUS.DRAFT;
 }

@@ -55,16 +55,21 @@ export function isStageLive(status: string) {
   return [STAGE_STATUS.TO_START, STAGE_STATUS.STARTED].includes(status);
 }
 
+// DRAFT is the local, not-yet-synced twin of CREATED: offline the POST never lands, so it must behave the same.
+function isCreatedStage(status?: string) {
+  return status === STAGE_STATUS.CREATED || status === STAGE_STATUS.DRAFT;
+}
+
 export function canEditStage(status?: string) {
-  return status === STAGE_STATUS.CREATED;
+  return isCreatedStage(status);
 }
 
 export function canDeleteStage(status?: string) {
-  return status === STAGE_STATUS.CREATED;
+  return isCreatedStage(status);
 }
 
 export function canCreateEvent(stageStatus?: string) {
-  return stageStatus === STAGE_STATUS.CREATED;
+  return isCreatedStage(stageStatus);
 }
 
 export function isDayAfterStageDateTo(stageDateTo?: number) {
