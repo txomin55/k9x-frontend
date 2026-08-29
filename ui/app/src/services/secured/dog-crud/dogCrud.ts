@@ -46,12 +46,16 @@ const buildDogsPath = (filters: string, params?: Record<string, string>) => {
   return `/secured/dogs${filters ? `?${filters}` : ""}${search ? `${filters ? "&" : "?"}${search}` : ""}`;
 };
 
-const fetchDogsPage = (filters: string, page: number, name?: string) =>
+/** What the caller is narrowing the list down to, beyond the fixed filters of the list itself. */
+export type DogListSearch = { name?: string; country?: string };
+
+const fetchDogsPage = (filters: string, page: number, search?: DogListSearch) =>
   rawRequest<DogPageDTO>({
     path: buildDogsPath(filters, {
       page: String(page),
       size: String(DOGS_PAGE_SIZE),
-      ...(name ? { name } : {}),
+      ...(search?.name ? { name: search.name } : {}),
+      ...(search?.country ? { country: search.country } : {}),
     }),
   });
 
@@ -71,10 +75,10 @@ const appendDogs = (previousDogs: Dog[], nextDogs: Dog[]) => {
  */
 const pagedDogs = (filters: string, pages: DogPages) => ({
   pages,
-  first: async (queryKey: readonly unknown[], name?: string) => {
+  first: async (queryKey: readonly unknown[], search?: DogListSearch) => {
     pages.reset();
 
-    const page = await fetchDogsPage(filters, 0, name);
+    const page = await fetchDogsPage(filters, 0, search);
 
     pages.pageLoaded(page.page, page.total, page.totalPages);
     queryClient.setQueryData(queryKey, page.items);
@@ -82,13 +86,13 @@ const pagedDogs = (filters: string, pages: DogPages) => ({
     return page.items;
   },
   // Dogs already in the cache are not repeated: one created while scrolling can come back in a later page.
-  loadMore: async (queryKey: readonly unknown[], name?: string) => {
+  loadMore: async (queryKey: readonly unknown[], search?: DogListSearch) => {
     if (!pages.hasMore() || pages.state().isLoadingMore) return;
 
     pages.startLoadingMore();
 
     try {
-      const page = await fetchDogsPage(filters, pages.nextPage(), name);
+      const page = await fetchDogsPage(filters, pages.nextPage(), search);
 
       queryClient.setQueryData<Dog[]>(queryKey, (previousDogs) =>
         appendDogs(previousDogs ?? [], page.items),
@@ -125,13 +129,13 @@ const refreshDogsSnapshot = () => myDogs.first(getDogsQueryKey());
 
 export const loadMoreDogs = () => myDogs.loadMore(getDogsQueryKey());
 
-export const loadMoreDogsSearch = (name: string) =>
-  myDogsSearch.loadMore(getDogsSearchQueryKey(name), name);
+export const loadMoreDogsSearch = (search: DogListSearch) =>
+  myDogsSearch.loadMore(getDogsSearchQueryKey(search), search);
 
 export const loadMoreAllDogs = () => allDogs.loadMore(getAllDogsQueryKey());
 
 export const loadMoreAllDogsSearch = (name: string) =>
-  allDogsSearch.loadMore(getAllDogsSearchQueryKey(name), name);
+  allDogsSearch.loadMore(getAllDogsSearchQueryKey(name), { name });
 
 /**
  * Built on `createQuery` rather than on the query factory: the searched name changes as the user types,
@@ -143,29 +147,29 @@ export const loadMoreAllDogsSearch = (name: string) =>
  * while the server answers. The list is then replaced under a search box that never moves.
  */
 const dogSearchQuery = (
-  name: () => string,
-  queryKey: (name: string) => readonly unknown[],
-  search: ReturnType<typeof pagedDogs>,
+  search: () => DogListSearch,
+  queryKey: (search: DogListSearch) => readonly unknown[],
+  pages: ReturnType<typeof pagedDogs>,
   loadedKey: () => readonly unknown[],
 ) =>
   withMergedDogDrafts(
     createQuery(() => ({
-      queryKey: queryKey(name()),
-      queryFn: () => search.first(queryKey(name()), name()),
+      queryKey: queryKey(search()),
+      queryFn: () => pages.first(queryKey(search()), search()),
       networkMode: "always" as const,
-      enabled: !!name(),
+      enabled: Boolean(search().name || search().country),
       placeholderData: (previousDogs: Dog[] | undefined) =>
         previousDogs ?? queryClient.getQueryData<Dog[]>(loadedKey()) ?? [],
     })),
   );
 
-export const useDogsSearch = (name: () => string) =>
-  dogSearchQuery(name, getDogsSearchQueryKey, myDogsSearch, getDogsQueryKey);
+export const useDogsSearch = (search: () => DogListSearch) =>
+  dogSearchQuery(search, getDogsSearchQueryKey, myDogsSearch, getDogsQueryKey);
 
 export const useAllDogsSearch = (name: () => string) =>
   dogSearchQuery(
-    name,
-    getAllDogsSearchQueryKey,
+    () => ({ name: name() }),
+    (search) => getAllDogsSearchQueryKey(search.name ?? ""),
     allDogsSearch,
     getAllDogsQueryKey,
   );

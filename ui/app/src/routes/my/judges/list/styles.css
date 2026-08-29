@@ -1,3 +1,16 @@
+/* Name and country sit side by side while there is room, and stack on a narrow screen. */
+.judges-list__filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: var(--unit-1);
+}
+
+.judges-list__filters > .name-filter {
+	flex: 1 1 calc(var(--unit-10) * 2);
+	margin-bottom: 0;
+}
+
 .judges-list.card-list {
 	grid-template-columns: repeat(
 		auto-fit,

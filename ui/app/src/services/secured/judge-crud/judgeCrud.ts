@@ -1,3 +1,4 @@
+import { createQuery } from "@tanstack/solid-query";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
@@ -19,6 +20,7 @@ import type {
 import {
   CREATED_JUDGES_SNAPSHOT_ID,
   getCreatedJudgesQueryKey,
+  getCreatedJudgesByCountryQueryKey,
   getJudgesQueryKey,
   JUDGES_SNAPSHOT_ID,
 } from "./judgeCrudConstants";
@@ -114,6 +116,28 @@ const withMergedJudgeDrafts = <T extends { data?: JudgeResponseDTO[] }>(
 
 export const useJudges = (options?: TanstackCreateQuery) =>
   createJudgesQuery(options);
+
+/**
+ * The country filter is served by the API and kept out of the judges cache: that cache is the base of
+ * the local-first list, and seeding it with one country's judges would read as "the rest are gone".
+ * Like the dog search, it starts with the judges already listed so the page never suspends mid-filter.
+ */
+export const useCreatedJudgesByCountry = (country: () => string) =>
+  createQuery(() => ({
+    queryKey: getCreatedJudgesByCountryQueryKey(country()),
+    queryFn: () =>
+      rawRequest<JudgeResponseDTO[]>({
+        path: `/secured/judges?created=true&country=${encodeURIComponent(country())}`,
+      }),
+    networkMode: "always" as const,
+    enabled: !!country(),
+    placeholderData: (previousJudges: JudgeResponseDTO[] | undefined) =>
+      previousJudges ??
+      queryClient.getQueryData<JudgeResponseDTO[]>(
+        getCreatedJudgesQueryKey(),
+      ) ??
+      [],
+  }));
 
 const createCreatedJudgesQuery = (options?: TanstackCreateQuery) =>
   defineQuery({

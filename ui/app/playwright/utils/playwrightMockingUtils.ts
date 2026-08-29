@@ -78,3 +78,19 @@ export const setRouteResponses = async (page: Page, apiMock: ApiMock) => {
     },
   );
 };
+
+/** Applies the `country` query param the way the API does, so a filtered request answers filtered. */
+export const byCountry = <T extends { country?: unknown }>(
+  items: T[],
+  url: string,
+) => {
+  const country = new URL(url).searchParams.get("country");
+
+  return country
+    ? items.filter((item) => {
+        const value = item.country as { id?: string } | string | undefined;
+        const code = typeof value === "string" ? value : value?.id;
+        return (code ?? "").toLowerCase() === country.toLowerCase();
+      })
+    : items;
+};

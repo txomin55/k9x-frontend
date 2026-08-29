@@ -22,6 +22,9 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
+import CountryFilter, {
+  ANY_COUNTRY,
+} from "@/components/common/country-filter/CountryFilter";
 import Page from "@/components/common/page/Page";
 import DogCard from "@/components/routes/my/dogs/list/dog-card/DogCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
@@ -41,7 +44,10 @@ import {
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
-import { buildNameContainsMatcher } from "@/utils/filter/nameFilter";
+import {
+  buildNameContainsMatcher,
+  isSameCountry,
+} from "@/utils/filter/nameFilter";
 import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
 import VirtualCardGrid from "@/components/common/virtual-card-grid/VirtualCardGrid";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -121,6 +127,7 @@ function MyDogsListPage() {
   });
 
   const [nameFilter, setNameFilter] = createSignal("");
+  const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
   const [view, setView] = createSignal<string>(VIEW.LIST);
   const tableFill = useFillRemainingHeight();
   const listFill = useFillRemainingHeight();
@@ -131,15 +138,24 @@ function MyDogsListPage() {
   const debouncedName = useDebouncedValue(() => nameFilter().trim());
   const searchedName = () =>
     debouncedName().length >= MIN_NAME_SEARCH_LENGTH ? debouncedName() : "";
-  const isSearching = () => !!searchedName();
-  const searchQuery = useDogsSearch(searchedName);
+  // Either filter is enough to narrow the list: both travel in the same request.
+  const dogSearch = () => ({
+    name: searchedName(),
+    country: countryFilter(),
+  });
+  const isSearching = () => !!searchedName() || !!countryFilter();
+  const searchQuery = useDogsSearch(dogSearch);
 
   const myDogs = createMemo(() => {
     if (isSearching()) {
       // Dogs created or edited on this device live as local drafts, which the API knows nothing about,
       // so the same match the server applied is re-applied over the merged list.
       const matches = buildNameContainsMatcher(searchedName());
-      return (searchQuery.data ?? []).filter((dog) => matches(dog.name));
+      const country = countryFilter();
+
+      return (searchQuery.data ?? []).filter(
+        (dog) => matches(dog.name) && isSameCountry(dog.country.id, country),
+      );
     }
 
     return dogsQuery.data ?? [];
@@ -154,7 +170,7 @@ function MyDogsListPage() {
   const loadMoreFrom = (fromView: string) => () => {
     if (view() !== fromView) return;
 
-    void (isSearching() ? loadMoreDogsSearch(searchedName()) : loadMoreDogs());
+    void (isSearching() ? loadMoreDogsSearch(dogSearch()) : loadMoreDogs());
   };
 
   const [dogParam, setDogParam] = useSearchParam("dog", "", "push");
@@ -399,11 +415,17 @@ function MyDogsListPage() {
         when={dogsQuery.data?.length}
         fallback={<p>{i18n.t("MY.DOGS.LIST.NO_DOGS_AVAILABLE_YET")}</p>}
       >
-        <NameFilter
-          label={i18n.t("MY.DOGS.LIST.NAME_FILTER")}
-          value={nameFilter()}
-          onChange={setNameFilter}
-        />
+        <div class="dogs-list__filters">
+          <NameFilter
+            label={i18n.t("MY.DOGS.LIST.NAME_FILTER")}
+            value={nameFilter()}
+            onChange={setNameFilter}
+          />
+          <CountryFilter
+            value={countryFilter()}
+            onChange={setCountryFilter}
+          />
+        </div>
         <Show
           when={myDogs().length}
           fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}

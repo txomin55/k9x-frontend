@@ -11,14 +11,20 @@ import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSke
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
+import CountryFilter, {
+	ANY_COUNTRY,
+} from "@/components/common/country-filter/CountryFilter";
 import Page from "@/components/common/page/Page";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import CompetitionCard from "@/components/routes/my/competitions/list/competition-card/CompetitionCard";
-import { useCompetitions } from "@/services/secured/competition-crud/competitionCrud";
+import {
+	useCompetitions,
+	useCompetitionsByCountry,
+} from "@/services/secured/competition-crud/competitionCrud";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
-import { buildNameMatcher } from "@/utils/filter/nameFilter";
+import { buildNameMatcher, isSameCountry } from "@/utils/filter/nameFilter";
 import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
@@ -56,14 +62,25 @@ function MyCompetitionsIndexPage() {
 		enabled: () => Boolean(user()),
 	});
 	const [nameFilter, setNameFilter] = createSignal("");
+	const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
 	const [view, setView] = createSignal<string>(VIEW.LIST);
 	const tableFill = useViewportFillHeight();
 	const device = useDeviceType();
 
+	// The country travels in the request; the name is still matched here, over what came back.
+	const competitionsByCountry = useCompetitionsByCountry(countryFilter);
+	const listedCompetitions = () =>
+		(countryFilter() ? competitionsByCountry.data : fetchedCompetitions.data) ??
+		[];
+
 	const filteredCompetitions = createMemo(() => {
 		const matches = buildNameMatcher(nameFilter());
-		return (fetchedCompetitions.data ?? []).filter((competition) =>
-			matches(competition.name),
+		const country = countryFilter();
+
+		return listedCompetitions().filter(
+			(competition) =>
+				matches(competition.name) &&
+				isSameCountry(competition.country, country),
 		);
 	});
 
@@ -184,11 +201,17 @@ function MyCompetitionsIndexPage() {
 						<span>{i18n.t("MY.COMPETITIONS.LIST.NO_COMPETITIONS")}</span>
 					}
 				>
-					<NameFilter
-						label={i18n.t("MY.COMPETITIONS.LIST.NAME_FILTER")}
-						value={nameFilter()}
-						onChange={setNameFilter}
-					/>
+					<div class="competitions-list__filters">
+						<NameFilter
+							label={i18n.t("MY.COMPETITIONS.LIST.NAME_FILTER")}
+							value={nameFilter()}
+							onChange={setNameFilter}
+						/>
+						<CountryFilter
+							value={countryFilter()}
+							onChange={setCountryFilter}
+						/>
+					</div>
 					<Show
 						when={filteredCompetitions().length}
 						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}

@@ -18,6 +18,9 @@ import ConfirmActionButton from "@/components/common/confirm-action-button/Confi
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
+import CountryFilter, {
+	ANY_COUNTRY,
+} from "@/components/common/country-filter/CountryFilter";
 import Page from "@/components/common/page/Page";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
@@ -27,12 +30,13 @@ import {
 	deleteJudge,
 	updateJudge,
 	useCreatedJudges,
+	useCreatedJudgesByCountry,
 } from "@/services/secured/judge-crud/judgeCrud";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
-import { buildNameMatcher } from "@/utils/filter/nameFilter";
+import { buildNameMatcher, isSameCountry } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { generateEntityId } from "@/utils/id/generateEntityId";
@@ -80,12 +84,22 @@ function MyJudgesListPage() {
 		buildJudgeDraft(),
 	);
 	const [nameFilter, setNameFilter] = createSignal("");
+	const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
 	const [view, setView] = createSignal<string>(VIEW.LIST);
 	const tableFill = useViewportFillHeight();
 
+	// The country travels in the request; the name is still matched here, over what came back.
+	const judgesByCountryQuery = useCreatedJudgesByCountry(countryFilter);
+	const listedJudges = () =>
+		(countryFilter() ? judgesByCountryQuery.data : judgesQuery.data) ?? [];
+
 	const filteredJudges = createMemo(() => {
 		const matches = buildNameMatcher(nameFilter());
-		return (judgesQuery.data ?? []).filter((judge) => matches(judge.name));
+		const country = countryFilter();
+
+		return listedJudges().filter(
+			(judge) => matches(judge.name) && isSameCountry(judge.country, country),
+		);
 	});
 
 	const isDialogOpen = () => !!judgeParam();
@@ -265,11 +279,17 @@ function MyJudgesListPage() {
 					when={judgesQuery.data?.length}
 					fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
 				>
-					<NameFilter
-						label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
-						value={nameFilter()}
-						onChange={setNameFilter}
-					/>
+					<div class="judges-list__filters">
+						<NameFilter
+							label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
+							value={nameFilter()}
+							onChange={setNameFilter}
+						/>
+						<CountryFilter
+							value={countryFilter()}
+							onChange={setCountryFilter}
+						/>
+					</div>
 					<Show
 						when={filteredJudges().length}
 						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}

@@ -17,8 +17,17 @@ export const getAllDogsQueryKey = () =>
 export const getOwnedDogsQueryKey = () =>
   ["dogs", "owned", getCurrentLocale()] as const;
 
-export const getDogsSearchQueryKey = (name: string) =>
-  ["dogs", "search", name, getCurrentLocale()] as const;
+export const getDogsSearchQueryKey = (search: {
+  name?: string;
+  country?: string;
+}) =>
+  [
+    "dogs",
+    "search",
+    search.name ?? "",
+    search.country ?? "",
+    getCurrentLocale(),
+  ] as const;
 
 export const getAllDogsSearchQueryKey = (name: string) =>
   ["dogs", "all", "search", name, getCurrentLocale()] as const;

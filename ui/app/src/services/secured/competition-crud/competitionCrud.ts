@@ -2,6 +2,7 @@ import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnap
 import { translate } from "@/stores/i18n/i18n";
 import { createMemo, getOwner } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
+import { createQuery } from "@tanstack/solid-query";
 import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import {
@@ -29,6 +30,7 @@ import { generateEntityId } from "@/utils/id/generateEntityId";
 import { COMPETITION_STATUS } from "@/utils/competition";
 import {
   COMPETITIONS_SNAPSHOT_ID,
+  getCompetitionsByCountryQueryKey,
   getCompetitionsQueryKey,
   getSelectableCompetitionsQueryKey,
   SELECTABLE_COMPETITIONS_SNAPSHOT_ID,
@@ -94,6 +96,30 @@ export const prefetchCompetitions = (options?: TanstackCreateQuery) => {
     networkMode: "always",
   });
 };
+
+/**
+ * The country filter is served by the API and kept out of the competitions cache: that cache is the
+ * base of the local-first list, and seeding it with one country's competitions would read as "the rest
+ * are gone". It starts with the competitions already listed so the page never suspends mid-filter.
+ */
+export const useCompetitionsByCountry = (country: () => string) =>
+  createQuery(() => ({
+    queryKey: getCompetitionsByCountryQueryKey(country()),
+    queryFn: () =>
+      rawRequest<CompetitionResponseDTO[]>({
+        path: `/secured/competitions?country=${encodeURIComponent(country())}`,
+      }),
+    networkMode: "always" as const,
+    enabled: !!country(),
+    placeholderData: (
+      previousCompetitions: CompetitionResponseDTO[] | undefined,
+    ) =>
+      previousCompetitions ??
+      queryClient.getQueryData<CompetitionResponseDTO[]>(
+        getCompetitionsQueryKey(),
+      ) ??
+      [],
+  }));
 
 export const useCompetitions = (options?: TanstackCreateQuery) => {
   const competitions = createCompetitionsQuery(options);

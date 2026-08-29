@@ -8,3 +8,6 @@ export const getJudgesQueryKey = () => ["judges", getCurrentLocale()] as const;
 
 export const getCreatedJudgesQueryKey = () =>
   ["judges", "created", getCurrentLocale()] as const;
+
+export const getCreatedJudgesByCountryQueryKey = (country: string) =>
+  ["judges", "created", "country", country, getCurrentLocale()] as const;

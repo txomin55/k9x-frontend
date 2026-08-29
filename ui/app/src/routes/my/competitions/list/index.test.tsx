@@ -30,6 +30,9 @@ vi.mock("@/services/secured/competition-crud/competitionCrud", () => ({
   useCompetitions: () => ({
     data: [],
   }),
+  useCompetitionsByCountry: () => ({
+    data: [],
+  }),
 }));
 
 describe("my competition route", () => {

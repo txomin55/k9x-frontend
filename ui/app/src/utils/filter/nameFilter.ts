@@ -25,3 +25,13 @@ export function buildNameContainsMatcher(
 
   return (name: string) => (name ?? "").toLowerCase().includes(trimmed);
 }
+
+/**
+ * Country codes travel in different casings depending on where they were stored, so a filter matches
+ * them the way a person would: "ES" and "es" are the same country.
+ */
+export function isSameCountry(value: string | undefined, country: string) {
+	if (!country) return true;
+
+	return (value ?? "").toLowerCase() === country.toLowerCase();
+}

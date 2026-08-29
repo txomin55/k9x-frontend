@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { COMPETITION_STATUS } from "@/utils/competition";
-import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import { byCountry, setRouteResponses } from "@test/utils/playwrightMockingUtils";
 import { EVENT_STATUS } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
 
@@ -162,7 +162,8 @@ export const setupCompetitionsCrud = (page: Page) => {
   return Promise.all([
     setRouteResponses(page, {
       method: "GET",
-      payload: () => competitions,
+      payload: (_match, request) =>
+        byCountry(competitions as { country?: unknown }[], request.url()),
       pathname: "/secured/competitions",
     }),
     setRouteResponses(page, {
