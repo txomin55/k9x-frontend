@@ -1,4 +1,4 @@
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import AtomSelect, {
   type AtomSelectOption,
 } from "@lib/components/atoms/select/AtomSelect";
@@ -74,6 +74,19 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
   );
   const [stageId, setStageId] = createSignal("");
   const [eventId, setEventId] = createSignal("");
+  // The field is kept as raw text so it can be emptied while typing instead of snapping back to a number.
+  const [includedCountDraft, setIncludedCountDraft] = createSignal(
+    props.includedCount === null ? "" : String(props.includedCount),
+  );
+
+  createEffect(() => {
+    const incoming = props.includedCount;
+
+    if (incoming === null) return;
+    if (Number.parseInt(includedCountDraft(), 10) === incoming) return;
+
+    setIncludedCountDraft(String(incoming));
+  });
 
   const competitionOptions = createMemo<AtomSelectOption[]>(() =>
     props.competitions.map((competition) => ({
@@ -188,9 +201,25 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
   };
 
   const handleIncludedCountChange = (value: string) => {
+    setIncludedCountDraft(value);
+
     const parsed = Number.parseInt(value, 10);
 
-    emit({ includedCount: Number.isNaN(parsed) ? null : Math.max(1, parsed) });
+    emit({ includedCount: Number.isNaN(parsed) ? null : parsed });
+  };
+
+  const handleIncludedCountBlur = () => {
+    const parsed = Number.parseInt(includedCountDraft(), 10);
+
+    if (Number.isNaN(parsed)) {
+      setIncludedCountDraft("");
+      return;
+    }
+
+    const clamped = Math.max(1, parsed);
+
+    setIncludedCountDraft(String(clamped));
+    if (clamped !== props.includedCount) emit({ includedCount: clamped });
   };
 
   return (
@@ -309,9 +338,10 @@ export default function RankingConfigurator(props: RankingConfiguratorProps) {
             label={i18n.t("MY.COMPETITIONS.RANKINGS_SECTION.INCLUDED_COUNT")}
             type="number"
             min="1"
-            value={String(props.includedCount ?? 1)}
+            value={includedCountDraft()}
             disabled={props.disabled}
             onChange={handleIncludedCountChange}
+            onBlur={handleIncludedCountBlur}
           />
         </Show>
       </div>
