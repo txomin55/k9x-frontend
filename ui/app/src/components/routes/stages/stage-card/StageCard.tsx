@@ -7,7 +7,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageNotificationsToggle from "@/components/common/stage-notifications-toggle/StageNotificationsToggle";
 import type {
-  CompetitionSource,
+  ExtractionResponseDTO,
   StageEventSummaryResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
@@ -30,7 +30,7 @@ export interface StageCardProps {
   status?: string;
   to: number;
   organizer: string;
-  source?: CompetitionSource;
+  extraction?: ExtractionResponseDTO;
   onEnroll?: (eventId: string) => void;
 }
 
@@ -101,7 +101,7 @@ export default function StageCard(props: StageCardProps) {
           </AtomButton>
           <div class="stage-card__legends">
             {/* The trial detail carries the full warning; here it is a footnote. */}
-            <Show when={props.source === "EXTRACTION"}>
+            <Show when={props.extraction}>
               <span class="stage-card__legend">
                 {i18n.t("COMMON.EXTRACTION_BANNER.CARD_NOTE")}
               </span>

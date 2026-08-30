@@ -80,3 +80,23 @@
 .extraction-report-form__context {
     color: var(--text-primary);
 }
+
+/* Provenance sits under the message and before the report action: it explains where the data came from, which
+   is what makes the warning actionable rather than just alarming. */
+.extraction-banner__provenance {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    gap: var(--unit-025);
+    text-align: left;
+}
+
+.extraction-banner__collected {
+    opacity: 0.85;
+}
+
+.extraction-banner__source {
+    align-self: flex-start;
+    color: var(--warning-text);
+    text-decoration: underline;
+}

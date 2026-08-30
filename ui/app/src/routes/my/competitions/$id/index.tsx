@@ -469,7 +469,7 @@ function CompetitionDetailBody(props: {
   return (
     <div class="page competition-detail">
       <ExtractionSourceBanner
-        source={props.competition()?.source}
+        extraction={props.competition()?.extraction}
         context={props.competition()?.name ?? ""}
         contextId={props.competition()?.id ?? ""}
       />

@@ -1,10 +1,25 @@
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 /**
- * Where a competition's data comes from. Trials and events have no source of their own: they inherit the
- * one of their competition, the same way they inherit its address.
+ * Where the evidence of an extracted competition was taken from, and when it was collected. The timestamp is
+ * the collection date, not the date the competition was held nor the one it was loaded into k9x.
  */
-export type CompetitionSource = "API" | "EXTRACTION";
+export interface ExtractionSourceResponseDTO {
+  url?: string;
+  extractionTimestamp?: number;
+}
+
+/**
+ * Provenance of data k9x did not collect itself. Present only on extracted competitions, which is what makes
+ * it the flag the views read: no extraction, no warning. Trials and events have no provenance of their own,
+ * they inherit the one of their competition, the same way they inherit its address.
+ */
+export interface ExtractionResponseDTO {
+  extractionId?: string;
+  source?: ExtractionSourceResponseDTO;
+  /** Already localised by the backend: how the data was obtained, ready to be shown as is. */
+  hint?: string;
+}
 
 export interface StageEventSummaryResponseDTO {
   competitors: number;
@@ -31,7 +46,7 @@ export interface StageSummaryResponseDTO {
   name: string;
   status: string;
   organizer: string;
-  source?: CompetitionSource;
+  extraction?: ExtractionResponseDTO;
 }
 
 export interface CompetitionLocationDetailResponseDTO {
@@ -51,7 +66,7 @@ export interface StageDetailResponseDTO {
   notifications: StageNotificationResponseDTO[];
   organizer: string;
   status?: string;
-  source?: CompetitionSource;
+  extraction?: ExtractionResponseDTO;
 }
 
 export interface StageEventDetailCompetitorResponseDTO {
@@ -126,7 +141,7 @@ export interface StageEventClassificationResponseDTO {
   lastUpdated: number;
   status: string;
   obdx?: ObdxStageEventClassificationResponseDTO;
-  source?: CompetitionSource;
+  extraction?: ExtractionResponseDTO;
 }
 
 export interface StageEventClassificationItemResponseDTO {

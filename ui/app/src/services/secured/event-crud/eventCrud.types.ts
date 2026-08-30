@@ -4,7 +4,7 @@ import {
 } from "@/services/secured/configurations/configurations.types";
 import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import type { CompetitionSource } from "@/services/fetch-stages/fetchStages.types";
+import type { ExtractionResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { COMPETITOR_STATUS } from "@/utils/event";
 
 export interface CreateEventRequestDTO {
@@ -111,7 +111,7 @@ export interface ObdxEventDetailResponseDTO {
   category?: string;
   awards: IdNameDTO[];
   rank?: string;
-  source?: CompetitionSource;
+  extraction?: ExtractionResponseDTO;
 }
 
 export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {

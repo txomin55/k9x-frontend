@@ -152,7 +152,7 @@ function MyCompetitionsIndexPage() {
 						country={competition.country}
 						stages={competition.stages}
 						address={competition?.address}
-						source={competition.source}
+						extraction={competition.extraction}
 					/>
 				)}
 			</For>

@@ -452,7 +452,7 @@ function StageInfoPage() {
             <span class="text-caption-lg">{stage().address}</span>
             <span class="text-caption-md">{stage().organizer}</span>
             <ExtractionSourceBanner
-              source={stage().source}
+              extraction={stage().extraction}
               context={stage().name ?? ""}
               contextId={stage().id}
             />

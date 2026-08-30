@@ -156,6 +156,8 @@
   "COMMON.EXTRACTION_BANNER.MESSAGE": "Estes dados foram recolhidos fora do k9x. Se detetar algum erro, entre em contacto connosco.",
   "COMMON.EXTRACTION_BANNER.MESSAGE_SHORT": "Dados recolhidos fora do k9x.",
   "COMMON.EXTRACTION_BANNER.CARD_NOTE": "*Dados extraídos",
+  "COMMON.EXTRACTION_BANNER.COLLECTED_AT": "Recolhidos em {{date}}",
+  "COMMON.EXTRACTION_BANNER.SOURCE_LINK": "Ver a fonte",
   "COMMON.EXTRACTION_BANNER.REPORT": "Reportar um erro",
   "COMMON.EXTRACTION_BANNER.FORM_HINT": "Diga-nos que dado está incorreto e iremos revê-lo.",
   "COMMON.EXTRACTION_BANNER.FORM_DESCRIPTION": "Descrição do erro",

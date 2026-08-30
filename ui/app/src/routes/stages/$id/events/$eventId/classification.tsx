@@ -760,7 +760,7 @@ function EventClassificationPage() {
         return (
           <div class="page classification" ref={setPageEl}>
             <ExtractionSourceBanner
-              source={classification().source}
+              extraction={classification().extraction}
               context={classification().event.name}
               contextId={classification().event.id}
             />

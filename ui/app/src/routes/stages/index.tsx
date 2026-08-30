@@ -312,7 +312,7 @@ function StagesListView(props: { onEnroll: EnrollHandler }) {
                 address={stage?.location?.address}
                 events={stage.events ?? []}
                 includesRankings={stage.includesRankings}
-                source={stage.source}
+                extraction={stage.extraction}
                 onEnroll={(eventId) => props.onEnroll(stage.id, eventId)}
               />
             )}
@@ -345,7 +345,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
             <div class="stages-table__name-row">
               {/* Marks read as one token before the name: `*` rankings, `*` extracted, `**` both. */}
               <Show
-                when={stage.includesRankings || stage.source === "EXTRACTION"}
+                when={stage.includesRankings || Boolean(stage.extraction)}
               >
                 <span class="stages-table__marks">
                   <Show when={stage.includesRankings}>
@@ -353,7 +353,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
                       *
                     </span>
                   </Show>
-                  <Show when={stage.source === "EXTRACTION"}>
+                  <Show when={stage.extraction}>
                     <span
                       title={i18n.t("COMMON.EXTRACTION_BANNER.MESSAGE_SHORT")}
                     >

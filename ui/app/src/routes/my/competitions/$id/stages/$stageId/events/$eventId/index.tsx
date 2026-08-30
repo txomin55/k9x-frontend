@@ -1043,7 +1043,7 @@ function CompetitionObdxEventDetailBody(props: {
   return (
     <div class="page competition-event-detail__content">
       <ExtractionSourceBanner
-        source={props.event().source}
+        extraction={props.event().extraction}
         context={props.event().name}
         contextId={props.event().id}
       />

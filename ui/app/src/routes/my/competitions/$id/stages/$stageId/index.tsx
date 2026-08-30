@@ -84,7 +84,7 @@ import {
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
 import type {
-  CompetitionSource,
+  ExtractionResponseDTO,
   StageNotificationResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -271,11 +271,11 @@ function CompetitionStageDetailContentContainer(props: {
   const handleDeleteEvent = (eventId: string) =>
     props.onDeleteEvent(eventId, props.stageId);
   const stageAccessor = () => props.stage()!;
-  // A trial has no source of its own: it inherits the one of the competition it hangs from.
-  const competitionSource = () =>
+  // A trial has no provenance of its own: it inherits the one of the competition it hangs from.
+  const competitionExtraction = () =>
     competitionsQuery.data?.find(
       (competition) => competition.id === props.competitionId,
-    )?.source;
+    )?.extraction;
 
   return (
     <div class="stage-detail">
@@ -297,7 +297,7 @@ function CompetitionStageDetailContentContainer(props: {
               onDeleteEvent={handleDeleteEvent}
               onUpdateEvent={props.onUpdateEvent}
               onUpdateStage={props.onUpdateStage}
-              source={competitionSource}
+              extraction={competitionExtraction}
               stage={stageAccessor}
             />
           </Show>
@@ -326,7 +326,7 @@ function CompetitionStageDetailBody(props: {
     stageId: string,
     stage: UpdateStageRequestDTO,
   ) => void;
-  source: Accessor<CompetitionSource | undefined>;
+  extraction: Accessor<ExtractionResponseDTO | undefined>;
   stage: Accessor<StageEditorModel>;
 }) {
   const i18n = useI18n();
@@ -879,7 +879,7 @@ function CompetitionStageDetailBody(props: {
   return (
     <div class="page stage-detail">
       <ExtractionSourceBanner
-        source={props.source()}
+        extraction={props.extraction()}
         context={props.stage().name}
         contextId={props.stage().id}
       />
