@@ -1045,7 +1045,6 @@ function CompetitionObdxEventDetailBody(props: {
       <ExtractionSourceBanner
         extraction={props.event().extraction}
         context={props.event().name}
-        contextId={props.event().id}
       />
       <header>
         <Show

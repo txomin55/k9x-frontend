@@ -881,7 +881,6 @@ function CompetitionStageDetailBody(props: {
       <ExtractionSourceBanner
         extraction={props.extraction()}
         context={props.stage().name}
-        contextId={props.stage().id}
       />
       <header class="stage-detail__header">
         <Show

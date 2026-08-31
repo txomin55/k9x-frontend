@@ -471,7 +471,6 @@ function CompetitionDetailBody(props: {
       <ExtractionSourceBanner
         extraction={props.competition()?.extraction}
         context={props.competition()?.name ?? ""}
-        contextId={props.competition()?.id ?? ""}
       />
       <CompetitionInfo
         address={address()}

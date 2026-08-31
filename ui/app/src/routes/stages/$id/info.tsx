@@ -454,7 +454,6 @@ function StageInfoPage() {
             <ExtractionSourceBanner
               extraction={stage().extraction}
               context={stage().name ?? ""}
-              contextId={stage().id}
             />
 
             <AtomTabs

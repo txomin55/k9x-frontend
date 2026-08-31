@@ -13,8 +13,6 @@ export interface ExtractionSourceBannerProps {
   extraction?: ExtractionResponseDTO;
   /** Competition, trial or event name, shown in the report dialog so it says what is being reported. */
   context?: string;
-  /** Id of that same entity, which is what the report actually carries. */
-  contextId?: string;
 }
 
 export default function ExtractionSourceBanner(
@@ -70,7 +68,7 @@ export default function ExtractionSourceBanner(
         content={
           <ExtractionReportForm
             context={props.context ?? ""}
-            contextId={props.contextId ?? ""}
+            extractionId={props.extraction?.extractionId ?? ""}
             onClose={() => setReportOpen(false)}
           />
         }

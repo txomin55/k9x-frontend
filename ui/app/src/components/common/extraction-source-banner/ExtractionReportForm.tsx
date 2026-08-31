@@ -15,8 +15,8 @@ const FORM_ID = "1FAIpQLScSPvDGDUn9suXtoB4AOXomp8hnNrUHHMzcux0aYZL8cluD3Q";
 export interface ExtractionReportFormProps {
   /** Name of what is being reported — shown in the dialog, never sent. */
   context: string;
-  /** Id of that same entity. This is what the report carries: names are ambiguous, ids are not. */
-  contextId: string;
+  /** Id of the extraction the data came from. This is what the report carries: names are ambiguous, ids are not. */
+  extractionId: string;
   onClose: () => void;
 }
 
@@ -29,7 +29,7 @@ export default function ExtractionReportForm(props: ExtractionReportFormProps) {
   const sendReport = async () => {
     await postGoogleForm(FORM_ID, {
       "entry.946948767": user()?.email,
-      "entry.467584706": props.contextId,
+      "entry.467584706": props.extractionId,
       "entry.897265685": description(),
     });
     props.onClose();

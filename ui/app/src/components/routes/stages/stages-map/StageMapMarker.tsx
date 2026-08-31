@@ -56,7 +56,6 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
       <ExtractionSourceBanner
         extraction={props.stage.extraction}
         context={props.stage.name ?? ""}
-        contextId={props.stage.id}
       />
       <span class="text-caption-lg">{props.stage.competitionName}</span>
       <span class="text-caption-sm">

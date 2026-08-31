@@ -762,7 +762,6 @@ function EventClassificationPage() {
             <ExtractionSourceBanner
               extraction={classification().extraction}
               context={classification().event.name}
-              contextId={classification().event.id}
             />
             <Show
               when={isMobile()}
