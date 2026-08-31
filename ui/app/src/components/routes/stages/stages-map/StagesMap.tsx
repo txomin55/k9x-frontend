@@ -102,10 +102,14 @@ export default function StagesMap(props: StagesMapProps) {
 		fitToMarkers();
 	});
 
-	const getTileLayerUrl = (isDark: boolean) =>
-		isDark
-			? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-			: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+	const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
+
+	const getTileLayerUrl = (isDark: boolean) => {
+		const style = isDark ? "dark_all" : "rastertiles/voyager";
+		const url = `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`;
+
+		return cartoApiKey ? `${url}?key=${cartoApiKey}` : url;
+	};
 
 	const addTileLayer = (isDark: boolean) => {
 		if (!map) return;
@@ -118,20 +122,17 @@ export default function StagesMap(props: StagesMapProps) {
 	};
 
 	createEffect(() => {
-		addTileLayer(isDark());
+		const dark = isDark();
+		if (!mapReady()) return;
+
+		addTileLayer(dark);
 	});
 
 	onMount(() => {
 		map = L.map(mapEl, {
 			zoomControl: true,
+			maxZoom: 20,
 		});
-
-		L.tileLayer(
-			"https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-			{
-				maxZoom: 20,
-			},
-		).addTo(map);
 
 		map.addLayer(clusterGroup);
 
