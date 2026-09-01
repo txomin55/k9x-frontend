@@ -38,6 +38,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
 
   const emailError = () => validateEmail(props.draft().collectorEmail);
   const emailInvalid = () => emailTouched() && !!emailError();
+  const canSubmit = () => !emailError();
 
   const updateField = (field: "collectorEmail") => (value: string) => {
     props.onDraftChange((current) =>
@@ -114,6 +115,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         }
         onBlur={() => {
           setEmailTouched(true);
+          if (!canSubmit()) return;
           props.onCommit();
         }}
         onChange={updateField("collectorEmail")}
@@ -140,7 +142,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
           {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CLOSE")}
         </AtomButton>
         <Show when={props.displaySave}>
-          <AtomButton onClick={props.onCreate}>
+          <AtomButton onClick={props.onCreate} disabled={!canSubmit()}>
             {i18n.t("MY.COMPETITIONS.JUDGE_EDITOR.CREATE")}
           </AtomButton>
         </Show>

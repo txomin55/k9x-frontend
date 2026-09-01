@@ -175,6 +175,8 @@ function CompetitionObdxEventDetailBody(props: {
   const [draftEvent, setDraftEvent] = createSignal<EventEditorDraft>(
     toEventEditorDraft(props.event(), props.stageDateFrom),
   );
+  /** Shape of the event as the cache last accepted it, to tell an optimistic write apart from a rollback. */
+  let lastPersistedEventKey = "";
 
   /**
    * The commissioner is stored per event but is the same person across the events of a trial, so an event
@@ -521,6 +523,7 @@ function CompetitionObdxEventDetailBody(props: {
     if (getEventDraftKey(nextEvent) === getEventDraftKey(externalEvent)) return;
 
     props.onUpdate(nextEvent.id, buildUpdatePayload(nextEvent, nextName));
+    lastPersistedEventKey = getEventDraftKey(props.event());
   };
 
   const updateDraftEvent = (
@@ -1029,6 +1032,27 @@ function CompetitionObdxEventDetailBody(props: {
 
     const event = props.event();
 
+    lastPersistedEventKey = getEventDraftKey(event);
+    setDraftEvent(toEventEditorDraft(event, props.stageDateFrom));
+    setName(event.name);
+  });
+
+  /**
+   * A rejected update (a business error, not a network one) rolls the cached event back, so the editor has to
+   * follow it back: otherwise the draft keeps rendering the value the backend refused.
+   */
+  createEffect(() => {
+    const event = props.event();
+    const eventKey = getEventDraftKey(event);
+
+    if (!isEditing()) return;
+    if (!lastPersistedEventKey) {
+      lastPersistedEventKey = eventKey;
+      return;
+    }
+    if (eventKey === lastPersistedEventKey) return;
+
+    lastPersistedEventKey = eventKey;
     setDraftEvent(toEventEditorDraft(event, props.stageDateFrom));
     setName(event.name);
   });

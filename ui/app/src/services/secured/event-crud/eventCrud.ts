@@ -587,9 +587,10 @@ export const useApiEvent = () => {
       throw new Error(`Stage ${stageId} not found`);
     }
 
+    const previousEvent = getCachedEventById(id) ?? null;
     const nextApiEvent = mergeApiEventWithPayload(
       payload,
-      getCachedEventById(id) ??
+      previousEvent ??
         (context.event as unknown as EventDetailResponseDTO) ??
         undefined,
       { eventId: id, stageId },
@@ -613,7 +614,7 @@ export const useApiEvent = () => {
           competitionId: context.competitionId,
           entityId: nextApiEvent.id,
           previousCompetitionsFromCache,
-          previousEvent: getCachedEventById(nextApiEvent.id) ?? null,
+          previousEvent,
           stageId,
         }),
         url: `/secured/obdx/events/${nextApiEvent.id}`,
@@ -638,6 +639,8 @@ export const useApiEvent = () => {
       throw new Error(`Stage ${stageId} not found`);
     }
 
+    const previousEvent = getCachedEventById(id) ?? null;
+
     applyApiEventRemoval(context.competitionId, stageId, id);
 
     void (async () => {
@@ -655,7 +658,7 @@ export const useApiEvent = () => {
           competitionId: context.competitionId,
           entityId: id,
           previousCompetitionsFromCache,
-          previousEvent: getCachedEventById(id) ?? null,
+          previousEvent,
           stageId,
         }),
         url: `/secured/events/${id}`,
