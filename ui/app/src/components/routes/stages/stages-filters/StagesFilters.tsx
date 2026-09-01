@@ -41,6 +41,12 @@ export default function StagesFilters(props: StagesFiltersProps) {
   );
 }
 
+/**
+ * Kobalte reads an empty option value as "nothing selected" and swaps the trigger for the
+ * placeholder, so the "all" entries need a value of their own inside the select.
+ */
+const ALL_OPTION_VALUE = "__ALL__";
+
 /** Split out so the secured countries query only runs once the login gate above lets it through. */
 function StagesFiltersFields(props: StagesFiltersProps) {
   const i18n = useI18n();
@@ -69,7 +75,10 @@ function StagesFiltersFields(props: StagesFiltersProps) {
         preLabel: <CountryFlag country={code} alt={`${code} flag`} />,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-    return [{ label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: "" }, ...options];
+    return [
+      { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ALL_OPTION_VALUE },
+      ...options,
+    ];
   };
 
   const selectedCountry = () =>
@@ -77,7 +86,7 @@ function StagesFiltersFields(props: StagesFiltersProps) {
     countryOptions()[0];
 
   const statusOptions: AtomSelectOption[] = [
-    { label: i18n.t("STAGES.FILTERS.ALL_STATUSES"), value: "" },
+    { label: i18n.t("STAGES.FILTERS.ALL_STATUSES"), value: ALL_OPTION_VALUE },
     ...STATUS_VALUES.map((value) => ({
       label: i18n.t(`COMMON.STATUS.${value}`),
       value,
@@ -87,6 +96,9 @@ function StagesFiltersFields(props: StagesFiltersProps) {
   const selectedStatus = () =>
     statusOptions.find((option) => option.value === props.status) ??
     statusOptions[0];
+
+  const fromAllOption = (value: string | undefined) =>
+    !value || value === ALL_OPTION_VALUE ? "" : value;
 
   const fields = (
     <>
@@ -102,14 +114,14 @@ function StagesFiltersFields(props: StagesFiltersProps) {
           placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
           options={countryOptions()}
           value={selectedCountry()}
-          onChange={(option) => props.onCountryChange(option?.value ?? "")}
+          onChange={(option) => props.onCountryChange(fromAllOption(option?.value))}
         />
         <AtomSelect
           label={i18n.t("STAGES.FILTERS.STATUS")}
           placeholder={i18n.t("STAGES.FILTERS.SELECT_STATUS")}
           options={statusOptions}
           value={selectedStatus()}
-          onChange={(option) => props.onStatusChange(option?.value ?? "")}
+          onChange={(option) => props.onStatusChange(fromAllOption(option?.value))}
         />
       </div>
       <div class="stages-filters__inline">

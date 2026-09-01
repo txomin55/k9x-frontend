@@ -10,6 +10,12 @@ import "./styles.css";
 /** The option that stands for "no country filter", told apart from a real country by its empty value. */
 export const ANY_COUNTRY = "";
 
+/**
+ * Kobalte reads an empty option value as "nothing selected" and swaps the trigger for the
+ * placeholder, so the "all countries" entry needs a value of its own inside the select.
+ */
+const ALL_OPTION_VALUE = "__ALL__";
+
 type CountryFilterProps = {
   value: string;
   onChange: (country: string) => void;
@@ -24,7 +30,7 @@ export default function CountryFilter(props: CountryFilterProps) {
   const countriesQuery = useCountries({ refetchOnMount: false });
 
   const options = createMemo<AtomSelectOption[]>(() => [
-    { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ANY_COUNTRY },
+    { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ALL_OPTION_VALUE },
     ...(countriesQuery.data ?? []).map(({ id, name }) => ({
       label: name,
       value: id,
@@ -35,13 +41,16 @@ export default function CountryFilter(props: CountryFilterProps) {
   const selected = () =>
     options().find((option) => option.value === props.value) ?? options()[0];
 
+  const toCountry = (value: string | undefined) =>
+    !value || value === ALL_OPTION_VALUE ? ANY_COUNTRY : value;
+
   return (
     <div class="country-filter">
       <AtomSelect
         label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
         options={options()}
         value={selected()}
-        onChange={(option) => props.onChange(option?.value ?? ANY_COUNTRY)}
+        onChange={(option) => props.onChange(toCountry(option?.value))}
       />
     </div>
   );
