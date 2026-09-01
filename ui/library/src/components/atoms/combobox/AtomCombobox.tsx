@@ -63,10 +63,30 @@ const OVERSCAN = 5;
 
 export function AtomCombobox(props: AtomComboboxProps) {
   let listboxRef: HTMLUListElement | null = null;
+  // A tap focuses the box and then puts the caret where it landed, so the text is taken whole on the
+  // release as well: what was picked before is replaced by what is typed next, not typed into.
+  let selectOnRelease = false;
   const [listbox, setListbox] = createSignal<HTMLUListElement>();
   const [inputValue, setInputValue] = createSignal("");
 
+  const selectedOptions = (): AtomComboboxOption[] => {
+    const value = props.value;
+    if (!value) return [];
+
+    return Array.isArray(value) ? value : [value];
+  };
+
+  // Picking an option makes the box write that option's own label into the input. Nobody typed it, so
+  // it is not a query: taken as one it would search for the label and hide the very option just picked.
+  const isSelectionEcho = (value: string) =>
+    selectedOptions().some((option) => option.label === value);
+
   const handleInputChange = (value: string) => {
+    if (isSelectionEcho(value)) {
+      setInputValue("");
+      return;
+    }
+
     setInputValue(value);
     props.onInputChange?.(value);
   };
@@ -78,6 +98,13 @@ export function AtomCombobox(props: AtomComboboxProps) {
 
     const askForMoreAtTheEnd = () => {
       if (props.hasMore === false || props.isLoadingMore) return;
+      // A list with nothing in it is not short of pages: either the text in the box is hiding what is
+      // loaded, or the search behind it came back empty. Walking the rest of the collection a page at
+      // a time answers neither, and there is no scroll to reach the end of.
+      if (!visibleOptions().length) return;
+      // Nor is a list of no height: the popup is closed, or has not been laid out yet, and the element
+      // left behind reads as scrolled to its end when nothing of it is on the screen.
+      if (!element.clientHeight) return;
 
       const remaining =
         element.scrollHeight - element.scrollTop - element.clientHeight;
@@ -86,8 +113,10 @@ export function AtomCombobox(props: AtomComboboxProps) {
       if (remaining <= lead) props.onLoadMore?.();
     };
 
-    // A first page shorter than the list itself leaves nothing to scroll, so it is asked for up front.
-    askForMoreAtTheEnd();
+    // A first page shorter than the list itself leaves nothing to scroll, so it is asked for up front
+    // — but not while the box holds text: what that narrows the list down to is for whoever fetches
+    // the options to answer, and paging the whole collection in behind it answers nothing.
+    if (!inputValue().trim()) askForMoreAtTheEnd();
     element.addEventListener("scroll", askForMoreAtTheEnd, { passive: true });
 
     onCleanup(() =>
@@ -188,6 +217,33 @@ export function AtomCombobox(props: AtomComboboxProps) {
             <Combobox.Input
               class="atom-combobox__input"
               placeholder={props.placeholder}
+              onFocus={(
+                event: FocusEvent & { currentTarget: HTMLInputElement },
+              ) => {
+                // The box shows the label of whatever is already picked. Taking that text whole means
+                // the next thing typed searches for itself, rather than being appended to the pick.
+                selectOnRelease = true;
+                event.currentTarget.select();
+              }}
+              onPointerUp={(
+                event: PointerEvent & { currentTarget: HTMLInputElement },
+              ) => {
+                // The box keeps the focus after a pick, so a tap on it brings no focus event: what
+                // says the text is there to be replaced is the text itself, still the picked label.
+                if (
+                  !selectOnRelease &&
+                  !isSelectionEcho(event.currentTarget.value)
+                ) {
+                  return;
+                }
+
+                selectOnRelease = false;
+                event.preventDefault();
+                event.currentTarget.select();
+              }}
+              onBlur={() => {
+                selectOnRelease = false;
+              }}
             />
             <Combobox.Trigger>
               <Combobox.Icon class="atom-combobox__icon">^</Combobox.Icon>

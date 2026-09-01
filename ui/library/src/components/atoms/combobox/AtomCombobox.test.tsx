@@ -1,4 +1,5 @@
 import { render, screen } from "@solidjs/testing-library";
+import { createSignal } from "solid-js";
 import userEvent from "@testing-library/user-event";
 import { AtomCombobox, type AtomComboboxOption } from "./AtomCombobox";
 
@@ -95,6 +96,32 @@ describe("AtomCombobox", () => {
     ));
 
     expect(getByText("Contenido extra")).toBeInTheDocument();
+  });
+
+  test("does not report the picked option's label back as typed text", async () => {
+    const user = userEvent.setup();
+    const onInputChange = vi.fn();
+    const [value, setValue] = createSignal<AtomComboboxOption | null>(null);
+
+    const { getByRole } = render(() => (
+      <AtomCombobox
+        options={OPTIONS}
+        onChange={setValue}
+        onInputChange={onInputChange}
+        placeholder="Select a fruit"
+        value={value()}
+      />
+    ));
+
+    await user.click(getByRole("button"));
+    await user.click(await screen.findByRole("option", { name: "Banana" }));
+
+    expect(onInputChange).not.toHaveBeenCalledWith("Banana");
+
+    // The label written into the box is not a query, so it leaves the list as it was.
+    await user.click(getByRole("button"));
+
+    expect(await screen.findAllByRole("option")).toHaveLength(3);
   });
 
   test("supports selecting multiple options and removing them", async () => {
