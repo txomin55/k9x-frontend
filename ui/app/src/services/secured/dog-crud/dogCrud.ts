@@ -46,8 +46,16 @@ const buildDogsPath = (filters: string, params?: Record<string, string>) => {
   return `/secured/dogs${filters ? `?${filters}` : ""}${search ? `${filters ? "&" : "?"}${search}` : ""}`;
 };
 
-/** What the caller is narrowing the list down to, beyond the fixed filters of the list itself. */
-export type DogListSearch = { name?: string; country?: string };
+/**
+ * What the caller is narrowing the list down to, beyond the fixed filters of the list itself. `name` and
+ * `identification` are alternatives on the server: sending the same text as both returns the dogs matching
+ * either of the two, which is what a single search box over the kennel is after.
+ */
+export type DogListSearch = {
+  name?: string;
+  country?: string;
+  identification?: string;
+};
 
 const fetchDogsPage = (filters: string, page: number, search?: DogListSearch) =>
   rawRequest<DogPageDTO>({
@@ -56,6 +64,9 @@ const fetchDogsPage = (filters: string, page: number, search?: DogListSearch) =>
       size: String(DOGS_PAGE_SIZE),
       ...(search?.name ? { name: search.name } : {}),
       ...(search?.country ? { country: search.country } : {}),
+      ...(search?.identification
+        ? { identification: search.identification }
+        : {}),
     }),
   });
 
@@ -134,8 +145,14 @@ export const loadMoreDogsSearch = (search: DogListSearch) =>
 
 export const loadMoreAllDogs = () => allDogs.loadMore(getAllDogsQueryKey());
 
-export const loadMoreAllDogsSearch = (name: string) =>
-  allDogsSearch.loadMore(getAllDogsSearchQueryKey(name), { name });
+/** The kennel is searched by dog name or by identification, so the typed text goes as both. */
+const allDogsSearchOf = (term: string): DogListSearch => ({
+  name: term,
+  identification: term,
+});
+
+export const loadMoreAllDogsSearch = (term: string) =>
+  allDogsSearch.loadMore(getAllDogsSearchQueryKey(term), allDogsSearchOf(term));
 
 /**
  * Built on `createQuery` rather than on the query factory: the searched name changes as the user types,
@@ -166,9 +183,9 @@ const dogSearchQuery = (
 export const useDogsSearch = (search: () => DogListSearch) =>
   dogSearchQuery(search, getDogsSearchQueryKey, myDogsSearch, getDogsQueryKey);
 
-export const useAllDogsSearch = (name: () => string) =>
+export const useAllDogsSearch = (term: () => string) =>
   dogSearchQuery(
-    () => ({ name: name() }),
+    () => allDogsSearchOf(term()),
     (search) => getAllDogsSearchQueryKey(search.name ?? ""),
     allDogsSearch,
     getAllDogsQueryKey,

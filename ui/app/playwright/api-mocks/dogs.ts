@@ -47,20 +47,31 @@ export const defaultDogs: Dog[] = [
   },
 ];
 
+const contains = (term: string, value: unknown) =>
+  Boolean(term) &&
+  String(value ?? "")
+    .toLowerCase()
+    .includes(term);
+
 /**
- * Answers `/secured/dogs` the way the API does: a page of the list, filtered by name when the query
- * carries one, and the whole list in one page when no size is asked for.
+ * Answers `/secured/dogs` the way the API does: a page of the list, filtered by name and by
+ * identification when the query carries them — a dog matches when either of the two does — and the
+ * whole list in one page when no size is asked for.
  */
 export const toDogsPage = (dogs: Record<string, unknown>[], url: string) => {
   const params = new URL(url).searchParams;
   const name = (params.get("name") ?? "").trim().toLowerCase();
-  const matching = name
-    ? dogs.filter((dog) =>
-        String(dog.name ?? "")
-          .toLowerCase()
-          .includes(name),
-      )
-    : dogs;
+  const identification = (params.get("identification") ?? "")
+    .trim()
+    .toLowerCase();
+  const matching =
+    name || identification
+      ? dogs.filter(
+          (dog) =>
+            contains(name, dog.name) ||
+            contains(identification, dog.identification),
+        )
+      : dogs;
 
   const size = params.get("size")
     ? Number(params.get("size"))

@@ -141,4 +141,26 @@ organizerTest.describe("Event competitor dog picker - organizer", () => {
       ).toBeVisible();
     },
   );
+
+  organizerTest(
+    "finds a dog by its identification, not only by its name",
+    async ({ page }) => {
+      const calls = trackDogRequests(page);
+      const dogBox = await openDogPicker(page);
+      await expect.poll(() => calls.length).toBeGreaterThan(0);
+
+      calls.length = 0;
+      // No dog is named after this: the identification is what matches it.
+      await dogBox.fill("dog-171");
+
+      await expect
+        .poll(() =>
+          calls.some((call) => call.includes("identification=dog-171")),
+        )
+        .toBe(true);
+      await expect(
+        page.locator(".atom-combobox__listbox").getByText("Kennel Dog 171"),
+      ).toBeVisible();
+    },
+  );
 });

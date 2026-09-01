@@ -31,7 +31,7 @@ import {
 import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
 import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
+import type { AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -93,26 +93,27 @@ export default function EventCompetitorsSection(
   });
 
   // The kennel arrives a page at a time as the box is scrolled. Short fragments are matched against
-  // what is already loaded, in the box itself; from a few characters on the search goes to the server.
+  // what is already loaded, in the box itself; from a few characters on the search goes to the server,
+  // which matches the text against the dog name and its identification alike.
   const [dogSearch, setDogSearch] = createSignal("");
   const debouncedDogSearch = useDebouncedValue(() => dogSearch().trim());
-  const searchedDogName = () =>
+  const searchedDogTerm = () =>
     debouncedDogSearch().length >= MIN_DOG_SEARCH_LENGTH
       ? debouncedDogSearch()
       : "";
-  const isSearchingDogs = () => !!searchedDogName();
-  const dogSearchQuery = useAllDogsSearch(searchedDogName);
+  const isSearchingDogs = () => !!searchedDogTerm();
+  const dogSearchQuery = useAllDogsSearch(searchedDogTerm);
 
   const listedDogs = () =>
     (isSearchingDogs() ? dogSearchQuery.data : dogsQuery.data) ?? [];
   const dogPages = () => (isSearchingDogs() ? allDogsSearchPages : allDogsPages);
   const loadMoreDogs = () => {
     void (isSearchingDogs()
-      ? loadMoreAllDogsSearch(searchedDogName())
+      ? loadMoreAllDogsSearch(searchedDogTerm())
       : loadMoreAllDogs());
   };
 
-  const dogOptions = createMemo<AtomSelectOption[]>(() => {
+  const dogOptions = createMemo<AtomComboboxOption[]>(() => {
     const addedDogIdentifications = new Set(
       props.competitors
         .filter((competitor) => competitor.dogIdentification !== props.editingCompetitorId)
@@ -124,6 +125,10 @@ export default function EventCompetitorsSection(
       .map((dog) => ({
         label: dog.handler ? `${dog.name} (${dog.handler})` : dog.name,
         value: dog.identification,
+        caption: dog.identification,
+        // What the box narrows the loaded options down to while the server answers: the dog is
+        // found by its name, by its handler or by its identification.
+        searchText: `${dog.name} ${dog.handler ?? ""} ${dog.identification}`,
       }));
   });
   const dogsById = createMemo(() => {

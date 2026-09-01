@@ -8,7 +8,6 @@ import {
   type AtomComboboxOption,
 } from "library/src/components/atoms/combobox/AtomCombobox";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
-import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { Show } from "solid-js";
 import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
@@ -33,9 +32,12 @@ type CompetitorDialogContentProps = {
   ) => void;
   onCreateCompetitor: () => void;
   orderBounds: OrderBounds;
-  dogOptions: AtomSelectOption[];
+  dogOptions: AtomComboboxOption[];
   dogsById: Map<string, Dog>;
-  /** Text typed in the dog box: past a few characters the options are searched for on the server. */
+  /**
+   * Text typed in the dog box: past a few characters the options are searched for on the server, by
+   * dog name or by identification.
+   */
   onDogSearchChange: (value: string) => void;
   onLoadMoreDogs: () => void;
   dogsHaveMore: boolean;
@@ -116,14 +118,6 @@ export default function CompetitorEditorForm(
     props.onCommitCompetitor();
   };
 
-  const dogOptions = (): AtomComboboxOption[] =>
-    props.dogOptions.map((option) => ({
-      disabled: option.disabled,
-      label: option.label,
-      preLabel: option.preLabel,
-      value: option.value,
-    }));
-
   const handleDogChange = (option: AtomComboboxOption | null) => {
     const dog = option ? props.dogsById.get(option.value) : undefined;
 
@@ -163,15 +157,15 @@ export default function CompetitorEditorForm(
             onLoadMore={props.onLoadMoreDogs}
             hasMore={props.dogsHaveMore}
             isLoadingMore={props.dogsAreLoadingMore}
-            options={dogOptions()}
+            options={props.dogOptions}
             placeholder={i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.SELECT_DOG")}
             value={
-              dogOptions().find(
+              props.dogOptions.find(
                 (option) => option.value === draft().dogIdentification,
               ) ?? null
             }
           >
-            <Show when={dogOptions().length === 0}>
+            <Show when={props.dogOptions.length === 0}>
               <AtomButton type={BUTTON_TYPES.GHOST} onClick={handleGoToDogs}>
                 {i18n.t("MY.COMPETITIONS.COMPETITOR_EDITOR.CREATE_DOG")}
               </AtomButton>
