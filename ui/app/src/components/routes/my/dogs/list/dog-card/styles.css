@@ -21,6 +21,11 @@
     align-items: center;
     gap: var(--unit-1);
     min-width: 0;
+    padding: var(--unit-05);
+}
+
+.dog-card__fact > .country-flag {
+    margin-inline-end: var(--unit-05);
 }
 
 .dog-card__fact > span:last-child {

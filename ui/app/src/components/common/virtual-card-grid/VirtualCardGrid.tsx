@@ -10,6 +10,8 @@ import {
 } from "solid-js";
 import "./styles.css";
 
+const DEFAULT_LOAD_MORE_THRESHOLD_ROWS = 2;
+
 type VirtualCardGridProps<T> = {
   items: T[];
   children: (item: T) => JSX.Element;
@@ -24,6 +26,8 @@ type VirtualCardGridProps<T> = {
   hasMore?: boolean;
   isLoadingMore?: boolean;
   onLoadMore?: () => void;
+  /** Rows left below the viewport at which the next page is asked for. */
+  loadMoreThresholdRows?: number;
   loadingMoreMessage?: string;
   class?: string;
 };
@@ -75,12 +79,14 @@ export default function VirtualCardGrid<T>(props: VirtualCardGridProps<T>) {
   const rowItems = (rowIndex: number) =>
     props.items.slice(rowIndex * columns(), rowIndex * columns() + columns());
 
-  // Asking for the next page from the last rendered row keeps the request in step with the scroll,
+  // Asking for the next page a few rows before the last one keeps the request ahead of the scroll,
   // without a sentinel that virtualization would have unmounted anyway.
   createEffect(() => {
     if (
       rowCount() &&
-      rowWindow.isAtEnd() &&
+      rowWindow.isNearEnd(
+        props.loadMoreThresholdRows ?? DEFAULT_LOAD_MORE_THRESHOLD_ROWS,
+      ) &&
       props.hasMore &&
       !props.isLoadingMore
     ) {

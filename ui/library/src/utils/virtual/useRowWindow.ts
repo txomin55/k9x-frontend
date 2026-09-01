@@ -63,6 +63,12 @@ export function useRowWindow(options: RowWindowOptions) {
     );
   });
 
+  const lastVisibleRow = createMemo(() => {
+    const visible = viewportHeight() || options.rowHeight() * (overscan() + 1);
+
+    return Math.ceil((scrollTop() + visible) / options.rowHeight()) - 1;
+  });
+
   const rows = createMemo(() => {
     const from = firstRow();
     const to = lastRow();
@@ -82,5 +88,11 @@ export function useRowWindow(options: RowWindowOptions) {
     offsetBottom: () =>
       Math.max(0, (options.rowCount() - 1 - lastRow()) * options.rowHeight()),
     isAtEnd: () => lastRow() >= options.rowCount() - 1,
+    /** Rows still left below what the viewport shows. */
+    rowsBelowViewport: () =>
+      Math.max(0, options.rowCount() - 1 - lastVisibleRow()),
+    /** Whether fewer than `rowsAhead` rows are left below the viewport. */
+    isNearEnd: (rowsAhead: number) =>
+      lastVisibleRow() + rowsAhead >= options.rowCount() - 1,
   };
 }

@@ -24,12 +24,16 @@ import "./styles.css";
 
 export type { ColumnDef, Row } from "@tanstack/solid-table";
 
+const DEFAULT_LOAD_MORE_THRESHOLD_ROWS = 3;
+
 export type AtomTableProps<TData> = {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   hasMore?: boolean;
   isLoadingMore?: boolean;
   onLoadMore?: () => void | Promise<void>;
+  /** Rows left below the viewport at which the next page is asked for. */
+  loadMoreThresholdRows?: number;
   onSortingChange?: OnChangeFn<SortingState>;
   emptyMessage?: string;
   loadingMoreMessage?: string;
@@ -146,7 +150,10 @@ export default function AtomTable<TData>(props: AtomTableProps<TData>) {
           props.onLoadMore?.();
         }
       },
-      { root: scrollerRef() ?? null },
+      {
+        root: scrollerRef() ?? null,
+        rootMargin: `0px 0px ${(props.loadMoreThresholdRows ?? DEFAULT_LOAD_MORE_THRESHOLD_ROWS) * rowHeight()}px 0px`,
+      },
     );
 
     observer.observe(sentinelRef);
