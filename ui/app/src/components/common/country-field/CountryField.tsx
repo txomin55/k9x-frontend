@@ -2,7 +2,7 @@ import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import i18n from "i18next";
+import { useI18n } from "@/stores/i18n/i18n";
 import { createMemo, type JSX } from "solid-js";
 
 const createCountrySelectOptions = (
@@ -31,6 +31,7 @@ type CountryFieldProps = {
 };
 
 export default function CountryField(props: CountryFieldProps) {
+  const i18n = useI18n();
   const countriesQuery = useCountries({ refetchOnMount: false });
   const options = createMemo(() =>
     createCountrySelectOptions(countriesQuery.data ?? []),
