@@ -965,7 +965,49 @@ function CompetitionObdxEventDetailBody(props: {
     {
       value: TABS.JUDGES,
       content: (
-        <EventJudgesSection
+        <>
+          <div class="competition-event-detail__judges-setting">
+            <Show
+              when={canEditDetails()}
+              fallback={
+                <div class="competition-event-detail__content--calculation">
+                  <span class="text-caption-md">
+                    {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
+                  </span>
+                  <span class="text-caption-lg">
+                    {selectedScoreCalculationOption()?.label}
+                  </span>
+                </div>
+              }
+            >
+              <AtomSelect
+                label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
+                placeholder={i18n.t(
+                  "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
+                )}
+                description={
+                  !hasEnoughJudgesForMidAvg()
+                    ? i18n.t(
+                        "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_MID_AVG_DISABLED_HELP",
+                      )
+                    : undefined
+                }
+                options={scoreCalculationOptions()}
+                value={selectedScoreCalculationOption()}
+                onChange={(option) =>
+                  option &&
+                  updateDraftEvent(
+                    (current) => ({
+                      ...current,
+                      scoreCalculation: option.value,
+                    }),
+                    { persist: true },
+                  )
+                }
+              />
+            </Show>
+          </div>
+          <EventJudgesSection
           editingJudgeId={editingJudgeId()}
           isCreatingJudge={isCreatingJudge()}
           isEditing={canEditDetails()}
@@ -977,8 +1019,9 @@ function CompetitionObdxEventDetailBody(props: {
           onJudgeDraftChange={setJudgeDialogDraft}
           onOpenJudgeEditor={handleOpenJudgeEditor}
           onCreateJudge={createJudge}
-          onCommitJudge={saveJudgeEditor}
-        />
+            onCommitJudge={saveJudgeEditor}
+          />
+        </>
       ),
     },
     {
@@ -1070,207 +1113,187 @@ function CompetitionObdxEventDetailBody(props: {
         extraction={props.event().extraction}
         context={props.event().name}
       />
-      <header>
-        <Show
-          when={canEditDetails()}
-          fallback={
-            <div class="competition-event-detail__content--header">
-              <div class="competition-event-detail__content--header-title">
-                <StatusBadge status={props.event().status} />
+      <div
+        class="competition-event-detail__fields"
+        classList={{
+          "competition-event-detail__fields--editing":
+            canEditDetails() || canEditConfiguration(),
+          "competition-event-detail__fields--reading":
+            !canEditDetails() && !canEditConfiguration(),
+        }}
+      >
+        <header>
+          <Show
+            when={canEditDetails()}
+            fallback={
+              <div class="competition-event-detail__content--header">
+                <div class="competition-event-detail__content--header-title">
+                  <StatusBadge status={props.event().status} />
+                </div>
+                <DisciplineIcon disciplineId={props.event().discipline.id} />
               </div>
-              <DisciplineIcon disciplineId={props.event().discipline.id} />
+            }
+          >
+            <div>
+              <AtomInput
+                label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_TITLE")}
+                onBlur={commitEventNameEdits}
+                value={name()}
+                onChange={setName}
+              />
             </div>
-          }
-        >
-          <div>
-            <AtomInput
-              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.EVENT_TITLE")}
-              onBlur={commitEventNameEdits}
-              value={name()}
-              onChange={setName}
-            />
-          </div>
-        </Show>
-      </header>
+          </Show>
+        </header>
 
-      <EventConfigurationSection
-        draft={draftEvent()}
-        event={props.event()}
-        isEditing={canEditConfiguration()}
-        onDraftChange={(updater) =>
-          updateDraftEvent((current) => updater(current), {
-            persist: true,
-          })
-        }
-      />
-
-      <Show
-        when={canEditDetails()}
-        fallback={
-          <div class="competition-event-detail__content--calculation">
-            <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
-            </span>
-            <span class="text-caption-lg">
-              {selectedCategoryOption()?.label ?? "-"}
-            </span>
-          </div>
-        }
-      >
-        <AtomSelect
-          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
-          placeholder={i18n.t(
-            "MY.COMPETITIONS.EVENT_DETAIL.CATEGORY_PLACEHOLDER",
-          )}
-          options={categoryOptions()}
-          value={selectedCategoryOption()}
-          onChange={(option) =>
-            option &&
-            updateDraftEvent(
-              (current) => ({
-                ...current,
-                category: option.value,
-              }),
-              { persist: true },
-            )
-          }
-        />
-      </Show>
-
-      <Show
-        when={canEditDetails()}
-        fallback={
-          <div class="competition-event-detail__content--calculation">
-            <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
-            </span>
-            <span class="text-caption-lg">
-              {formatUtcDateOnly(draftEvent().enrollmentDeadline)}
-            </span>
-          </div>
-        }
-      >
-        <AtomInput
-          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
-          type="date"
-          disabled={!canEditDetails()}
-          value={toDateInputValue(draftEvent().enrollmentDeadline)}
-          onChange={(value) =>
-            updateDraftEvent(
-              (current) => ({
-                ...current,
-                enrollmentDeadline: parseDateInputValue(
-                  value,
-                  current.enrollmentDeadline,
-                ),
-              }),
-              { persist: true },
-            )
-          }
-        />
-      </Show>
-
-      <Show
-        when={canEditDetails()}
-        fallback={
-          <div class="competition-event-detail__content--calculation">
-            <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
-            </span>
-            <span class="text-caption-lg">
-              {selectedScoreCalculationOption()?.label}
-            </span>
-          </div>
-        }
-      >
-        <AtomSelect
-          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION")}
-          placeholder={i18n.t(
-            "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_PLACEHOLDER",
-          )}
-          description={
-            !hasEnoughJudgesForMidAvg()
-              ? i18n.t(
-                  "MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_MID_AVG_DISABLED_HELP",
+        <div class="competition-event-detail__field competition-event-detail__field--category">
+          <Show
+            when={canEditDetails()}
+            fallback={
+              <div class="competition-event-detail__content--calculation">
+                <span class="text-caption-md">
+                  {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
+                </span>
+                <span class="text-caption-lg">
+                  {selectedCategoryOption()?.label ?? "-"}
+                </span>
+              </div>
+            }
+          >
+            <AtomSelect
+              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.CATEGORY")}
+              placeholder={i18n.t(
+                "MY.COMPETITIONS.EVENT_DETAIL.CATEGORY_PLACEHOLDER",
+              )}
+              options={categoryOptions()}
+              value={selectedCategoryOption()}
+              onChange={(option) =>
+                option &&
+                updateDraftEvent(
+                  (current) => ({
+                    ...current,
+                    category: option.value,
+                  }),
+                  { persist: true },
                 )
-              : undefined
-          }
-          options={scoreCalculationOptions()}
-          value={selectedScoreCalculationOption()}
-          onChange={(option) =>
-            option &&
-            updateDraftEvent(
-              (current) => ({
-                ...current,
-                scoreCalculation: option.value,
-              }),
-              { persist: true },
-            )
-          }
-        />
-      </Show>
+              }
+            />
+          </Show>
+        </div>
 
-      <Show
-        when={canEditDetails()}
-        fallback={
-          <div class="competition-event-detail__content--calculation">
-            <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
-            </span>
-            <span class="text-caption-lg">
-              {draftEvent()
-                .awards.map((award) => award.name)
-                .join(", ") || "-"}
-            </span>
-          </div>
-        }
-      >
-        <AtomCombobox
-          multiple
-          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
-          placeholder={i18n.t(
-            "MY.COMPETITIONS.EVENT_DETAIL.AWARDS_PLACEHOLDER",
-          )}
-          options={awardOptions()}
-          value={selectedAwardOptions()}
-          onChange={(options) =>
-            updateDraftEvent(
-              (current) => ({
-                ...current,
-                awards: options.map((option) => ({
-                  id: option.value,
-                  name: option.label,
-                })),
-              }),
-              { persist: true },
-            )
-          }
-        />
-      </Show>
+        <div class="competition-event-detail__field competition-event-detail__field--configuration">
+          <EventConfigurationSection
+            draft={draftEvent()}
+            event={props.event()}
+            isEditing={canEditConfiguration()}
+            onDraftChange={(updater) =>
+              updateDraftEvent((current) => updater(current), {
+                persist: true,
+              })
+            }
+          />
+        </div>
 
-      <Show
-        when={canEditDetails()}
-        fallback={
-          <div class="competition-event-detail__content--calculation">
-            <span class="text-caption-md">
-              {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
-            </span>
-            <span class="text-caption-lg">
-              {draftEvent().commissioner || "-"}
-            </span>
-          </div>
-        }
-      >
-        <AtomInput
-          label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
-          description={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP")}
-          value={draftEvent().commissioner ?? ""}
-          onChange={(value) =>
-            updateDraftEvent((current) => ({ ...current, commissioner: value }))
-          }
-          onBlur={() => persistEventEdits(draftEvent())}
-        />
-      </Show>
+        <div class="competition-event-detail__field competition-event-detail__field--deadline">
+          <Show
+            when={canEditDetails()}
+            fallback={
+              <div class="competition-event-detail__content--calculation">
+                <span class="text-caption-md">
+                  {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
+                </span>
+                <span class="text-caption-lg">
+                  {formatUtcDateOnly(draftEvent().enrollmentDeadline)}
+                </span>
+              </div>
+            }
+          >
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.ENROLLMENT_DEADLINE")}
+              type="date"
+              disabled={!canEditDetails()}
+              value={toDateInputValue(draftEvent().enrollmentDeadline)}
+              onChange={(value) =>
+                updateDraftEvent(
+                  (current) => ({
+                    ...current,
+                    enrollmentDeadline: parseDateInputValue(
+                      value,
+                      current.enrollmentDeadline,
+                    ),
+                  }),
+                  { persist: true },
+                )
+              }
+            />
+          </Show>
+        </div>
+
+        <div class="competition-event-detail__field competition-event-detail__field--steward">
+          <Show
+            when={canEditDetails()}
+            fallback={
+              <div class="competition-event-detail__content--calculation">
+                <span class="text-caption-md">
+                  {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
+                </span>
+                <span class="text-caption-lg">
+                  {draftEvent().commissioner || "-"}
+                </span>
+              </div>
+            }
+          >
+            <AtomInput
+              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
+              description={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP")}
+              value={draftEvent().commissioner ?? ""}
+              onChange={(value) =>
+                updateDraftEvent((current) => ({ ...current, commissioner: value }))
+              }
+              onBlur={() => persistEventEdits(draftEvent())}
+            />
+          </Show>
+        </div>
+
+        <div class="competition-event-detail__field competition-event-detail__field--awards">
+          <Show
+            when={canEditDetails()}
+            fallback={
+              <div class="competition-event-detail__content--calculation">
+                <span class="text-caption-md">
+                  {i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
+                </span>
+                <span class="text-caption-lg">
+                  {draftEvent()
+                    .awards.map((award) => award.name)
+                    .join(", ") || "-"}
+                </span>
+              </div>
+            }
+          >
+            <AtomCombobox
+              multiple
+              label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.AWARDS")}
+              placeholder={i18n.t(
+                "MY.COMPETITIONS.EVENT_DETAIL.AWARDS_PLACEHOLDER",
+              )}
+              options={awardOptions()}
+              value={selectedAwardOptions()}
+              onChange={(options) =>
+                updateDraftEvent(
+                  (current) => ({
+                    ...current,
+                    awards: options.map((option) => ({
+                      id: option.value,
+                      name: option.label,
+                    })),
+                  }),
+                  { persist: true },
+                )
+              }
+            />
+          </Show>
+        </div>
+      </div>
 
       <AtomTabs
         defaultValue={TABS.JUDGES}

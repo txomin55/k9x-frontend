@@ -9,8 +9,28 @@
     gap: var(--unit-1);
 }
 
+/* Grade and its federation read as one line, so the block is as tall as the fields beside it. */
+.event-configuration-section:not(.event-configuration-section--editing)
+    .event-configuration-section__content
+    > div {
+    display: flex;
+    align-items: baseline;
+    gap: var(--unit-1);
+}
+
 .event-configuration-section__content--federation {
     display: flex;
     gap: var(--unit-1);
     align-items: center;
+}
+
+/* Federation and grade always share a row, half the available width each. */
+.event-configuration-section--editing {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--unit-15) var(--unit-2);
+}
+
+.event-configuration-section--editing .event-configuration-section__content {
+    display: contents;
 }

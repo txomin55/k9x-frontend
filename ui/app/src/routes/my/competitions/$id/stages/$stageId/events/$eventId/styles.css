@@ -1,15 +1,102 @@
+/* The page is the query container: a container cannot answer queries about its own size. */
 .competition-event-detail__content {
     display: flex;
     flex-direction: column;
     gap: var(--unit-1);
+    container-type: inline-size;
 }
 
-.competition-event-detail__content > .atom-input,
-.competition-event-detail__content > .atom-select,
-.competition-event-detail__content > .atom-combobox,
-.competition-event-detail__content > .atom-text-area,
-.competition-event-detail__content > header .atom-input {
+/*
+ * One field per row while there is no room for more, with federation and grade the only pair that
+ * always shares a row. Wide enough, the fields lay out in three rows: title (70%) and category,
+ * then federation and grade at half each, then everything else.
+ */
+.competition-event-detail__fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--unit-15) var(--unit-2);
+    align-items: start;
+}
+
+/* Wrappers so every field is one grid cell in both read and edit mode. */
+.competition-event-detail__field {
+    display: grid;
+}
+
+@container (min-width: 60rem) {
+    .competition-event-detail__fields--editing {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .competition-event-detail__fields--editing > * {
+        min-width: 0;
+    }
+
+    /* Title and category share the first row, 70/30. */
+    .competition-event-detail__fields--editing > header {
+        flex: 0 0 calc(70% - var(--unit-1));
+    }
+
+    .competition-event-detail__fields--editing
+        .competition-event-detail__field--category {
+        flex: 1 1 0;
+    }
+
+    /* Federation and grade take the second row on their own, half each. */
+    .competition-event-detail__fields--editing
+        .competition-event-detail__field--configuration {
+        flex: 0 0 100%;
+    }
+
+    /* Whatever is left shares the third row. */
+    .competition-event-detail__fields--editing
+        .competition-event-detail__field--deadline,
+    .competition-event-detail__fields--editing
+        .competition-event-detail__field--steward,
+    .competition-event-detail__fields--editing
+        .competition-event-detail__field--awards {
+        flex: 1 1 0;
+    }
+}
+
+/*
+ * Read mode has no controls to line up, so the values flow one after another instead of sitting in
+ * the wide columns the editable fields need.
+ */
+.competition-event-detail__fields--reading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--unit-05) var(--unit-2);
+}
+
+.competition-event-detail__fields--reading > header {
+    flex-basis: 100%;
+}
+
+.competition-event-detail__fields--reading .competition-event-detail__field {
+    display: block;
+}
+
+/* Category and grade get a line each; the remaining values share the one below. */
+.competition-event-detail__fields--reading .competition-event-detail__field--category,
+.competition-event-detail__fields--reading
+    .competition-event-detail__field--configuration {
+    flex-basis: 100%;
+}
+
+/* The value is what the organizer scans for, so it carries the weight, not its label. */
+.competition-event-detail__content--calculation .text-caption-lg,
+.event-configuration-section .text-caption-lg {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+/* Score calculation lives with the judges: the option it offers depends on how many there are. */
+.competition-event-detail__judges-setting {
     max-width: calc(var(--unit-10) * 4);
+    margin-bottom: var(--unit-15);
 }
 
 .competition-event-detail__content--header-title {

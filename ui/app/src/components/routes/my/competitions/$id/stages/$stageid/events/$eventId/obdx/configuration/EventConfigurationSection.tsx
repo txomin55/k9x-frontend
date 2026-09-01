@@ -16,7 +16,12 @@ export default function (props: {
 }) {
   const i18n = useI18n();
   return (
-    <section class="event-configuration-section">
+    <section
+      class="event-configuration-section"
+      classList={{
+        "event-configuration-section--editing": props.isEditing,
+      }}
+    >
       <div class="event-configuration-section__content">
         <Show
           when={props.isEditing}
