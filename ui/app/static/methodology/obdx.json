@@ -958,6 +958,102 @@
           ]
         }
       ]
+    },
+    {
+      "id": "SPKL",
+      "name": "Suomen Palveluskoiraliitto",
+      "grades": [
+        {
+          "id": "OBDX_SPKL_ALO",
+          "name": {
+            "es": "ALO",
+            "en": "ALO"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E"
+          ],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 100,
+                "max": 175
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 125,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 150,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 175,
+                  "letter": "E"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 176,
+                "max": 200
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 184,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 192,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 200,
+                  "letter": "E"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "meritCurve": {
