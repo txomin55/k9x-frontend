@@ -3,6 +3,7 @@ import type {
   StageEventClassificationScoreResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import { isUnknownJudge, UNKNOWN_JUDGE_LABEL } from "@/utils/judge";
 
 export type TrendDirection = "up" | "down" | "same";
 
@@ -80,6 +81,7 @@ export function exerciseShortCode(name: string): string {
 }
 
 export function judgeInitials(name: string): string {
+  if (isUnknownJudge(name)) return UNKNOWN_JUDGE_LABEL;
   const initials = name
     .trim()
     .split(/\s+/)

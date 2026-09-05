@@ -20,6 +20,7 @@ import { EVENT_STATUS } from "@/utils/event";
 import { isDayAfterStageDateTo } from "@/utils/stage";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { isOrganizer } from "@/stores/auth/auth";
+import { isUnknownJudge, UNKNOWN_JUDGE_LABEL } from "@/utils/judge";
 import { useI18n } from "@/stores/i18n/i18n";
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import ScoresCompetitorPreLabel from "@/components/routes/my/collections/$id/obdx/scores-competitor-pre-label/ScoresCompetitorPreLabel";
@@ -33,6 +34,10 @@ import type {
 import "./styles.css";
 
 const getJudgeShortName = (name: string) => {
+  if (isUnknownJudge(name)) {
+    return UNKNOWN_JUDGE_LABEL;
+  }
+
   const parts = name.trim().split(/\s+/);
 
   if (parts.length < 2) {
