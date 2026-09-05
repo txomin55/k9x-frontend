@@ -40,8 +40,7 @@ import { buildNameMatcher, isSameCountry } from "@/utils/filter/nameFilter";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { generateEntityId } from "@/utils/id/generateEntityId";
-import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
-import "./styles.css";
+import { useFillRemainingHeight } from "@/utils/layout/useFillRemainingHeight";
 
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 
@@ -86,7 +85,8 @@ function MyJudgesListPage() {
 	const [nameFilter, setNameFilter] = createSignal("");
 	const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
 	const [view, setView] = createSignal<string>(VIEW.LIST);
-	const tableFill = useViewportFillHeight();
+	const listFill = useFillRemainingHeight();
+	const tableFill = useFillRemainingHeight();
 
 	// The country travels in the request; the name is still matched here, over what came back.
 	const judgesByCountryQuery = useCreatedJudgesByCountry(countryFilter);
@@ -197,7 +197,11 @@ function MyJudgesListPage() {
 	]);
 
 	const listContent = () => (
-		<div class="judges-list card-list">
+		<div
+			class="judges-list card-list"
+			ref={listFill.ref}
+			style={{ height: `${listFill.height()}px` }}
+		>
 			<For each={filteredJudges()}>
 				{(judge) => (
 					<JudgeCard
@@ -239,30 +243,36 @@ function MyJudgesListPage() {
 
 	return (
 		<Page>
-			<AtomDialog
-				title={
-					editingJudgeId()
-						? i18n.t("MY.JUDGES.LIST.EDIT_JUDGE")
-						: i18n.t("MY.JUDGES.LIST.NEW_JUDGE")
-				}
-				content={
-					<JudgeForm
-						draft={draftJudge}
-						onDraftChange={(updater) =>
-							setDraftJudge((current) => updater(current))
-						}
-						onCancel={handleCloseDialog}
-						onSave={handleSave}
-					/>
-				}
-				open={isDialogOpen()}
-				onOpenChange={(isOpen) => {
-					if (!isOpen) {
-						handleCloseDialog();
+			{/* Dialog triggers and the floating button are overlays: kept out of the page flow so
+			    they add neither height nor a flex gap to the column the table has to fit in. */}
+			<div class="judges-list__overlays">
+				<AtomDialog
+					title={
+						editingJudgeId()
+							? i18n.t("MY.JUDGES.LIST.EDIT_JUDGE")
+							: i18n.t("MY.JUDGES.LIST.NEW_JUDGE")
 					}
-				}}
-				trigger={<span aria-hidden />}
-			/>
+					content={
+						<JudgeForm
+							draft={draftJudge}
+							onDraftChange={(updater) =>
+								setDraftJudge((current) => updater(current))
+							}
+							onCancel={handleCloseDialog}
+							onSave={handleSave}
+						/>
+					}
+					open={isDialogOpen()}
+					onOpenChange={(isOpen) => {
+						if (!isOpen) {
+							handleCloseDialog();
+						}
+					}}
+					trigger={<span aria-hidden />}
+				/>
+
+				<FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
+			</div>
 
 			<Show
 				when={
@@ -303,8 +313,6 @@ function MyJudgesListPage() {
 					</Show>
 				</Show>
 			</Show>
-
-			<FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
 		</Page>
 	);
 }

@@ -105,8 +105,38 @@
     container: classification-page / inline-size;
 }
 
+/* The classification owns the whole viewport: only the results list scrolls, the page itself never does. */
+.app-layout__content:has(> .app-shell > .classification) {
+    overflow: hidden;
+}
+
+.app-shell:has(> .classification) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.page.classification {
+    display: flex;
+    flex-direction: column;
+    gap: var(--unit-1);
+
+    flex: 1 1 auto;
+    min-height: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.classification > .atom-segmented-control {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
 .obdx-clf-table {
     container-type: inline-size;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .obdx-clf-table__dog {
@@ -208,6 +238,16 @@
     flex-direction: column;
     gap: var(--unit-1);
     padding-top: var(--unit-1);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Room for the floating segmented control pill so it never covers the last card. */
+@media (max-width: 767px) {
+    .obdx-clf__list {
+        padding-bottom: var(--unit-6);
+    }
 }
 
 @container classification-page (max-width: 400px) {
@@ -223,6 +263,10 @@
 }
 
 .obdx-clf__pinned {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+
     padding-top: var(--unit-1);
     display: grid;
     grid-template-columns: minmax(0, 1fr);

@@ -9,7 +9,6 @@ import type {
 
 const CLASSIFICATION_URL = "/stages/stage-1/events/evt-1/classification";
 const COMPETITOR_COUNT = 8;
-const MOBILE_BOTTOM_GAP = 64;
 const HEIGHT_TOLERANCE = 4;
 
 const makeCompetitor = (
@@ -65,23 +64,42 @@ const headerToggle = (page: Page) =>
     .getByRole("button")
     .first();
 
-/** The list must take the space left under its own top edge, no more, no less. */
+/** The list must run all the way down to the bottom of the page area, no more, no less. */
 const expectListFillsViewport = async (page: Page) => {
   await expect
     .poll(
       () =>
-        page.evaluate((gap) => {
+        page.evaluate(() => {
           const list = document.querySelector<HTMLElement>(".obdx-clf__list");
-          if (!list) return null;
-          const expected = Math.floor(
-            window.innerHeight - list.getBoundingClientRect().top - gap,
-          );
-          const actual = parseFloat(getComputedStyle(list).height);
-          return Math.abs(actual - expected);
-        }, MOBILE_BOTTOM_GAP),
+          const shell = document.querySelector<HTMLElement>(".app-shell");
+          if (!list || !shell) return null;
+          const shellStyle = getComputedStyle(shell);
+          const available =
+            shell.getBoundingClientRect().bottom -
+            parseFloat(shellStyle.paddingBottom);
+          return Math.abs(list.getBoundingClientRect().bottom - available);
+        }),
       { timeout: 4_000 },
     )
     .toBeLessThanOrEqual(HEIGHT_TOLERANCE);
+};
+
+/** Nothing outside the list may scroll: the page itself must stay inside the viewport. */
+const expectNoPageScroll = async (page: Page) => {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const content = document.querySelector<HTMLElement>(
+          ".app-layout__content",
+        );
+        if (!content) return null;
+        return [
+          content.scrollHeight - content.clientHeight,
+          document.documentElement.scrollHeight - window.innerHeight,
+        ];
+      }),
+    )
+    .toEqual([0, 0]);
 };
 
 loggedOutTest.describe("Classification list height", () => {
@@ -104,12 +122,15 @@ loggedOutTest.describe("Classification list height", () => {
         page.locator(".obdx-clf__list .obdx-clf__position").first(),
       ).toBeVisible();
       await expectListFillsViewport(page);
+      await expectNoPageScroll(page);
 
       await headerToggle(page).click();
       await expectListFillsViewport(page);
+      await expectNoPageScroll(page);
 
       await headerToggle(page).click();
       await expectListFillsViewport(page);
+      await expectNoPageScroll(page);
 
       expect(pageErrors).toEqual([]);
     },
@@ -134,6 +155,7 @@ loggedOutTest.describe("Classification list height", () => {
         .first()
         .click();
       await expectListFillsViewport(page);
+      await expectNoPageScroll(page);
     },
   );
 });

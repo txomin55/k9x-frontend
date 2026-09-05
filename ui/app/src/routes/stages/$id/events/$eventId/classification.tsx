@@ -4,7 +4,7 @@ import type {
   StageEventClassificationItemResponseDTO,
   StageEventClassificationResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
-import {createEffect, createMemo, createSignal, For, onCleanup, onMount, Show,} from "solid-js";
+import {createEffect, createMemo, createSignal, For, Show} from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import EventRankingsLink from "@/components/routes/stages/event-rankings-link/EventRankingsLink";
@@ -215,17 +215,8 @@ function EventClassificationPage() {
     }
   });
 
-  const ITEM_HEIGHT = 220;
-  const MAX_VIEWPORT_ITEMS = 6;
-  const LIST_HEIGHT_SETTLE_FRAMES = 30;
-  const LIST_HEIGHT_STABLE_FRAMES = 3;
-
   const [scrollEl, setScrollEl] = createSignal<HTMLDivElement>();
   const [tableEl, setTableEl] = createSignal<HTMLDivElement>();
-  const [pageEl, setPageEl] = createSignal<HTMLDivElement>();
-  const [listHeight, setListHeight] = createSignal(
-    ITEM_HEIGHT * MAX_VIEWPORT_ITEMS,
-  );
   const competitors = createMemo(() => clfData()?.obdx?.competitors ?? []);
 
   const [competitorFilterIds, setCompetitorFilterIds] =
@@ -385,83 +376,6 @@ function EventClassificationPage() {
     setOpenIds(ids);
   };
 
-  const updateListHeight = () => {
-    const el = scrollEl();
-    if (!el) return;
-    const bottomGap = isMobile() ? 64 : 16;
-    const height = Math.max(
-      120,
-      Math.floor(
-        window.innerHeight - el.getBoundingClientRect().top - bottomGap,
-      ),
-    );
-    setListHeight(height);
-  };
-
-  let settleFrame: number | undefined;
-
-  const settleListHeight = () => {
-    if (settleFrame !== undefined) cancelAnimationFrame(settleFrame);
-
-    let remaining = LIST_HEIGHT_SETTLE_FRAMES;
-    let stable = 0;
-    let previous = listHeight();
-
-    const step = () => {
-      updateListHeight();
-      const current = listHeight();
-      stable = current === previous ? stable + 1 : 0;
-      previous = current;
-      remaining -= 1;
-
-      if (stable >= LIST_HEIGHT_STABLE_FRAMES || remaining <= 0) {
-        settleFrame = undefined;
-        return;
-      }
-
-      settleFrame = requestAnimationFrame(step);
-    };
-
-    settleFrame = requestAnimationFrame(step);
-  };
-
-  onMount(() => {
-    updateListHeight();
-    window.addEventListener("resize", updateListHeight);
-    window.addEventListener("scroll", updateListHeight, { passive: true });
-    onCleanup(() => {
-      window.removeEventListener("resize", updateListHeight);
-      window.removeEventListener("scroll", updateListHeight);
-      if (settleFrame !== undefined) cancelAnimationFrame(settleFrame);
-    });
-  });
-
-  createEffect(() => {
-    const el = pageEl();
-    if (!el) return;
-
-    let pendingFrame: number | undefined;
-    const observer = new ResizeObserver(() => {
-      if (pendingFrame !== undefined) return;
-      pendingFrame = requestAnimationFrame(() => {
-        pendingFrame = undefined;
-        updateListHeight();
-      });
-    });
-
-    observer.observe(el);
-    onCleanup(() => {
-      observer.disconnect();
-      if (pendingFrame !== undefined) cancelAnimationFrame(pendingFrame);
-    });
-  });
-
-  createEffect(() => {
-    if (clfData()) {
-      queueMicrotask(updateListHeight);
-    }
-  });
-
   const columns = createMemo<
     ColumnDef<StageEventClassificationItemResponseDTO>[]
   >(() => [
@@ -574,17 +488,7 @@ function EventClassificationPage() {
   ]);
 
   const listContent = () => (
-    <div
-      ref={(el) => {
-        setScrollEl(el);
-        updateListHeight();
-      }}
-      class="obdx-clf__list"
-      style={{
-        height: `${listHeight()}px`,
-        "overflow-y": "auto",
-      }}
-    >
+    <div ref={setScrollEl} class="obdx-clf__list">
       <For each={sortedCompetitors()}>
         {(item) => (
           <ObdxClassificationCard
@@ -602,11 +506,7 @@ function EventClassificationPage() {
   );
 
   const tableContent = () => (
-    <div
-      ref={setTableEl}
-      class="obdx-clf-table"
-      style={{ height: `${listHeight()}px` }}
-    >
+    <div ref={setTableEl} class="obdx-clf-table">
       <AtomTable<StageEventClassificationItemResponseDTO>
         data={sortedCompetitors()}
         columns={columns()}
@@ -648,16 +548,6 @@ function EventClassificationPage() {
       content: tableContent,
     },
   ]);
-
-  createEffect(() => {
-    openIds();
-    pinnedOpenIds();
-    pinnedIds();
-    controlValue();
-    competitorFilterIds();
-    sortValue();
-    settleListHeight();
-  });
 
   return (
     <>
@@ -758,7 +648,7 @@ function EventClassificationPage() {
         );
 
         return (
-          <div class="page classification" ref={setPageEl}>
+          <div class="page classification">
             <ExtractionSourceBanner
               extraction={classification().extraction}
               context={classification().event.name}
@@ -793,7 +683,6 @@ function EventClassificationPage() {
                 </div>
                 <div class="classification__mobile-collapsible-row">
                   <AtomCollapsible
-                    onOpenChange={settleListHeight}
                     trigger={
                       <span class="text-caption-lg">
                         {classification().competitionName}

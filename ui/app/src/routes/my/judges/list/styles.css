@@ -22,6 +22,34 @@
 	max-width: none;
 }
 
+/* The cards scroll inside their own box, so the page around them never gains a second scrollbar.
+   The bottom padding keeps the last row clear of the floating button and the view switcher. */
+.judges-list.card-list {
+	box-sizing: border-box;
+	overflow-y: auto;
+	align-content: start;
+	padding-bottom: var(--unit-8);
+}
+
 .judges-list__table {
 	margin-top: var(--unit-1);
+}
+
+/* Room to scroll the last row clear of the floating "new judge" button, taken from inside the
+   scroller's own height so it does not push the page past its container. */
+.judges-list__table .atom-table__scroller {
+	box-sizing: border-box;
+	padding-bottom: var(--unit-8);
+}
+
+/*
+ * The table scrolls all the way to the bottom of the page: the floating button hovers over it, so the
+ * space normally reserved for it below the content would just be a dead band under the table.
+ */
+.page:has(.judges-list__overlays) {
+	padding-bottom: var(--unit-1);
+}
+
+.judges-list__overlays {
+	position: absolute;
 }
