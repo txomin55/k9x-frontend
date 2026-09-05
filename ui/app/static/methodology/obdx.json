@@ -116,9 +116,7 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": [
-            "D"
-          ],
+          "possibleLetters": ["D"],
           "categories": [
             {
               "id": "CLUB",
@@ -206,9 +204,7 @@
             "min": 401,
             "max": 600
           },
-          "possibleLetters": [
-            "C"
-          ],
+          "possibleLetters": ["C"],
           "categories": [
             {
               "id": "CLUB",
@@ -296,11 +292,7 @@
             "min": 601,
             "max": 1000
           },
-          "possibleLetters": [
-            "B",
-            "A",
-            "S"
-          ],
+          "possibleLetters": ["B", "A", "S"],
           "categories": [
             {
               "id": "CLUB",
@@ -505,9 +497,7 @@
             "min": 50,
             "max": 100
           },
-          "possibleLetters": [
-            "E"
-          ],
+          "possibleLetters": ["E"],
           "categories": [
             {
               "id": "CLUB",
@@ -595,9 +585,7 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": [
-            "E"
-          ],
+          "possibleLetters": ["E"],
           "categories": [
             {
               "id": "CLUB",
@@ -691,9 +679,7 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": [
-            "E"
-          ],
+          "possibleLetters": ["E"],
           "categories": [
             {
               "id": "CLUB",
@@ -781,9 +767,7 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": [
-            "D"
-          ],
+          "possibleLetters": ["D"],
           "categories": [
             {
               "id": "CLUB",
@@ -865,7 +849,7 @@
     },
     {
       "id": "CPC",
-      "name": "CPC",
+      "name": "Clube Português de Canicultura",
       "grades": [
         {
           "id": "CPC_COBS",
@@ -877,9 +861,7 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": [
-            "E"
-          ],
+          "possibleLetters": ["E"],
           "categories": [
             {
               "id": "CLUB",
@@ -966,16 +948,14 @@
         {
           "id": "OBDX_SPKL_ALO",
           "name": {
-            "es": "ALO",
-            "en": "ALO"
+            "es": "SPKL ALO",
+            "en": "SPKL ALO"
           },
           "band": {
             "min": 100,
             "max": 200
           },
-          "possibleLetters": [
-            "E"
-          ],
+          "possibleLetters": ["E"],
           "categories": [
             {
               "id": "CLUB",
