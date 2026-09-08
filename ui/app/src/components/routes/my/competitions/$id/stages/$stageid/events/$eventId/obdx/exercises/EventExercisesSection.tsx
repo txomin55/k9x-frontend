@@ -15,7 +15,7 @@ import AtomBadge from "library/src/components/atoms/badge/AtomBadge";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import plusIcon from "@/assets/miscelaneous/plus.svg";
-import {
+import type {
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";

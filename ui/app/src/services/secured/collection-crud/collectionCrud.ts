@@ -1,4 +1,4 @@
-import { TanstackCreateQuery } from "@/utils/http/query-factory.types";
+import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { queryClient } from "@/utils/http/query-client";
 import { defineQuery } from "@/utils/http/query-factory";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
@@ -18,7 +18,7 @@ import {
   saveCollectionSnapshot,
   saveCollectionsSnapshot,
 } from "@/services//secured/collection-crud/collectionCrudOfflineUtils";
-import {
+import type {
   CollectionResponseDTO,
   CollectionsResponseDTO,
   UpdateCollectionScoreRequestDTO,

@@ -31,7 +31,9 @@ import { generateEntityId } from "@/utils/id/generateEntityId";
 
 const refreshJudgesSnapshot = async () => {
   if (!isOrganizer()) {
-    return queryClient.getQueryData<JudgeResponseDTO[]>(getJudgesQueryKey()) ?? [];
+    return (
+      queryClient.getQueryData<JudgeResponseDTO[]>(getJudgesQueryKey()) ?? []
+    );
   }
 
   const judges = await rawRequest<JudgeResponseDTO[]>({
@@ -50,8 +52,9 @@ const fetchJudges = () =>
 const refreshCreatedJudgesSnapshot = async () => {
   if (!isOrganizer()) {
     return (
-      queryClient.getQueryData<JudgeResponseDTO[]>(getCreatedJudgesQueryKey()) ??
-      []
+      queryClient.getQueryData<JudgeResponseDTO[]>(
+        getCreatedJudgesQueryKey(),
+      ) ?? []
     );
   }
 

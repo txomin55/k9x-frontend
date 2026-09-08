@@ -3,15 +3,8 @@
   "globalEnv": ["CI_BUILD_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**"
-      ]
-    },
-    "lint": {
-      "outputs": []
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     },
     "dev": {
       "cache": false

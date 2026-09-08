@@ -40,7 +40,9 @@ async function nativeSubscribeToPushManager(
   });
 }
 
-async function nativeUnsubscribeFromPushManager(subscription: PushSubscription) {
+async function nativeUnsubscribeFromPushManager(
+  subscription: PushSubscription,
+) {
   return await subscription.unsubscribe();
 }
 

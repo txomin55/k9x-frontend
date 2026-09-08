@@ -7,101 +7,103 @@
    ConfirmActionButton's inner .atom-dialog__trigger. */
 
 .floating-action {
-    position: fixed;
-    z-index: var(--z-floating);
-    right: var(--unit-2);
+  position: fixed;
+  z-index: var(--z-floating);
+  right: var(--unit-2);
 
-    animation: floating-action-in 180ms ease-out;
+  animation: floating-action-in 180ms ease-out;
 }
 
 /* Stack levels above the bottom edge. level-0 = base (config gear);
    each level is one circle + gap higher. */
 .floating-action--level-0 {
-    bottom: var(--unit-1);
+  bottom: var(--unit-1);
 }
 
 .floating-action--level-1 {
-    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)));
+  bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)));
 }
 
 .floating-action--level-2 {
-    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 2);
+  bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 2);
 }
 
 .floating-action--level-3 {
-    bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 3);
+  bottom: calc(var(--unit-1) + (var(--circle-size-md) + var(--unit-05)) * 3);
 }
 
 @keyframes floating-action-in {
-    from {
-        opacity: 0;
-        transform: translateY(var(--unit-1));
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  from {
+    opacity: 0;
+    transform: translateY(var(--unit-1));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .floating-action__trigger {
-    appearance: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--unit-1);
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--unit-1);
 
-    padding: 0;
-    margin: 0;
-    border: none;
-    background: none;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 .floating-action .atom-dialog__trigger {
-    gap: var(--unit-1);
+  gap: var(--unit-1);
 }
 
 .floating-action__label {
-    padding: var(--unit-05) var(--unit-1);
+  padding: var(--unit-05) var(--unit-1);
 
-    background: var(--surface);
-    color: var(--text-primary);
+  background: var(--surface);
+  color: var(--text-primary);
 
-    border-radius: var(--radius-full);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  border-radius: var(--radius-full);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
 
-    font-size: var(--text-label-sm);
-    font-weight: 500;
-    white-space: nowrap;
+  font-size: var(--text-label-sm);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .floating-action__circle {
-    --circle-background: var(--primary);
-    --circle-background-hover: var(--primary-hover);
-    --circle-background-active: var(--primary-active);
+  --circle-background: var(--primary);
+  --circle-background-hover: var(--primary-hover);
+  --circle-background-active: var(--primary-active);
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    width: var(--circle-size-md);
-    height: var(--circle-size-md);
+  width: var(--circle-size-md);
+  height: var(--circle-size-md);
 
-    background: var(--circle-background);
-    color: var(--text-inverted);
-    border-radius: var(--radius-full);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  background: var(--circle-background);
+  color: var(--text-inverted);
+  border-radius: var(--radius-full);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
 
-    transition: background-color 200ms, transform 200ms;
+  transition:
+    background-color 200ms,
+    transform 200ms;
 }
 
 /* Destructive actions keep their colour on hover/active, only the scale reacts. */
 .floating-action__circle--danger {
-    --circle-background: var(--error);
-    --circle-background-hover: var(--error);
-    --circle-background-active: var(--error);
+  --circle-background: var(--error);
+  --circle-background-hover: var(--error);
+  --circle-background-active: var(--error);
 }
 
 /* Secondary: an action that is not the affirmative one of the page (sending an
@@ -109,65 +111,65 @@
    claiming the primary colour.
    `box-sizing` is local (k9x is content-box) so the border does not grow the circle. */
 .floating-action__circle--secondary {
-    --circle-background: var(--surface);
-    --circle-background-hover: var(--accent-soft);
-    --circle-background-active: var(--surface-muted);
+  --circle-background: var(--surface);
+  --circle-background-hover: var(--accent-soft);
+  --circle-background-active: var(--surface-muted);
 
-    box-sizing: border-box;
-    border: 1px solid var(--text-primary);
-    color: var(--text-primary);
+  box-sizing: border-box;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
 }
 
 /* Ghost: the lightest step of the stack — for leaving a mode rather than doing
    something (back to view mode). Muted fill, muted icon and a shallower shadow so
    it reads as the quietest circle of the group. */
 .floating-action__circle--ghost {
-    --circle-background: var(--surface-muted);
-    --circle-background-hover: var(--surface-hover);
-    --circle-background-active: var(--border);
+  --circle-background: var(--surface-muted);
+  --circle-background-hover: var(--surface-hover);
+  --circle-background-active: var(--border);
 
-    color: var(--text-secondary);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  color: var(--text-secondary);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
 .floating-action__circle .atom-svg-icon {
-    width: var(--icon-size-lg);
-    height: var(--icon-size-lg);
-    display: block;
+  width: var(--icon-size-lg);
+  height: var(--icon-size-lg);
+  display: block;
 }
 
 /* Hover / active (not when disabled) */
 .floating-action__trigger:hover:not(:disabled) .floating-action__circle,
 .floating-action .atom-dialog__trigger:hover .floating-action__circle {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .floating-action__trigger:active:not(:disabled) .floating-action__circle,
 .floating-action .atom-dialog__trigger:active .floating-action__circle {
-    transform: scale(0.96);
+  transform: scale(0.96);
 }
 
 .floating-action__trigger:hover:not(:disabled) .floating-action__circle,
 .floating-action .atom-dialog__trigger:hover .floating-action__circle {
-    background: var(--circle-background-hover);
+  background: var(--circle-background-hover);
 }
 
 .floating-action__trigger:active:not(:disabled) .floating-action__circle,
 .floating-action .atom-dialog__trigger:active .floating-action__circle {
-    background: var(--circle-background-active);
+  background: var(--circle-background-active);
 }
 
 /* Disabled add pill (e.g. añadir ejercicio sin jueces) */
 .floating-action__trigger:disabled {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 .floating-action__trigger:disabled .floating-action__label {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 .floating-action__trigger:disabled .floating-action__circle {
-    background: var(--surface-muted);
-    color: var(--text-muted);
-    box-shadow: none;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  box-shadow: none;
 }

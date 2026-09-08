@@ -13,8 +13,7 @@ function hashString(value: string): number {
 }
 
 function hashToHue(value: string): number {
-  const fraction =
-    (hashString(value) * GOLDEN_RATIO_CONJUGATE) % 1;
+  const fraction = (hashString(value) * GOLDEN_RATIO_CONJUGATE) % 1;
 
   return Math.floor(fraction * 360);
 }

@@ -5,7 +5,7 @@ import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
+import type { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
   MIN_TEXT_LENGTH,

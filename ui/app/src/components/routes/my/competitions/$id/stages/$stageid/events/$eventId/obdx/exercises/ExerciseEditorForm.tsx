@@ -8,7 +8,7 @@ import {
 import AtomInput from "library/src/components/atoms/input/AtomInput";
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { AtomSelectOption } from "library/src/components/atoms/select/AtomSelect";
-import {
+import type {
   EventExerciseDetailResponseDTO,
   EventJudgeDetailResponseDTO,
 } from "@/services/secured/event-crud/eventCrud.types";

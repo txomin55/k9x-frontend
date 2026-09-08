@@ -160,7 +160,9 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
           title={i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION")}
           triggerClass="atom-dialog__trigger--ghost"
           trigger={
-            <span>{i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION_QUESTION")}</span>
+            <span>
+              {i18n.t("STAGES.STAGES_MAP.MARKER.WRONG_LOCATION_QUESTION")}
+            </span>
           }
         />
       </div>

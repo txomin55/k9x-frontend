@@ -6,7 +6,7 @@ SolidJS PWA powered by Vite and the shared components from the `library` package
 
 ## Stack and configuration
 
-- Build and dev server: Vite + SolidStart, linting with `vite-plugin-eslint`.
+- Build and dev server: Vite + SolidStart. Linting is a separate Biome pass (`pnpm lint` at the repo root), not a Vite plugin.
 - Aliases: `@` -> `src`, `@lib` -> `../library/src`.
 - Pages output: Nitro is configured with the `github-pages` preset and emits the static site into `.output/public`.
 - PWA: source in `src/sw.ts`, bundled separately with `vite.sw.config.ts`, and served as generated `static/sw.js`.

@@ -1,4 +1,4 @@
-import {Combobox} from "@kobalte/core/combobox";
+import { Combobox } from "@kobalte/core/combobox";
 import { useRowWindow } from "../../../utils/virtual/useRowWindow";
 import {
   createEffect,
@@ -119,9 +119,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
     if (!inputValue().trim()) askForMoreAtTheEnd();
     element.addEventListener("scroll", askForMoreAtTheEnd, { passive: true });
 
-    onCleanup(() =>
-      element.removeEventListener("scroll", askForMoreAtTheEnd),
-    );
+    onCleanup(() => element.removeEventListener("scroll", askForMoreAtTheEnd));
   });
 
   const visibleOptions = createMemo(() => {
@@ -129,9 +127,7 @@ export function AtomCombobox(props: AtomComboboxProps) {
     if (!query) return props.options;
 
     return props.options.filter((option) =>
-      (option.searchText ?? option.label)
-        .toLocaleLowerCase()
-        .includes(query),
+      (option.searchText ?? option.label).toLocaleLowerCase().includes(query),
     );
   });
 

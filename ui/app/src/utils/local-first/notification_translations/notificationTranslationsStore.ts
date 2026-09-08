@@ -32,8 +32,9 @@ export const saveActiveNotificationTranslations = async (
   await table.put({ id: ACTIVE_ID, locale, translations });
 };
 
-export const readActiveNotificationTranslations =
-  async (): Promise<NotificationTranslations | undefined> => {
-    const table = await getTable();
-    return table.get(ACTIVE_ID);
-  };
+export const readActiveNotificationTranslations = async (): Promise<
+  NotificationTranslations | undefined
+> => {
+  const table = await getTable();
+  return table.get(ACTIVE_ID);
+};

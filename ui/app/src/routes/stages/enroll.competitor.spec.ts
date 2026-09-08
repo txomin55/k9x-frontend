@@ -41,7 +41,9 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
           return;
         }
         const { dogIdentification } = route.request().postDataJSON();
-        const dog = defaultDogs.find((candidate) => candidate.identification === dogIdentification);
+        const dog = defaultDogs.find(
+          (candidate) => candidate.identification === dogIdentification,
+        );
         if (dog) {
           extraCompetitors.push({
             dog: { id: dog.identification, name: dog.name },
@@ -55,7 +57,9 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
       });
 
       await page.goto(`/stages/${STAGE_ID}/info`);
-      await expect(page.getByText("Agility Standard", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Agility Standard", { exact: true }),
+      ).toBeVisible();
 
       const openEnrolledCompetitors = () =>
         page.getByRole("button", { name: "Competitors enrolled" }).click();
@@ -64,7 +68,9 @@ competitorTest.describe("Event enrollment (write) - competitor", () => {
         mutation: { method: "PUT", urlIncludes: "/enroll" },
         entityType: "stage-enroll",
         performMutation: async () => {
-          await page.getByRole("button", { name: "Enroll", exact: true }).click();
+          await page
+            .getByRole("button", { name: "Enroll", exact: true })
+            .click();
           const dogCombobox = page.getByRole("combobox", { name: "Dog" });
           await dogCombobox.click();
           await dogCombobox.fill("Koda");

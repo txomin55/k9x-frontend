@@ -1,42 +1,42 @@
 .competition-card__main-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--unit-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--unit-2);
 }
 
 .competition-card__actions {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
-    width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  width: 100%;
 }
 
 .competition-card__extraction-note {
-    margin-left: auto;
-    color: var(--text-secondary);
-    font-size: var(--text-caption-md);
-    white-space: nowrap;
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  white-space: nowrap;
 }
 
 .competition-card__status {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .competition-card__content {
-    display: flex;
-    gap: var(--unit-1);
-    flex-direction: column;
+  display: flex;
+  gap: var(--unit-1);
+  flex-direction: column;
 }
 
 .competition-card__stages {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .competition-card__stages--info {
-    display: flex;
-    gap: var(--unit-1);
+  display: flex;
+  gap: var(--unit-1);
 }

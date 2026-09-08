@@ -1,22 +1,22 @@
 .breadcrumb-info-slide {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--unit-2);
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--unit-2);
+  width: 100%;
 }
 
 .breadcrumb-info-slide__image {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: calc(var(--unit-10) * 4);
-    object-fit: contain;
-    border-radius: var(--radius-md);
-    align-self: center;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(var(--unit-10) * 4);
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  align-self: center;
 }
 
 .breadcrumb-info-slide__text {
-    margin: 0;
-    text-align: left;
+  margin: 0;
+  text-align: left;
 }

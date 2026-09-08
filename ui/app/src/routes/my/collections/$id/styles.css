@@ -1,63 +1,63 @@
 .app-shell:has(.collection-detail__exercises) {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .page:has(> .collection-detail__exercises) {
-    flex: 1 1 auto;
-    min-height: 0;
-    padding-bottom: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-bottom: 0;
 }
 
 .collection-detail__exercises {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-    flex: 1 1 auto;
-    min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .collection-detail__exercises--headers {
-    display: grid;
-    grid-template-columns: var(--collection-detail-exercises-columns);
-    align-items: center;
-    gap: var(--unit-1);
-    width: 100%;
-    padding-bottom: var(--unit-2);
-    border-bottom: 3px solid var(--border);
+  display: grid;
+  grid-template-columns: var(--collection-detail-exercises-columns);
+  align-items: center;
+  gap: var(--unit-1);
+  width: 100%;
+  padding-bottom: var(--unit-2);
+  border-bottom: 3px solid var(--border);
 }
 
 .collection-detail__exercises--headers > :not(:first-child) {
-    text-align: end;
+  text-align: end;
 }
 
 .collection-detail__exercises--rows {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-    min-height: 0;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .collection-detail__scores-banner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--unit-2);
-    border-radius: var(--radius-md);
-    border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--unit-2);
+  border-radius: var(--radius-md);
+  border: 1px solid;
 }
 
 .collection-detail__scores-banner--warning {
-    border-color: var(--warning-border);
-    background: var(--warning-bg);
-    color: var(--warning-text);
+  border-color: var(--warning-border);
+  background: var(--warning-bg);
+  color: var(--warning-text);
 }
 
 .collection-detail__scores-banner--info {
-    border-color: var(--primary-border);
-    background: var(--primary-soft);
-    color: var(--primary);
+  border-color: var(--primary-border);
+  background: var(--primary-soft);
+  color: var(--primary);
 }

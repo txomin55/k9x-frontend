@@ -24,7 +24,7 @@ import {
   mergeCompetitionsWithDrafts,
   reconcileRemovedCompetitionIds,
 } from "@/services/secured/competition-crud/competitionDraftStore";
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { isOrganizer, useAuthUser } from "@/stores/auth/auth";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import { COMPETITION_STATUS } from "@/utils/competition";

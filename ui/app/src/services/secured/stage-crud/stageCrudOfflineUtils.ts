@@ -15,9 +15,9 @@ import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import {
-  type PendingTask,
-  type PendingTaskMethod,
+import type {
+  PendingTask,
+  PendingTaskMethod,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
 import {
@@ -25,7 +25,7 @@ import {
   replaceCompetitionDrafts,
   upsertCompetitionDraft,
 } from "@/services/secured/competition-crud/competitionDraftStore";
-import {
+import type {
   ApiStageRollbackPayload,
   StageEditorModel,
 } from "@/services/secured/stage-crud/stageCrud.types";

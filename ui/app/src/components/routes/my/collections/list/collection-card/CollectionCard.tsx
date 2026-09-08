@@ -1,5 +1,7 @@
-import { CollectionsResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import type { CollectionsResponseDTO } from "@/services/secured/collection-crud/collectionCrud.types";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import { useI18n } from "@/stores/i18n/i18n";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";

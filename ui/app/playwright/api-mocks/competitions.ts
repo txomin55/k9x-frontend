@@ -2,7 +2,10 @@ import type { Page } from "@playwright/test";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { COMPETITION_STATUS } from "@/utils/competition";
-import { byCountry, setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import {
+  byCountry,
+  setRouteResponses,
+} from "@test/utils/playwrightMockingUtils";
 import { EVENT_STATUS } from "@/utils/event";
 import { STAGE_STATUS } from "@/utils/stage";
 

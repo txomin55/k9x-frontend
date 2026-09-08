@@ -1,5 +1,12 @@
 import { SegmentedControl } from "@kobalte/core/segmented-control";
-import { createEffect, createSignal, For, JSX, Match, Switch } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  For,
+  type JSX,
+  Match,
+  Switch,
+} from "solid-js";
 import "./styles.css";
 
 interface AtomSegmentedControlPropsControl {

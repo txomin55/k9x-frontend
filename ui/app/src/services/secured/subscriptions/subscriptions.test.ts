@@ -10,8 +10,9 @@ vi.mock("@/services/secured/subscriptions/subscriptionsOfflineUtils", () => ({
   getSubscribedEventIds,
 }));
 
-const { updateEventSubscriptions } =
-  await import("@/services/secured/subscriptions/subscriptions");
+const { updateEventSubscriptions } = await import(
+  "@/services/secured/subscriptions/subscriptions"
+);
 
 describe("updateEventSubscriptions", () => {
   beforeEach(() => {

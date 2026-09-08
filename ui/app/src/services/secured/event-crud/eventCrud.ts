@@ -1,4 +1,4 @@
-import { createMemo, getOwner, onMount } from "solid-js";
+import { createMemo, getOwner } from "solid-js";
 import { rawRequest } from "@/utils/http/client";
 import type { BlobResponse } from "@/utils/http/client.types";
 import { downloadBlob } from "@/utils/download/downloadBlob";
@@ -9,9 +9,12 @@ import {
   applyApiEventUpsert,
   commitApiEventMutation,
   commitApiEventMutationSuccess,
-  createApiEventRollbackPayload
+  createApiEventRollbackPayload,
 } from "@/services/secured/event-crud/eventCrudOfflineUtils";
-import { CompetitionResponseDTO, getCachedCompetitions } from "@/services/secured/competition-crud/competitionCrud";
+import {
+  type CompetitionResponseDTO,
+  getCachedCompetitions,
+} from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import {
   applyCollectionUpsert,
@@ -24,7 +27,7 @@ import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 import { generateEntityId } from "@/utils/id/generateEntityId";
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  getConfigurationsFromCache
+  getConfigurationsFromCache,
 } from "@/services/secured/configurations/configurations";
 import type {
   CreateEventRequestDTO,
@@ -39,13 +42,15 @@ import type {
   EventJudgeDetailRequestDTO,
   EventJudgeDetailResponseDTO,
   UpdateEventNotCompetingRequestDTO,
-  UpdateEventRequestDTO
+  UpdateEventRequestDTO,
 } from "@/services/secured/event-crud/eventCrud.types";
-import { normalizeEventDetailResponse, SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
+import {
+  normalizeEventDetailResponse,
+  SCORE_CALCULATION,
+} from "@/services/secured/event-crud/eventCrud.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { getCachedAwards } from "@/services/secured/award-crud/awardCrud";
 import { queryClient } from "@/utils/http/query-client";
-import { isOffline } from "@/utils/local-first/localFirstPolicy";
 
 const fetchEventById = (id: string) =>
   rawRequest<EventDetailRawResponseDTO>({
@@ -166,9 +171,10 @@ const toApiAwards = (
   if (!awardIds) return previousAwards ?? [];
 
   const catalogById = new Map(
-    (disciplineId ? getCachedAwards(disciplineId) : undefined)?.map(
-      (award) => [award.id, award],
-    ) ?? [],
+    (disciplineId ? getCachedAwards(disciplineId) : undefined)?.map((award) => [
+      award.id,
+      award,
+    ]) ?? [],
   );
   const previousById = new Map(
     (previousAwards ?? []).map((award) => [award.id, award]),
@@ -221,7 +227,10 @@ const toApiCompetitor = (
   previousCompetitor?: EventCompetitorDetail,
 ): EventCompetitorDetail => {
   return {
-    dogIdentification: competitor.dogIdentification ?? previousCompetitor?.dogIdentification ?? "",
+    dogIdentification:
+      competitor.dogIdentification ??
+      previousCompetitor?.dogIdentification ??
+      "",
     origin: previousCompetitor?.origin ?? "",
     name: previousCompetitor?.name ?? "",
     owner: previousCompetitor?.owner ?? "",

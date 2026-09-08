@@ -5,7 +5,9 @@ import AtomButton, {
 } from "library/src/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import Card from "library/src/components/molecules/card/Card";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
@@ -15,7 +17,7 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import MainJudgeIndicator from "@/components/common/main-judge-indicator/MainJudgeIndicator";
 import JudgeEditorForm from "./JudgeEditorForm";
 import { useJudges } from "@/services/secured/judge-crud/judgeCrud";
-import { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type { EventJudgeDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
@@ -68,7 +70,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
       .map((judge) => ({
         label: judge.name,
         value: judge.id,
-        preLabel: <CountryFlag country={judge.country} alt={`${judge.country} flag`} />,
+        preLabel: (
+          <CountryFlag country={judge.country} alt={`${judge.country} flag`} />
+        ),
       }));
   });
 
@@ -192,7 +196,9 @@ export default function EventJudgesSection(props: EventJudgesSectionProps) {
               judge().mainJudge ? (
                 <div class="event-judges-section__judge-main">
                   <MainJudgeIndicator />
-                  <span>{i18n.t("MY.COMPETITIONS.EVENT_JUDGES.MAIN_JUDGE")}</span>
+                  <span>
+                    {i18n.t("MY.COMPETITIONS.EVENT_JUDGES.MAIN_JUDGE")}
+                  </span>
                 </div>
               ) : undefined
             }

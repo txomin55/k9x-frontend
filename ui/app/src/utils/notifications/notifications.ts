@@ -57,7 +57,10 @@ const enablePushNotifications = async (applicationServerKey: Uint8Array) => {
 
 const getPushNotificationsState = async () => {
   if (!isPushNotificationSupported()) {
-    return { permission: "denied" as NotificationPermission, subscription: null };
+    return {
+      permission: "denied" as NotificationPermission,
+      subscription: null,
+    };
   }
 
   const permission = nativeGetNotificationPermission();

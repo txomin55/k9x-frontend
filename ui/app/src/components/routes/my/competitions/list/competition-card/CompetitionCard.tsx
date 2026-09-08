@@ -5,7 +5,7 @@ import AtomButton, {
 import { useNavigate } from "@tanstack/solid-router";
 import { For, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
-import { CompetitionStageDetailResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { CompetitionStageDetailResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import type { ExtractionResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatStageDateRange } from "@/utils/date";

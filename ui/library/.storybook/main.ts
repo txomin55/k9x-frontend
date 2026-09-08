@@ -8,15 +8,14 @@ import remarkGfm from "remark-gfm";
  * It is necessary in projects that use Yarn PnP or are set up within a monorepo.
  */
 const nodeRequire = createRequire(join(process.cwd(), "package.json"));
-const kobalteSolidDist = /node_modules\/(?:\.pnpm\/.*\/)?@kobalte\/core\/dist\/.*\.jsx$/;
+const kobalteSolidDist =
+  /node_modules\/(?:\.pnpm\/.*\/)?@kobalte\/core\/dist\/.*\.jsx$/;
 
 function getAbsolutePath(value) {
   return dirname(nodeRequire.resolve(join(value, "package.json")));
 }
 
-function mergeResolveConditions(
-  conditions: string[] | undefined,
-): string[] {
+function mergeResolveConditions(conditions: string[] | undefined): string[] {
   return Array.from(new Set(["solid", ...(conditions ?? [])]));
 }
 

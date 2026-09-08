@@ -1,6 +1,8 @@
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
@@ -114,14 +116,18 @@ function StagesFiltersFields(props: StagesFiltersProps) {
           placeholder={i18n.t("COMMON.COUNTRY_FIELD.SELECT_COUNTRY")}
           options={countryOptions()}
           value={selectedCountry()}
-          onChange={(option) => props.onCountryChange(fromAllOption(option?.value))}
+          onChange={(option) =>
+            props.onCountryChange(fromAllOption(option?.value))
+          }
         />
         <AtomSelect
           label={i18n.t("STAGES.FILTERS.STATUS")}
           placeholder={i18n.t("STAGES.FILTERS.SELECT_STATUS")}
           options={statusOptions}
           value={selectedStatus()}
-          onChange={(option) => props.onStatusChange(fromAllOption(option?.value))}
+          onChange={(option) =>
+            props.onStatusChange(fromAllOption(option?.value))
+          }
         />
       </div>
       <div class="stages-filters__inline">
@@ -146,7 +152,9 @@ function StagesFiltersFields(props: StagesFiltersProps) {
       <Show when={isMobile()} fallback={fields}>
         <AtomCollapsible
           trigger={
-            <span class="text-caption-lg">{i18n.t("STAGES.FILTERS.TITLE")}</span>
+            <span class="text-caption-lg">
+              {i18n.t("STAGES.FILTERS.TITLE")}
+            </span>
           }
           content={<div class="stages-filters__mobile-content">{fields}</div>}
         />

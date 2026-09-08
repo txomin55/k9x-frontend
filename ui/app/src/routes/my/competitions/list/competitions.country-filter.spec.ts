@@ -26,7 +26,9 @@ organizerTest.describe("My competitions - country filter", () => {
 
       // Both mock competitions are Spanish, so filtering by France empties the list.
       await expect.poll(() => countries).toContain("fr");
-      await expect(page.getByText("No results match the filter.")).toBeVisible();
+      await expect(
+        page.getByText("No results match the filter."),
+      ).toBeVisible();
 
       await page.getByRole("button", { name: /Country/ }).click();
       await page.getByRole("option", { name: "Spain" }).click();

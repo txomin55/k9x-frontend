@@ -52,7 +52,9 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
   };
 
   const setMainJudge = (mainJudge: boolean) => {
-    props.onDraftChange((current) => (current ? { ...current, mainJudge } : current));
+    props.onDraftChange((current) =>
+      current ? { ...current, mainJudge } : current,
+    );
     props.onCommit();
   };
 
@@ -109,9 +111,7 @@ export default function JudgeEditorForm(props: JudgeEditorFormProps) {
         value={props.draft().collectorEmail}
         validationState={emailInvalid() ? "invalid" : undefined}
         errorMessage={
-          emailInvalid()
-            ? i18n.t("COMMON.VALIDATION.INVALID_EMAIL")
-            : undefined
+          emailInvalid() ? i18n.t("COMMON.VALIDATION.INVALID_EMAIL") : undefined
         }
         onBlur={() => {
           setEmailTouched(true);

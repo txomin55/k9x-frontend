@@ -18,11 +18,14 @@ export default function WrongLocationForm(props: WrongLocationFormProps) {
   const [description, setDescription] = createSignal("");
 
   const sendWrongLocationForm = async () => {
-    await postGoogleForm("1FAIpQLScikWNNKevmwQfpLMkFxkTtgHk3UKQFHXw8P_J-iWLvsTAw3w", {
-      "entry.1931094736": user()?.email,
-      "entry.897265685": description(),
-      "entry.597886130": props.stageId,
-    });
+    await postGoogleForm(
+      "1FAIpQLScikWNNKevmwQfpLMkFxkTtgHk3UKQFHXw8P_J-iWLvsTAw3w",
+      {
+        "entry.1931094736": user()?.email,
+        "entry.897265685": description(),
+        "entry.597886130": props.stageId,
+      },
+    );
     props.onClose();
     showToast(i18n.t("GLOBAL.FORM.SENT"));
   };

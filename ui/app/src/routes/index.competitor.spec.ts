@@ -8,9 +8,7 @@ competitorTest.describe("Landing page - competitor", () => {
     async ({ page }) => {
       await page.goto(AppRoutePath.HOME);
 
-      await expect(
-        page.getByText("Want to be organizer?"),
-      ).toBeVisible();
+      await expect(page.getByText("Want to be organizer?")).toBeVisible();
 
       await page.getByRole("button", { name: "Carlos Competitor" }).click();
 
@@ -22,9 +20,7 @@ competitorTest.describe("Landing page - competitor", () => {
       // The locale toggle is now a select; open it and pick the Spanish option.
       await page.locator('button[aria-haspopup="listbox"]').click();
       await page.getByRole("option", { name: "es" }).click();
-      await expect(
-        page.getByText("¿Quieres ser organizador?"),
-      ).toBeVisible();
+      await expect(page.getByText("¿Quieres ser organizador?")).toBeVisible();
     },
   );
 });

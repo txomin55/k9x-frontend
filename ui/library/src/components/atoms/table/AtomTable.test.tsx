@@ -45,9 +45,10 @@ class IntersectionObserverMock {
   disconnect() {}
 
   trigger(isIntersecting: boolean) {
-    this.callback([
-      { isIntersecting } as IntersectionObserverEntry,
-    ], this as unknown as IntersectionObserver);
+    this.callback(
+      [{ isIntersecting } as IntersectionObserverEntry],
+      this as unknown as IntersectionObserver,
+    );
   }
 }
 

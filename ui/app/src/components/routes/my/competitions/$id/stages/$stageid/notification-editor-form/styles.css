@@ -1,32 +1,32 @@
 .notification-editor-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
 }
 
 .notification-editor-form__actions {
-    display: flex;
-    padding-top: var(--unit-2);
-    width: 100%;
-    justify-content: space-between;
+  display: flex;
+  padding-top: var(--unit-2);
+  width: 100%;
+  justify-content: space-between;
 }
 
 .notification-editor-form__format {
-    margin: 0;
-    color: var(--text-secondary);
+  margin: 0;
+  color: var(--text-secondary);
 }
 
 .notification-editor-form__preview {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
 
-    padding: var(--unit-1);
+  padding: var(--unit-1);
 
-    background: var(--surface-muted);
-    border-radius: var(--radius-md);
+  background: var(--surface-muted);
+  border-radius: var(--radius-md);
 }
 
 .notification-editor-form__preview > .text-caption-md {
-    color: var(--text-secondary);
+  color: var(--text-secondary);
 }

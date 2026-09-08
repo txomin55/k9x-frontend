@@ -4,11 +4,10 @@ packages:
   - coverage_processor
 
 catalog:
+  "@biomejs/biome": 2.5.12
   "@testing-library/jest-dom": ^6.9.1
   "@types/node": ^24.10.1
   "@vitest/coverage-v8": ^4.0.15
-  eslint: ^9.39.1
-  prettier: 3.7.4
   solid-js: ^1.9.10
   typescript: ^5.4.5
   vite: 7.2.6

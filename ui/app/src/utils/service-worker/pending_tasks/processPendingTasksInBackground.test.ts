@@ -37,8 +37,9 @@ describe("processPendingTasksInBackground", () => {
     removePendingTask.mockResolvedValue(undefined);
     fetchMock.mockResolvedValue({ ok: true });
 
-    const { processPendingTasksInBackground } =
-      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
+    const { processPendingTasksInBackground } = await import(
+      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
+    );
 
     await processPendingTasksInBackground();
 
@@ -72,8 +73,9 @@ describe("processPendingTasksInBackground", () => {
     updatePendingTask.mockResolvedValue(undefined);
     fetchMock.mockRejectedValue(networkError);
 
-    const { processPendingTasksInBackground } =
-      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
+    const { processPendingTasksInBackground } = await import(
+      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
+    );
 
     await expect(processPendingTasksInBackground()).rejects.toThrow("offline");
 
@@ -88,8 +90,9 @@ describe("processPendingTasksInBackground", () => {
       },
     ]);
 
-    const { processPendingTasksInBackground } =
-      await import("@/utils/service-worker/pending_tasks/processPendingTasksInBackground");
+    const { processPendingTasksInBackground } = await import(
+      "@/utils/service-worker/pending_tasks/processPendingTasksInBackground"
+    );
 
     await processPendingTasksInBackground();
 

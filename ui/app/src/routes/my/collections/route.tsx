@@ -19,7 +19,12 @@ function MyCollectionsBreadcrumbInfo() {
     <BreadcrumbInfoSlides
       slides={[
         [{ keys: ["MY.COLLECTIONS.BREADCRUMB_INFO"] }],
-        [{ keys: ["MY.COLLECTIONS.BREADCRUMB_INFO_2"], image: collectionsCard }],
+        [
+          {
+            keys: ["MY.COLLECTIONS.BREADCRUMB_INFO_2"],
+            image: collectionsCard,
+          },
+        ],
       ]}
     />
   );

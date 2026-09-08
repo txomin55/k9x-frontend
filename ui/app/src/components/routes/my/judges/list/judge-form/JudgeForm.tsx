@@ -53,9 +53,7 @@ export default function JudgeForm(props: JudgeFormProps) {
         value={props.draft().name ?? ""}
         onChange={updateField("name")}
         onBlur={() => setNameTouched(true)}
-        validationState={
-          nameTouched() && nameError() ? "invalid" : undefined
-        }
+        validationState={nameTouched() && nameError() ? "invalid" : undefined}
         errorMessage={nameTouched() ? nameErrorMessage() : undefined}
       />
       <CountryField

@@ -1,6 +1,6 @@
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import {Show, type JSX} from "solid-js";
+import { Show, type JSX } from "solid-js";
 import "./styles.css";
 
 export interface FloatingToggleProps {

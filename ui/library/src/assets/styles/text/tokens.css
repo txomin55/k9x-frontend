@@ -1,33 +1,33 @@
 @import "primitives.css";
 
 :root {
-    /* headings */
-    --text-heading-xxl: var(--font-size-4xl);
-    --text-heading-xl: var(--font-size-3xl);
-    --text-heading-lg: var(--font-size-2xl);
-    --text-heading-md: var(--font-size-xl);
-    --text-heading-sm: var(--font-size-lg);
-    --text-heading-xs: var(--font-size-md);
+  /* headings */
+  --text-heading-xxl: var(--font-size-4xl);
+  --text-heading-xl: var(--font-size-3xl);
+  --text-heading-lg: var(--font-size-2xl);
+  --text-heading-md: var(--font-size-xl);
+  --text-heading-sm: var(--font-size-lg);
+  --text-heading-xs: var(--font-size-md);
 
-    /* body */
-    --text-body-lg: var(--font-size-lg);
-    --text-body-md: var(--font-size-md);
-    --text-body-sm: var(--font-size-sm);
+  /* body */
+  --text-body-lg: var(--font-size-lg);
+  --text-body-md: var(--font-size-md);
+  --text-body-sm: var(--font-size-sm);
 
-    /* UI elements */
-    --text-label-lg: var(--font-size-md);
-    --text-label-md: var(--font-size-sm);
-    --text-label-sm: var(--font-size-xs);
+  /* UI elements */
+  --text-label-lg: var(--font-size-md);
+  --text-label-md: var(--font-size-sm);
+  --text-label-sm: var(--font-size-xs);
 
-    /* caption */
-    --text-caption-lg: var(--font-size-sm);
-    --text-caption-md: var(--font-size-xs);
-    --text-caption-sm: var(--font-size-2xs);
-    --text-caption-xs: var(--font-size-3xs);
+  /* caption */
+  --text-caption-lg: var(--font-size-sm);
+  --text-caption-md: var(--font-size-xs);
+  --text-caption-sm: var(--font-size-2xs);
+  --text-caption-xs: var(--font-size-3xs);
 
-    /* line heights */
-    --text-heading-line-height: var(--line-height-tight);
-    --text-body-line-height: var(--line-height-normal);
-    --text-label-line-height: var(--line-height-normal);
-    --text-caption-line-height: var(--line-height-relaxed);
+  /* line heights */
+  --text-heading-line-height: var(--line-height-tight);
+  --text-body-line-height: var(--line-height-normal);
+  --text-label-line-height: var(--line-height-normal);
+  --text-caption-line-height: var(--line-height-relaxed);
 }

@@ -38,7 +38,9 @@ function isDarkColor(value: string): boolean | undefined {
   return luminance < 128;
 }
 
-function getThemeFromBackgroundGlobals(backgrounds: unknown): string | undefined {
+function getThemeFromBackgroundGlobals(
+  backgrounds: unknown,
+): string | undefined {
   if (!backgrounds || typeof backgrounds !== "object") {
     return undefined;
   }
@@ -80,8 +82,9 @@ function getThemeFromManagerDom(): string | undefined {
       return explicitDomTheme;
     }
 
-    const managerBackground =
-      managerBody ? window.parent.getComputedStyle(managerBody).backgroundColor : "";
+    const managerBackground = managerBody
+      ? window.parent.getComputedStyle(managerBody).backgroundColor
+      : "";
 
     const isDark = isDarkColor(managerBackground);
 

@@ -47,9 +47,7 @@ export default defineConfig({
       allowExternal: true,
       provider: "v8",
       extension: [".ts", ".tsx"],
-      include: [
-        path.resolve(__dirname, "src/**/*.{ts,tsx}"),
-      ],
+      include: [path.resolve(__dirname, "src/**/*.{ts,tsx}")],
     },
   },
 } as any);

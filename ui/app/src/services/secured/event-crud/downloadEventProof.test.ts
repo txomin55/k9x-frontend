@@ -6,8 +6,9 @@ const downloadBlob = vi.hoisted(() => vi.fn());
 vi.mock("@/utils/http/client", () => ({ rawRequest }));
 vi.mock("@/utils/download/downloadBlob", () => ({ downloadBlob }));
 
-const { downloadEventProof } =
-  await import("@/services/secured/event-crud/eventCrud");
+const { downloadEventProof } = await import(
+  "@/services/secured/event-crud/eventCrud"
+);
 
 describe("downloadEventProof", () => {
   beforeEach(() => {

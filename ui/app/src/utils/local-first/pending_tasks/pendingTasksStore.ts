@@ -1,6 +1,12 @@
-import { LOCAL_FIRST_STORE_NAMES, getLocalFirstTable } from "@/utils/local-first/storage/localFirstDatabase";
+import {
+  LOCAL_FIRST_STORE_NAMES,
+  getLocalFirstTable,
+} from "@/utils/local-first/storage/localFirstDatabase";
 import { shouldPersistLocalFirstData } from "@/utils/local-first/localFirstPolicy";
-import type { PendingTask, PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasks.types";
+import type {
+  PendingTask,
+  PendingTaskMethod,
+} from "@/utils/local-first/pending_tasks/pendingTasks.types";
 
 export type {
   PendingTask,
@@ -12,9 +18,7 @@ const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
 
 const getPendingTasksTable = () =>
-  getLocalFirstTable<PendingTask, string>(
-    LOCAL_FIRST_STORE_NAMES.pendingTasks,
-  );
+  getLocalFirstTable<PendingTask, string>(LOCAL_FIRST_STORE_NAMES.pendingTasks);
 
 const shouldAccessPendingTasksStore = (options?: {
   skipPersistenceCheck?: boolean;

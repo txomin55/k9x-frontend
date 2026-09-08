@@ -1,5 +1,5 @@
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
-import { type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import type { PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 
 export const createCommitEntityMutation =
   <TRollbackPayload>(

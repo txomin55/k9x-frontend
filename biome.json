@@ -1,0 +1,122 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.12/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!.claude",
+      "!**/dist",
+      "!**/.output",
+      "!**/.nitro",
+      "!**/.tanstack",
+      "!**/storybook-static",
+      "!**/coverage",
+      "!**/test-results",
+      "!**/.reports",
+      "!**/routeTree.gen.ts",
+      "!**/*.svg",
+      "!.fallowrc.jsonc",
+      "!pnpm-lock.yaml"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "jsxQuoteStyle": "double",
+      "semicolons": "always",
+      "trailingCommas": "all",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteProperties": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["error", "warn"]
+          }
+        }
+      },
+      "style": {
+        "noNonNullAssertion": "off",
+        "noDescendingSpecificity": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off"
+      },
+      "correctness": {
+        "useJsxKeyInIterable": "off",
+        "noUnusedVariables": "warn"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "warn",
+        "useSemanticElements": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noStaticElementInteractions": "warn",
+        "useAriaPropsSupportedByRole": "warn",
+        "noAriaHiddenOnFocusable": "warn"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "off"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["**/tsconfig*.json", "**/*.jsonc"],
+      "json": {
+        "parser": {
+          "allowComments": true,
+          "allowTrailingCommas": true
+        }
+      }
+    },
+    {
+      "includes": ["**/*.stories.tsx", "**/*.stories.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noShadowRestrictedNames": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["ui/app/playwright/**", "ui/app/smoke/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConfusingVoidType": "off"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -26,8 +26,8 @@ const isValidManifest = (
 ): manifest is OfflinePreloadManifest =>
   Boolean(
     manifest &&
-    typeof manifest.version === "string" &&
-    Array.isArray(manifest.assets),
+      typeof manifest.version === "string" &&
+      Array.isArray(manifest.assets),
   );
 
 const toAbsoluteAppUrl = (path: string) => {

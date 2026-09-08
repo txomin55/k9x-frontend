@@ -1,6 +1,5 @@
 import { Show } from "solid-js";
-import PositionMedal
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
+import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import type { TrendDirection } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 

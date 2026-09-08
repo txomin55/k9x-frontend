@@ -2,7 +2,7 @@ import { AppRoutePath } from "@/components/global/app-shell/paths";
 import {
   clearCachedUserData,
   fetchCachedUserData,
-  UserProfileResponseDTO,
+  type UserProfileResponseDTO,
 } from "@/services/secured/fetch-user-data/fetchUserData";
 import type { AuthState } from "@/stores/auth/auth.types";
 import { ACCESS_TOKEN_KEY, refreshAccessToken } from "@/utils/http/client";

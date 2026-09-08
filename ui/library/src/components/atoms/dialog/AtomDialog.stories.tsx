@@ -10,7 +10,8 @@ const meta = {
     description: { control: false },
     content: { control: false },
   },
-  render: (args: AtomDialogProps) => renderSolid(() => <AtomDialog {...args} />),
+  render: (args: AtomDialogProps) =>
+    renderSolid(() => <AtomDialog {...args} />),
 };
 
 export default meta;

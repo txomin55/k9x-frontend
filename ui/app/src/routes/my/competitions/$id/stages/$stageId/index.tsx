@@ -79,7 +79,7 @@ import NotificationEditorForm, {
 import { createStageNotification } from "@/services/secured/stage-notifications/stageNotifications";
 import type { AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";
-import {
+import type {
   StageEditorModel,
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
@@ -105,7 +105,7 @@ function CompetitionStageDetailRoute() {
 }
 
 function StageDetailSkeleton() {
-  const i18n = useI18n();
+  const _i18n = useI18n();
 
   return (
     <div class="stage-detail">

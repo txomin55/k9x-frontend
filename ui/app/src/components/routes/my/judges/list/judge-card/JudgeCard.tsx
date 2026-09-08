@@ -1,5 +1,7 @@
 import Card from "@lib/components/molecules/card/Card";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";

@@ -143,9 +143,7 @@ describe("AtomCombobox", () => {
     expect(onChange).toHaveBeenLastCalledWith([OPTIONS[0]]);
     expect(getByText("Apple")).toBeInTheDocument();
 
-    await user.click(
-      await screen.findByRole("option", { name: "Blueberry" }),
-    );
+    await user.click(await screen.findByRole("option", { name: "Blueberry" }));
 
     expect(onChange).toHaveBeenLastCalledWith([OPTIONS[0], OPTIONS[2]]);
 

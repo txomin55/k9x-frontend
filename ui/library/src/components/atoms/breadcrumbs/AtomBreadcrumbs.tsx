@@ -1,5 +1,5 @@
 import { Breadcrumbs } from "@kobalte/core/breadcrumbs";
-import { For, JSX, Show } from "solid-js";
+import { For, type JSX, Show } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import "./styles.css";
@@ -69,7 +69,10 @@ export default function (props: AtomBreadcrumbsProps) {
               route={crumb.route}
               showSeparator={isNotLastElement(idx)}
             >
-              <Show when={!crumb.loading} fallback={<AtomSkeleton width="6rem" />}>
+              <Show
+                when={!crumb.loading}
+                fallback={<AtomSkeleton width="6rem" />}
+              >
                 {crumb.text}
               </Show>
             </AtomBreadCrumbLink>

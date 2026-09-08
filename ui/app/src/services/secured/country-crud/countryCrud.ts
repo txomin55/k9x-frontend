@@ -5,7 +5,10 @@ import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
 import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import { COUNTRIES_SNAPSHOT_ID, getCountriesQueryKey } from "./countryCrudConstants";
+import {
+  COUNTRIES_SNAPSHOT_ID,
+  getCountriesQueryKey,
+} from "./countryCrudConstants";
 
 const refreshCountriesSnapshot = async () => {
   const countries = await rawRequest<IdNameDTO[]>({

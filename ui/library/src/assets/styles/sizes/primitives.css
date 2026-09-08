@@ -1,36 +1,36 @@
 :root {
-    /* BASE UNITS */
-    --unit-1: calc(1rem / 2);
-    --unit-025: calc(var(--unit-1) / 4);
-    --unit-05: calc(var(--unit-1) / 2);
-    --unit-075: calc(var(--unit-025) + var(--unit-05));
-    --unit-15: calc(var(--unit-1) + var(--unit-05));
-    --unit-2: calc(var(--unit-1) * 2);
-    --unit-3: calc(var(--unit-1) * 3);
-    --unit-4: calc(var(--unit-1) * 4);
-    --unit-5: calc(var(--unit-1) * 5);
-    --unit-6: calc(var(--unit-1) * 6);
-    --unit-7: calc(var(--unit-1) * 7);
-    --unit-8: calc(var(--unit-1) * 8);
-    --unit-9: calc(var(--unit-1) * 9);
-    --unit-10: calc(var(--unit-1) * 10);
+  /* BASE UNITS */
+  --unit-1: calc(1rem / 2);
+  --unit-025: calc(var(--unit-1) / 4);
+  --unit-05: calc(var(--unit-1) / 2);
+  --unit-075: calc(var(--unit-025) + var(--unit-05));
+  --unit-15: calc(var(--unit-1) + var(--unit-05));
+  --unit-2: calc(var(--unit-1) * 2);
+  --unit-3: calc(var(--unit-1) * 3);
+  --unit-4: calc(var(--unit-1) * 4);
+  --unit-5: calc(var(--unit-1) * 5);
+  --unit-6: calc(var(--unit-1) * 6);
+  --unit-7: calc(var(--unit-1) * 7);
+  --unit-8: calc(var(--unit-1) * 8);
+  --unit-9: calc(var(--unit-1) * 9);
+  --unit-10: calc(var(--unit-1) * 10);
 
-    --radius-sm: var(--unit-05);
-    --radius-md: var(--unit-075);
-    --radius-lg: var(--unit-1);
-    --radius-xl: var(--unit-2);
-    --radius-full: 999px;
+  --radius-sm: var(--unit-05);
+  --radius-md: var(--unit-075);
+  --radius-lg: var(--unit-1);
+  --radius-xl: var(--unit-2);
+  --radius-full: 999px;
 
-    --control-height-md: var(--unit-3);
+  --control-height-md: var(--unit-3);
 
-    /* Z-INDEX SCALE
+  /* Z-INDEX SCALE
        Layers order from lowest to highest. Portaled popovers (select,
        combobox, popover) sit above the modal so they open on top of a
        dialog; the floating mobile nav sits below it so a dialog covers it. */
-    --z-raised: 1;
-    --z-sticky: 2;
-    --z-floating: 40;
-    --z-overlay: 50;
-    --z-modal: 51;
-    --z-popover: 60;
+  --z-raised: 1;
+  --z-sticky: 2;
+  --z-floating: 40;
+  --z-overlay: 50;
+  --z-modal: 51;
+  --z-popover: 60;
 }

@@ -1,278 +1,282 @@
 /* Container */
 .atom-combobox {
-    display: inline-flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--unit-05);
 }
 
 /* Label */
 .atom-combobox__label {
-    font-size: var(--text-label-md);
-    line-height: var(--text-label-line-height);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-primary);
+  font-size: var(--text-label-md);
+  line-height: var(--text-label-line-height);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
 }
 
 /* Description */
 .atom-combobox__description {
-    font-size: var(--text-caption-sm);
-    line-height: var(--text-caption-line-height);
-    color: var(--text-secondary);
+  font-size: var(--text-caption-sm);
+  line-height: var(--text-caption-line-height);
+  color: var(--text-secondary);
 }
 
 /* Control (input + button) */
 .atom-combobox__control {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--unit-05);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--unit-05);
 
-    min-height: 40px;
-    padding: 0 var(--unit-1);
+  min-height: 40px;
+  padding: 0 var(--unit-1);
 
-    background: var(--surface);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--unit-1);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--unit-1);
 
-    transition: border-color 140ms ease,
+  transition:
+    border-color 140ms ease,
     box-shadow 140ms ease,
     background-color 140ms ease;
 }
 
 /* Selected tags (multiple mode) */
 .atom-combobox__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--unit-05);
-    padding: var(--unit-05) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--unit-05);
+  padding: var(--unit-05) 0;
 }
 
 .atom-combobox__tag {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--unit-05);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--unit-05);
 
-    padding: 0 var(--unit-05);
-    height: 24px;
+  padding: 0 var(--unit-05);
+  height: 24px;
 
-    background: var(--accent-soft);
-    color: var(--text-primary);
-    border-radius: var(--unit-05);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+  border-radius: var(--unit-05);
 
-    font-size: var(--text-caption-sm);
-    line-height: var(--text-caption-line-height);
+  font-size: var(--text-caption-sm);
+  line-height: var(--text-caption-line-height);
 
-    max-width: 100%;
-    min-width: 0;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .atom-combobox__tag-label {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .atom-combobox__tag-remove {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    width: 16px;
-    height: 16px;
-    padding: 0;
+  width: 16px;
+  height: 16px;
+  padding: 0;
 
-    border: none;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
 }
 
 /* Input */
 .atom-combobox__input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
 
-    font-size: var(--text-body-md);
-    line-height: var(--text-body-line-height);
-    color: var(--text-primary);
+  font-size: var(--text-body-md);
+  line-height: var(--text-body-line-height);
+  color: var(--text-primary);
 }
 
 .atom-combobox__input::placeholder {
-    color: var(--text-muted);
+  color: var(--text-muted);
 }
 
 /* Trigger button */
 .atom-combobox__control button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    width: 32px;
-    height: 32px;
+  width: 32px;
+  height: 32px;
 
-    border: none;
-    background: transparent;
-    cursor: pointer;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 /* Icon */
 .atom-combobox__icon {
-    font-size: 12px;
-    color: var(--text-secondary);
-    transform: rotate(180deg);
-    transition: transform 160ms ease, color 160ms ease;
+  font-size: 12px;
+  color: var(--text-secondary);
+  transform: rotate(180deg);
+  transition:
+    transform 160ms ease,
+    color 160ms ease;
 }
 
 /* Focus (important fix) */
 .atom-combobox__control:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 /* Open state */
 .atom-combobox__control[data-expanded],
 .atom-combobox__control[aria-expanded="true"] {
-    border-color: var(--accent);
+  border-color: var(--accent);
 }
 
 .atom-combobox__control[data-expanded] .atom-combobox__icon {
-    transform: rotate(0deg);
-    color: var(--text-primary);
+  transform: rotate(0deg);
+  color: var(--text-primary);
 }
 
 /* Disabled */
 .atom-combobox[data-disabled] .atom-combobox__control {
-    background: var(--surface-muted);
-    border-color: var(--border-muted);
+  background: var(--surface-muted);
+  border-color: var(--border-muted);
 }
 
 .atom-combobox[data-disabled] .atom-combobox__input {
-    color: var(--text-muted);
-    cursor: not-allowed;
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 .atom-combobox[data-disabled] button {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 /* Dropdown */
 .atom-combobox__content {
-    z-index: var(--z-popover);
-    margin-top: 4px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--unit-1);
-    box-shadow: 0 10px 30px rgba(15, 23, 32, 0.12);
-    overflow: hidden;
+  z-index: var(--z-popover);
+  margin-top: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--unit-1);
+  box-shadow: 0 10px 30px rgba(15, 23, 32, 0.12);
+  overflow: hidden;
 
-    animation: combobox-content-show 140ms ease-out;
+  animation: combobox-content-show 140ms ease-out;
 }
 
 /* List */
 .atom-combobox__listbox {
-    list-style: none;
-    margin: 0;
-    min-height: 44px;
-    max-height: 256px;
-    overflow-y: auto;
-    padding: var(--unit-05);
+  list-style: none;
+  margin: 0;
+  min-height: 44px;
+  max-height: 256px;
+  overflow-y: auto;
+  padding: var(--unit-05);
 }
 
 /* Item */
 .atom-combobox__item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    min-height: 36px;
-    padding: 0 var(--unit-1);
+  min-height: 36px;
+  padding: 0 var(--unit-1);
 
-    border-radius: 0.5rem;
+  border-radius: 0.5rem;
 
-    font-size: var(--text-body-sm);
-    line-height: var(--text-body-line-height);
+  font-size: var(--text-body-sm);
+  line-height: var(--text-body-line-height);
 
-    color: var(--text-primary);
-    cursor: pointer;
+  color: var(--text-primary);
+  cursor: pointer;
 
-    transition: background-color 120ms ease,
+  transition:
+    background-color 120ms ease,
     color 120ms ease;
 }
 
 /* Item option (preLabel + label) */
 .atom-combobox__item-option {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-05);
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--unit-05);
+  min-width: 0;
 }
 
 .atom-combobox__item-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .atom-combobox__item-label {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .atom-combobox__item-caption {
-    font-size: var(--text-caption-sm);
-    line-height: var(--text-caption-line-height);
-    color: var(--text-secondary);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-size: var(--text-caption-sm);
+  line-height: var(--text-caption-line-height);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .atom-combobox__item[data-highlighted] .atom-combobox__item-caption {
-    color: var(--text-inverted);
+  color: var(--text-inverted);
 }
 
 /* Highlighted */
 .atom-combobox__item[data-highlighted] {
-    background: var(--accent);
-    color: var(--text-inverted);
+  background: var(--accent);
+  color: var(--text-inverted);
 }
 
 /* Selected */
 .atom-combobox__item[data-selected] {
-    font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
 }
 
 /* Indicator */
 .atom-combobox__item-indicator {
-    margin-left: var(--unit-1);
-    font-size: 12px;
-    color: inherit;
-    flex-shrink: 0;
+  margin-left: var(--unit-1);
+  font-size: 12px;
+  color: inherit;
+  flex-shrink: 0;
 }
 
 /* Disabled item */
 .atom-combobox__item[aria-disabled="true"] {
-    color: var(--text-muted);
-    pointer-events: none;
-    opacity: 0.6;
+  color: var(--text-muted);
+  pointer-events: none;
+  opacity: 0.6;
 }
 
 /* Animation */
 @keyframes combobox-content-show {
-    from {
-        opacity: 0;
-        transform: scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* ERROR STATE */
@@ -280,40 +284,40 @@
 /* Label */
 .atom-combobox[data-invalid] .atom-combobox__label,
 .atom-combobox__label[data-invalid] {
-    color: var(--error-text);
+  color: var(--error-text);
 }
 
 /* Control (input container) */
 .atom-combobox[data-invalid] .atom-combobox__control,
 .atom-combobox__control[data-invalid] {
-    border-color: var(--error);
-    box-shadow: 0 0 0 3px var(--error-bg);
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px var(--error-bg);
 }
 
 /* Input text (opcional, normalmente no necesario) */
 .atom-combobox__input[data-invalid] {
-    color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 /* Placeholder en error (opcional) */
 .atom-combobox__input[data-invalid]::placeholder {
-    color: var(--text-muted);
+  color: var(--text-muted);
 }
 
 /* Icon (sutilmente adaptado) */
 .atom-combobox[data-invalid] .atom-combobox__icon {
-    color: var(--error-text);
+  color: var(--error-text);
 }
 
 /* Error message */
 .atom-combobox__error-message {
-    font-size: var(--text-caption-sm);
-    line-height: var(--text-caption-line-height);
-    color: var(--error-text);
+  font-size: var(--text-caption-sm);
+  line-height: var(--text-caption-line-height);
+  color: var(--error-text);
 }
 
 /* Focus dentro de error (importante) */
 .atom-combobox[data-invalid] .atom-combobox__control:focus-within {
-    border-color: var(--error);
-    box-shadow: 0 0 0 3px var(--error-bg);
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px var(--error-bg);
 }

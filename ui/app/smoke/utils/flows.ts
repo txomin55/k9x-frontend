@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { named, RUN_ID } from "./constants";
+import { named } from "./constants";
 
 // UTC, not local: the backend compares UTC days, so between local midnight and
 // UTC midnight the local "today" is still tomorrow for the backend — a stage
@@ -477,7 +477,7 @@ export const addScores = async (
   competitionId: string,
   stageId: string,
   eventId: string,
-  competitorName: string,
+  _competitorName: string,
 ) => {
   // The "Scores" button on the event page only appears once the event is
   // STARTED, which happens after the collector enters a score. So the collector

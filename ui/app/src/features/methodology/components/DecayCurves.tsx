@@ -36,7 +36,8 @@ export default function DecayCurves(props: Props) {
 
   const xMax = createMemo(
     () =>
-      Math.max(...props.series.map((series) => series.floor.fromMonth)) + X_TAIL,
+      Math.max(...props.series.map((series) => series.floor.fromMonth)) +
+      X_TAIL,
   );
 
   const config = createMemo<ChartConfiguration>(() => {

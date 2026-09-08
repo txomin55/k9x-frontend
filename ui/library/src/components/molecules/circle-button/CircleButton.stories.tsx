@@ -17,7 +17,11 @@ const meta = {
   },
   render: (args: CircleButtonProps) =>
     renderSolid(() => (
-      <CircleButton disabled={args.disabled} onClick={args.onClick} size={args.size}>
+      <CircleButton
+        disabled={args.disabled}
+        onClick={args.onClick}
+        size={args.size}
+      >
         {args.children}
       </CircleButton>
     )),

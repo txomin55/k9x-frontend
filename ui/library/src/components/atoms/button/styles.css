@@ -1,144 +1,147 @@
 :scope {
-    --button-background-color: var(--surface);
-    --button-background-color-hover: var(--surface-hover);
-    --button-background-color-active: var(--surface-muted);
-    --button-text-color: var(--text-primary);
-    --button-border-color: var(--border-strong);
+  --button-background-color: var(--surface);
+  --button-background-color-hover: var(--surface-hover);
+  --button-background-color-active: var(--surface-muted);
+  --button-text-color: var(--text-primary);
+  --button-border-color: var(--border-strong);
 }
 
 /* BASE */
 .atom-button {
-    height: var(--unit-5);
-    width: auto;
-    outline: none;
-    border-radius: var(--unit-05);
-    margin: var(--unit-05);
-    padding: 0 var(--unit-2);
-    background-color: var(--button-background-color);
-    border: 2px solid var(--button-border-color);
-    color: var(--button-text-color);
-    font-size: var(--text-label-md);
-    font-weight: 500;
-    transition: background-color 200ms, border-color 200ms, color 200ms;
-    cursor: pointer;
+  height: var(--unit-5);
+  width: auto;
+  outline: none;
+  border-radius: var(--unit-05);
+  margin: var(--unit-05);
+  padding: 0 var(--unit-2);
+  background-color: var(--button-background-color);
+  border: 2px solid var(--button-border-color);
+  color: var(--button-text-color);
+  font-size: var(--text-label-md);
+  font-weight: 500;
+  transition:
+    background-color 200ms,
+    border-color 200ms,
+    color 200ms;
+  cursor: pointer;
 }
 
 .atom-button:hover {
-    --button-background-color: var(--button-background-color-hover);
+  --button-background-color: var(--button-background-color-hover);
 }
 
 .atom-button:active {
-    --button-background-color: var(--button-background-color-active);
+  --button-background-color: var(--button-background-color-active);
 }
 
 /* DISABLED BASE */
 .atom-button:disabled {
-    cursor: not-allowed;
-    --button-text-color: var(--text-muted);
-    --button-background-color: var(--surface-muted);
-    --button-border-color: var(--border-muted);
+  cursor: not-allowed;
+  --button-text-color: var(--text-muted);
+  --button-background-color: var(--surface-muted);
+  --button-border-color: var(--border-muted);
 }
 
 /* ----------------------------- */
 /* SIZES                         */
 /* ----------------------------- */
 .atom-button.sm {
-    height: var(--unit-4);
-    padding: 0 var(--unit-15);
-    font-size: var(--text-label-sm);
+  height: var(--unit-4);
+  padding: 0 var(--unit-15);
+  font-size: var(--text-label-sm);
 }
 
 /* ----------------------------- */
 /* PRIMARY                       */
 /* ----------------------------- */
 .atom-button.primary {
-    --button-background-color: var(--primary);
-    --button-background-color-hover: var(--primary-hover);
-    --button-background-color-active: var(--primary-active);
-    --button-text-color: var(--text-inverted);
-    --button-border-color: var(--primary);
+  --button-background-color: var(--primary);
+  --button-background-color-hover: var(--primary-hover);
+  --button-background-color-active: var(--primary-active);
+  --button-text-color: var(--text-inverted);
+  --button-border-color: var(--primary);
 }
 
 .atom-button.primary:disabled {
-    --button-text-color: var(--text-secondary);
-    --button-background-color: var(--primary-soft);
-    --button-border-color: var(--primary-border);
+  --button-text-color: var(--text-secondary);
+  --button-background-color: var(--primary-soft);
+  --button-border-color: var(--primary-border);
 }
 
 /* ----------------------------- */
 /* ACCENT (Outline / Secondary)  */
 /* ----------------------------- */
 .atom-button.accent {
-    --button-background-color: transparent;
-    --button-background-color-hover: var(--accent-soft);
-    --button-background-color-active: var(--surface-muted);
-    --button-text-color: var(--text-primary);
-    --button-border-color: var(--text-primary);
+  --button-background-color: transparent;
+  --button-background-color-hover: var(--accent-soft);
+  --button-background-color-active: var(--surface-muted);
+  --button-text-color: var(--text-primary);
+  --button-border-color: var(--text-primary);
 }
 
 .atom-button.accent:hover {
-    --button-text-color: var(--text-primary);
-    --button-border-color: var(--text-primary);
+  --button-text-color: var(--text-primary);
+  --button-border-color: var(--text-primary);
 }
 
 .atom-button.accent:disabled {
-    --button-text-color: var(--text-muted);
-    --button-background-color: transparent;
-    --button-border-color: var(--border-muted);
+  --button-text-color: var(--text-muted);
+  --button-background-color: transparent;
+  --button-border-color: var(--border-muted);
 }
 
 /* ----------------------------- */
 /* DESTRUCTIVE                   */
 /* ----------------------------- */
 .atom-button.destructive {
-    --button-background-color: var(--error);
-    --button-background-color-hover: var(--error-text);
-    --button-background-color-active: var(--error-text);
-    --button-text-color: var(--text-inverted);
-    --button-border-color: var(--error);
+  --button-background-color: var(--error);
+  --button-background-color-hover: var(--error-text);
+  --button-background-color-active: var(--error-text);
+  --button-text-color: var(--text-inverted);
+  --button-border-color: var(--error);
 }
 
 .atom-button.destructive:disabled {
-    --button-text-color: var(--error-text);
-    --button-background-color: var(--error-bg);
-    --button-border-color: var(--error-border);
+  --button-text-color: var(--error-text);
+  --button-background-color: var(--error-bg);
+  --button-border-color: var(--error-border);
 }
 
 /* ----------------------------- */
 /* WARNING (Yellow)              */
 /* ----------------------------- */
 .atom-button.warning {
-    --button-background-color: var(--warning);
-    --button-background-color-hover: var(--warning-text);
-    --button-background-color-active: var(--warning-text);
-    --button-text-color: var(--text-primary);
-    --button-border-color: var(--warning);
+  --button-background-color: var(--warning);
+  --button-background-color-hover: var(--warning-text);
+  --button-background-color-active: var(--warning-text);
+  --button-text-color: var(--text-primary);
+  --button-border-color: var(--warning);
 }
 
 .atom-button.warning:disabled {
-    --button-text-color: var(--warning-text);
-    --button-background-color: var(--warning-bg);
-    --button-border-color: var(--warning-border);
+  --button-text-color: var(--warning-text);
+  --button-background-color: var(--warning-bg);
+  --button-border-color: var(--warning-border);
 }
 
 /* ----------------------------- */
 /* GHOST                         */
 /* ----------------------------- */
 .atom-button.ghost {
-    --button-background-color: transparent;
-    --button-background-color-hover: var(--surface-hover);
-    --button-background-color-active: var(--surface-muted);
-    --button-text-color: var(--text-primary);
-    border-color: transparent;
+  --button-background-color: transparent;
+  --button-background-color-hover: var(--surface-hover);
+  --button-background-color-active: var(--surface-muted);
+  --button-text-color: var(--text-primary);
+  border-color: transparent;
 }
 
 .atom-button.ghost > span {
-    padding-bottom: var(--unit-025);
-    border-bottom: 1px solid var(--text-primary);
+  padding-bottom: var(--unit-025);
+  border-bottom: 1px solid var(--text-primary);
 }
 
 .atom-button.ghost:disabled {
-    --button-text-color: var(--text-muted);
-    --button-background-color: transparent;
-    --button-border-color: transparent;
+  --button-text-color: var(--text-muted);
+  --button-background-color: transparent;
+  --button-border-color: transparent;
 }

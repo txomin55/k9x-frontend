@@ -1,4 +1,4 @@
-import { For, JSX, mergeProps } from "solid-js";
+import { For, type JSX, mergeProps } from "solid-js";
 import "./styles.css";
 
 export const SKELETON_VARIANTS = {

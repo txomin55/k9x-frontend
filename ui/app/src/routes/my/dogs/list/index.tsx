@@ -425,10 +425,7 @@ function MyDogsListPage() {
             value={nameFilter()}
             onChange={setNameFilter}
           />
-          <CountryFilter
-            value={countryFilter()}
-            onChange={setCountryFilter}
-          />
+          <CountryFilter value={countryFilter()} onChange={setCountryFilter} />
         </div>
         <Show
           when={myDogs().length}

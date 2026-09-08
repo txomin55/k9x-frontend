@@ -1,26 +1,32 @@
 import {
   getVisibleCompetitions,
   readCompetitionsSnapshot,
-  saveCompetitionsSnapshot
+  saveCompetitionsSnapshot,
 } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import { getCompetitionsQueryKey } from "@/services/secured/competition-crud/competitionCrud";
 import type {
   CompetitionResponseDTO,
   CompetitionStageDetailResponseDTO,
-  CompetitionStageEventDetailResponseDTO
+  CompetitionStageEventDetailResponseDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   clearCompetitionDraft,
   replaceCompetitionDrafts,
-  upsertCompetitionDraft
+  upsertCompetitionDraft,
 } from "@/services/secured/competition-crud/competitionDraftStore";
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler
+  registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import type {
+  PendingTask,
+  PendingTaskMethod,
+} from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { queryClient } from "@/utils/http/query-client";
-import { ApiEventRollbackPayload, EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type {
+  ApiEventRollbackPayload,
+  EventDetailResponseDTO,
+} from "@/services/secured/event-crud/eventCrud.types";
 import { getCurrentLocale } from "@/stores/i18n/i18n";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 import { EVENT_STATUS } from "@/utils/event";

@@ -6,7 +6,7 @@ import { rawRequest } from "@/utils/http/client";
 import { EVENT_STATUS } from "@/utils/event";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import {
+import type {
   StageDetailResponseDTO,
   StageEventClassificationResponseDTO,
   StageSummaryResponseDTO,
@@ -49,7 +49,7 @@ export const fetchStageById = (id: string) =>
     refreshStageByIdSnapshot(id),
   );
 
-const fetchEventClassification = (stageId: string, eventId: string) =>
+const fetchEventClassification = (_stageId: string, eventId: string) =>
   rawRequest<StageEventClassificationResponseDTO>({
     path: `/events/${eventId}/classification`,
   });
@@ -101,8 +101,9 @@ export const useEventClassification = (
     staleTime: options?.staleTime,
     gcTime: options?.gcTime,
     refetchOnMount: options?.refetchOnMount,
-    refetchInterval: (query: { state: { data?: StageEventClassificationResponseDTO } }) =>
-      query.state.data?.status === EVENT_STATUS.STARTED ? 5_000 : false,
+    refetchInterval: (query: {
+      state: { data?: StageEventClassificationResponseDTO };
+    }) => (query.state.data?.status === EVENT_STATUS.STARTED ? 5_000 : false),
   });
 
 export const getCachedStageById = (id: string) =>
@@ -115,9 +116,10 @@ export const getCachedEventById = (stageId: string, eventId: string) =>
   getCachedStageById(stageId)?.events?.find((event) => event.id === eventId);
 
 const getStageNameFromClassificationCache = (stageId: string) => {
-  const entries = queryClient.getQueriesData<StageEventClassificationResponseDTO>(
-    { queryKey: ["stage-event-classification", stageId] },
-  );
+  const entries =
+    queryClient.getQueriesData<StageEventClassificationResponseDTO>({
+      queryKey: ["stage-event-classification", stageId],
+    });
 
   for (const [, data] of entries) {
     if (data?.stage?.name) return data.stage.name;

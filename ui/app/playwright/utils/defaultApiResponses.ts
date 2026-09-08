@@ -15,7 +15,10 @@ import {
   setupNoRankingResults,
   setupRankingCriteria,
 } from "@test/api-mocks/rankings";
-import { byCountry, setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import {
+  byCountry,
+  setRouteResponses,
+} from "@test/utils/playwrightMockingUtils";
 
 export default async function defaultApiResponses(page: Page) {
   await Promise.all([
@@ -40,7 +43,8 @@ export default async function defaultApiResponses(page: Page) {
     }),
     setRouteResponses(page, {
       method: "GET",
-      payload: (_match, request) => byCountry(defaultCompetitions, request.url()),
+      payload: (_match, request) =>
+        byCountry(defaultCompetitions, request.url()),
       pathname: "/secured/competitions",
     }),
     setRouteResponses(page, {

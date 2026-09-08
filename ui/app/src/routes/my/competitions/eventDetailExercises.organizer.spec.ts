@@ -21,7 +21,9 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(exerciseNamed(page, "Heel work")).toBeVisible();
@@ -61,7 +63,9 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(exerciseNamed(page, "Heel work")).toBeVisible();
@@ -96,7 +100,9 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Exercises" }).click();
       await expect(exerciseNamed(page, "Heel work")).toBeVisible();
@@ -115,15 +121,11 @@ organizerTest.describe("Event detail exercises (write) - organizer", () => {
             .click();
         },
         assertOptimistic: async () => {
-          await expect(
-            exerciseNamed(page, "Heel work"),
-          ).toHaveCount(0);
+          await expect(exerciseNamed(page, "Heel work")).toHaveCount(0);
         },
         assertRehydrated: async () => {
           await page.getByRole("tab", { name: "Exercises" }).click();
-          await expect(
-            exerciseNamed(page, "Heel work"),
-          ).toHaveCount(0);
+          await expect(exerciseNamed(page, "Heel work")).toHaveCount(0);
         },
       });
     },

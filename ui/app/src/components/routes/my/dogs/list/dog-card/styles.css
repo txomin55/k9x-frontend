@@ -1,47 +1,47 @@
 .dog-card__heading {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
 }
 
 .dog-card__breed {
-    color: var(--text-muted);
-    font-size: var(--text-label-sm);
+  color: var(--text-muted);
+  font-size: var(--text-label-sm);
 }
 
 .dog-card__facts {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
-    min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
+  min-width: 0;
 }
 
 .dog-card__fact {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
-    min-width: 0;
-    padding: var(--unit-05);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  min-width: 0;
+  padding: var(--unit-05);
 }
 
 .dog-card__fact > .country-flag {
-    margin-inline-end: var(--unit-05);
+  margin-inline-end: var(--unit-05);
 }
 
 .dog-card__fact > span:last-child {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .dog-card__fact-label {
-    color: var(--text-muted);
-    flex-shrink: 0;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 .dog-card__actions {
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
-    gap: var(--unit-1);
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--unit-1);
 }

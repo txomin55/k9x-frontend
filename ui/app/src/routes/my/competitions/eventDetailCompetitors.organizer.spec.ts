@@ -32,7 +32,9 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
@@ -60,11 +62,15 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
           await dialog.getByRole("button", { name: "Create" }).click();
         },
         assertOptimistic: async () => {
-          await expect(page.getByText("Dog: Koda", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Dog: Koda", { exact: true }),
+          ).toBeVisible();
         },
         assertRehydrated: async () => {
           await page.getByRole("tab", { name: "Competitors" }).click();
-          await expect(page.getByText("Dog: Koda", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Dog: Koda", { exact: true }),
+          ).toBeVisible();
         },
       });
     },
@@ -75,7 +81,9 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
@@ -90,9 +98,7 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         mutation: { method: "PUT", urlIncludes: "/secured/obdx/events/" },
         entityType: "event",
         performMutation: async () => {
-          await page
-            .getByRole("button", { name: "Edit", exact: true })
-            .click();
+          await page.getByRole("button", { name: "Edit", exact: true }).click();
           const dialog = page.getByRole("dialog");
           const dog = dialog.getByRole("combobox", { name: "Dog" });
           await dog.click();
@@ -105,11 +111,15 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
           await dialog.getByRole("button", { name: "Close" }).click();
         },
         assertOptimistic: async () => {
-          await expect(page.getByText("Dog: Koda", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Dog: Koda", { exact: true }),
+          ).toBeVisible();
         },
         assertRehydrated: async () => {
           await page.getByRole("tab", { name: "Competitors" }).click();
-          await expect(page.getByText("Dog: Koda", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Dog: Koda", { exact: true }),
+          ).toBeVisible();
         },
       });
     },
@@ -120,7 +130,9 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and
@@ -153,7 +165,9 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
         assertRehydrated: async () => {
           await openEditMode(page);
           await page.getByRole("tab", { name: "Competitors" }).click();
-          await expect(page.getByText("Dog: Luna", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Dog: Luna", { exact: true }),
+          ).toBeVisible();
           await expect(
             page.getByRole("button", { name: "Disqualify" }),
           ).toHaveCount(0);
@@ -163,7 +177,8 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
   );
 
   organizerTest(
-    "opens a competitor's scores from view mode", async ({ page }) => {
+    "opens a competitor's scores from view mode",
+    async ({ page }) => {
       await setupEventDetailCrud(page);
       await page.goto(EVENT_DETAIL_URL);
       // The fixed floating toggle button overlaps the lower card actions and
@@ -185,7 +200,9 @@ organizerTest.describe("Event detail competitors (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
       await page.getByRole("tab", { name: "Competitors" }).click();
       // The fixed floating toggle button overlaps the lower card actions and

@@ -2,7 +2,7 @@ import Card from "@lib/components/molecules/card/Card";
 import AtomButton, {
   BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
-import { createSignal, Show } from "solid-js";
+import { Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import StageNotificationsToggle from "@/components/common/stage-notifications-toggle/StageNotificationsToggle";

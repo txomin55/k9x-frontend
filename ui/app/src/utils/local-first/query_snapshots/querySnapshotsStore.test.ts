@@ -41,7 +41,9 @@ describe("pruneStaleQuerySnapshots", () => {
     const deleted = await pruneStaleQuerySnapshots();
 
     expect(whereMock).toHaveBeenCalledWith("updatedAt");
-    expect(belowMock).toHaveBeenCalledWith(Date.now() - QUERY_SNAPSHOT_MAX_AGE_MS);
+    expect(belowMock).toHaveBeenCalledWith(
+      Date.now() - QUERY_SNAPSHOT_MAX_AGE_MS,
+    );
     expect(deleteMock).toHaveBeenCalledOnce();
     expect(deleted).toBe(3);
   });

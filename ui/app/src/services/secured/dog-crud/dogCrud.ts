@@ -10,7 +10,6 @@ import {
   commitDogMutation,
   createDogRollbackPayload,
   getVisibleDogs,
-  saveDogsSnapshot,
 } from "./dogCrudOfflineUtils";
 import type {
   CreateDogRequestDTO,

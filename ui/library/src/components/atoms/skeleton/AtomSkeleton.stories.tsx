@@ -15,7 +15,8 @@ const meta = {
     count: { control: "number" },
     animated: { control: "boolean" },
   },
-  render: (args: AtomSkeletonProps) => renderSolid(() => <AtomSkeleton {...args} />),
+  render: (args: AtomSkeletonProps) =>
+    renderSolid(() => <AtomSkeleton {...args} />),
 };
 
 export default meta;

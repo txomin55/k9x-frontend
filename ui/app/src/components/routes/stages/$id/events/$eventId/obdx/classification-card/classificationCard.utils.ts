@@ -28,9 +28,7 @@ const RATING_STOPS: ReadonlyArray<readonly [number, number]> = [
   [100, 2], // green (flat band 80+)
 ];
 
-export function ratingColor(
-  rating: number | null | undefined,
-): string | null {
+export function ratingColor(rating: number | null | undefined): string | null {
   if (rating === null || rating === undefined) return null;
   const clamped = Math.max(0, Math.min(100, rating));
   let pos = RATING_STOPS[RATING_STOPS.length - 1][1];

@@ -1,4 +1,4 @@
-import {
+import type {
   CollectionScoreResponseDTO,
   ExerciseResponseDTO,
   UpdateCollectionScoreRequestDTO,

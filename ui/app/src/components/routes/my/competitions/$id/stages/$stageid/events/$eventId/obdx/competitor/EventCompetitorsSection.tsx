@@ -8,7 +8,9 @@ import AtomButton, {
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import checkIcon from "@/assets/miscelaneous/check.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
@@ -32,7 +34,7 @@ import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
 import { useAuthUser } from "@/stores/auth/auth";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import type { AtomComboboxOption } from "library/src/components/atoms/combobox/AtomCombobox";
-import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
+import type { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate, useParams, useSearch } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
@@ -84,7 +86,6 @@ export default function EventCompetitorsSection(
   });
   const showUnverifiedOnly = () => Boolean(search().unverified);
 
-
   const user = useAuthUser();
   const dogsQuery = useAllDogs({
     refetchOnMount: !isOffline(),
@@ -106,7 +107,8 @@ export default function EventCompetitorsSection(
 
   const listedDogs = () =>
     (isSearchingDogs() ? dogSearchQuery.data : dogsQuery.data) ?? [];
-  const dogPages = () => (isSearchingDogs() ? allDogsSearchPages : allDogsPages);
+  const dogPages = () =>
+    isSearchingDogs() ? allDogsSearchPages : allDogsPages;
   const loadMoreDogs = () => {
     void (isSearchingDogs()
       ? loadMoreAllDogsSearch(searchedDogTerm())
@@ -116,7 +118,10 @@ export default function EventCompetitorsSection(
   const dogOptions = createMemo<AtomComboboxOption[]>(() => {
     const addedDogIdentifications = new Set(
       props.competitors
-        .filter((competitor) => competitor.dogIdentification !== props.editingCompetitorId)
+        .filter(
+          (competitor) =>
+            competitor.dogIdentification !== props.editingCompetitorId,
+        )
         .map((competitor) => competitor.dogIdentification),
     );
 
@@ -233,7 +238,9 @@ export default function EventCompetitorsSection(
           <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
             <ConfirmActionButton
               text={details.handler}
-              onConfirm={() => props.onDeleteCompetitor(competitor.dogIdentification)}
+              onConfirm={() =>
+                props.onDeleteCompetitor(competitor.dogIdentification)
+              }
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                 {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.DELETE")}
@@ -254,7 +261,10 @@ export default function EventCompetitorsSection(
           <AtomButton
             type={BUTTON_TYPES.PRIMARY}
             onClick={() =>
-              openCompetitorCollection(params().eventId, competitor.dogIdentification)
+              openCompetitorCollection(
+                params().eventId,
+                competitor.dogIdentification,
+              )
             }
           >
             {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.SCORES")}
@@ -262,7 +272,9 @@ export default function EventCompetitorsSection(
         </Show>
         <Show when={canAcceptCompetitorEnroll(competitor.status)}>
           <AtomButton
-            onClick={() => props.onAcceptCompetitor(competitor.dogIdentification)}
+            onClick={() =>
+              props.onAcceptCompetitor(competitor.dogIdentification)
+            }
           >
             {i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}
           </AtomButton>
@@ -289,7 +301,9 @@ export default function EventCompetitorsSection(
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                 <AtomSvgIcon
                   src={trashIcon}
-                  alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED")}
+                  alt={i18n.t(
+                    "MY.COMPETITIONS.EVENT_COMPETITORS.NOT_PRESENTED",
+                  )}
                   tinted
                 />
               </AtomButton>
@@ -298,7 +312,9 @@ export default function EventCompetitorsSection(
           <Match when={props.eventStatus === EVENT_STATUS.CREATED}>
             <ConfirmActionButton
               text={details.handler}
-              onConfirm={() => props.onDeleteCompetitor(competitor.dogIdentification)}
+              onConfirm={() =>
+                props.onDeleteCompetitor(competitor.dogIdentification)
+              }
             >
               <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
                 <AtomSvgIcon
@@ -327,7 +343,10 @@ export default function EventCompetitorsSection(
           <AtomButton
             type={BUTTON_TYPES.PRIMARY}
             onClick={() =>
-              openCompetitorCollection(params().eventId, competitor.dogIdentification)
+              openCompetitorCollection(
+                params().eventId,
+                competitor.dogIdentification,
+              )
             }
           >
             <AtomSvgIcon
@@ -338,7 +357,11 @@ export default function EventCompetitorsSection(
           </AtomButton>
         </Show>
         <Show when={canAcceptCompetitorEnroll(competitor.status)}>
-          <AtomButton onClick={() => props.onAcceptCompetitor(competitor.dogIdentification)}>
+          <AtomButton
+            onClick={() =>
+              props.onAcceptCompetitor(competitor.dogIdentification)
+            }
+          >
             <AtomSvgIcon
               src={checkIcon}
               alt={i18n.t("MY.COMPETITIONS.EVENT_COMPETITORS.ACCEPT_ENROLL")}

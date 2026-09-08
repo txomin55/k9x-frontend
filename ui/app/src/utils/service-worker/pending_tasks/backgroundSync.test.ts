@@ -30,10 +30,12 @@ describe("backgroundSync", () => {
   });
 
   it("posts a message to open clients instead of running the background handler", async () => {
-    let syncHandler: ((event: {
-      tag: string;
-      waitUntil: (promise: Promise<void>) => void;
-    }) => void) | undefined;
+    let syncHandler:
+      | ((event: {
+          tag: string;
+          waitUntil: (promise: Promise<void>) => void;
+        }) => void)
+      | undefined;
     const postMessage = vi.fn();
     const handler = vi.fn();
 
@@ -67,10 +69,12 @@ describe("backgroundSync", () => {
   });
 
   it("runs the background handler when there are no open clients", async () => {
-    let syncHandler: ((event: {
-      tag: string;
-      waitUntil: (promise: Promise<void>) => void;
-    }) => void) | undefined;
+    let syncHandler:
+      | ((event: {
+          tag: string;
+          waitUntil: (promise: Promise<void>) => void;
+        }) => void)
+      | undefined;
     const handler = vi.fn().mockResolvedValue(undefined);
 
     const scope = {

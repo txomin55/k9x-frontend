@@ -1,9 +1,9 @@
 import {
   EMPTY_FEDERATION_CONFIGURATION,
-  FederationConfigurationResponseDTO,
+  type FederationConfigurationResponseDTO,
 } from "@/services/secured/configurations/configurations.types";
-import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import type { ExtractionResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { COMPETITOR_STATUS } from "@/utils/event";
 
@@ -123,10 +123,8 @@ export interface EventDetailResponseDTO extends ObdxEventDetailResponseDTO {
  * (nested `dog`, no flat `dogIdentification`). {@link normalizeEventDetailResponse}
  * flattens them into the internal {@link EventCompetitorDetail} shape.
  */
-export interface ObdxEventDetailRawResponseDTO extends Omit<
-  ObdxEventDetailResponseDTO,
-  "competitors" | "configuration"
-> {
+export interface ObdxEventDetailRawResponseDTO
+  extends Omit<ObdxEventDetailResponseDTO, "competitors" | "configuration"> {
   competitors: EventCompetitorResponseDTO[];
   configuration: EventConfigurationDetailResponseDTO | null;
 }
@@ -141,10 +139,8 @@ export interface EventDetailRawResponseDTO {
   obdx: ObdxEventDetailRawResponseDTO;
 }
 
-export interface EventExerciseDetailResponseDTO extends Omit<
-  EventExerciseRequestDTO,
-  "judgesIds"
-> {
+export interface EventExerciseDetailResponseDTO
+  extends Omit<EventExerciseRequestDTO, "judgesIds"> {
   name: string;
   judges: IdNameDTO[];
 }

@@ -51,8 +51,10 @@ export const buildNextJudges = (
       );
 };
 
-export const buildJudgesWithoutEntity = (previousJudges: JudgeResponseDTO[], id: string) =>
-  previousJudges.filter((judge) => judge.id !== id);
+export const buildJudgesWithoutEntity = (
+  previousJudges: JudgeResponseDTO[],
+  id: string,
+) => previousJudges.filter((judge) => judge.id !== id);
 
 const getBaseJudgesFromCache = () =>
   queryClient.getQueryData<JudgeResponseDTO[]>(getJudgesQueryKey()) ?? [];
@@ -144,10 +146,11 @@ const rollbackJudgePayload = async (rollbackPayload: JudgeRollbackPayload) => {
   }
 };
 
-export const commitJudgeMutation = createCommitEntityMutation<JudgeRollbackPayload>(
-  "judge",
-  rollbackJudgePayload,
-);
+export const commitJudgeMutation =
+  createCommitEntityMutation<JudgeRollbackPayload>(
+    "judge",
+    rollbackJudgePayload,
+  );
 
 const commitJudgeTask = async (task: PendingTask) => {
   await commitJudgeMutationSuccess({

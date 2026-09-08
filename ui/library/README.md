@@ -10,7 +10,7 @@ Vitest/Chromatic.
   to generate static).
 - Chromatic for visual testing (`pnpm run chromatic`).
 - Vitest + Testing Library (`pnpm run test:unit:coverage`).
-- ESLint with Storybook rules.
+- Linting via Biome from the repo root (`pnpm lint`).
 
 Install dependencies with `pnpm install` at the workspace root and use the scripts above for day-to-day development.
 

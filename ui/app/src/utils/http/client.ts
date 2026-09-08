@@ -213,7 +213,7 @@ const rawRequest = async <TResponse>({
   if (contentType.includes("application/json")) {
     try {
       return (await response.json()) as TResponse;
-    } catch (error) {
+    } catch (_error) {
       throw new HttpRequestError(
         path,
         response.status,

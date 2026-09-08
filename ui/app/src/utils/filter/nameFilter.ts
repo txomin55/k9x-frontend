@@ -31,7 +31,7 @@ export function buildNameContainsMatcher(
  * them the way a person would: "ES" and "es" are the same country.
  */
 export function isSameCountry(value: string | undefined, country: string) {
-	if (!country) return true;
+  if (!country) return true;
 
-	return (value ?? "").toLowerCase() === country.toLowerCase();
+  return (value ?? "").toLowerCase() === country.toLowerCase();
 }

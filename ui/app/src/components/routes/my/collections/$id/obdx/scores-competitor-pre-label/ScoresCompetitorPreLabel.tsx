@@ -1,4 +1,4 @@
-import { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import collectedIcon from "@/assets/dogs/collected.svg";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";

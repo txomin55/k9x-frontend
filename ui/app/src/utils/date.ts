@@ -67,7 +67,11 @@ export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 export function defaultStagesDateRange() {
   const now = new Date();
   return {
-    from: Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - 1, now.getUTCDate()),
+    from: Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth() - 1,
+      now.getUTCDate(),
+    ),
     to: Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, now.getUTCDate()),
   };
 }

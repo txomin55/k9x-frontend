@@ -1,4 +1,4 @@
-import { createSignal, JSX } from "solid-js";
+import { createSignal, type JSX } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import AtomButton, {
   BUTTON_TYPES,
@@ -26,7 +26,9 @@ export default function ConfirmActionButton(props: ConfirmActionButtonProps) {
 
   return (
     <AtomDialog
-      title={props.title ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CONFIRM_DELETION")}
+      title={
+        props.title ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CONFIRM_DELETION")
+      }
       content={
         <div class="confirm-action-button__content">
           <p>
@@ -38,10 +40,12 @@ export default function ConfirmActionButton(props: ConfirmActionButtonProps) {
               type={BUTTON_TYPES.ACCENT}
               onClick={() => setIsOpen(false)}
             >
-              {props.cancelText ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CANCEL")}
+              {props.cancelText ??
+                i18n.t("COMMON.CONFIRM_ACTION_BUTTON.CANCEL")}
             </AtomButton>
             <AtomButton type={BUTTON_TYPES.DESTRUCTIVE} onClick={handleConfirm}>
-              {props.confirmText ?? i18n.t("COMMON.CONFIRM_ACTION_BUTTON.DELETE")}
+              {props.confirmText ??
+                i18n.t("COMMON.CONFIRM_ACTION_BUTTON.DELETE")}
             </AtomButton>
           </div>
         </div>

@@ -33,7 +33,9 @@ import { useDeviceType } from "@/utils/media-query/useDeviceType";
 
 const NavigationUserMenu = lazy(
   () =>
-    import("@/components/global/app-shell/layout/navigation/NavigationUserMenu"),
+    import(
+      "@/components/global/app-shell/layout/navigation/NavigationUserMenu"
+    ),
 );
 const OrganizerForm = lazy(
   () => import("@/components/global/app-shell/layout/navigation/OrganizerForm"),

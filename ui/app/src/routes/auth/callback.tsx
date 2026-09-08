@@ -41,7 +41,7 @@ function readPostLoginRedirect() {
   const stored = globalThis.sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY);
   globalThis.sessionStorage.removeItem(POST_LOGIN_REDIRECT_KEY);
 
-  if (stored && stored.startsWith("/") && !stored.startsWith("//")) {
+  if (stored?.startsWith("/") && !stored.startsWith("//")) {
     return stored;
   }
 
@@ -51,7 +51,11 @@ function readPostLoginRedirect() {
 function AuthCallbackSkeleton() {
   return (
     <section class="landing-page" aria-busy="true">
-      <AtomSkeleton variant="rectangular" width="var(--unit-20)" height="var(--unit-5)" />
+      <AtomSkeleton
+        variant="rectangular"
+        width="var(--unit-20)"
+        height="var(--unit-5)"
+      />
 
       <div class="landing-page__hero">
         <AtomSkeleton height="var(--unit-3)" width="70%" />
@@ -60,7 +64,12 @@ function AuthCallbackSkeleton() {
           <AtomSkeleton width="60%" />
         </div>
         <div class="landing-page__actions">
-          <AtomSkeleton variant="rectangular" width="var(--unit-16)" height="var(--unit-5)" radius="999px" />
+          <AtomSkeleton
+            variant="rectangular"
+            width="var(--unit-16)"
+            height="var(--unit-5)"
+            radius="999px"
+          />
         </div>
       </div>
 
@@ -142,7 +151,9 @@ function AuthCallbackPage() {
       logger.error(error);
       setStatus("error");
       setErrorMessage(
-        error instanceof Error ? error.message : i18n.t("AUTH_CALLBACK.AUTHENTICATION_FAILED"),
+        error instanceof Error
+          ? error.message
+          : i18n.t("AUTH_CALLBACK.AUTHENTICATION_FAILED"),
       );
     }
   });

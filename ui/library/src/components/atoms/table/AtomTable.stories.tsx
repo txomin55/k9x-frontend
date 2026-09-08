@@ -1,6 +1,8 @@
 import { createSignal } from "solid-js";
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomTable, { type AtomTableProps } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type AtomTableProps,
+} from "@lib/components/atoms/table/AtomTable";
 import type { ColumnDef } from "@tanstack/solid-table";
 
 type AnimalRow = {

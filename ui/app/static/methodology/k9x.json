@@ -112,53 +112,26 @@
       "cases": [
         {
           "id": "one-result",
-          "results": [
-            750
-          ],
-          "slots": [
-            750,
-            201,
-            201
-          ],
+          "results": [750],
+          "slots": [750, 201, 201],
           "level": 384
         },
         {
           "id": "two-results",
-          "results": [
-            750,
-            750
-          ],
-          "slots": [
-            750,
-            750,
-            201
-          ],
+          "results": [750, 750],
+          "slots": [750, 750, 201],
           "level": 567
         },
         {
           "id": "three-results",
-          "results": [
-            750,
-            750,
-            750
-          ],
-          "slots": [
-            750,
-            750,
-            750
-          ],
+          "results": [750, 750, 750],
+          "slots": [750, 750, 750],
           "level": 750
         },
         {
           "id": "weak-result",
-          "results": [
-            200
-          ],
-          "slots": [
-            200,
-            200,
-            200
-          ],
+          "results": [200],
+          "slots": [200, 200, 200],
           "level": 200
         }
       ]

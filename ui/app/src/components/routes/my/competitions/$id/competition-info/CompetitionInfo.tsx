@@ -9,7 +9,7 @@ import {
   MIN_TEXT_LENGTH,
   type TextFieldError,
   validateRequiredSelection,
-  validateRequiredText
+  validateRequiredText,
 } from "@/utils/validation/textField";
 import "./styles.css";
 

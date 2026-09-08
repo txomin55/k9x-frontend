@@ -17,7 +17,9 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
 
       await verifyLocalFirstWrite(page, context, {
@@ -84,7 +86,9 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
       await page.goto(EVENT_DETAIL_URL);
       // Judge Alpha is the seeded main judge, so the badge starts on its card.
       await expect(
-        page.locator(".card", { hasText: "Judge Alpha" }).getByText("Main judge"),
+        page
+          .locator(".card", { hasText: "Judge Alpha" })
+          .getByText("Main judge"),
       ).toBeVisible();
       await openEditMode(page);
 
@@ -104,7 +108,9 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
 
       // Free the main-judge box first: the checkbox for anybody else stays blocked until Alpha releases it.
@@ -115,7 +121,9 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
       await alphaDialog.getByText("Main judge", { exact: true }).click();
       await alphaDialog.getByRole("button", { name: "Close" }).click();
       await expect(
-        page.locator(".card", { hasText: "Judge Alpha" }).getByText("Main judge"),
+        page
+          .locator(".card", { hasText: "Judge Alpha" })
+          .getByText("Main judge"),
       ).toHaveCount(0);
 
       await verifyLocalFirstWrite(page, context, {
@@ -134,10 +142,14 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
         },
         assertOptimistic: async () => {
           await expect(
-            page.locator(".card", { hasText: "Judge Beta" }).getByText("Main judge"),
+            page
+              .locator(".card", { hasText: "Judge Beta" })
+              .getByText("Main judge"),
           ).toBeVisible();
           await expect(
-            page.locator(".card", { hasText: "Judge Alpha" }).getByText("Main judge"),
+            page
+              .locator(".card", { hasText: "Judge Alpha" })
+              .getByText("Main judge"),
           ).toHaveCount(0);
         },
       });
@@ -149,7 +161,9 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupEventDetailCrud(page, { eventStatus: "CREATED" });
       await page.goto(EVENT_DETAIL_URL);
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
       await openEditMode(page);
 
       await verifyLocalFirstWrite(page, context, {

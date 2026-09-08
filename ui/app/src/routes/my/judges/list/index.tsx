@@ -1,16 +1,20 @@
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import { createFileRoute } from "@tanstack/solid-router";
 import {
-	createEffect,
-	createMemo,
-	createSignal,
-	For,
-	Show,
-	Suspense,
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Show,
+  Suspense,
 } from "solid-js";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
@@ -19,18 +23,18 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import CountryFilter, {
-	ANY_COUNTRY,
+  ANY_COUNTRY,
 } from "@/components/common/country-filter/CountryFilter";
 import Page from "@/components/common/page/Page";
 import JudgeCard from "@/components/routes/my/judges/list/judge-card/JudgeCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import JudgeForm from "@/components/routes/my/judges/list/judge-form/JudgeForm";
 import {
-	createJudge,
-	deleteJudge,
-	updateJudge,
-	useCreatedJudges,
-	useCreatedJudgesByCountry,
+  createJudge,
+  deleteJudge,
+  updateJudge,
+  useCreatedJudges,
+  useCreatedJudgesByCountry,
 } from "@/services/secured/judge-crud/judgeCrud";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import "./styles.css";
@@ -45,274 +49,274 @@ import { useFillRemainingHeight } from "@/utils/layout/useFillRemainingHeight";
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 
 export const Route = createFileRoute("/my/judges/list/")({
-	component: MyJudgesRoute,
+  component: MyJudgesRoute,
 });
 
 function MyJudgesRoute() {
-	return (
-		<Suspense
-			fallback={
-				<Page>
-					<div class="judges-list card-list">
-						<CardListSkeleton count={6} />
-					</div>
-				</Page>
-			}
-		>
-			<MyJudgesListPage />
-		</Suspense>
-	);
+  return (
+    <Suspense
+      fallback={
+        <Page>
+          <div class="judges-list card-list">
+            <CardListSkeleton count={6} />
+          </div>
+        </Page>
+      }
+    >
+      <MyJudgesListPage />
+    </Suspense>
+  );
 }
 
 function MyJudgesListPage() {
-	const i18n = useI18n();
-	const buildJudgeDraft = (): JudgeResponseDTO => ({
-		id: generateEntityId("judge"),
-		name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
-		country: "",
-	});
-	const user = useAuthUser();
-	const judgesQuery = useCreatedJudges({
-		refetchOnMount: !isOffline(),
-		gcTime: 2 * 60 * 1000,
-		enabled: () => Boolean(user()),
-	});
+  const i18n = useI18n();
+  const buildJudgeDraft = (): JudgeResponseDTO => ({
+    id: generateEntityId("judge"),
+    name: i18n.t("MY.JUDGES.LIST.DEFAULT_JUDGE"),
+    country: "",
+  });
+  const user = useAuthUser();
+  const judgesQuery = useCreatedJudges({
+    refetchOnMount: !isOffline(),
+    gcTime: 2 * 60 * 1000,
+    enabled: () => Boolean(user()),
+  });
 
-	const [judgeParam, setJudgeParam] = useSearchParam("judge", "", "push");
-	const [draftJudge, setDraftJudge] = createSignal<JudgeResponseDTO>(
-		buildJudgeDraft(),
-	);
-	const [nameFilter, setNameFilter] = createSignal("");
-	const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
-	const [view, setView] = createSignal<string>(VIEW.LIST);
-	const listFill = useFillRemainingHeight();
-	const tableFill = useFillRemainingHeight();
+  const [judgeParam, setJudgeParam] = useSearchParam("judge", "", "push");
+  const [draftJudge, setDraftJudge] = createSignal<JudgeResponseDTO>(
+    buildJudgeDraft(),
+  );
+  const [nameFilter, setNameFilter] = createSignal("");
+  const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
+  const [view, setView] = createSignal<string>(VIEW.LIST);
+  const listFill = useFillRemainingHeight();
+  const tableFill = useFillRemainingHeight();
 
-	// The country travels in the request; the name is still matched here, over what came back.
-	const judgesByCountryQuery = useCreatedJudgesByCountry(countryFilter);
-	const listedJudges = () =>
-		(countryFilter() ? judgesByCountryQuery.data : judgesQuery.data) ?? [];
+  // The country travels in the request; the name is still matched here, over what came back.
+  const judgesByCountryQuery = useCreatedJudgesByCountry(countryFilter);
+  const listedJudges = () =>
+    (countryFilter() ? judgesByCountryQuery.data : judgesQuery.data) ?? [];
 
-	const filteredJudges = createMemo(() => {
-		const matches = buildNameMatcher(nameFilter());
-		const country = countryFilter();
+  const filteredJudges = createMemo(() => {
+    const matches = buildNameMatcher(nameFilter());
+    const country = countryFilter();
 
-		return listedJudges().filter(
-			(judge) => matches(judge.name) && isSameCountry(judge.country, country),
-		);
-	});
+    return listedJudges().filter(
+      (judge) => matches(judge.name) && isSameCountry(judge.country, country),
+    );
+  });
 
-	const isDialogOpen = () => !!judgeParam();
-	const editingJudgeId = () =>
-		judgeParam() && judgeParam() !== "new" ? judgeParam() : null;
+  const isDialogOpen = () => !!judgeParam();
+  const editingJudgeId = () =>
+    judgeParam() && judgeParam() !== "new" ? judgeParam() : null;
 
-	const openCreateDialog = () => {
-		setDraftJudge(buildJudgeDraft());
-		setJudgeParam("new");
-	};
-	const handleCloseDialog = () => {
-		setJudgeParam("");
-	};
+  const openCreateDialog = () => {
+    setDraftJudge(buildJudgeDraft());
+    setJudgeParam("new");
+  };
+  const handleCloseDialog = () => {
+    setJudgeParam("");
+  };
 
-	const openEditDialog = (judge: JudgeResponseDTO) => {
-		setDraftJudge(() => ({
-			id: judge.id,
-			name: judge.name,
-			country: judge.country,
-		}));
-		setJudgeParam(judge.id);
-	};
+  const openEditDialog = (judge: JudgeResponseDTO) => {
+    setDraftJudge(() => ({
+      id: judge.id,
+      name: judge.name,
+      country: judge.country,
+    }));
+    setJudgeParam(judge.id);
+  };
 
-	createEffect(() => {
-		const id = editingJudgeId();
-		if (!id) return;
-		const judge = judgesQuery.data?.find((entry) => entry.id === id);
-		if (judge && draftJudge().id !== judge.id) {
-			setDraftJudge(() => ({
-				id: judge.id,
-				name: judge.name,
-				country: judge.country,
-			}));
-		}
-	});
+  createEffect(() => {
+    const id = editingJudgeId();
+    if (!id) return;
+    const judge = judgesQuery.data?.find((entry) => entry.id === id);
+    if (judge && draftJudge().id !== judge.id) {
+      setDraftJudge(() => ({
+        id: judge.id,
+        name: judge.name,
+        country: judge.country,
+      }));
+    }
+  });
 
-	const handleSave = () => {
-		const payload = draftJudge();
-		const currentEditingJudgeId = editingJudgeId();
+  const handleSave = () => {
+    const payload = draftJudge();
+    const currentEditingJudgeId = editingJudgeId();
 
-		if (currentEditingJudgeId) {
-			updateJudge(currentEditingJudgeId, {
-				name: payload.name,
-				country: payload.country,
-			});
-		} else {
-			createJudge(payload);
-		}
+    if (currentEditingJudgeId) {
+      updateJudge(currentEditingJudgeId, {
+        name: payload.name,
+        country: payload.country,
+      });
+    } else {
+      createJudge(payload);
+    }
 
-		handleCloseDialog();
-	};
+    handleCloseDialog();
+  };
 
-	const columns = createMemo<ColumnDef<JudgeResponseDTO, any>[]>(() => [
-		{
-			accessorKey: "name",
-			header: i18n.t("MY.JUDGES.LIST.NAME"),
-			cell: (info) => (
-				<div class="list-table__name">
-					<CountryFlag country={info.row.original.country} />
-					<span>{info.row.original.name}</span>
-				</div>
-			),
-		},
-		{
-			id: "actions",
-			header: () => null,
-			enableSorting: false,
-			cell: (info) => (
-				<div class="list-table__actions">
-					<ConfirmActionButton
-						text={info.row.original.name}
-						onConfirm={() => deleteJudge(info.row.original.id)}
-					>
-						<AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-							<AtomSvgIcon
-								src={trashIcon}
-								alt={i18n.t("MY.JUDGES.JUDGE_CARD.DELETE")}
-								tinted
-							/>
-						</AtomButton>
-					</ConfirmActionButton>
-					<AtomButton
-						type={BUTTON_TYPES.ACCENT}
-						onClick={() => openEditDialog(info.row.original)}
-					>
-						<AtomSvgIcon
-							src={pencilIcon}
-							alt={i18n.t("MY.JUDGES.JUDGE_CARD.EDIT")}
-							tinted
-						/>
-					</AtomButton>
-				</div>
-			),
-		},
-	]);
+  const columns = createMemo<ColumnDef<JudgeResponseDTO, any>[]>(() => [
+    {
+      accessorKey: "name",
+      header: i18n.t("MY.JUDGES.LIST.NAME"),
+      cell: (info) => (
+        <div class="list-table__name">
+          <CountryFlag country={info.row.original.country} />
+          <span>{info.row.original.name}</span>
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: () => null,
+      enableSorting: false,
+      cell: (info) => (
+        <div class="list-table__actions">
+          <ConfirmActionButton
+            text={info.row.original.name}
+            onConfirm={() => deleteJudge(info.row.original.id)}
+          >
+            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+              <AtomSvgIcon
+                src={trashIcon}
+                alt={i18n.t("MY.JUDGES.JUDGE_CARD.DELETE")}
+                tinted
+              />
+            </AtomButton>
+          </ConfirmActionButton>
+          <AtomButton
+            type={BUTTON_TYPES.ACCENT}
+            onClick={() => openEditDialog(info.row.original)}
+          >
+            <AtomSvgIcon
+              src={pencilIcon}
+              alt={i18n.t("MY.JUDGES.JUDGE_CARD.EDIT")}
+              tinted
+            />
+          </AtomButton>
+        </div>
+      ),
+    },
+  ]);
 
-	const listContent = () => (
-		<div
-			class="judges-list card-list"
-			ref={listFill.ref}
-			style={{ height: `${listFill.height()}px` }}
-		>
-			<For each={filteredJudges()}>
-				{(judge) => (
-					<JudgeCard
-						judge={judge}
-						onEdit={() => openEditDialog(judge)}
-						onDelete={() => deleteJudge(judge.id)}
-					/>
-				)}
-			</For>
-		</div>
-	);
+  const listContent = () => (
+    <div
+      class="judges-list card-list"
+      ref={listFill.ref}
+      style={{ height: `${listFill.height()}px` }}
+    >
+      <For each={filteredJudges()}>
+        {(judge) => (
+          <JudgeCard
+            judge={judge}
+            onEdit={() => openEditDialog(judge)}
+            onDelete={() => deleteJudge(judge.id)}
+          />
+        )}
+      </For>
+    </div>
+  );
 
-	const tableContent = () => (
-		<div
-			class="judges-list__table"
-			ref={tableFill.ref}
-			style={{ height: `${tableFill.height()}px` }}
-		>
-			<AtomTable<JudgeResponseDTO>
-				data={filteredJudges()}
-				columns={columns()}
-				getRowId={(row) => row.id}
-			/>
-		</div>
-	);
+  const tableContent = () => (
+    <div
+      class="judges-list__table"
+      ref={tableFill.ref}
+      style={{ height: `${tableFill.height()}px` }}
+    >
+      <AtomTable<JudgeResponseDTO>
+        data={filteredJudges()}
+        columns={columns()}
+        getRowId={(row) => row.id}
+      />
+    </div>
+  );
 
-	const controls = createMemo(() => [
-		{
-			value: VIEW.LIST,
-			text: i18n.t("MY.JUDGES.LIST.LIST"),
-			content: listContent,
-		},
-		{
-			value: VIEW.TABLE,
-			text: i18n.t("MY.JUDGES.LIST.TABLE"),
-			content: tableContent,
-		},
-	]);
+  const controls = createMemo(() => [
+    {
+      value: VIEW.LIST,
+      text: i18n.t("MY.JUDGES.LIST.LIST"),
+      content: listContent,
+    },
+    {
+      value: VIEW.TABLE,
+      text: i18n.t("MY.JUDGES.LIST.TABLE"),
+      content: tableContent,
+    },
+  ]);
 
-	return (
-		<Page>
-			{/* Dialog triggers and the floating button are overlays: kept out of the page flow so
+  return (
+    <Page>
+      {/* Dialog triggers and the floating button are overlays: kept out of the page flow so
 			    they add neither height nor a flex gap to the column the table has to fit in. */}
-			<div class="judges-list__overlays">
-				<AtomDialog
-					title={
-						editingJudgeId()
-							? i18n.t("MY.JUDGES.LIST.EDIT_JUDGE")
-							: i18n.t("MY.JUDGES.LIST.NEW_JUDGE")
-					}
-					content={
-						<JudgeForm
-							draft={draftJudge}
-							onDraftChange={(updater) =>
-								setDraftJudge((current) => updater(current))
-							}
-							onCancel={handleCloseDialog}
-							onSave={handleSave}
-						/>
-					}
-					open={isDialogOpen()}
-					onOpenChange={(isOpen) => {
-						if (!isOpen) {
-							handleCloseDialog();
-						}
-					}}
-					trigger={<span aria-hidden />}
-				/>
+      <div class="judges-list__overlays">
+        <AtomDialog
+          title={
+            editingJudgeId()
+              ? i18n.t("MY.JUDGES.LIST.EDIT_JUDGE")
+              : i18n.t("MY.JUDGES.LIST.NEW_JUDGE")
+          }
+          content={
+            <JudgeForm
+              draft={draftJudge}
+              onDraftChange={(updater) =>
+                setDraftJudge((current) => updater(current))
+              }
+              onCancel={handleCloseDialog}
+              onSave={handleSave}
+            />
+          }
+          open={isDialogOpen()}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              handleCloseDialog();
+            }
+          }}
+          trigger={<span aria-hidden />}
+        />
 
-				<FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
-			</div>
+        <FloatingToggleCircle onClick={openCreateDialog} nonToggledText="+" />
+      </div>
 
-			<Show
-				when={
-					judgesQuery.data?.length ||
-					(!judgesQuery.isPending && !judgesQuery.isFetching)
-				}
-				fallback={
-					<div class="judges-list card-list">
-						<CardListSkeleton count={6} />
-					</div>
-				}
-			>
-				<Show
-					when={judgesQuery.data?.length}
-					fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
-				>
-					<div class="judges-list__filters">
-						<NameFilter
-							label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
-							value={nameFilter()}
-							onChange={setNameFilter}
-						/>
-						<CountryFilter
-							value={countryFilter()}
-							onChange={setCountryFilter}
-						/>
-					</div>
-					<Show
-						when={filteredJudges().length}
-						fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
-					>
-						<AtomSegmentedControl
-							title={i18n.t("MY.JUDGES.LIST.VIEW_BY")}
-							control={view()}
-							onControlChange={setView}
-							controls={controls()}
-						/>
-					</Show>
-				</Show>
-			</Show>
-		</Page>
-	);
+      <Show
+        when={
+          judgesQuery.data?.length ||
+          (!judgesQuery.isPending && !judgesQuery.isFetching)
+        }
+        fallback={
+          <div class="judges-list card-list">
+            <CardListSkeleton count={6} />
+          </div>
+        }
+      >
+        <Show
+          when={judgesQuery.data?.length}
+          fallback={<p>{i18n.t("MY.JUDGES.LIST.NO_JUDGES_AVAILABLE_YET")}</p>}
+        >
+          <div class="judges-list__filters">
+            <NameFilter
+              label={i18n.t("MY.JUDGES.LIST.NAME_FILTER")}
+              value={nameFilter()}
+              onChange={setNameFilter}
+            />
+            <CountryFilter
+              value={countryFilter()}
+              onChange={setCountryFilter}
+            />
+          </div>
+          <Show
+            when={filteredJudges().length}
+            fallback={<p>{i18n.t("COMMON.NAME_FILTER.NO_MATCHES")}</p>}
+          >
+            <AtomSegmentedControl
+              title={i18n.t("MY.JUDGES.LIST.VIEW_BY")}
+              control={view()}
+              onControlChange={setView}
+              controls={controls()}
+            />
+          </Show>
+        </Show>
+      </Show>
+    </Page>
+  );
 }

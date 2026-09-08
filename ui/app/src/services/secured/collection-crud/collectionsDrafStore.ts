@@ -1,4 +1,4 @@
-import {
+import type {
   CollectionResponseDTO,
   CollectionsResponseDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";

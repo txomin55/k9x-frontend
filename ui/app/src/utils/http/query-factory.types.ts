@@ -57,8 +57,6 @@ export type ParameterizedQueryDefinition<
   ) => CreateQueryResult<TData, Error>;
 };
 
-export type MutationOverride<
-  TData,
-  TVariables,
-  TOnMutateResult,
-> = Partial<CreateMutationOptions<TData, Error, TVariables, TOnMutateResult>>;
+export type MutationOverride<TData, TVariables, TOnMutateResult> = Partial<
+  CreateMutationOptions<TData, Error, TVariables, TOnMutateResult>
+>;

@@ -56,7 +56,9 @@ type Props = {
 type Segment = { letter: RankLetter; from: number; to: number };
 
 export default function RankScale(props: Props) {
-  const layout = createMemo(() => (props.compact ? LAYOUTS.compact : LAYOUTS.wide));
+  const layout = createMemo(() =>
+    props.compact ? LAYOUTS.compact : LAYOUTS.wide,
+  );
 
   const position = (value: number) =>
     layout().pad +

@@ -1,44 +1,44 @@
 :root {
-    --icon-size-sm: var(--unit-1);
-    --icon-size-md: var(--unit-2);
-    --icon-size-lg: var(--unit-3);
+  --icon-size-sm: var(--unit-1);
+  --icon-size-md: var(--unit-2);
+  --icon-size-lg: var(--unit-3);
 
-    --circle-size-sm: var(--unit-3);
-    --circle-size-md: var(--unit-5);
-    --circle-size-lg: var(--unit-7);
+  --circle-size-sm: var(--unit-3);
+  --circle-size-md: var(--unit-5);
+  --circle-size-lg: var(--unit-7);
 }
 
 .circle-button {
-    width: var(--circle-size-md);
-    height: var(--circle-size-md);
+  width: var(--circle-size-md);
+  height: var(--circle-size-md);
 
-    border-radius: var(--radius-full);
+  border-radius: var(--radius-full);
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    font-size: var(--icon-size-md);
-    line-height: 1;
+  font-size: var(--icon-size-md);
+  line-height: 1;
 
-    padding: 0;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  padding: 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
 }
 
 .circle-button.circle-button--sm {
-    width: var(--circle-size-sm);
-    height: var(--circle-size-sm);
-    font-size: var(--icon-size-sm);
+  width: var(--circle-size-sm);
+  height: var(--circle-size-sm);
+  font-size: var(--icon-size-sm);
 }
 
 .circle-button.circle-button--md {
-    width: var(--circle-size-md);
-    height: var(--circle-size-md);
-    font-size: var(--icon-size-md);
+  width: var(--circle-size-md);
+  height: var(--circle-size-md);
+  font-size: var(--icon-size-md);
 }
 
 .circle-button.circle-button--lg {
-    width: var(--circle-size-lg);
-    height: var(--circle-size-lg);
-    font-size: var(--icon-size-lg);
+  width: var(--circle-size-lg);
+  height: var(--circle-size-lg);
+  font-size: var(--icon-size-lg);
 }

@@ -98,7 +98,9 @@ export default function NotificationsDialog() {
                       <Show when={content.url}>
                         {(url) => (
                           <div class="notifications-list__item-action">
-                            <AtomButton onClick={() => openNotificationUrl(url())}>
+                            <AtomButton
+                              onClick={() => openNotificationUrl(url())}
+                            >
                               {i18n.t("NOTIFICATION.REVIEW")}
                             </AtomButton>
                           </div>

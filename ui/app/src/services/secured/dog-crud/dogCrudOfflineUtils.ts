@@ -1,18 +1,26 @@
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler
+  registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import type { PendingTask, PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import type {
+  PendingTask,
+  PendingTaskMethod,
+} from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
   removeQuerySnapshotsByPrefix,
-  saveQuerySnapshot
+  saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import type { Dog, DogRollbackPayload } from "./dogCrud.types";
-import { mergeDogsWithDrafts, removeDogDraft, replaceDogDrafts, upsertDogDraft } from "./dogDraftStore";
+import {
+  mergeDogsWithDrafts,
+  removeDogDraft,
+  replaceDogDrafts,
+  upsertDogDraft,
+} from "./dogDraftStore";
 import {
   DOGS_SNAPSHOT_ID,
   getAllDogsQueryKey,
@@ -36,20 +44,27 @@ export const toDogListItem = (dog: Dog, previousDog?: Dog): Dog => ({
   withersCm: dog.withersCm ?? previousDog?.withersCm,
   owned: dog.owned ?? previousDog?.owned,
   threeFciGenerationsConfirmed:
-    dog.threeFciGenerationsConfirmed ?? previousDog?.threeFciGenerationsConfirmed,
+    dog.threeFciGenerationsConfirmed ??
+    previousDog?.threeFciGenerationsConfirmed,
 });
 
 export const buildNextDogs = (previousDogs: Dog[], dog: Dog) => {
   const nextDog = toDogListItem(
     dog,
-    previousDogs.find(({ identification }) => identification === dog.identification),
+    previousDogs.find(
+      ({ identification }) => identification === dog.identification,
+    ),
   );
-  const existingIndex = previousDogs.findIndex(({ identification }) => identification === dog.identification);
+  const existingIndex = previousDogs.findIndex(
+    ({ identification }) => identification === dog.identification,
+  );
 
   return existingIndex === -1
     ? [nextDog, ...previousDogs]
     : previousDogs.map((previousDog) =>
-        previousDog.identification === dog.identification ? nextDog : previousDog,
+        previousDog.identification === dog.identification
+          ? nextDog
+          : previousDog,
       );
 };
 
@@ -104,7 +119,9 @@ export const commitDogMutationSuccess = async ({
     syncAllDogsRemoval(entityId);
   } else if (method === "POST" || method === "PUT") {
     syncDogsToCache(visibleDogs);
-    const committedDog = visibleDogs.find((dog) => dog.identification === entityId);
+    const committedDog = visibleDogs.find(
+      (dog) => dog.identification === entityId,
+    );
     if (committedDog) syncAllDogsUpsert(committedDog);
   } else {
     return;

@@ -3,7 +3,7 @@ import { useCollections } from "@/services/secured/collection-crud/collectionCru
 import { For, Show, Suspense } from "solid-js";
 import CollectionCard from "@/components/routes/my/collections/list/collection-card/CollectionCard";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import Page from "@/components/common/page/Page";
 import { useI18n } from "@/stores/i18n/i18n";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";

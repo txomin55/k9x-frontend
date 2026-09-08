@@ -5,7 +5,9 @@ import AtomButton, {
 } from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomNumberInput from "@lib/components/atoms/number-input/AtomNumberInput";
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import { createSignal, Show } from "solid-js";
 import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import { useAuthUser } from "@/stores/auth/auth";
@@ -59,7 +61,8 @@ export default function DogForm(props: DogFormProps) {
 
   const ownerFieldVisible = () => !!user()?.organizer && !props.draft().owned;
 
-  const identificationError = () => validateRequiredText(props.draft().identification);
+  const identificationError = () =>
+    validateRequiredText(props.draft().identification);
   const nameError = () => validateRequiredText(props.draft().name);
   const countryError = () =>
     validateRequiredSelection(props.draft().country.id);
@@ -73,9 +76,9 @@ export default function DogForm(props: DogFormProps) {
 
   const fieldProps = (field: string, error: () => TextFieldError) => ({
     onBlur: () => markTouched(field),
-    validationState: (touched()[field] && error()
-      ? "invalid"
-      : undefined) as "invalid" | undefined,
+    validationState: (touched()[field] && error() ? "invalid" : undefined) as
+      | "invalid"
+      | undefined,
     errorMessage: touched()[field] ? errorMessage(error()) : undefined,
   });
 

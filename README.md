@@ -14,7 +14,7 @@ pnpm/turbo monorepo with a SolidJS PWA and a component library. Uses Vite 7, Sol
 
 - `ui/app`: SolidJS + Vite PWA, Prism mock server over a runtime-generated `static/openapi.yaml`, Playwright for E2E and Vitest for unit tests.
 - `ui/library`: SolidJS component library with Vite, Storybook 10/Chromatic, and Vitest.
-- `configuration/my-vitest` and `configuration/my-eslint`: shared presets for Vitest + ESLint (flat config, Prettier).
+- `configuration/my-vitest`: shared Vitest preset.
 - `coverage_processor`: utilities to merge coverage and junit.
 
 ## Local development
@@ -26,8 +26,9 @@ pnpm/turbo monorepo with a SolidJS PWA and a component library. Uses Vite 7, Sol
 
 ## Quality and formatting
 
-- `pnpm lint`: ESLint 9 with presets from `configuration/` and Vitest rules.
-- `pnpm format`: Prettier 3 for `*.{cjs,js,jsx,ts,tsx,md,mdx}`.
+- `pnpm lint`: Biome 2 (`biome check .`) — formatting + lint rules for the whole repo, configured in `biome.json`. Warnings do not fail the command; errors do.
+- `pnpm lint:fix`: same pass applying every safe fix.
+- `pnpm format`: Biome formatter only (`biome format --write .`), covering TS/TSX/JS/JSON/CSS.
 - `pnpm typecheck`: runs TypeScript checks for app, Playwright, library, shared config, and coverage processor.
 - Pre-commit via Make: `make pre-commit` runs `pnpm lint` + unit tests.
 

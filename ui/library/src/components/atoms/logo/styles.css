@@ -1,62 +1,62 @@
 .atom-logo {
-    padding: var(--unit-2) var(--unit-3);
-    border-radius: var(--unit-2);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--unit-1);
-    background: var(--surface);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  padding: var(--unit-2) var(--unit-3);
+  border-radius: var(--unit-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--unit-1);
+  background: var(--surface);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .atom-logo__wordmark {
-    display: flex;
-    align-items: baseline;
-    letter-spacing: calc(var(--unit-025) * -1);
+  display: flex;
+  align-items: baseline;
+  letter-spacing: calc(var(--unit-025) * -1);
 }
 
 .atom-logo__wordmark span {
-    font-family: 'Barlow Condensed', sans-serif;
-    line-height: 1
+  font-family: "Barlow Condensed", sans-serif;
+  line-height: 1;
 }
 
 .atom-logo__k9 {
-    font-size: calc(var(--text-heading-xxl) * 3);
-    font-weight: var(--font-weight-bold);
-    color: var(--primary);
+  font-size: calc(var(--text-heading-xxl) * 3);
+  font-weight: var(--font-weight-bold);
+  color: var(--primary);
 }
 
 .atom-logo__x {
-    font-size: var(--text-heading-xxl);
-    font-weight: var(--font-weight-bold);
-    color: var(--accent);
+  font-size: var(--text-heading-xxl);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent);
 }
 
 .atom-logo__divider {
-    width: var(--unit-025);
-    height: var(--unit-5);
-    border-radius: var(--unit-025);
-    background: var(--border);
+  width: var(--unit-025);
+  height: var(--unit-5);
+  border-radius: var(--unit-025);
+  background: var(--border);
 }
 
 .atom-logo__tagline {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--unit-025) / 2);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--unit-025) / 2);
 }
 
 .atom-logo__tagline span {
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    line-height: 1;
-    font-size: var(--text-caption-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  line-height: 1;
+  font-size: var(--text-caption-sm);
 }
 
 .atom-logo__tagline--line1 {
-    letter-spacing: 0.35em;
-    color: var(--accent);
+  letter-spacing: 0.35em;
+  color: var(--accent);
 }
 
 .atom-logo__tagline--line2 {
-    letter-spacing: 0.55em;
-    font-weight: 400 !important;
+  letter-spacing: 0.55em;
+  font-weight: 400 !important;
 }

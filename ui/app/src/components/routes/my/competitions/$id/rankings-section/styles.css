@@ -19,9 +19,9 @@
 .ranking-configurator__criteria {
   display: grid;
   grid-template-columns: repeat(
-    auto-fit,
-    minmax(min(100%, calc(var(--unit-10) * 2)), 1fr)
-  );
+      auto-fit,
+      minmax(min(100%, calc(var(--unit-10) * 2)), 1fr)
+    );
   gap: var(--unit-2);
   align-items: end;
 }
@@ -323,7 +323,10 @@
      option here: it hands any leftover width to the label column, which is exactly the bug this avoids. */
   .ranking-results__matrix table {
     min-width: calc(
-      var(--unit-10) + var(--unit-4) + var(--ranking-events, 1) * 72px
+      var(--unit-10) +
+      var(--unit-4) +
+      var(--ranking-events, 1) *
+      72px
     );
   }
 

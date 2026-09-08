@@ -1,32 +1,31 @@
-import {createFileRoute, useParams} from "@tanstack/solid-router";
-import {useEventClassification} from "@/services/fetch-stages/fetchStages";
+import { createFileRoute, useParams } from "@tanstack/solid-router";
+import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type {
   StageEventClassificationItemResponseDTO,
   StageEventClassificationResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
-import {createEffect, createMemo, createSignal, For, Show} from "solid-js";
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import AtomButton from "@lib/components/atoms/button/AtomButton";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import EventRankingsLink from "@/components/routes/stages/event-rankings-link/EventRankingsLink";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import ObdxClassificationCard from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationCard";
-import PositionMedal
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
+import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/position-medal/PositionMedal";
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
-import ObdxExerciseSquares
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
+import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
   isLive,
   positionTrend,
   type TrendDirection,
 } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
-import {AtomSegmentedControl} from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import {type AtomComboboxOption} from "@lib/components/atoms/combobox/AtomCombobox";
-import {type AtomSelectOption} from "@lib/components/atoms/select/AtomSelect";
-import ClassificationFilters
-  from "@/components/routes/stages/$id/events/$eventId/classification-filters/ClassificationFilters";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
+import type { AtomComboboxOption } from "@lib/components/atoms/combobox/AtomCombobox";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import ClassificationFilters from "@/components/routes/stages/$id/events/$eventId/classification-filters/ClassificationFilters";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
@@ -37,13 +36,15 @@ import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndic
 import NotCompetingIndicator from "@/components/common/not-competing-indicator/NotCompetingIndicator";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
 import RotateDeviceHint from "@/components/common/rotate-device-hint/RotateDeviceHint";
-import PinButton
-  from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
-import {useI18n} from "@/stores/i18n/i18n";
-import {useSearchParam, useSearchParamList,} from "@/utils/search-params/useSearchParam";
-import {useDeviceType} from "@/utils/media-query/useDeviceType";
-import {formatDateTime} from "@/utils/date";
-import {isOffline} from "@/utils/local-first/localFirstPolicy";
+import PinButton from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/pin-button/PinButton";
+import { useI18n } from "@/stores/i18n/i18n";
+import {
+  useSearchParam,
+  useSearchParamList,
+} from "@/utils/search-params/useSearchParam";
+import { useDeviceType } from "@/utils/media-query/useDeviceType";
+import { formatDateTime } from "@/utils/date";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import "./styles.css";
 
 export const Route = createFileRoute(
@@ -555,194 +556,194 @@ function EventClassificationPage() {
       <Show
         when={clfData()}
         fallback={
-        <Show
-          when={classificationQuery.isError}
-          fallback={<ClassificationSkeleton />}
-        >
-          <div class="page classification">
-            <div class="classification__error">
-              <span>{t("STAGES.CLASSIFICATION.ERROR")}</span>
-              <AtomButton onClick={() => classificationQuery.refetch()}>
-                {t("STAGES.CLASSIFICATION.RETRY")}
-              </AtomButton>
-            </div>
-          </div>
-        </Show>
-      }
-    >
-      {(classification) => {
-        const disciplineBlock = () => (
-          <div class="classification__discipline">
-            <RankBadge rank={classification().rank} />
-            <DisciplineIcon disciplineId={classification().discipline.id} />
-            <span class="text-caption-md">
-              {classification().configuration.name}
-            </span>
-          </div>
-        );
-
-        const configurationRow = () => (
-          <div class="classification__config-row">
-            {disciplineBlock()}
-            <EventRankingsLink
-              stageId={params().id}
-              eventId={params().eventId}
-            />
-          </div>
-        );
-
-        const lastUpdatedBlock = () => (
-          <div class="classification__last-updated">
-            <span class="text-caption-sm">
-              {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
-            </span>
-            <span class="text-caption-md">
-              {formatDateTime(classification().lastUpdated)}
-            </span>
-          </div>
-        );
-
-        const scoreCalculationBlock = () => (
-          <Show when={classification().obdx}>
-            {(obdx) => (
-              <div class="classification__score-calculation">
-                <span class="text-caption-sm">
-                  {t("STAGES.CLASSIFICATION.SCORE_CALCULATION")}
-                </span>
-                <span class="text-caption-md">
-                  {t(
-                    `MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_${obdx().scoreCalculation}`,
-                  )}
-                </span>
+          <Show
+            when={classificationQuery.isError}
+            fallback={<ClassificationSkeleton />}
+          >
+            <div class="page classification">
+              <div class="classification__error">
+                <span>{t("STAGES.CLASSIFICATION.ERROR")}</span>
+                <AtomButton onClick={() => classificationQuery.refetch()}>
+                  {t("STAGES.CLASSIFICATION.RETRY")}
+                </AtomButton>
               </div>
-            )}
+            </div>
           </Show>
-        );
+        }
+      >
+        {(classification) => {
+          const disciplineBlock = () => (
+            <div class="classification__discipline">
+              <RankBadge rank={classification().rank} />
+              <DisciplineIcon disciplineId={classification().discipline.id} />
+              <span class="text-caption-md">
+                {classification().configuration.name}
+              </span>
+            </div>
+          );
 
-        const judgesBlock = () => (
-          <Show when={classification().obdx?.judges?.length}>
-            <div class="classification__judges">
+          const configurationRow = () => (
+            <div class="classification__config-row">
+              {disciplineBlock()}
+              <EventRankingsLink
+                stageId={params().id}
+                eventId={params().eventId}
+              />
+            </div>
+          );
+
+          const lastUpdatedBlock = () => (
+            <div class="classification__last-updated">
               <span class="text-caption-sm">
-                {t("STAGES.CLASSIFICATION.JUDGES")}
+                {t("STAGES.CLASSIFICATION.LAST_UPDATED")}
               </span>
               <span class="text-caption-md">
-                {classification()
-                  .obdx?.judges.map((judge) => judge.name)
-                  .join(", ")}
+                {formatDateTime(classification().lastUpdated)}
               </span>
             </div>
-          </Show>
-        );
+          );
 
-        const filters = () => (
-          <ClassificationFilters
-            competitorOptions={competitorOptions()}
-            selectedCompetitorOptions={selectedCompetitorOptions()}
-            onCompetitorsChange={setCompetitorFilterIds}
-            sortOptions={sortOptions()}
-            selectedSortOption={selectedSortOption()}
-            onSortChange={(value) =>
-              setSortValue(value ?? CLASSIFICATION_SORTS.SCORE)
-            }
-          />
-        );
+          const scoreCalculationBlock = () => (
+            <Show when={classification().obdx}>
+              {(obdx) => (
+                <div class="classification__score-calculation">
+                  <span class="text-caption-sm">
+                    {t("STAGES.CLASSIFICATION.SCORE_CALCULATION")}
+                  </span>
+                  <span class="text-caption-md">
+                    {t(
+                      `MY.COMPETITIONS.EVENT_DETAIL.SCORE_CALCULATION_${obdx().scoreCalculation}`,
+                    )}
+                  </span>
+                </div>
+              )}
+            </Show>
+          );
 
-        return (
-          <div class="page classification">
-            <ExtractionSourceBanner
-              extraction={classification().extraction}
-              context={classification().event.name}
-            />
-            <Show
-              when={isMobile()}
-              fallback={
-                <>
-                  <div class="classification__header">
-                    <div class="classification__header--title">
-                      <span class="text-caption-lg">
-                        {classification().competitionName}
-                      </span>
-                      {lastUpdatedBlock()}
-                    </div>
-                    <div class="classification__header--info">
-                      {configurationRow()}
-                    </div>
-                  </div>
-                  {scoreCalculationBlock()}
-                  {judgesBlock()}
-                  {filters()}
-                </>
+          const judgesBlock = () => (
+            <Show when={classification().obdx?.judges?.length}>
+              <div class="classification__judges">
+                <span class="text-caption-sm">
+                  {t("STAGES.CLASSIFICATION.JUDGES")}
+                </span>
+                <span class="text-caption-md">
+                  {classification()
+                    .obdx?.judges.map((judge) => judge.name)
+                    .join(", ")}
+                </span>
+              </div>
+            </Show>
+          );
+
+          const filters = () => (
+            <ClassificationFilters
+              competitorOptions={competitorOptions()}
+              selectedCompetitorOptions={selectedCompetitorOptions()}
+              onCompetitorsChange={setCompetitorFilterIds}
+              sortOptions={sortOptions()}
+              selectedSortOption={selectedSortOption()}
+              onSortChange={(value) =>
+                setSortValue(value ?? CLASSIFICATION_SORTS.SCORE)
               }
-            >
-              <div class="classification__header classification__header--mobile">
-                <div class="classification__header--mobile-top">
-                  <Show when={competitorOptions().length}>
-                    <RotateDeviceHint />
-                  </Show>
-                  {lastUpdatedBlock()}
-                </div>
-                <div class="classification__mobile-collapsible-row">
-                  <AtomCollapsible
-                    trigger={
-                      <span class="text-caption-lg">
-                        {classification().competitionName}
-                      </span>
-                    }
-                    content={
-                      <div class="classification__mobile-content">
-                        <span class="text-caption-md">
-                          {classification().event.name}
-                        </span>
-                        {configurationRow()}
-                        {scoreCalculationBlock()}
-                        {judgesBlock()}
-                        {filters()}
-                      </div>
-                    }
-                  />
-                </div>
-              </div>
-            </Show>
-            <Show when={pinnedCompetitors().length}>
-              <div class="obdx-clf__pinned">
-                <For each={pinnedCompetitors()}>
-                  {(competitor) => (
-                    <ObdxClassificationCard
-                      competitor={competitor}
-                      trend={trends().get(competitor.dog.id)}
-                      pinned
-                      pinDisabled={liveIds().has(competitor.dog.id)}
-                      onTogglePin={() => togglePin(competitor.dog.id)}
-                      open={isPinnedOpen(competitor.dog.id)}
-                      onOpenChange={(open) =>
-                        setPinnedOpen(competitor.dog.id, open)
-                      }
-                    />
-                  )}
-                </For>
-              </div>
-            </Show>
-            <Show
-              when={classification()?.obdx?.competitors?.length}
-              fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
-            >
+            />
+          );
+
+          return (
+            <div class="page classification">
+              <ExtractionSourceBanner
+                extraction={classification().extraction}
+                context={classification().event.name}
+              />
               <Show
-                when={sortedCompetitors().length}
+                when={isMobile()}
                 fallback={
-                  <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
+                  <>
+                    <div class="classification__header">
+                      <div class="classification__header--title">
+                        <span class="text-caption-lg">
+                          {classification().competitionName}
+                        </span>
+                        {lastUpdatedBlock()}
+                      </div>
+                      <div class="classification__header--info">
+                        {configurationRow()}
+                      </div>
+                    </div>
+                    {scoreCalculationBlock()}
+                    {judgesBlock()}
+                    {filters()}
+                  </>
                 }
               >
-                <AtomSegmentedControl
-                  title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
-                  control={controlValue()}
-                  onControlChange={setControlValue}
-                  controls={classificationControls()}
-                />
+                <div class="classification__header classification__header--mobile">
+                  <div class="classification__header--mobile-top">
+                    <Show when={competitorOptions().length}>
+                      <RotateDeviceHint />
+                    </Show>
+                    {lastUpdatedBlock()}
+                  </div>
+                  <div class="classification__mobile-collapsible-row">
+                    <AtomCollapsible
+                      trigger={
+                        <span class="text-caption-lg">
+                          {classification().competitionName}
+                        </span>
+                      }
+                      content={
+                        <div class="classification__mobile-content">
+                          <span class="text-caption-md">
+                            {classification().event.name}
+                          </span>
+                          {configurationRow()}
+                          {scoreCalculationBlock()}
+                          {judgesBlock()}
+                          {filters()}
+                        </div>
+                      }
+                    />
+                  </div>
+                </div>
               </Show>
-            </Show>
-          </div>
-        );
-      }}
+              <Show when={pinnedCompetitors().length}>
+                <div class="obdx-clf__pinned">
+                  <For each={pinnedCompetitors()}>
+                    {(competitor) => (
+                      <ObdxClassificationCard
+                        competitor={competitor}
+                        trend={trends().get(competitor.dog.id)}
+                        pinned
+                        pinDisabled={liveIds().has(competitor.dog.id)}
+                        onTogglePin={() => togglePin(competitor.dog.id)}
+                        open={isPinnedOpen(competitor.dog.id)}
+                        onOpenChange={(open) =>
+                          setPinnedOpen(competitor.dog.id, open)
+                        }
+                      />
+                    )}
+                  </For>
+                </div>
+              </Show>
+              <Show
+                when={classification()?.obdx?.competitors?.length}
+                fallback={<span>{t("STAGES.CLASSIFICATION.NO_DATA")}</span>}
+              >
+                <Show
+                  when={sortedCompetitors().length}
+                  fallback={
+                    <span>{t("STAGES.CLASSIFICATION.NO_FILTER_RESULTS")}</span>
+                  }
+                >
+                  <AtomSegmentedControl
+                    title={t("STAGES.CLASSIFICATION.CLASSIFICATION_BY")}
+                    control={controlValue()}
+                    onControlChange={setControlValue}
+                    controls={classificationControls()}
+                  />
+                </Show>
+              </Show>
+            </div>
+          );
+        }}
       </Show>
     </>
   );

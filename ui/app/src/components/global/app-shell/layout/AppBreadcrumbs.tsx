@@ -1,5 +1,5 @@
 import { useMatches, useNavigate } from "@tanstack/solid-router";
-import { Component, createMemo, createSignal, onCleanup } from "solid-js";
+import { type Component, createMemo, createSignal, onCleanup } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
 import { resolveBreadcrumbs } from "@/utils/router/breadcrumbs";

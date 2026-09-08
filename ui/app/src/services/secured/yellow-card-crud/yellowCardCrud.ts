@@ -1,7 +1,7 @@
 import { commitOptimisticMutation } from "@/utils/local-first/pending_tasks/commitOptimisticMutation";
 import { registerPendingTaskHandler } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import { rawRequest } from "@/utils/http/client";
-import {
+import type {
   RegisterYellowCardRequestDTO,
   YellowCardResponseDTO,
 } from "@/services/secured/yellow-card-crud/yellowCardCrud.types";

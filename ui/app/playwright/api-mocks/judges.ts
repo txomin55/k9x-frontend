@@ -1,6 +1,9 @@
 import type { Page } from "@playwright/test";
 import type { JudgeResponseDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import { byCountry, setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import {
+  byCountry,
+  setRouteResponses,
+} from "@test/utils/playwrightMockingUtils";
 
 export const defaultJudges: JudgeResponseDTO[] = [
   { id: "judge-1", name: "Judge Alpha", country: "es" },
@@ -21,7 +24,8 @@ export const setupJudgesCrud = (page: Page) => {
   return Promise.all([
     setRouteResponses(page, {
       method: "GET",
-      payload: (_match, request) => byCountry(judges as { country?: unknown }[], request.url()),
+      payload: (_match, request) =>
+        byCountry(judges as { country?: unknown }[], request.url()),
       pathname: "/secured/judges",
     }),
     setRouteResponses(page, {

@@ -1,4 +1,6 @@
-import AtomSelect, { type AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectOption,
+} from "@lib/components/atoms/select/AtomSelect";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";

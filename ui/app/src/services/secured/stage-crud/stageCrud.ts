@@ -13,7 +13,7 @@ import {
 } from "@/services/secured/competition-crud/competitionCrud";
 import { getVisibleCompetitions } from "@/services/secured/competition-crud/competitionCrudOfflineUtils";
 import type { CompetitionStageDetailResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-import {
+import type {
   CreateStageRequestDTO,
   StageEditorModel,
   UpdateStageRequestDTO,
@@ -47,7 +47,9 @@ const mergeApiStageWithPayload = (
   };
 };
 
-const createDefaultApiStage = (competitionId: string): CreateStageRequestDTO => ({
+const createDefaultApiStage = (
+  competitionId: string,
+): CreateStageRequestDTO => ({
   competitionId,
   id: createId(),
   name: translate("MY.COMPETITIONS.STAGE_DETAIL.DEFAULT_STAGE"),
@@ -60,29 +62,28 @@ export const toApiStage = (
   competitionId,
   dateFrom: stage.dateFrom,
   dateTo: stage.dateTo,
-  events:
-    stage.events.map((rawEvent) => {
-      const core = {
-        awards: [],
-        competitors: [],
-        configuration: {
-          federation: EMPTY_FEDERATION_CONFIGURATION,
-          id: "",
-          name: "",
-        },
-        discipline: rawEvent.discipline,
-        enrollmentDeadline: 0,
-        exercises: [],
-        id: rawEvent.id,
-        judges: [],
-        name: rawEvent.name,
-        rank: rawEvent.rank,
-        scoreCalculation: SCORE_CALCULATION.AVG,
-        stage: { id: stage.id, name: stage.name },
-        status: rawEvent.status,
-      };
-      return { ...core, obdx: core };
-    }),
+  events: stage.events.map((rawEvent) => {
+    const core = {
+      awards: [],
+      competitors: [],
+      configuration: {
+        federation: EMPTY_FEDERATION_CONFIGURATION,
+        id: "",
+        name: "",
+      },
+      discipline: rawEvent.discipline,
+      enrollmentDeadline: 0,
+      exercises: [],
+      id: rawEvent.id,
+      judges: [],
+      name: rawEvent.name,
+      rank: rawEvent.rank,
+      scoreCalculation: SCORE_CALCULATION.AVG,
+      stage: { id: stage.id, name: stage.name },
+      status: rawEvent.status,
+    };
+    return { ...core, obdx: core };
+  }),
   id: stage.id ?? "",
   name: stage.name ?? "",
   notifications: stage.notifications ?? [],

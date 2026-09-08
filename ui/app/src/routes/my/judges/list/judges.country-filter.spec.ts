@@ -26,7 +26,9 @@ organizerTest.describe("My judges - country filter", () => {
 
       await expect.poll(() => countries).toContain("pt");
       // Judge Alpha is Spanish, Judge Beta Portuguese.
-      await expect(page.getByText("Judge Alpha", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Judge Alpha", { exact: true })).toHaveCount(
+        0,
+      );
       await expect(page.getByText("Judge Beta", { exact: true })).toBeVisible();
     },
   );

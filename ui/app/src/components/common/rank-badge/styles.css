@@ -1,7 +1,7 @@
 .rank-badge__content {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    font-size: var(--unit-1);
-    font-weight: var(--font-weight-bold);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--unit-1);
+  font-weight: var(--font-weight-bold);
 }

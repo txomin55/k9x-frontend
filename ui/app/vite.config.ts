@@ -2,7 +2,6 @@ import { defineConfig, loadEnv } from "vite";
 import { nitroV2Plugin as nitro } from "@solidjs/vite-plugin-nitro-2";
 import { solidStart } from "@solidjs/start/config";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import eslint from "vite-plugin-eslint";
 import path from "node:path";
 import commonjs from "vite-plugin-commonjs";
 import { fileURLToPath } from "node:url";
@@ -32,7 +31,6 @@ export default defineConfig(({ mode }) => {
           crawlLinks: false,
         },
       }),
-      eslint({ include: "src/**/*.+(ts|tsx)" }),
       commonjs(),
     ],
     resolve: {
@@ -51,14 +49,7 @@ export default defineConfig(({ mode }) => {
       assetsInlineLimit: (filePath: string) =>
         filePath.includes("assets/breadcrumb-info/") ? false : undefined,
       rollupOptions: {
-        external: [
-          "*jest*",
-          "tests",
-          "*.test.*",
-          "cypress*",
-          "coverage*",
-          ".eslint*",
-        ],
+        external: ["*jest*", "tests", "*.test.*", "cypress*", "coverage*"],
       },
     },
   };

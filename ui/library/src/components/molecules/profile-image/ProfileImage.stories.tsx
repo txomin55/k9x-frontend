@@ -9,7 +9,8 @@ const meta = {
     alt: { control: "text" },
     fallback: { control: "text" },
   },
-  render: (args: ProfileImageProps) => renderSolid(() => <ProfileImage {...args} />),
+  render: (args: ProfileImageProps) =>
+    renderSolid(() => <ProfileImage {...args} />),
 };
 
 export default meta;

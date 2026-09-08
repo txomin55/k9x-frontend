@@ -13,9 +13,7 @@ describe("AtomNumberInput", () => {
   });
 
   test("renders the default numeric value", () => {
-    const { getByRole } = render(() => (
-      <AtomNumberInput defaultValue={4} />
-    ));
+    const { getByRole } = render(() => <AtomNumberInput defaultValue={4} />);
 
     expect(getByRole("spinbutton")).toHaveValue("4");
   });

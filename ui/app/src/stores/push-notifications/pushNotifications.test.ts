@@ -30,7 +30,11 @@ vi.mock("@/stores/toast/toast", () => ({
 }));
 
 const SUBSCRIPTION = { endpoint: "https://fcm/endpoint" };
-const PAYLOAD = { auth: "auth", endpoint: SUBSCRIPTION.endpoint, p256dh: "key" };
+const PAYLOAD = {
+  auth: "auth",
+  endpoint: SUBSCRIPTION.endpoint,
+  p256dh: "key",
+};
 
 const importStore = async () => {
   vi.resetModules();
@@ -124,8 +128,8 @@ describe("togglePushNotifications", () => {
     await togglePushNotifications(false).catch(() => {});
 
     expect(pushNotificationsEnabled()).toBe(false);
-    expect(globalThis.localStorage.getItem("k9x_push_notifications_enabled")).toBe(
-      "false",
-    );
+    expect(
+      globalThis.localStorage.getItem("k9x_push_notifications_enabled"),
+    ).toBe("false");
   });
 });

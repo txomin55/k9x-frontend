@@ -40,7 +40,9 @@ const openList = async (page: Page) => {
 /** How much the page around the list scrolls: the list has the only scrollbar, so this must stay 0. */
 const pageOverflow = (page: Page) =>
   page.evaluate(() => {
-    const content = document.querySelector(".app-layout__content") as HTMLElement;
+    const content = document.querySelector(
+      ".app-layout__content",
+    ) as HTMLElement;
     return content.scrollHeight - content.clientHeight;
   });
 
@@ -52,9 +54,7 @@ competitorTest.describe("My dogs - list layout", () => {
       .locator(".virtual-card-grid .card")
       .evaluateAll((cards) => [
         ...new Set(
-          cards.map((card) =>
-            Math.round(card.getBoundingClientRect().height),
-          ),
+          cards.map((card) => Math.round(card.getBoundingClientRect().height)),
         ),
       ]);
 
@@ -103,11 +103,9 @@ competitorTest.describe("My dogs - list layout", () => {
           );
 
       const before = await columnWidths();
-      await page
-        .locator(".atom-table__scroller")
-        .evaluate((scroller) => {
-          scroller.scrollTop = scroller.scrollHeight;
-        });
+      await page.locator(".atom-table__scroller").evaluate((scroller) => {
+        scroller.scrollTop = scroller.scrollHeight;
+      });
       await expect.poll(columnWidths).toEqual(before);
     },
   );

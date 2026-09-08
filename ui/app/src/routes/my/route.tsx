@@ -1,7 +1,11 @@
 import { createFileRoute, Navigate, Outlet } from "@tanstack/solid-router";
 import { Show } from "solid-js";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
-import { hasAccessToken, useAuthLoading, useAuthUser } from "@/stores/auth/auth";
+import {
+  hasAccessToken,
+  useAuthLoading,
+  useAuthUser,
+} from "@/stores/auth/auth";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 
 export const Route = createFileRoute("/my")({

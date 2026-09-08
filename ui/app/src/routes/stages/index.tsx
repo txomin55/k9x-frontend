@@ -344,9 +344,7 @@ function StagesTableView(props: { onEnroll: EnrollHandler }) {
           <div class="stages-table__name-cell">
             <div class="stages-table__name-row">
               {/* Marks read as one token before the name: `*` rankings, `*` extracted, `**` both. */}
-              <Show
-                when={stage.includesRankings || Boolean(stage.extraction)}
-              >
+              <Show when={stage.includesRankings || Boolean(stage.extraction)}>
                 <span class="stages-table__marks">
                   <Show when={stage.includesRankings}>
                     <span title={i18n.t("STAGES.STAGE_CARD.INCLUDES_RANKINGS")}>

@@ -1,4 +1,7 @@
-import type { EventDetailResponseDTO, EventEditorDraft } from "@/services/secured/event-crud/eventCrud.types";
+import type {
+  EventDetailResponseDTO,
+  EventEditorDraft,
+} from "@/services/secured/event-crud/eventCrud.types";
 import { SCORE_CALCULATION } from "@/services/secured/event-crud/eventCrud.types";
 import { oneWeekBefore, oneWeekFromNow } from "@/utils/date";
 

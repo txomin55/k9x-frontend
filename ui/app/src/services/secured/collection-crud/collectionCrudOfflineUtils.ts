@@ -1,33 +1,37 @@
 import {
   getPersistedQuerySnapshot,
   removeQuerySnapshot,
-  saveQuerySnapshot
+  saveQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import {
   COLLECTIONS_SNAPSHOT_ID,
   getCollectionByIdQueryKey,
-  getCollectionSnapshotId
+  getCollectionSnapshotId,
 } from "@/services/secured/collection-crud/collectionCrudConstants";
-import {
+import type {
   CollectionResponseDTO,
   CollectionRollbackPayload,
-  CollectionsResponseDTO
+  CollectionsResponseDTO,
 } from "@/services/secured/collection-crud/collectionCrud.types";
 import { queryClient } from "@/utils/http/query-client";
-import { type PendingTask, type PendingTaskMethod } from "@/utils/local-first/pending_tasks/pendingTasksStore";
+import type {
+  PendingTask,
+  PendingTaskMethod,
+} from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   type PendingTaskHandler,
-  registerPendingTaskHandler
+  registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import {
   mergeCollectionByIdWithDraft,
   replaceCollectionByIdDraft,
-  upsertCollectionByIdDraft
+  upsertCollectionByIdDraft,
 } from "@/services/secured/collection-crud/collectionsDrafStore";
 import { createCommitEntityMutation } from "@/services/secured/crudOfflineShared";
 
-export const saveCollectionsSnapshot = (collections: CollectionsResponseDTO[]) =>
-  saveQuerySnapshot(COLLECTIONS_SNAPSHOT_ID, collections);
+export const saveCollectionsSnapshot = (
+  collections: CollectionsResponseDTO[],
+) => saveQuerySnapshot(COLLECTIONS_SNAPSHOT_ID, collections);
 
 export const saveCollectionSnapshot = (
   id: string,
@@ -35,7 +39,9 @@ export const saveCollectionSnapshot = (
 ) => saveQuerySnapshot(getCollectionSnapshotId(id), collection);
 
 const getBaseCollectionByIdFromCache = (id: string) =>
-  queryClient.getQueryData<CollectionResponseDTO>(getCollectionByIdQueryKey(id));
+  queryClient.getQueryData<CollectionResponseDTO>(
+    getCollectionByIdQueryKey(id),
+  );
 
 export const getVisibleCollectionById = (id: string) =>
   mergeCollectionByIdWithDraft(id, getBaseCollectionByIdFromCache(id));

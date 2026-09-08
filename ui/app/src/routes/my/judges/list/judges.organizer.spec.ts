@@ -9,7 +9,9 @@ organizerTest.describe("My judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupJudgesCrud(page);
       await page.goto("/my/judges/list");
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "POST", urlIncludes: "/secured/judges" },
@@ -37,7 +39,9 @@ organizerTest.describe("My judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupJudgesCrud(page);
       await page.goto("/my/judges/list");
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "PUT", urlIncludes: "/secured/judges/" },
@@ -66,7 +70,9 @@ organizerTest.describe("My judges (write) - organizer", () => {
     async ({ page, context }) => {
       await setupJudgesCrud(page);
       await page.goto("/my/judges/list");
-      await expect(page.getByText("Judge Alpha", { exact: true })).toBeVisible();
+      await expect(
+        page.getByText("Judge Alpha", { exact: true }),
+      ).toBeVisible();
 
       await verifyLocalFirstWrite(page, context, {
         mutation: { method: "DELETE", urlIncludes: "/secured/judges/" },

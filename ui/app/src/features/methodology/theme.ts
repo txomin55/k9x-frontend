@@ -23,11 +23,10 @@ const parseColor = (value: string): [number, number, number] => {
     ) as [number, number, number];
   }
 
-  return value.slice(value.indexOf("(") + 1, value.indexOf(")")).split(",").map(Number) as [
-    number,
-    number,
-    number,
-  ];
+  return value
+    .slice(value.indexOf("(") + 1, value.indexOf(")"))
+    .split(",")
+    .map(Number) as [number, number, number];
 };
 
 /** How far the darkest category travels from the badge fill towards the badge ink. */

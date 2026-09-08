@@ -59,7 +59,12 @@ export const defaultCollectionDetail: CollectionResponseDTO = {
 
 const applyScore = (
   detail: CollectionResponseDTO,
-  { dogIdentification, exerciseId, judgeId, score }: UpdateCollectionScoreRequestDTO,
+  {
+    dogIdentification,
+    exerciseId,
+    judgeId,
+    score,
+  }: UpdateCollectionScoreRequestDTO,
 ) => {
   const target = detail.obdx.competitors
     .filter((entry) => entry.competitor.dog.id === dogIdentification)
@@ -90,7 +95,9 @@ const applyNotCompeting = (
  * persists into the detail so a post-flush reload reflects it.
  */
 export const setupCollectionNotCompeting = (page: Page) => {
-  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+  const detail: CollectionResponseDTO = structuredClone(
+    defaultCollectionDetail,
+  );
 
   return Promise.all([
     setRouteResponses(page, {
@@ -121,7 +128,9 @@ export const setupCollectionNotCompeting = (page: Page) => {
  * acknowledges the request so it flushes on reconnect.
  */
 export const setupCollectionYellowCard = (page: Page) => {
-  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+  const detail: CollectionResponseDTO = structuredClone(
+    defaultCollectionDetail,
+  );
 
   return Promise.all([
     setRouteResponses(page, {
@@ -154,7 +163,9 @@ export const setupCollectionYellowCard = (page: Page) => {
  * acknowledges the request so it flushes on reconnect.
  */
 export const setupCollectionRedCard = (page: Page) => {
-  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+  const detail: CollectionResponseDTO = structuredClone(
+    defaultCollectionDetail,
+  );
 
   return Promise.all([
     setRouteResponses(page, {
@@ -186,7 +197,9 @@ export const setupCollectionRedCard = (page: Page) => {
  * post-flush reload reflects it. The detail returns a single judge.
  */
 export const setupCollectionScoring = (page: Page) => {
-  const detail: CollectionResponseDTO = structuredClone(defaultCollectionDetail);
+  const detail: CollectionResponseDTO = structuredClone(
+    defaultCollectionDetail,
+  );
 
   return Promise.all([
     setRouteResponses(page, {

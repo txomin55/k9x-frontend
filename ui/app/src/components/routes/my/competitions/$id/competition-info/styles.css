@@ -1,25 +1,24 @@
 .competition-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-    container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  container-type: inline-size;
 }
 
 .competition-info__view {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
 }
 
 .competition-info__view--status {
-    display: flex;
-    gap: var(--unit-1);
-    align-items: center;
+  display: flex;
+  gap: var(--unit-1);
+  align-items: center;
 }
 
 .competition-info__view--title {
-    display: flex;
-    gap: var(--unit-1);
-    align-items: center;
+  display: flex;
+  gap: var(--unit-1);
+  align-items: center;
 }
-

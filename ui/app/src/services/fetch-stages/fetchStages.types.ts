@@ -1,4 +1,4 @@
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 /**
  * Where the evidence of an extracted competition was taken from, and when it was collected. The timestamp is

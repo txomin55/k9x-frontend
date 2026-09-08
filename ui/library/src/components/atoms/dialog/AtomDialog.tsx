@@ -47,9 +47,7 @@ export default function AtomDialog(props: AtomDialogProps) {
               {props.description}
             </Dialog.Description>
           </Show>
-          <div class="atom-dialog__body">
-            {props.content as JSX.Element}
-          </div>
+          <div class="atom-dialog__body">{props.content as JSX.Element}</div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

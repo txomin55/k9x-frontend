@@ -1,5 +1,5 @@
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
-import { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { EventCompetitorResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 
 export interface CollectionsResponseDTO {
   competitionName: string;

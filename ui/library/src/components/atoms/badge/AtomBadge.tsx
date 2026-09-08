@@ -1,5 +1,5 @@
 import { Badge } from "@kobalte/core/badge";
-import { JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import { getTagColorStyle } from "@lib/utils/tagColor";
 import "./styles.css";
 

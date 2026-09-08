@@ -22,9 +22,9 @@ import {
   useCompetition,
   useCompetitions,
 } from "@/services/secured/competition-crud/competitionCrud";
-import {
-  type CompetitionResponseDTO,
-  type UpdateCompetitionRequestDTO,
+import type {
+  CompetitionResponseDTO,
+  UpdateCompetitionRequestDTO,
 } from "@/services/secured/competition-crud/competitionCrud.types";
 import {
   toApiStage,
@@ -50,7 +50,7 @@ import StageEditorForm from "@/components/routes/my/competitions/$id/stages-sect
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
 import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
 import { useI18n } from "@/stores/i18n/i18n";
-import {
+import type {
   StageEditorModel,
   UpdateStageRequestDTO,
 } from "@/services/secured/stage-crud/stageCrud.types";
@@ -175,19 +175,19 @@ function CompetitionDetailContent(props: { id: string }) {
             }
           >
             <CompetitionDetailBody
-            competition={competition}
-            onDelete={() => {
-              const currentCompetition = competition();
+              competition={competition}
+              onDelete={() => {
+                const currentCompetition = competition();
 
-              if (!currentCompetition) return;
+                if (!currentCompetition) return;
 
-              deleteCompetition(currentCompetition.id);
-              void navigate({
-                to: "/my/competitions/list",
-              });
-            }}
-            onUpdate={updateCompetition}
-          />
+                deleteCompetition(currentCompetition.id);
+                void navigate({
+                  to: "/my/competitions/list",
+                });
+              }}
+              onUpdate={updateCompetition}
+            />
           </Show>
         </Show>
       </Suspense>

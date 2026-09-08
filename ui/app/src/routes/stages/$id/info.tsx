@@ -1,10 +1,20 @@
-import {createFileRoute, useNavigate, useParams,} from "@tanstack/solid-router";
-import {enrollStageEvent} from "@/services/fetch-stages/stageEnroll";
-import {useStageById} from "@/services/fetch-stages/fetchStages";
-import {useOwnedDogs} from "@/services/secured/dog-crud/dogCrud";
-import {createMemo, createSignal, For, Index, Show, Suspense} from "solid-js";
-import {formatDateLabel, formatDateTime, toDateInputValue} from "@/utils/date";
-import AtomButton, {BUTTON_TYPES,} from "@lib/components/atoms/button/AtomButton";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/solid-router";
+import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
+import { useStageById } from "@/services/fetch-stages/fetchStages";
+import { useOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
+import { createMemo, createSignal, For, Index, Show, Suspense } from "solid-js";
+import {
+  formatDateLabel,
+  formatDateTime,
+  toDateInputValue,
+} from "@/utils/date";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Card from "@lib/components/molecules/card/Card";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
 import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
@@ -13,11 +23,11 @@ import AtomCheckbox from "@lib/components/atoms/checkbox/AtomCheckbox";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import EventRankingsLink from "@/components/routes/stages/event-rankings-link/EventRankingsLink";
-import type {AtomSelectOption} from "@lib/components/atoms/select/AtomSelect";
-import {useAuthUser} from "@/stores/auth/auth";
-import {startGoogleInteractiveLogin} from "@/utils/google-auth/googleAuth";
-import {AtomCombobox} from "@lib/components/atoms/combobox/AtomCombobox";
-import {useI18n} from "@/stores/i18n/i18n";
+import type { AtomSelectOption } from "@lib/components/atoms/select/AtomSelect";
+import { useAuthUser } from "@/stores/auth/auth";
+import { startGoogleInteractiveLogin } from "@/utils/google-auth/googleAuth";
+import { AtomCombobox } from "@lib/components/atoms/combobox/AtomCombobox";
+import { useI18n } from "@/stores/i18n/i18n";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import AwardBadges from "@/components/common/award-badges/AwardBadges";
@@ -25,11 +35,15 @@ import RankBadge from "@/components/common/rank-badge/RankBadge";
 import RichText from "@/components/common/rich-text/RichText";
 import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import ExtractionSourceBanner from "@/components/common/extraction-source-banner/ExtractionSourceBanner";
-import {useSearchParam} from "@/utils/search-params/useSearchParam";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
-import {isStageLive, STAGE_INFO_TAB_PARAM, STAGE_INFO_TABS} from "@/utils/stage";
-import {canSeeClassification} from "@/utils/event";
-import {isOffline} from "@/utils/local-first/localFirstPolicy";
+import {
+  isStageLive,
+  STAGE_INFO_TAB_PARAM,
+  STAGE_INFO_TABS,
+} from "@/utils/stage";
+import { canSeeClassification } from "@/utils/event";
+import { isOffline } from "@/utils/local-first/localFirstPolicy";
 import DisciplineIcon from "@/components/common/discipline-icon/DisciplineIcon";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import scoresIcon from "@/assets/miscelaneous/scores.svg";
@@ -140,9 +154,7 @@ function StageInfoPage() {
   });
   const metaDescription = createMemo(() => {
     const name = stageInfo.data?.competitionName;
-    return name
-      ? i18n.t("STAGES.INFO.META_DESCRIPTION", { name })
-      : undefined;
+    return name ? i18n.t("STAGES.INFO.META_DESCRIPTION", { name }) : undefined;
   });
   const dogsQuery = useOwnedDogs({
     refetchOnMount: !isOffline(),
@@ -399,7 +411,9 @@ function StageInfoPage() {
                           {i18n.t("STAGES.INFO.NOTIFICATION_AFFECTS")}
                         </span>
                         <div class="stage-info__notification--event-list">
-                          <For each={affectedEventNames(notification().eventIds)}>
+                          <For
+                            each={affectedEventNames(notification().eventIds)}
+                          >
                             {(eventName) => (
                               <span class="stage-info__notification--event text-caption-sm">
                                 {eventName}
@@ -432,10 +446,7 @@ function StageInfoPage() {
   return (
     <div class="stage-info">
       <PageSeo title={metaTitle()} description={metaDescription()} />
-      <Show
-        when={stageInfo.data}
-        fallback={<StageInfoSkeleton />}
-      >
+      <Show when={stageInfo.data} fallback={<StageInfoSkeleton />}>
         {(stage) => (
           <>
             <div class="stage-info__title">
@@ -474,7 +485,8 @@ function StageInfoPage() {
                     placeholder={i18n.t("STAGES.INFO.SELECT_A_DOG")}
                     value={
                       dogOptions().find(
-                        (option) => option.value === enrollDraft().dogIdentification,
+                        (option) =>
+                          option.value === enrollDraft().dogIdentification,
                       ) ?? null
                     }
                   >
@@ -491,7 +503,8 @@ function StageInfoPage() {
                   <Show
                     when={
                       selectedDog(enrollDraft().dogIdentification) &&
-                      selectedDog(enrollDraft().dogIdentification)?.sex !== "MALE"
+                      selectedDog(enrollDraft().dogIdentification)?.sex !==
+                        "MALE"
                     }
                   >
                     <AtomCheckbox

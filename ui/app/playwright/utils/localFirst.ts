@@ -41,7 +41,8 @@ const matches = (
   request: { method: () => string; url: () => string },
   match: RequestMatch,
 ) =>
-  request.method() === match.method && request.url().includes(match.urlIncludes);
+  request.method() === match.method &&
+  request.url().includes(match.urlIncludes);
 
 /** Records the URLs of requests matching a method + url substring as they fire. */
 export const trackRequests = (page: Page, match: RequestMatch) => {

@@ -1,18 +1,18 @@
 .obdx-collection-detail__competitor {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: var(--unit-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: var(--unit-2);
 }
 
 .obdx-collection-detail__names {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
 }
 
 .obdx-collection-detail__discipline {
-    display: flex;
-    gap: var(--unit-05);
-    align-items: center;
+  display: flex;
+  gap: var(--unit-05);
+  align-items: center;
 }

@@ -1,4 +1,11 @@
-import { createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js";
+import {
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+  type JSX,
+} from "solid-js";
 import CircleButton from "@lib/components/molecules/circle-button/CircleButton";
 import "./styles.css";
 

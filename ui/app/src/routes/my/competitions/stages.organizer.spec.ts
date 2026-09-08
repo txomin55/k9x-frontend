@@ -19,16 +19,15 @@ organizerTest.describe("Competition stages (write) - organizer", () => {
         entityType: "stage",
         performMutation: async () => {
           await openEditMode(page);
-          await page
-            .getByRole("button", { name: "Add trial" })
-            .first()
-            .click();
+          await page.getByRole("button", { name: "Add trial" }).first().click();
           const dialog = page.getByRole("dialog");
           await dialog.getByLabel("Trial title").fill("Day One");
           await dialog.getByRole("button", { name: "Save" }).click();
         },
         assertOptimistic: async () => {
-          await expect(page.getByText("Day One", { exact: true })).toBeVisible();
+          await expect(
+            page.getByText("Day One", { exact: true }),
+          ).toBeVisible();
         },
       });
     },

@@ -39,7 +39,10 @@ export default function BreadcrumbInfoSlides(props: BreadcrumbInfoSlidesProps) {
             </Show>
             <For each={block.keys}>
               {(key) => (
-                <p class="breadcrumb-info-slide__text" innerHTML={i18n.t(key)} />
+                <p
+                  class="breadcrumb-info-slide__text"
+                  innerHTML={i18n.t(key)}
+                />
               )}
             </For>
           </>

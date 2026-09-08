@@ -10,7 +10,7 @@ import {
 import AtomNumberInput from "library/src/components/atoms/number-input/AtomNumberInput";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { createMemo, createSignal, Show } from "solid-js";
-import { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
+import type { EventCompetitorDetail } from "@/services/secured/event-crud/eventCrud.types";
 import { useNavigate } from "@tanstack/solid-router";
 import { useI18n } from "@/stores/i18n/i18n";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -162,29 +162,32 @@ export default function CompetitorEditorForm(
    * search, and handing the box a new object for the same dog makes it write the label back over
    * whatever is being typed.
    */
-  const selectedDogOption = createMemo<AtomComboboxOption | null>((previous) => {
-    const dogIdentification = props.competitorDialogDraft?.dogIdentification;
-    if (!dogIdentification) return null;
+  const selectedDogOption = createMemo<AtomComboboxOption | null>(
+    (previous) => {
+      const dogIdentification = props.competitorDialogDraft?.dogIdentification;
+      if (!dogIdentification) return null;
 
-    const picked = pickedDogOption();
-    if (picked?.value === dogIdentification) return picked;
+      const picked = pickedDogOption();
+      if (picked?.value === dogIdentification) return picked;
 
-    const dog = selectedDog(dogIdentification);
-    const listed = props.dogOptions.find(
-      (option) => option.value === dogIdentification,
-    );
-    const option = listed ?? {
-      label: dog?.handler
-        ? `${dog.name} (${dog.handler})`
-        : (dog?.name ?? dogIdentification),
-      value: dogIdentification,
-      caption: dogIdentification,
-    };
+      const dog = selectedDog(dogIdentification);
+      const listed = props.dogOptions.find(
+        (option) => option.value === dogIdentification,
+      );
+      const option = listed ?? {
+        label: dog?.handler
+          ? `${dog.name} (${dog.handler})`
+          : (dog?.name ?? dogIdentification),
+        value: dogIdentification,
+        caption: dogIdentification,
+      };
 
-    return previous?.value === option.value && previous.label === option.label
-      ? previous
-      : option;
-  }, null);
+      return previous?.value === option.value && previous.label === option.label
+        ? previous
+        : option;
+    },
+    null,
+  );
 
   return (
     <Show when={props.competitorDialogDraft}>

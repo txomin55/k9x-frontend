@@ -31,7 +31,7 @@ const ITEM_HEIGHT = 44;
 const OVERSCAN = 5;
 
 export default function AtomSelect(props: AtomSelectProps) {
-  let listboxRef: HTMLUListElement | null = null;
+  const listboxRef: HTMLUListElement | null = null;
 
   const virtualizer = createVirtualizer({
     get count() {

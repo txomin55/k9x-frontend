@@ -717,7 +717,7 @@ function CompetitionObdxEventDetailBody(props: {
   const createCompetitor = () => {
     const draft = competitorDialogDraft();
 
-    if (!draft || !draft.dogIdentification) return;
+    if (!draft?.dogIdentification) return;
 
     const normalizedDraft = {
       ...draft,
@@ -745,7 +745,7 @@ function CompetitionObdxEventDetailBody(props: {
     if (!isCreatingCompetitor()) {
       const draft = competitorDialogDraft();
 
-      if (!draft || !draft.dogIdentification) return;
+      if (!draft?.dogIdentification) return;
 
       const normalizedDraft = {
         ...draft,
@@ -1008,17 +1008,17 @@ function CompetitionObdxEventDetailBody(props: {
             </Show>
           </div>
           <EventJudgesSection
-          editingJudgeId={editingJudgeId()}
-          isCreatingJudge={isCreatingJudge()}
-          isEditing={canEditDetails()}
-          menuOpen={menuOpen()}
-          judgeDialogDraft={judgeDialogDraft()}
-          judges={draftEvent().judges}
-          onAddJudge={handleAddJudge}
-          onDeleteJudge={handleDeleteJudge}
-          onJudgeDraftChange={setJudgeDialogDraft}
-          onOpenJudgeEditor={handleOpenJudgeEditor}
-          onCreateJudge={createJudge}
+            editingJudgeId={editingJudgeId()}
+            isCreatingJudge={isCreatingJudge()}
+            isEditing={canEditDetails()}
+            menuOpen={menuOpen()}
+            judgeDialogDraft={judgeDialogDraft()}
+            judges={draftEvent().judges}
+            onAddJudge={handleAddJudge}
+            onDeleteJudge={handleDeleteJudge}
+            onJudgeDraftChange={setJudgeDialogDraft}
+            onOpenJudgeEditor={handleOpenJudgeEditor}
+            onCreateJudge={createJudge}
             onCommitJudge={saveJudgeEditor}
           />
         </>
@@ -1244,10 +1244,15 @@ function CompetitionObdxEventDetailBody(props: {
           >
             <AtomInput
               label={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER")}
-              description={i18n.t("MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP")}
+              description={i18n.t(
+                "MY.COMPETITIONS.EVENT_DETAIL.COMMISSIONER_HELP",
+              )}
               value={draftEvent().commissioner ?? ""}
               onChange={(value) =>
-                updateDraftEvent((current) => ({ ...current, commissioner: value }))
+                updateDraftEvent((current) => ({
+                  ...current,
+                  commissioner: value,
+                }))
               }
               onBlur={() => persistEventEdits(draftEvent())}
             />

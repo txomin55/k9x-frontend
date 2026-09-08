@@ -1,6 +1,6 @@
 import {
   OFFLINE_PRELOAD_MESSAGE,
-  OFFLINE_PRELOAD_RESPONSE_MESSAGE
+  OFFLINE_PRELOAD_RESPONSE_MESSAGE,
 } from "@/utils/service-worker/offline_bundle/offlinePreloadConstants";
 
 declare const __APP_SHELL_CACHE_VERSION__: string | undefined;
@@ -128,7 +128,10 @@ const runWithConcurrencyLimit = async (items, limit, worker) => {
     }
 
     try {
-      settled[index] = { status: "fulfilled", value: await worker(items[index]) };
+      settled[index] = {
+        status: "fulfilled",
+        value: await worker(items[index]),
+      };
     } catch (reason) {
       settled[index] = { status: "rejected", reason };
     }
@@ -165,10 +168,8 @@ export const registerAppShellCache = (scope) => {
     const urls = Array.isArray(event.data.urls) ? event.data.urls : [];
 
     event.waitUntil(
-      runWithConcurrencyLimit(
-        urls,
-        OFFLINE_PRELOAD_CONCURRENCY,
-        (url) => cacheOfflineUrl(scope, url, APP_SHELL_CACHE),
+      runWithConcurrencyLimit(urls, OFFLINE_PRELOAD_CONCURRENCY, (url) =>
+        cacheOfflineUrl(scope, url, APP_SHELL_CACHE),
       ).then((results) => {
         const failedUrls = results.flatMap((result, index) =>
           result.status === "rejected" ? [urls[index]] : [],

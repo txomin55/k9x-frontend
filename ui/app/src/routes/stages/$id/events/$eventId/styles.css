@@ -1,294 +1,293 @@
 .classification__header {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
 }
 
 .classification__header--title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--unit-1);
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--unit-1);
+  width: 100%;
 }
 
 .classification__header--info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .classification__last-updated {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-05);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-05);
 }
 
 .classification__header--title > .classification__last-updated {
-    margin-left: auto;
-    flex: 0 0 auto;
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .classification__header--info > div {
-    display: flex;
-    gap: var(--unit-1);
-    align-items: center;
+  display: flex;
+  gap: var(--unit-1);
+  align-items: center;
 }
 
 .classification__score-calculation,
 .classification__judges {
-    display: flex;
-    gap: var(--unit-1);
-    align-items: center;
+  display: flex;
+  gap: var(--unit-1);
+  align-items: center;
 }
 
 .classification__header--mobile {
-    gap: var(--unit-1);
+  gap: var(--unit-1);
 }
 
 .classification__header--mobile-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--unit-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--unit-1);
 }
 
 .classification__header--mobile-top > .classification__last-updated {
-    margin-left: auto;
+  margin-left: auto;
 }
 
 .classification__header--mobile-top .rotate-device-hint {
-    width: var(--unit-3);
-    height: var(--unit-3);
+  width: var(--unit-3);
+  height: var(--unit-3);
 }
 
 .classification__mobile-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-    padding-top: var(--unit-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  padding-top: var(--unit-1);
 }
 
 .classification__discipline {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
 }
 
 .classification__config-row {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
-    flex: 1 1 auto;
-    min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .classification__config-row > .event-rankings-link {
-    margin-top: 0;
-    margin-left: auto;
+  margin-top: 0;
+  margin-left: auto;
 }
 
 .classification__mobile-collapsible-row {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
-    padding-bottom: var(--unit-1);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  padding-bottom: var(--unit-1);
 }
 
 .classification__mobile-collapsible-row > .atom-collapsible {
-    flex: 1 1 auto;
-    min-width: 0;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .classification {
-    container: classification-page / inline-size;
+  container: classification-page / inline-size;
 }
 
 /* The classification owns the whole viewport: only the results list scrolls, the page itself never does. */
 .app-layout__content:has(> .app-shell > .classification) {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 .app-shell:has(> .classification) {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .page.classification {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
 
-    flex: 1 1 auto;
-    min-height: 0;
-    padding-bottom: 0;
-    overflow: hidden;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
 .classification > .atom-segmented-control {
-    flex: 1 1 auto;
-    min-height: 0;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .obdx-clf-table {
-    container-type: inline-size;
-    flex: 1 1 auto;
-    min-height: 0;
+  container-type: inline-size;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .obdx-clf-table__dog {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
 }
 
 .obdx-clf-table td:has(.obdx-clf-table__position) {
-    vertical-align: top;
+  vertical-align: top;
 }
 
 .obdx-clf-table__position {
-    display: flex;
-    gap: var(--unit-05);
-    top: 0;
+  display: flex;
+  gap: var(--unit-05);
+  top: 0;
 }
 
 .obdx-clf-table__dog-name {
-    display: flex;
-    gap: var(--unit-05);
-    align-items: flex-start;
+  display: flex;
+  gap: var(--unit-05);
+  align-items: flex-start;
 }
 
 .obdx-clf-table__scores {
-    display: none;
+  display: none;
 }
 
 .obdx-clf__qualification {
-    margin-left: var(--unit-05);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-muted);
+  margin-left: var(--unit-05);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-muted);
 }
 
 @container classification-page (min-width: 640px) {
-    .obdx-clf-table__scores {
-        display: block;
-    }
+  .obdx-clf-table__scores {
+    display: block;
+  }
 }
 
 .obdx-clf-table__expander {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 
-    border: none;
-    background: transparent;
+  border: none;
+  background: transparent;
 
-    color: var(--text-secondary);
+  color: var(--text-secondary);
 
-    font: inherit;
-    font-size: var(--unit-2);
-    line-height: 1;
-    cursor: pointer;
+  font: inherit;
+  font-size: var(--unit-2);
+  line-height: 1;
+  cursor: pointer;
 
-    transition: color 120ms ease;
+  transition: color 120ms ease;
 }
 
 .obdx-clf-table__expander:hover {
-    color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 .obdx-clf-table .atom-table__header:nth-child(5),
 .obdx-clf-table .atom-table__cell:nth-child(5),
 .obdx-clf-table .atom-table__header:nth-child(6),
 .obdx-clf-table .atom-table__cell:nth-child(6) {
-    width: var(--unit-4);
-    padding-left: 0;
-    padding-right: 0;
-    text-align: center;
+  width: var(--unit-4);
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
 }
 
 @media (max-width: 900px) {
-    .obdx-clf-table .atom-table__header:nth-child(3),
-    .obdx-clf-table .atom-table__cell:nth-child(3) {
-        display: none;
-    }
+  .obdx-clf-table .atom-table__header:nth-child(3),
+  .obdx-clf-table .atom-table__cell:nth-child(3) {
+    display: none;
+  }
 }
 
 .classification__error {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--unit-1);
-    padding: var(--unit-2) 0;
-    color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--unit-1);
+  padding: var(--unit-2) 0;
+  color: var(--text-secondary);
 }
 
 .obdx-clf__list > .card,
 .obdx-clf__pinned > .card {
-    max-width: none;
+  max-width: none;
 }
 
 .obdx-clf__list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
-    padding-top: var(--unit-1);
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  padding-top: var(--unit-1);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* Room for the floating segmented control pill so it never covers the last card. */
 @media (max-width: 767px) {
-    .obdx-clf__list {
-        padding-bottom: var(--unit-6);
-    }
+  .obdx-clf__list {
+    padding-bottom: var(--unit-6);
+  }
 }
 
 @container classification-page (max-width: 400px) {
-    .obdx-clf__list .obdx-clf__squares-grid,
-    .obdx-clf__pinned .obdx-clf__squares-grid {
-        --obdx-chip-square-size: var(--unit-4);
-    }
+  .obdx-clf__list .obdx-clf__squares-grid,
+  .obdx-clf__pinned .obdx-clf__squares-grid {
+    --obdx-chip-square-size: var(--unit-4);
+  }
 
-    .obdx-clf__list .obdx-clf__chip--square,
-    .obdx-clf__pinned .obdx-clf__chip--square {
-        height: var(--unit-3);
-    }
+  .obdx-clf__list .obdx-clf__chip--square,
+  .obdx-clf__pinned .obdx-clf__chip--square {
+    height: var(--unit-3);
+  }
 }
 
 .obdx-clf__pinned {
-    flex: 0 1 auto;
-    min-height: 0;
-    overflow-y: auto;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
 
-    padding-top: var(--unit-1);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--unit-1);
+  padding-top: var(--unit-1);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--unit-1);
 
-    margin-bottom: var(--unit-2);
-    padding-bottom: var(--unit-1);
+  margin-bottom: var(--unit-2);
+  padding-bottom: var(--unit-1);
 
-    border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
-
 
 /* Notice shown in place of the results when the picked ranking is only readable with a session, same box as
    the informative banners in the collection detail. */
 .event-rankings__banner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: var(--unit-2);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--primary-border);
-    background: var(--primary-soft);
-    color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--unit-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--primary-border);
+  background: var(--primary-soft);
+  color: var(--primary);
 }

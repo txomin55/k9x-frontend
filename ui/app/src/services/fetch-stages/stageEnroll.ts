@@ -129,8 +129,9 @@ const applyOptimisticEnroll = async (
     await saveQuerySnapshot(getStageSnapshotId(stageId), nextStage);
   }
 
-  const previousStages =
-    queryClient.getQueryData<StageSummaryResponseDTO[]>(getStagesQueryKey());
+  const previousStages = queryClient.getQueryData<StageSummaryResponseDTO[]>(
+    getStagesQueryKey(),
+  );
 
   if (previousStages) {
     const nextStages = buildNextStagesSummary(

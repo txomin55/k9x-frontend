@@ -1,7 +1,9 @@
 import { createSignal } from "solid-js";
 import type { JudgeResponseDTO } from "./judgeCrud.types";
 
-const [judgeDrafts, setJudgeDrafts] = createSignal<Record<string, JudgeResponseDTO>>({});
+const [judgeDrafts, setJudgeDrafts] = createSignal<
+  Record<string, JudgeResponseDTO>
+>({});
 const [removedJudgeIds, setRemovedJudgeIds] = createSignal<string[]>([]);
 
 const removeId = (ids: string[], id: string) =>

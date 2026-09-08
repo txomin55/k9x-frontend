@@ -39,7 +39,9 @@ const fillGoogleLogin = async (
   { email, password }: Credentials,
 ) => {
   const clickNext = async () => {
-    const byId = page.locator("#identifierNext button, #passwordNext button").first();
+    const byId = page
+      .locator("#identifierNext button, #passwordNext button")
+      .first();
     if (await byId.isVisible().catch(() => false)) {
       await byId.click();
       return;
@@ -51,9 +53,7 @@ const fillGoogleLogin = async (
   };
 
   // Email step — id varies across Google layouts (#identifierId vs plain input).
-  const emailInput = page
-    .locator('#identifierId, input[type="email"]')
-    .first();
+  const emailInput = page.locator('#identifierId, input[type="email"]').first();
   await emailInput.waitFor({ state: "visible", timeout: 30_000 });
   await emailInput.fill(email);
   await clickNext();
@@ -77,14 +77,18 @@ const fillGoogleLogin = async (
 };
 
 const seedToken = (): string | null => {
-  if (process.env.SMOKE_ACCESS_TOKEN) return process.env.SMOKE_ACCESS_TOKEN.trim();
-  if (fs.existsSync(TOKEN_FILE)) return fs.readFileSync(TOKEN_FILE, "utf-8").trim();
+  if (process.env.SMOKE_ACCESS_TOKEN)
+    return process.env.SMOKE_ACCESS_TOKEN.trim();
+  if (fs.existsSync(TOKEN_FILE))
+    return fs.readFileSync(TOKEN_FILE, "utf-8").trim();
   return null;
 };
 
 const seedRefresh = (): string | null => {
-  if (process.env.SMOKE_REFRESH_TOKEN) return process.env.SMOKE_REFRESH_TOKEN.trim();
-  if (fs.existsSync(REFRESH_FILE)) return fs.readFileSync(REFRESH_FILE, "utf-8").trim();
+  if (process.env.SMOKE_REFRESH_TOKEN)
+    return process.env.SMOKE_REFRESH_TOKEN.trim();
+  if (fs.existsSync(REFRESH_FILE))
+    return fs.readFileSync(REFRESH_FILE, "utf-8").trim();
   return null;
 };
 
@@ -111,9 +115,7 @@ const disableWalkthrough = (
     WALKTHROUGH_DISABLED_KEY,
   );
 
-const persist = (
-  context: import("@playwright/test").BrowserContext,
-) => {
+const persist = (context: import("@playwright/test").BrowserContext) => {
   fs.mkdirSync(path.dirname(SMOKE_STATE_PATH), { recursive: true });
   return context.storageState({ path: SMOKE_STATE_PATH });
 };

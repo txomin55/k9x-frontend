@@ -1,4 +1,4 @@
-import {createAppStore} from "@/utils/store/createAppStore";
+import { createAppStore } from "@/utils/store/createAppStore";
 
 interface ToastState {
   message: string | null;

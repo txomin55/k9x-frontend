@@ -1,5 +1,5 @@
-import { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
-import { EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
+import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
+import type { EventDetailResponseDTO } from "@/services/secured/event-crud/eventCrud.types";
 import type { StageNotificationResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 
 export interface CreateStageRequestDTO {

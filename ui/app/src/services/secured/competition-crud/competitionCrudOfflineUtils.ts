@@ -6,9 +6,9 @@ import {
   type PendingTaskHandler,
   registerPendingTaskHandler,
 } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
-import {
-  type PendingTask,
-  type PendingTaskMethod,
+import type {
+  PendingTask,
+  PendingTaskMethod,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import {
   getPersistedQuerySnapshot,

@@ -49,7 +49,9 @@ const openDogPicker = async (page: Page) => {
   });
   await page.getByRole("button", { name: "Add competitor" }).click();
 
-  const dogBox = page.getByRole("dialog").getByRole("combobox", { name: "Dog" });
+  const dogBox = page
+    .getByRole("dialog")
+    .getByRole("combobox", { name: "Dog" });
   await dogBox.click();
   await expect(page.locator(".atom-combobox__listbox")).toBeVisible();
 
@@ -61,7 +63,10 @@ const trackDogRequests = (page: Page) => {
   const calls: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
-    if (url.pathname.endsWith("/secured/dogs") && !url.search.includes("owned")) {
+    if (
+      url.pathname.endsWith("/secured/dogs") &&
+      !url.search.includes("owned")
+    ) {
       calls.push(url.search);
     }
   });
@@ -80,11 +85,9 @@ organizerTest.describe("Event competitor dog picker - organizer", () => {
       expect(calls.every((call) => call.includes("page="))).toBe(true);
 
       calls.length = 0;
-      await page
-        .locator(".atom-combobox__listbox")
-        .evaluate((listbox) => {
-          listbox.scrollTop = listbox.scrollHeight;
-        });
+      await page.locator(".atom-combobox__listbox").evaluate((listbox) => {
+        listbox.scrollTop = listbox.scrollHeight;
+      });
 
       await expect.poll(() => calls).toContain("?page=1&size=50");
     },

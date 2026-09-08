@@ -26,9 +26,7 @@ organizerTest.describe("Event detail (write) - organizer", () => {
         entityType: "event",
         performMutation: async () => {
           await openEditMode(page);
-          await page
-            .getByLabel("Event title")
-            .fill("Detail Event Edited");
+          await page.getByLabel("Event title").fill("Detail Event Edited");
           // Commit on blur; the breadcrumb link reads the (optimistically
           // updated) event cache, so it reflects the edit without leaving edit mode.
           await page.getByLabel("Event title").blur();

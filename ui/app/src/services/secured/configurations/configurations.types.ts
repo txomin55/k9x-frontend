@@ -1,4 +1,4 @@
-import { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 
 export interface ConfigurationResponseDTO {
   id: string;

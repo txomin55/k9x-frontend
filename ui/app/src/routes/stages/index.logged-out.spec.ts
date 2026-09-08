@@ -12,23 +12,26 @@ loggedOutTest.describe("Trials list - logged out", () => {
     }
   });
 
-  loggedOutTest("switches between list, table and map views", async ({ page }) => {
-    const [stage] = defaultStages;
+  loggedOutTest(
+    "switches between list, table and map views",
+    async ({ page }) => {
+      const [stage] = defaultStages;
 
-    await page.goto(AppRoutePath.STAGES);
-    await expect(page.getByText(stage.name)).toBeVisible();
+      await page.goto(AppRoutePath.STAGES);
+      await expect(page.getByText(stage.name)).toBeVisible();
 
-    await page.getByText("Table", { exact: true }).click();
-    await expect(page.getByRole("radio", { name: "Table" })).toBeChecked();
-    await expect(page.getByRole("table")).toBeVisible();
-    await expect(
-      page.getByRole("columnheader", { name: "Name" }),
-    ).toBeVisible();
+      await page.getByText("Table", { exact: true }).click();
+      await expect(page.getByRole("radio", { name: "Table" })).toBeChecked();
+      await expect(page.getByRole("table")).toBeVisible();
+      await expect(
+        page.getByRole("columnheader", { name: "Name" }),
+      ).toBeVisible();
 
-    await page.getByText("Map", { exact: true }).click();
-    await expect(page.getByRole("radio", { name: "Map" })).toBeChecked();
-    await expect(page.getByRole("table")).toBeHidden();
-  });
+      await page.getByText("Map", { exact: true }).click();
+      await expect(page.getByRole("radio", { name: "Map" })).toBeChecked();
+      await expect(page.getByRole("table")).toBeHidden();
+    },
+  );
 
   loggedOutTest(
     "opens the enrolled competitors of an event from a trial",

@@ -5,15 +5,11 @@
   "files": [
     "vitest-setup.ts",
     "vitest.config.ts",
-    "tsconfig.json",
-    "eslint.config.cjs"
+    "tsconfig.json"
   ],
   "dependencies": {
     "@testing-library/jest-dom": "catalog:",
-    "@vitest/eslint-plugin": "^1.5.1",
-    "eslint-plugin-vitest-globals": "1.5.0",
     "jsdom": "27.2.0",
-    "my-eslint": "workspace:^",
     "vitest": "catalog:",
     "vitest-sonar-reporter": "^3.0.0"
   },

@@ -15,9 +15,7 @@ export const Route = createFileRoute("/stages/$id")({
   staticData: {
     breadcrumb: (match) => {
       const label = getCachedStageName(match.params.id);
-      return label
-        ? { label, route: `/stages/${match.params.id}/info` }
-        : null;
+      return label ? { label, route: `/stages/${match.params.id}/info` } : null;
     },
     breadcrumbInfo: StageDetailBreadcrumbInfo,
   },

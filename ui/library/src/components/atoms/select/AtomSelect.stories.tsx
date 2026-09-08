@@ -1,5 +1,7 @@
 import { renderSolid } from "@lib/../.storybook/renderSolid";
-import AtomSelect, { type AtomSelectProps } from "@lib/components/atoms/select/AtomSelect";
+import AtomSelect, {
+  type AtomSelectProps,
+} from "@lib/components/atoms/select/AtomSelect";
 
 const OPTIONS = [
   { label: "Dog", value: "dog" },
@@ -28,7 +30,8 @@ const OPTIONS_WITH_PRELABEL = [
 
 const meta = {
   title: "Atoms/AtomSelect",
-  render: (args: AtomSelectProps) => renderSolid(() => <AtomSelect {...args} />),
+  render: (args: AtomSelectProps) =>
+    renderSolid(() => <AtomSelect {...args} />),
 };
 
 export default meta;

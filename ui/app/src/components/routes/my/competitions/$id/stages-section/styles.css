@@ -1,42 +1,42 @@
 .stages-section__stages--actions {
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
-    gap: var(--unit-1);
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--unit-1);
 }
 
 .stages-section__stages {
-    display: grid;
-    grid-template-columns: repeat(
-        auto-fit,
-        minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+  display: grid;
+  grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
     );
-    gap: var(--unit-2);
-    align-items: start;
+  gap: var(--unit-2);
+  align-items: start;
 }
 
 .stages-section__stages > .card {
-    max-width: none;
-    margin-bottom: 0;
+  max-width: none;
+  margin-bottom: 0;
 }
 
 .stages-section__events-count {
-    color: var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 .stages-section__table {
-    margin-top: var(--unit-1);
+  margin-top: var(--unit-1);
 }
 
 .stage-editor-form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--unit-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
 }
 
 .stage-editor-form__actions {
-    padding-top: var(--unit-2);
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
+  padding-top: var(--unit-2);
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }

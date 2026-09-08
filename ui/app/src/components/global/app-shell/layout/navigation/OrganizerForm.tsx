@@ -19,11 +19,14 @@ export default function OrganizerForm(props: OrganizerFormProps) {
   const [organizerName, setOrganizerName] = createSignal("");
 
   const sendOrganizerForm = async () => {
-    await postGoogleForm("1FAIpQLScUMXJO8wACFCg4qpcAP5IsfWG5BjeJ5MvhomrgVs-Fh9czUA", {
-      "entry.1603237692": organizerName(),
-      "entry.1931094736": user()?.email,
-      "entry.897265685": description(),
-    });
+    await postGoogleForm(
+      "1FAIpQLScUMXJO8wACFCg4qpcAP5IsfWG5BjeJ5MvhomrgVs-Fh9czUA",
+      {
+        "entry.1603237692": organizerName(),
+        "entry.1931094736": user()?.email,
+        "entry.897265685": description(),
+      },
+    );
     props.onClose();
     showToast(i18n.t("GLOBAL.FORM.SENT"));
   };
@@ -32,7 +35,9 @@ export default function OrganizerForm(props: OrganizerFormProps) {
     <div class="organizer-form">
       <AtomInput value={organizerName()} onChange={setOrganizerName} />
       <AtomTextArea value={description()} onChange={setDescription} />
-      <AtomButton onClick={sendOrganizerForm}>{i18n.t("GLOBAL.NAVIGATION.SEND")}</AtomButton>
+      <AtomButton onClick={sendOrganizerForm}>
+        {i18n.t("GLOBAL.NAVIGATION.SEND")}
+      </AtomButton>
     </div>
   );
 }

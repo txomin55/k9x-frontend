@@ -33,8 +33,9 @@ vi.mock("@/services/fetch-rankings/fetchRankings", () => ({
   invalidateRankingClassification: mocks.invalidateRankingClassification,
 }));
 
-const { deleteRanking, saveRanking } =
-  await import("@/services/secured/ranking-crud/rankingCrud");
+const { deleteRanking, saveRanking } = await import(
+  "@/services/secured/ranking-crud/rankingCrud"
+);
 
 const RANKING_ID = "ranking_competition_1";
 

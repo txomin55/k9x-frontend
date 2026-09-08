@@ -1,16 +1,16 @@
 import L from "leaflet";
 import {
-	createEffect,
-	createMemo,
-	createSignal,
-	onCleanup,
-	onMount,
-	Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  onMount,
+  Show,
 } from "solid-js";
 import { render } from "solid-js/web";
 import {
-	StageMapMarker,
-	StageMapMarkerPopup,
+  StageMapMarker,
+  StageMapMarkerPopup,
 } from "@/components/routes/stages/stages-map/StageMapMarker";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
@@ -23,173 +23,175 @@ import "leaflet/dist/leaflet.css";
 import "./styles.css";
 
 interface StagesMapProps {
-	stages: StageSummaryResponseDTO[];
-	onEnroll?: (stageId: string, eventId: string) => void;
+  stages: StageSummaryResponseDTO[];
+  onEnroll?: (stageId: string, eventId: string) => void;
 }
 
 export default function StagesMap(props: StagesMapProps) {
-	let mapEl!: HTMLDivElement;
-	let map: L.Map | undefined;
-	let resizeObserver: ResizeObserver | undefined;
-	let tileLayer: L.TileLayer | undefined;
-	const disposers: Array<() => void> = [];
-	const [mapReady, setMapReady] = createSignal(false);
-	const [stageParam, setStageParam] = useSearchParam("stage", "");
+  let mapEl!: HTMLDivElement;
+  let map: L.Map | undefined;
+  let resizeObserver: ResizeObserver | undefined;
+  let tileLayer: L.TileLayer | undefined;
+  const disposers: Array<() => void> = [];
+  const [mapReady, setMapReady] = createSignal(false);
+  const [stageParam, setStageParam] = useSearchParam("stage", "");
 
-	const selectedStage = createMemo(() =>
-		props.stages.find((stage) => stage.id === stageParam()),
-	);
+  const selectedStage = createMemo(() =>
+    props.stages.find((stage) => stage.id === stageParam()),
+  );
 
-	const clusterGroup = L.markerClusterGroup({
-		showCoverageOnHover: false,
-		spiderfyOnMaxZoom: true,
-		zoomToBoundsOnClick: true,
-		disableClusteringAtZoom: 10,
-		maxClusterRadius: (zoom) => (zoom < 6 ? 100 : 300),
-		removeOutsideVisibleBounds: true,
-		animate: true,
-	});
+  const clusterGroup = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    spiderfyOnMaxZoom: true,
+    zoomToBoundsOnClick: true,
+    disableClusteringAtZoom: 10,
+    maxClusterRadius: (zoom) => (zoom < 6 ? 100 : 300),
+    removeOutsideVisibleBounds: true,
+    animate: true,
+  });
 
-	const fixSize = () => {
-		if (!map) return;
-		map.invalidateSize(true);
-	};
+  const fixSize = () => {
+    if (!map) return;
+    map.invalidateSize(true);
+  };
 
-	const getIconStyle = (stage: StageSummaryResponseDTO) => {
-		const container = document.createElement("div");
-		const dispose = render(() => <StageMapMarker stage={stage} />, container);
+  const getIconStyle = (stage: StageSummaryResponseDTO) => {
+    const container = document.createElement("div");
+    const dispose = render(() => <StageMapMarker stage={stage} />, container);
 
-		disposers.push(dispose);
+    disposers.push(dispose);
 
-		return L.divIcon({
-			className: "stage-map-marker",
-			html: container,
-		});
-	};
+    return L.divIcon({
+      className: "stage-map-marker",
+      html: container,
+    });
+  };
 
-	const markers = createMemo(() => {
-		return props.stages.map((stage) => {
-			const marker = L.marker(
-				[stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
-				{ icon: getIconStyle(stage) },
-			);
+  const markers = createMemo(() => {
+    return props.stages.map((stage) => {
+      const marker = L.marker(
+        [stage?.location?.latitude ?? 0, stage?.location?.longitude ?? 0],
+        { icon: getIconStyle(stage) },
+      );
 
-			marker.on("click", () => setStageParam(stage.id));
+      marker.on("click", () => setStageParam(stage.id));
 
-			return marker;
-		});
-	});
+      return marker;
+    });
+  });
 
-	const fitToMarkers = () => {
-		if (!map) return;
+  const fitToMarkers = () => {
+    if (!map) return;
 
-		const bounds = clusterGroup.getBounds();
-		if (bounds.isValid()) {
-			map.fitBounds(bounds, {
-				paddingTopLeft: [80, 80],
-				paddingBottomRight: [80, 160],
-				maxZoom: 4,
-			});
-		}
-	};
+    const bounds = clusterGroup.getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {
+        paddingTopLeft: [80, 80],
+        paddingBottomRight: [80, 160],
+        maxZoom: 4,
+      });
+    }
+  };
 
-	createEffect(() => {
-		const currentMarkers = markers();
-		if (!mapReady() || !map) return;
+  createEffect(() => {
+    const currentMarkers = markers();
+    if (!mapReady() || !map) return;
 
-		clusterGroup.clearLayers();
-		clusterGroup.addLayers(currentMarkers);
-		fitToMarkers();
-	});
+    clusterGroup.clearLayers();
+    clusterGroup.addLayers(currentMarkers);
+    fitToMarkers();
+  });
 
-	const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
+  const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY;
 
-	const getTileLayerUrl = (isDark: boolean) => {
-		const style = isDark ? "dark_all" : "rastertiles/voyager";
-		const url = `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`;
+  const getTileLayerUrl = (isDark: boolean) => {
+    const style = isDark ? "dark_all" : "rastertiles/voyager";
+    const url = `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png`;
 
-		return cartoApiKey ? `${url}?key=${cartoApiKey}` : url;
-	};
+    return cartoApiKey ? `${url}?key=${cartoApiKey}` : url;
+  };
 
-	const addTileLayer = (isDark: boolean) => {
-		if (!map) return;
+  const addTileLayer = (isDark: boolean) => {
+    if (!map) return;
 
-		tileLayer?.remove();
+    tileLayer?.remove();
 
-		tileLayer = L.tileLayer(getTileLayerUrl(isDark), {
-			maxZoom: 20,
-		}).addTo(map);
-	};
+    tileLayer = L.tileLayer(getTileLayerUrl(isDark), {
+      maxZoom: 20,
+    }).addTo(map);
+  };
 
-	createEffect(() => {
-		const dark = isDark();
-		if (!mapReady()) return;
+  createEffect(() => {
+    const dark = isDark();
+    if (!mapReady()) return;
 
-		addTileLayer(dark);
-	});
+    addTileLayer(dark);
+  });
 
-	onMount(() => {
-		map = L.map(mapEl, {
-			zoomControl: true,
-			maxZoom: 20,
-		});
+  onMount(() => {
+    map = L.map(mapEl, {
+      zoomControl: true,
+      maxZoom: 20,
+    });
 
-		map.addLayer(clusterGroup);
+    map.addLayer(clusterGroup);
 
-		setMapReady(true);
+    setMapReady(true);
 
-		resizeObserver = new ResizeObserver(() => {
-			requestAnimationFrame(() => {
-				if (!map) {
-					return;
-				}
+    resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        if (!map) {
+          return;
+        }
 
-				fixSize();
+        fixSize();
 
-				const bounds = clusterGroup.getBounds();
+        const bounds = clusterGroup.getBounds();
 
-				if (bounds.isValid()) {
-					map.fitBounds(bounds, {
-						padding: [48, 48],
-						maxZoom: 5,
-						animate: false,
-					});
-				}
-			});
-		});
+        if (bounds.isValid()) {
+          map.fitBounds(bounds, {
+            padding: [48, 48],
+            maxZoom: 5,
+            animate: false,
+          });
+        }
+      });
+    });
 
-		resizeObserver.observe(mapEl);
+    resizeObserver.observe(mapEl);
 
-		window.addEventListener("orientationchange", () => {
-			setTimeout(() => {
-				fixSize();
-			}, 250);
-		});
-	});
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        fixSize();
+      }, 250);
+    });
+  });
 
-	onCleanup(() => {
-		resizeObserver?.disconnect();
-		map?.remove();
-		disposers.forEach((dispose) => dispose());
-	});
+  onCleanup(() => {
+    resizeObserver?.disconnect();
+    map?.remove();
+    for (const dispose of disposers) {
+      dispose();
+    }
+  });
 
-	return (
-		<>
-			<div class="stages-map" ref={mapEl} />
-			<AtomDialog
-				open={Boolean(selectedStage())}
-				onOpenChange={(isOpen) => {
-					if (!isOpen) setStageParam("");
-				}}
-				title={selectedStage()?.name}
-				content={
-					<Show when={selectedStage()}>
-						{(stage) => (
-							<StageMapMarkerPopup stage={stage()} onEnroll={props.onEnroll} />
-						)}
-					</Show>
-				}
-			/>
-		</>
-	);
+  return (
+    <>
+      <div class="stages-map" ref={mapEl} />
+      <AtomDialog
+        open={Boolean(selectedStage())}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) setStageParam("");
+        }}
+        title={selectedStage()?.name}
+        content={
+          <Show when={selectedStage()}>
+            {(stage) => (
+              <StageMapMarkerPopup stage={stage()} onEnroll={props.onEnroll} />
+            )}
+          </Show>
+        }
+      />
+    </>
+  );
 }

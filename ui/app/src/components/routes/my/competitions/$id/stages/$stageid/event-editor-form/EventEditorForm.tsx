@@ -1,4 +1,6 @@
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomInput from "@lib/components/atoms/input/AtomInput";
 import EventDisciplineField from "@/components/common/event-discipline-field/EventDisciplineField";
 import { EMPTY_FEDERATION_CONFIGURATION } from "@/services/secured/configurations/configurations";

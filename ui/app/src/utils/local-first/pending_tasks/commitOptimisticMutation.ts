@@ -8,7 +8,7 @@ import {
   createPendingTaskId,
   enqueuePendingTask,
   type PendingTask,
-  type PendingTaskMethod
+  type PendingTaskMethod,
 } from "@/utils/local-first/pending_tasks/pendingTasksStore";
 import { processPendingTasks } from "@/utils/local-first/pending_tasks/pendingTasksRunner";
 import { requestPendingTasksBackgroundSync } from "@/utils/service-worker/pending_tasks/backgroundSync";

@@ -1,4 +1,4 @@
-import { type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 
 type Props = {
   discipline: "k9x" | "obdx";

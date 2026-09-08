@@ -2,17 +2,21 @@ import { type Accessor, createMemo, createSignal, Index, Show } from "solid-js";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/date";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
-import AtomTable, { type ColumnDef } from "@lib/components/atoms/table/AtomTable";
+import AtomTable, {
+  type ColumnDef,
+} from "@lib/components/atoms/table/AtomTable";
 import Card from "@lib/components/molecules/card/Card";
 import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
-import { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
+import type { StageEditorModel } from "@/services/secured/stage-crud/stageCrud.types";
 import { canDeleteStage } from "@/utils/stage";
 import { useI18n } from "@/stores/i18n/i18n";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
@@ -57,7 +61,9 @@ export default function StagesSection(props: StagesSectionProps) {
           </ConfirmActionButton>
         </Show>
         <AtomDialog
-          closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
+          closeButtonText={i18n.t(
+            "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+          )}
           content={
             <StageEditorForm
               draft={props.draft}
@@ -78,9 +84,7 @@ export default function StagesSection(props: StagesSectionProps) {
           }}
           open={props.editingStageId === stage.id}
           title={`${i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")} ${stage.name}`}
-          trigger={
-            <span>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}</span>
-          }
+          trigger={<span>{i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}</span>}
         />
       </div>
     ) : (
@@ -120,7 +124,9 @@ export default function StagesSection(props: StagesSectionProps) {
           />
         </AtomButton>
         <AtomDialog
-          closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
+          closeButtonText={i18n.t(
+            "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
+          )}
           content={
             <StageEditorForm
               draft={props.draft}

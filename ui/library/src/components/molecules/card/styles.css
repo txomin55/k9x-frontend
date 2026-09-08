@@ -1,60 +1,61 @@
 .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--unit-1);
-    padding: var(--unit-2);
-    max-width: calc(var(--unit-10) * 6);
-    margin-bottom: var(--unit-2);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    transition: transform 160ms ease,
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--unit-1);
+  padding: var(--unit-2);
+  max-width: calc(var(--unit-10) * 6);
+  margin-bottom: var(--unit-2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 160ms ease,
     border-color 160ms ease,
     box-shadow 160ms ease,
     background-color 160ms ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .card__top {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--unit-1);
-    margin-bottom: var(--unit-05);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--unit-1);
+  margin-bottom: var(--unit-05);
 }
 
 .card__top-left,
 .card__top-right {
-    display: flex;
-    align-items: center;
-    gap: var(--unit-1);
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
 }
 
 .card__title {
-    color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 .card__sub-header {
-    display: block;
-    color: var(--text-muted);
-    margin-bottom: var(--unit-1);
+  display: block;
+  color: var(--text-muted);
+  margin-bottom: var(--unit-1);
 }
 
 .card__description {
-    color: var(--text-secondary);
-    margin: 0 0 var(--unit-1) 0;
+  color: var(--text-secondary);
+  margin: 0 0 var(--unit-1) 0;
 }
 
 .card__content {
-    margin-bottom: var(--unit-2);
-    padding: var(--unit-1);
-    border-radius: var(--unit-1);
-    background: var(--surface-muted);
-    color: var(--text-secondary);
+  margin-bottom: var(--unit-2);
+  padding: var(--unit-1);
+  border-radius: var(--unit-1);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
 }
 
 .card__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--unit-1);
-    padding-top: var(--unit-1);
-    border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--unit-1);
+  padding-top: var(--unit-1);
+  border-top: 1px solid var(--border);
 }

@@ -24,10 +24,7 @@ organizerTest.describe("Stage events (write) - organizer", () => {
         entityType: "event",
         performMutation: async () => {
           await openEditMode(page);
-          await page
-            .getByRole("button", { name: "Add event" })
-            .first()
-            .click();
+          await page.getByRole("button", { name: "Add event" }).first().click();
           const dialog = page.getByRole("dialog");
           await dialog.getByLabel("Event title").fill("Obedience Open");
           // Kobalte Select listbox is virtualized and inside a modal, so options

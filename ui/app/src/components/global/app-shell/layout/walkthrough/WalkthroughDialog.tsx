@@ -1,6 +1,8 @@
 import { createEffect, createMemo, createSignal, onCleanup } from "solid-js";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
-import AtomButton, { BUTTON_TYPES } from "@lib/components/atoms/button/AtomButton";
+import AtomButton, {
+  BUTTON_TYPES,
+} from "@lib/components/atoms/button/AtomButton";
 import Carousel from "@lib/components/molecules/carousel/Carousel";
 import { useI18n } from "@/stores/i18n/i18n";
 import {
@@ -30,17 +32,17 @@ export default function WalkthroughDialog() {
     const events = ["pointerup", "keydown", "wheel", "touchend", "scroll"];
     const openOnFirstInteraction = () => setOpen(true);
 
-    events.forEach((event) =>
+    for (const event of events) {
       window.addEventListener(event, openOnFirstInteraction, {
         once: true,
         passive: true,
-      }),
-    );
-    onCleanup(() =>
-      events.forEach((event) =>
-        window.removeEventListener(event, openOnFirstInteraction),
-      ),
-    );
+      });
+    }
+    onCleanup(() => {
+      for (const event of events) {
+        window.removeEventListener(event, openOnFirstInteraction);
+      }
+    });
   });
 
   const handleOpenChange = (isOpen: boolean) => {

@@ -83,12 +83,13 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
 
   const meritGradeName = createMemo(() => {
     const found = meritGrade();
-    return found ? localized(found.name) : props.data.meritCurve.context.configuration;
+    return found
+      ? localized(found.name)
+      : props.data.meritCurve.context.configuration;
   });
 
   const qualificationLabel = (index: number) => {
-    const qualification =
-      props.data.meritCurve.context.qualifications[index]!;
+    const qualification = props.data.meritCurve.context.qualifications[index]!;
     return i18n.locale() === "es" ? qualification.id : qualification.nameEn;
   };
 
@@ -362,7 +363,10 @@ function ObdxMethodologyContent(props: { data: ObdxMethodology }) {
                   <td>{categoryName(category.id)}</td>
                   <td>
                     {/* A championship round is a single point, so it states its score once. */}
-                    <Show when={!category.fixed} fallback={category.subBand.min}>
+                    <Show
+                      when={!category.fixed}
+                      fallback={category.subBand.min}
+                    >
                       {category.tiers
                         .map((tier) => tier.rankScore)
                         .join(VALUE_SEPARATOR)}
