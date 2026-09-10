@@ -28,7 +28,7 @@ import {
   getDogsSearchQueryKey,
   getOwnedDogsQueryKey,
 } from "./dogCrudConstants";
-import { createDogPagesState, type DogPages } from "./dogPagesStore";
+import { createPagesState, type Pages } from "@/utils/pagination/pagesStore";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 import { getCachedCountries } from "@/services/secured/country-crud/countryCrud";
 import { getCachedBreeds } from "@/services/secured/breed-crud/breedCrud";
@@ -83,7 +83,7 @@ const appendDogs = (previousDogs: Dog[], nextDogs: Dog[]) => {
  * page to the same cache entry, and `pages` says how far it has got. Both the user's own dogs and the
  * whole kennel are read this way, filtered or not.
  */
-const pagedDogs = (filters: string, pages: DogPages) => ({
+const pagedDogs = (filters: string, pages: Pages) => ({
   pages,
   first: async (queryKey: readonly unknown[], search?: DogListSearch) => {
     pages.reset();
@@ -115,17 +115,17 @@ const pagedDogs = (filters: string, pages: DogPages) => ({
   },
 });
 
-const myDogs = pagedDogs(MY_DOGS_FILTERS, createDogPagesState());
+const myDogs = pagedDogs(MY_DOGS_FILTERS, createPagesState());
 
 /**
  * The name search is served by the API, so it is kept apart from the list cache: that cache is the base
  * of the local-first list, and seeding it with a filtered subset would read as "these dogs are gone".
  */
-const myDogsSearch = pagedDogs(MY_DOGS_FILTERS, createDogPagesState());
+const myDogsSearch = pagedDogs(MY_DOGS_FILTERS, createPagesState());
 
-const allDogs = pagedDogs(ALL_DOGS_FILTERS, createDogPagesState());
+const allDogs = pagedDogs(ALL_DOGS_FILTERS, createPagesState());
 
-const allDogsSearch = pagedDogs(ALL_DOGS_FILTERS, createDogPagesState());
+const allDogsSearch = pagedDogs(ALL_DOGS_FILTERS, createPagesState());
 
 export const myDogsPages = myDogs.pages;
 

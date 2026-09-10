@@ -12,8 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StagesRouteRouteImport } from './routes/stages/route'
 import { Route as MyRouteRouteImport } from './routes/my/route'
 import { Route as MethodologyRouteRouteImport } from './routes/methodology/route'
+import { Route as DogsRouteRouteImport } from './routes/dogs/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StagesIndexRouteImport } from './routes/stages/index'
+import { Route as DogsIndexRouteImport } from './routes/dogs/index'
 import { Route as MethodologyObdxRouteImport } from './routes/methodology/obdx'
 import { Route as MethodologyK9xRouteImport } from './routes/methodology/k9x'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
@@ -59,6 +61,11 @@ const MethodologyRouteRoute = MethodologyRouteRouteImport.update({
   path: '/methodology',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DogsRouteRoute = DogsRouteRouteImport.update({
+  id: '/dogs',
+  path: '/dogs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -68,6 +75,11 @@ const StagesIndexRoute = StagesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => StagesRouteRoute,
+} as any)
+const DogsIndexRoute = DogsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DogsRouteRoute,
 } as any)
 const MethodologyObdxRoute = MethodologyObdxRouteImport.update({
   id: '/obdx',
@@ -223,6 +235,7 @@ const MyCompetitionsIdStagesStageIdEventsEventIdIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dogs': typeof DogsRouteRouteWithChildren
   '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
@@ -235,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/methodology/k9x': typeof MethodologyK9xRoute
   '/methodology/obdx': typeof MethodologyObdxRoute
+  '/dogs/': typeof DogsIndexRoute
   '/stages/': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
@@ -265,6 +279,7 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/methodology/k9x': typeof MethodologyK9xRoute
   '/methodology/obdx': typeof MethodologyObdxRoute
+  '/dogs': typeof DogsIndexRoute
   '/stages': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/stages/$id/info': typeof StagesIdInfoRoute
@@ -288,6 +303,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dogs': typeof DogsRouteRouteWithChildren
   '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
@@ -300,6 +316,7 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/methodology/k9x': typeof MethodologyK9xRoute
   '/methodology/obdx': typeof MethodologyObdxRoute
+  '/dogs/': typeof DogsIndexRoute
   '/stages/': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
@@ -326,6 +343,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dogs'
     | '/methodology'
     | '/my'
     | '/stages'
@@ -338,6 +356,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/methodology/k9x'
     | '/methodology/obdx'
+    | '/dogs/'
     | '/stages/'
     | '/my/collections/$id'
     | '/my/competitions/$id'
@@ -368,6 +387,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/methodology/k9x'
     | '/methodology/obdx'
+    | '/dogs'
     | '/stages'
     | '/my/collections/$id'
     | '/stages/$id/info'
@@ -390,6 +410,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dogs'
     | '/methodology'
     | '/my'
     | '/stages'
@@ -402,6 +423,7 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/methodology/k9x'
     | '/methodology/obdx'
+    | '/dogs/'
     | '/stages/'
     | '/my/collections/$id'
     | '/my/competitions/$id'
@@ -427,6 +449,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DogsRouteRoute: typeof DogsRouteRouteWithChildren
   MethodologyRouteRoute: typeof MethodologyRouteRouteWithChildren
   MyRouteRoute: typeof MyRouteRouteWithChildren
   StagesRouteRoute: typeof StagesRouteRouteWithChildren
@@ -456,6 +479,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof MethodologyRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dogs': {
+      id: '/dogs'
+      path: '/dogs'
+      fullPath: '/dogs'
+      preLoaderRoute: typeof DogsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -469,6 +499,13 @@ declare module '@tanstack/solid-router' {
       fullPath: '/stages/'
       preLoaderRoute: typeof StagesIndexRouteImport
       parentRoute: typeof StagesRouteRoute
+    }
+    '/dogs/': {
+      id: '/dogs/'
+      path: '/'
+      fullPath: '/dogs/'
+      preLoaderRoute: typeof DogsIndexRouteImport
+      parentRoute: typeof DogsRouteRoute
     }
     '/methodology/obdx': {
       id: '/methodology/obdx'
@@ -676,6 +713,18 @@ declare module '@tanstack/solid-router' {
   }
 }
 
+interface DogsRouteRouteChildren {
+  DogsIndexRoute: typeof DogsIndexRoute
+}
+
+const DogsRouteRouteChildren: DogsRouteRouteChildren = {
+  DogsIndexRoute: DogsIndexRoute,
+}
+
+const DogsRouteRouteWithChildren = DogsRouteRoute._addFileChildren(
+  DogsRouteRouteChildren,
+)
+
 interface MethodologyRouteRouteChildren {
   MethodologyK9xRoute: typeof MethodologyK9xRoute
   MethodologyObdxRoute: typeof MethodologyObdxRoute
@@ -861,6 +910,7 @@ const StagesRouteRouteWithChildren = StagesRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DogsRouteRoute: DogsRouteRouteWithChildren,
   MethodologyRouteRoute: MethodologyRouteRouteWithChildren,
   MyRouteRoute: MyRouteRouteWithChildren,
   StagesRouteRoute: StagesRouteRouteWithChildren,

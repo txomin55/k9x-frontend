@@ -1,0 +1,74 @@
+/* Name, handler and country sit side by side while there is room, and stack on a narrow screen. */
+.public-dogs__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--unit-1);
+}
+
+.public-dogs__filters > .name-filter {
+  flex: 1 1 calc(var(--unit-10) * 2);
+  margin-bottom: 0;
+}
+
+.public-dogs.card-list {
+  grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, calc(var(--unit-10) * 6)), 1fr)
+    );
+}
+
+.public-dogs.card-list > .card {
+  max-width: none;
+}
+
+/* Cards are all the same height here, tall enough for a name wrapping to three lines: the row spacing
+   is then exactly the grid gap (the card's own bottom margin would double it), and a longer name is
+   clipped rather than spilling over the card below. */
+.public-dogs .virtual-card-grid__row > .card {
+  box-sizing: border-box;
+  height: 100%;
+  max-width: none;
+  margin-bottom: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-dogs .virtual-card-grid__row > .card > .card__content {
+  min-height: 0;
+  overflow: hidden;
+  margin-top: auto;
+}
+
+.public-dogs__table {
+  margin-top: var(--unit-1);
+}
+
+/* Columns are fixed, so a long name is cut with an ellipsis instead of wrapping out of its row. */
+.public-dogs__table .list-table__name > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.public-dogs__country {
+  display: flex;
+  align-items: center;
+}
+
+/* On a phone the cards are the whole column, so they are tightened up to fit more of the list on screen. */
+@media (max-width: 767px) {
+  .public-dogs .virtual-card-grid__row > .card {
+    padding: var(--unit-1);
+  }
+
+  .public-dogs .virtual-card-grid__row > .card > .card__description {
+    margin-bottom: var(--unit-05);
+  }
+
+  .public-dogs .virtual-card-grid__row > .card > .card__content {
+    margin-bottom: var(--unit-1);
+    padding: var(--unit-05);
+  }
+}

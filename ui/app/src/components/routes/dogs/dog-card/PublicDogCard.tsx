@@ -1,0 +1,56 @@
+import {Show} from "solid-js";
+import Card from "@lib/components/molecules/card/Card";
+import CountryFlag from "@/components/common/country-flag/CountryFlag";
+import SexIcon from "@/components/common/sex-icon/SexIcon";
+import K9xScore from "@/components/routes/dogs/dog-card/K9xScore";
+import type {PublicDog} from "@/services/fetch-dogs/fetchDogs.types";
+import {useI18n} from "@/stores/i18n/i18n";
+import "./styles.css";
+
+/**
+ * A dog of the public directory. Unlike the my-dogs card it carries no actions: nobody edits a dog they
+ * are only browsing, so the space goes to the index instead.
+ */
+export default function PublicDogCard(props: { dog: PublicDog }) {
+    const i18n = useI18n();
+
+    return (
+        <Card
+            topLeft={
+                <div class="public-dog-card__heading">
+                    <span class="public-dog-card__name">{props.dog.name}</span>
+                    <Show when={props.dog.sex}>
+                        <SexIcon sex={props.dog.sex!}/>
+                    </Show>
+                </div>
+            }
+            topRight={
+                <div class="public-dog-card__score">
+          <span class="public-dog-card__score-label text-caption-sm">
+            {i18n.t("DOGS.INDEX.SCORE")}
+          </span>
+                    <K9xScore rank={props.dog.rank}/>
+                </div>
+            }
+            description={
+                <span class="text-caption-sm">{props.dog.breed?.name ?? ""}</span>
+            }
+            content={
+                <div class="public-dog-card__facts">
+                    <div class="public-dog-card__fact">
+                        <CountryFlag country={props.dog.country?.id ?? ""}/>
+                        <span class="text-body-sm">{props.dog.country?.name ?? ""}</span>
+                    </div>
+                    <Show when={props.dog.handler}>
+                        <div class="public-dog-card__fact">
+              <span class="public-dog-card__fact-label text-caption-sm">
+                {i18n.t("DOGS.INDEX.HANDLER")}
+              </span>
+                            <span class="text-body-sm">{props.dog.handler}</span>
+                        </div>
+                    </Show>
+                </div>
+            }
+        />
+    );
+}

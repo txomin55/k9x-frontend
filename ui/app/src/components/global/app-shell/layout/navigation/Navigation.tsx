@@ -44,6 +44,12 @@ export default function Navigation() {
       >
         {i18n.t("GLOBAL.NAVIGATION.STAGES")}
       </Link>
+      <Link
+        to={AppRoutePath.DOGS as "/dogs"}
+        activeProps={{ class: "navigation__link--active" }}
+      >
+        {i18n.t("GLOBAL.NAVIGATION.ALL_DOGS")}
+      </Link>
       <Show when={user()}>
         <p>{i18n.t("GLOBAL.NAVIGATION.MY")}</p>
         <Show when={user()?.organizer}>

@@ -1,25 +1,25 @@
 import { createSignal } from "solid-js";
 
 /**
- * How far a paged dog list has got: what the server said is out there, and how many pages of it we
- * already pulled. Kept outside the query cache because it describes the *loading*, not the data.
+ * How far a paged list has got: what the server said is out there, and how many pages of it we already
+ * pulled. Kept outside the query cache because it describes the *loading*, not the data.
  */
-export type DogPagesState = {
+export type PagesState = {
   loadedPages: number;
   totalPages: number;
   total: number;
   isLoadingMore: boolean;
 };
 
-const EMPTY_STATE: DogPagesState = {
+const EMPTY_STATE: PagesState = {
   loadedPages: 0,
   totalPages: 0,
   total: 0,
   isLoadingMore: false,
 };
 
-export const createDogPagesState = () => {
-  const [state, setState] = createSignal<DogPagesState>(EMPTY_STATE);
+export const createPagesState = () => {
+  const [state, setState] = createSignal<PagesState>(EMPTY_STATE);
 
   return {
     state,
@@ -41,4 +41,4 @@ export const createDogPagesState = () => {
   };
 };
 
-export type DogPages = ReturnType<typeof createDogPagesState>;
+export type Pages = ReturnType<typeof createPagesState>;
