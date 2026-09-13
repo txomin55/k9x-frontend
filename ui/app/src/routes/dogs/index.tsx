@@ -43,9 +43,9 @@ const CARD_MIN_WIDTH_PX = 240;
 const MIN_SEARCH_LENGTH = 3;
 
 // Tall enough for a dog name wrapping to three lines, so every card is the same height whatever it holds.
-const CARD_HEIGHT_PX = 190;
-// On a phone the grid is a single column, so the cards are compact enough to show more than two at once.
-const MOBILE_CARD_HEIGHT_PX = 164;
+const CARD_HEIGHT_PX = 220;
+// On a phone the grid is a single column, but the card holds the same rows, so it keeps the same height.
+const MOBILE_CARD_HEIGHT_PX = 220;
 const TABLE_ROW_HEIGHT_PX = 56;
 
 /**
