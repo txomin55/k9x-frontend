@@ -38,3 +38,24 @@ export type PublicDogSearch = {
   handler?: string;
   country?: string;
 };
+
+/**
+ * Everything the public directory knows about one dog. Who owns it, who created the record and when it
+ * was created are deliberately absent: the API does not expose them.
+ */
+export interface PublicDogDetail {
+  identification: string;
+  name: string;
+  image: string;
+  breed: IdNameDTO;
+  origin: string;
+  license: string;
+  country: IdNameDTO;
+  team: string;
+  handler: string;
+  sex: DogSex | null;
+  withersCm: number | null;
+  threeFciGenerationsConfirmed: boolean | null;
+  /** Epoch millis of the last change to the dog. */
+  lastUpdate: number;
+}

@@ -38,6 +38,11 @@
 .public-dogs .virtual-card-grid__row > .card > .card__content {
   min-height: 0;
   overflow: hidden;
+}
+
+/* The action, and the rule that tops it, sit on the card's bottom edge whatever the name above them
+   takes, so the whole grid lines up row by row. */
+.public-dogs .virtual-card-grid__row > .card > .card__actions {
   margin-top: auto;
 }
 

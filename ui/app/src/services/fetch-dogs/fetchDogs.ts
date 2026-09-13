@@ -5,12 +5,16 @@ import { queryClient } from "@/utils/http/query-client";
 import { createPagesState } from "@/utils/pagination/pagesStore";
 import type {
   PublicDog,
+  PublicDogDetail,
   PublicDogPageDTO,
   PublicDogSearch,
 } from "@/services/fetch-dogs/fetchDogs.types";
 
 /** Dogs fetched per request while scrolling the public directory. */
 export const PUBLIC_DOGS_PAGE_SIZE = 50;
+
+export const getPublicDogQueryKey = (identification: string) =>
+  ["public-dog", identification, getCurrentLocale()] as const;
 
 export const getPublicDogsQueryKey = (search: PublicDogSearch) =>
   [
@@ -96,3 +100,27 @@ export const usePublicDogs = (search: () => PublicDogSearch) =>
     networkMode: "always" as const,
     placeholderData: (previousDogs: PublicDog[] | undefined) => previousDogs,
   }));
+
+/** The public detail of one dog. A dog that is gone, or was never there, answers 404. */
+export const usePublicDog = (identification: () => string) =>
+  createQuery(() => ({
+    queryKey: getPublicDogQueryKey(identification()),
+    queryFn: () =>
+      rawRequest<PublicDogDetail>({
+        path: `/dogs/${encodeURIComponent(identification())}`,
+      }),
+    networkMode: "always" as const,
+  }));
+
+/**
+ * The dog the breadcrumb of the detail page names, without waiting for its own request: the directory the
+ * reader came from already listed it. Undefined until one of the two has it.
+ */
+export const getCachedPublicDogName = (identification: string) =>
+  queryClient.getQueryData<PublicDogDetail>(
+    getPublicDogQueryKey(identification),
+  )?.name ??
+  queryClient
+    .getQueriesData<PublicDog[]>({ queryKey: ["public-dogs"] })
+    .flatMap(([, dogs]) => dogs ?? [])
+    .find((dog) => dog.identification === identification)?.name;

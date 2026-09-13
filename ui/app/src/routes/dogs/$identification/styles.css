@@ -1,0 +1,51 @@
+.dog-detail__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  min-width: 0;
+}
+
+.dog-detail__name {
+  font-size: var(--text-heading-sm);
+}
+
+.dog-detail__image {
+  width: calc(var(--unit-10) * 1.5);
+  height: calc(var(--unit-10) * 1.5);
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+/* The facts wrap into as many columns as fit, so a phone reads them as one list and a laptop as a grid. */
+.dog-detail__facts {
+  display: grid;
+  grid-template-columns: repeat(
+      auto-fit,
+      minmax(min(100%, calc(var(--unit-10) * 4)), 1fr)
+    );
+  gap: var(--unit-2);
+  margin: 0;
+}
+
+.dog-detail__fact {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-05);
+  min-width: 0;
+}
+
+.dog-detail__fact > dt {
+  color: var(--text-muted);
+}
+
+.dog-detail__fact > dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.dog-detail__country {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  min-width: 0;
+}

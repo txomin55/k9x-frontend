@@ -54,6 +54,13 @@
   flex-shrink: 0;
 }
 
+.public-dog-card__actions {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--unit-1);
+}
+
 .k9x-score {
   font-size: var(--text-heading-sm);
   font-variant-numeric: tabular-nums;

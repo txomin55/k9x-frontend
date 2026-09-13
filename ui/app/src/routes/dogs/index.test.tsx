@@ -15,6 +15,7 @@ const dog = (overrides: Partial<PublicDog> = {}): PublicDog => ({
 });
 
 const dogs = vi.fn<() => PublicDog[] | undefined>(() => []);
+const isFetching = vi.fn<() => boolean>(() => false);
 
 vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
   usePublicDogs: () => ({
@@ -23,6 +24,9 @@ vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
     },
     get isPending() {
       return dogs() === undefined;
+    },
+    get isFetching() {
+      return isFetching();
     },
   }),
   loadMorePublicDogs: vi.fn(),
@@ -41,6 +45,15 @@ vi.mock("@/components/common/page-seo/PageSeo", () => ({
   default: () => null,
 }));
 
+const navigate = vi.fn();
+
+vi.mock("@tanstack/solid-router", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@tanstack/solid-router")>();
+
+  return { ...actual, useNavigate: () => navigate };
+});
+
 /** Kobalte's segmented control and the virtual grid both observe their box; jsdom has no observer. */
 class ResizeObserverMock {
   observe() {}
@@ -58,6 +71,8 @@ describe("public dogs route", () => {
   beforeEach(() => {
     vi.stubGlobal("ResizeObserver", ResizeObserverMock);
     dogs.mockReturnValue([]);
+    isFetching.mockReturnValue(false);
+    navigate.mockClear();
   });
 
   afterEach(() => {
@@ -83,6 +98,31 @@ describe("public dogs route", () => {
     expect(container.querySelector(".card")).not.toBeNull();
     expect(container.querySelector(".atom-skeleton")).not.toBeNull();
     expect(container.querySelectorAll(".name-filter")).toHaveLength(2);
+  });
+
+  /**
+   * The data proxy cannot tell "loading" from "really empty", so a refetch that has no dogs yet must not
+   * flash the empty label over a directory that does have dogs.
+   */
+  test("shows the skeleton, not the empty label, while refetching without dogs", () => {
+    dogs.mockReturnValue([]);
+    isFetching.mockReturnValue(true);
+
+    const { container } = renderPage();
+
+    expect(container.querySelector(".atom-skeleton")).not.toBeNull();
+    expect(container.querySelector(".public-dogs__empty")).toBeNull();
+  });
+
+  /** With dogs on screen a background refetch keeps them: no skeleton on top of a painted list. */
+  test("keeps the dogs on screen while refetching in the background", () => {
+    dogs.mockReturnValue([dog()]);
+    isFetching.mockReturnValue(true);
+
+    const { container, queryByText } = renderPage();
+
+    expect(queryByText("Rex")).toBeInTheDocument();
+    expect(container.querySelector(".atom-skeleton")).toBeNull();
   });
 
   test("offers both the card list and the table once there are dogs", () => {
@@ -160,6 +200,25 @@ describe("public dogs route", () => {
     expect(headerButtons.length).toBeGreaterThan(0);
     expect(headerButtons.every((button) => button.disabled)).toBe(true);
     expect(container.querySelector("th .is-sortable")).toBeNull();
+  });
+
+  test("opens the dog detail from the card action", () => {
+    dogs.mockReturnValue([dog()]);
+
+    const { container } = renderPage();
+
+    const action = container.querySelector<HTMLButtonElement>(
+      ".public-dog-card__actions .atom-button",
+    );
+    expect(action).not.toBeNull();
+    expect(action?.classList).toContain("primary");
+
+    action?.click();
+
+    expect(navigate).toHaveBeenCalledWith({
+      to: "/dogs/$identification",
+      params: { identification: "981098106001010" },
+    });
   });
 
   /** The list starts on the cards, so the table is only built once it is asked for. */

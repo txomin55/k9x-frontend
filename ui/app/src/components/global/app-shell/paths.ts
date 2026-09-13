@@ -2,6 +2,7 @@ export enum AppRoutePath {
   HOME = "/",
   STAGES = "/stages",
   DOGS = "/dogs",
+  DOG_DETAIL = "/dogs/$identification",
   AUTH_CALLBACK = "/auth/callback",
   EVENT_DETAIL = "/stages/$id/events/$eventId",
   EVENT_INFO = "/stages/$id/info",

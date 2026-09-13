@@ -5,7 +5,7 @@ import AtomSelect, {
 import AtomTable, {
   type ColumnDef,
 } from "@lib/components/atoms/table/AtomTable";
-import { createFileRoute } from "@tanstack/solid-router";
+import { createFileRoute, useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, Show, Suspense } from "solid-js";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -94,6 +94,7 @@ function PublicDogsRoute() {
 
 function PublicDogsPage() {
   const i18n = useI18n();
+  const navigate = useNavigate();
   const device = useDeviceType();
   const listFill = useFillRemainingHeight();
   const tableFill = useFillRemainingHeight();
@@ -118,6 +119,14 @@ function PublicDogsPage() {
 
   const dogsQuery = usePublicDogs(search);
   const dogs = () => dogsQuery.data ?? [];
+
+  /**
+   * "Nothing matches" is only true once the request is done. The data proxy collapses "still loading" and
+   * "really empty" into the same empty list, so an empty one only means empty when nothing is in flight —
+   * and on the first tick the query is pending with the fetch not even started, so `isFetching` alone
+   * would let the label through for a frame.
+   */
+  const isResolved = () => !dogsQuery.isPending && !dogsQuery.isFetching;
 
   const hasMore = () => publicDogsPages.hasMore();
   const isLoadingMore = () => publicDogsPages.state().isLoadingMore;
@@ -229,7 +238,17 @@ function PublicDogsPage() {
         onLoadMore={loadMoreFrom(VIEW.LIST)}
         loadingMoreMessage={i18n.t("DOGS.INDEX.LOADING_MORE")}
       >
-        {(dog) => <PublicDogCard dog={dog} />}
+        {(dog) => (
+          <PublicDogCard
+            dog={dog}
+            onSeeDetails={() =>
+              void navigate({
+                to: "/dogs/$identification",
+                params: { identification: dog.identification },
+              })
+            }
+          />
+        )}
       </VirtualCardGrid>
     </div>
   );
@@ -301,10 +320,11 @@ function PublicDogsPage() {
         </div>
       </div>
 
-      {/* A later search keeps the previous results on screen, so only the very first load has nothing
-          to show and gets the skeleton. */}
+      {/* Dogs first: a background refetch must not pull the skeleton over a list that is already on
+          screen. A later search keeps the previous results, so only the very first load has nothing to
+          show and gets the skeleton. */}
       <Show
-        when={!dogsQuery.isPending}
+        when={dogs().length || isResolved()}
         fallback={
           <div class="public-dogs card-list">
             <CardListSkeleton count={6} />
@@ -313,7 +333,9 @@ function PublicDogsPage() {
       >
         <Show
           when={dogs().length}
-          fallback={<p>{i18n.t("DOGS.INDEX.NO_DOGS")}</p>}
+          fallback={
+            <p class="public-dogs__empty">{i18n.t("DOGS.INDEX.NO_DOGS")}</p>
+          }
         >
           <AtomSegmentedControl
             title={i18n.t("DOGS.INDEX.VIEW_BY")}

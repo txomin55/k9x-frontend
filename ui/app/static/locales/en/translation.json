@@ -832,5 +832,21 @@
   "DOGS.INDEX.HANDLER": "Handler",
   "DOGS.INDEX.NO_INDEX_HINT": "No K9X index yet: this dog has no results recorded.",
   "DOGS.INDEX.NO_DOGS": "No dogs match the filters.",
-  "DOGS.INDEX.LOADING_MORE": "Loading more dogs..."
+  "DOGS.INDEX.LOADING_MORE": "Loading more dogs...",
+  "DOGS.INDEX.SEE_DETAILS": "See details",
+  "DOGS.DETAIL.META_TITLE": "{{name}} | K9X",
+  "DOGS.DETAIL.META_DESCRIPTION": "Breed, country, handler and pedigree details of {{name}} on K9X.",
+  "DOGS.DETAIL.IDENTIFICATION": "Identification",
+  "DOGS.DETAIL.BREED": "Breed",
+  "DOGS.DETAIL.COUNTRY": "Country",
+  "DOGS.DETAIL.HANDLER": "Handler",
+  "DOGS.DETAIL.TEAM": "Team",
+  "DOGS.DETAIL.ORIGIN": "Origin",
+  "DOGS.DETAIL.LICENSE": "License",
+  "DOGS.DETAIL.HEIGHT": "Withers height",
+  "DOGS.DETAIL.THREE_FCI_GENERATIONS": "3 generations recognised by FCI",
+  "DOGS.DETAIL.LAST_UPDATE": "Last update",
+  "DOGS.DETAIL.YES": "Yes",
+  "DOGS.DETAIL.NO": "No",
+  "DOGS.DETAIL.NOT_FOUND": "This dog is not available."
 }

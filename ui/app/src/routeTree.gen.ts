@@ -25,11 +25,13 @@ import { Route as MyJudgesRouteRouteImport } from './routes/my/judges/route'
 import { Route as MyDogsRouteRouteImport } from './routes/my/dogs/route'
 import { Route as MyCompetitionsRouteRouteImport } from './routes/my/competitions/route'
 import { Route as MyCollectionsRouteRouteImport } from './routes/my/collections/route'
+import { Route as DogsIdentificationRouteRouteImport } from './routes/dogs/$identification/route'
 import { Route as MyRankingsIndexRouteImport } from './routes/my/rankings/index'
 import { Route as MyJudgesIndexRouteImport } from './routes/my/judges/index'
 import { Route as MyDogsIndexRouteImport } from './routes/my/dogs/index'
 import { Route as MyCompetitionsIndexRouteImport } from './routes/my/competitions/index'
 import { Route as MyCollectionsIndexRouteImport } from './routes/my/collections/index'
+import { Route as DogsIdentificationIndexRouteImport } from './routes/dogs/$identification/index'
 import { Route as StagesIdInfoRouteImport } from './routes/stages/$id/info'
 import { Route as MyCompetitionsIdRouteRouteImport } from './routes/my/competitions/$id/route'
 import { Route as MyCollectionsIdRouteRouteImport } from './routes/my/collections/$id/route'
@@ -126,6 +128,11 @@ const MyCollectionsRouteRoute = MyCollectionsRouteRouteImport.update({
   path: '/collections',
   getParentRoute: () => MyRouteRoute,
 } as any)
+const DogsIdentificationRouteRoute = DogsIdentificationRouteRouteImport.update({
+  id: '/$identification',
+  path: '/$identification',
+  getParentRoute: () => DogsRouteRoute,
+} as any)
 const MyRankingsIndexRoute = MyRankingsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -150,6 +157,11 @@ const MyCollectionsIndexRoute = MyCollectionsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MyCollectionsRouteRoute,
+} as any)
+const DogsIdentificationIndexRoute = DogsIdentificationIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DogsIdentificationRouteRoute,
 } as any)
 const StagesIdInfoRoute = StagesIdInfoRouteImport.update({
   id: '/info',
@@ -239,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
+  '/dogs/$identification': typeof DogsIdentificationRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
   '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/my/dogs': typeof MyDogsRouteRouteWithChildren
@@ -253,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
   '/stages/$id/info': typeof StagesIdInfoRoute
+  '/dogs/$identification/': typeof DogsIdentificationIndexRoute
   '/my/collections/': typeof MyCollectionsIndexRoute
   '/my/competitions/': typeof MyCompetitionsIndexRoute
   '/my/dogs/': typeof MyDogsIndexRoute
@@ -283,6 +297,7 @@ export interface FileRoutesByTo {
   '/stages': typeof StagesIndexRoute
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/stages/$id/info': typeof StagesIdInfoRoute
+  '/dogs/$identification': typeof DogsIdentificationIndexRoute
   '/my/collections': typeof MyCollectionsIndexRoute
   '/my/competitions': typeof MyCompetitionsIndexRoute
   '/my/dogs': typeof MyDogsIndexRoute
@@ -307,6 +322,7 @@ export interface FileRoutesById {
   '/methodology': typeof MethodologyRouteRouteWithChildren
   '/my': typeof MyRouteRouteWithChildren
   '/stages': typeof StagesRouteRouteWithChildren
+  '/dogs/$identification': typeof DogsIdentificationRouteRouteWithChildren
   '/my/collections': typeof MyCollectionsRouteRouteWithChildren
   '/my/competitions': typeof MyCompetitionsRouteRouteWithChildren
   '/my/dogs': typeof MyDogsRouteRouteWithChildren
@@ -321,6 +337,7 @@ export interface FileRoutesById {
   '/my/collections/$id': typeof MyCollectionsIdRouteRoute
   '/my/competitions/$id': typeof MyCompetitionsIdRouteRouteWithChildren
   '/stages/$id/info': typeof StagesIdInfoRoute
+  '/dogs/$identification/': typeof DogsIdentificationIndexRoute
   '/my/collections/': typeof MyCollectionsIndexRoute
   '/my/competitions/': typeof MyCompetitionsIndexRoute
   '/my/dogs/': typeof MyDogsIndexRoute
@@ -347,6 +364,7 @@ export interface FileRouteTypes {
     | '/methodology'
     | '/my'
     | '/stages'
+    | '/dogs/$identification'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
@@ -361,6 +379,7 @@ export interface FileRouteTypes {
     | '/my/collections/$id'
     | '/my/competitions/$id'
     | '/stages/$id/info'
+    | '/dogs/$identification/'
     | '/my/collections/'
     | '/my/competitions/'
     | '/my/dogs/'
@@ -391,6 +410,7 @@ export interface FileRouteTypes {
     | '/stages'
     | '/my/collections/$id'
     | '/stages/$id/info'
+    | '/dogs/$identification'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
@@ -414,6 +434,7 @@ export interface FileRouteTypes {
     | '/methodology'
     | '/my'
     | '/stages'
+    | '/dogs/$identification'
     | '/my/collections'
     | '/my/competitions'
     | '/my/dogs'
@@ -428,6 +449,7 @@ export interface FileRouteTypes {
     | '/my/collections/$id'
     | '/my/competitions/$id'
     | '/stages/$id/info'
+    | '/dogs/$identification/'
     | '/my/collections/'
     | '/my/competitions/'
     | '/my/dogs/'
@@ -570,6 +592,13 @@ declare module '@tanstack/solid-router' {
       preLoaderRoute: typeof MyCollectionsRouteRouteImport
       parentRoute: typeof MyRouteRoute
     }
+    '/dogs/$identification': {
+      id: '/dogs/$identification'
+      path: '/$identification'
+      fullPath: '/dogs/$identification'
+      preLoaderRoute: typeof DogsIdentificationRouteRouteImport
+      parentRoute: typeof DogsRouteRoute
+    }
     '/my/rankings/': {
       id: '/my/rankings/'
       path: '/'
@@ -604,6 +633,13 @@ declare module '@tanstack/solid-router' {
       fullPath: '/my/collections/'
       preLoaderRoute: typeof MyCollectionsIndexRouteImport
       parentRoute: typeof MyCollectionsRouteRoute
+    }
+    '/dogs/$identification/': {
+      id: '/dogs/$identification/'
+      path: '/'
+      fullPath: '/dogs/$identification/'
+      preLoaderRoute: typeof DogsIdentificationIndexRouteImport
+      parentRoute: typeof DogsIdentificationRouteRoute
     }
     '/stages/$id/info': {
       id: '/stages/$id/info'
@@ -713,11 +749,27 @@ declare module '@tanstack/solid-router' {
   }
 }
 
+interface DogsIdentificationRouteRouteChildren {
+  DogsIdentificationIndexRoute: typeof DogsIdentificationIndexRoute
+}
+
+const DogsIdentificationRouteRouteChildren: DogsIdentificationRouteRouteChildren =
+  {
+    DogsIdentificationIndexRoute: DogsIdentificationIndexRoute,
+  }
+
+const DogsIdentificationRouteRouteWithChildren =
+  DogsIdentificationRouteRoute._addFileChildren(
+    DogsIdentificationRouteRouteChildren,
+  )
+
 interface DogsRouteRouteChildren {
+  DogsIdentificationRouteRoute: typeof DogsIdentificationRouteRouteWithChildren
   DogsIndexRoute: typeof DogsIndexRoute
 }
 
 const DogsRouteRouteChildren: DogsRouteRouteChildren = {
+  DogsIdentificationRouteRoute: DogsIdentificationRouteRouteWithChildren,
   DogsIndexRoute: DogsIndexRoute,
 }
 
