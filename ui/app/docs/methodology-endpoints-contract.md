@@ -14,8 +14,9 @@ tipos, la página se rompe.
 
 ## Reglas que aplican a los dos
 
-- **`schemaVersion` en la raíz**, entero. Hoy `1`. Cualquier cambio que rompa a
-  un consumidor lo incrementa.
+- **`schemaVersion` en la raíz**, entero y **por endpoint**: hoy `2` en OBDX y
+  `1` en K9X. Cualquier cambio que rompa a un consumidor lo incrementa; añadir
+  una federación o una configuración no lo es.
 - **Sin campos derivados.** Nada de `range: max − min`, nada de porcentajes que
   se puedan calcular desde otro campo del mismo payload. El consumidor deriva.
 - **Sin prosa.** Ledes, notas y pies de figura viven en
@@ -28,9 +29,11 @@ tipos, la página se rompe.
 - **Sin colores ni coordenadas.** El endpoint dice `letter: "S"`; que S sea
   violeta lo decide `src/features/methodology/theme.ts`.
 - **Todo se ensambla desde el dominio**, nunca desde un fichero estático: las
-  franjas desde `ObdxConfigurationsRankThresholds`, las letras desde `ObdxRank`,
-  los extranjeros por tier desde `ObdxEventRank`. Así la doc no puede
-  desincronizarse del cálculo real.
+  franjas y sus sub-bandas desde `ObdxConfigurationsRankThresholds`, las letras
+  desde `ObdxRank`, las categorías desde `ObdxEventCategory`, los tiers desde
+  `ObdxConfigurationsRankThresholds.tierFromCompetitorCount` y la curva de mérito
+  desde `ObdxCompetitorEventScore`. Así la doc no puede desincronizarse del
+  cálculo real.
 - Respuesta cacheable (`Cache-Control: public, max-age=86400` o ETag por versión
   de build). No depende del usuario ni de la petición.
 
@@ -38,34 +41,43 @@ tipos, la página se rompe.
 
 ## `GET /obdx/methodology`
 
+`schemaVersion: 2`.
+
 ```jsonc
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "globalScale": { … },
-  "international": { … },
+  "tiers": [ … ],
+  "categories": [ … ],
   "federations": [ … ],
   "meritCurve": { … }
 }
 ```
 
+> **Qué cambió de v1 a v2.** Desapareció el bloque `international` y el
+> `internationalBonus` de cada grado: el bonus internacional ya no existe en el
+> dominio, y con él se fueron el sufijo `+` de las letras y los cinco tiers por
+> número de extranjeros. En su lugar entra la **categoría** del evento
+> (`ObdxEventCategory`), que parte la franja de la configuración en sub-bandas, y
+> los tiers pasan a ser **tres y por número de competidores**. Por eso la raíz
+> tiene dos bloques nuevos —`tiers` y `categories`— y los tiers dejan de colgar
+> del grado para colgar de cada categoría del grado.
+
 ### `globalScale`
 
-La escala 0–1000 y sus seis letras. Fuente: `ObdxRank`.
+La escala 0–1000 y sus seis letras. Fuente: `ObdxRank.fromScore`.
 
 ```jsonc
 {
   "min": 0,
   "max": 1000,
-  "automaticCap": 1000,         // ObdxRank.MAX_AUTOMATIC_SCORE: la fórmula nunca lo supera
-  "internationalSuffix": "+",
   "ranges": [
     { "letter": "E", "min": 0,   "max": 200 },
     { "letter": "D", "min": 201, "max": 400 },
     { "letter": "C", "min": 401, "max": 600 },
     { "letter": "B", "min": 601, "max": 800 },
     { "letter": "A", "min": 801, "max": 900 },
-    { "letter": "S", "min": 901, "max": 1000,
-      "alwaysInternational": true }
+    { "letter": "S", "min": 901, "max": 1000 }
   ]
 }
 ```
@@ -73,46 +85,60 @@ La escala 0–1000 y sus seis letras. Fuente: `ObdxRank`.
 | Campo | Tipo | Notas |
 |---|---|---|
 | `min` / `max` | `int` | Extremos de la escala global. |
-| `automaticCap` | `int` | Techo que puede alcanzar la fórmula. |
-| `internationalSuffix` | `string` | Sufijo de letra internacional. |
 | `ranges[].letter` | `"E"\|"D"\|"C"\|"B"\|"A"\|"S"` | Ordenadas de menor a mayor. |
 | `ranges[].min` / `max` | `int` | Inclusivos y contiguos: `min` = `max` anterior + 1. |
-| `ranges[].alwaysInternational` | `bool?` | Solo `true` en S: cualquier score de 901–1000 se pinta `S+`. |
 
-Las seis letras deben venir siempre, aunque la federación seleccionada no pueda
-alcanzarlas: quién puede llegar a cada una se deduce de `possibleLetters`. La S
-solo la alcanza `OBDX_FCI_SPECIAL_EVENTS`, así que en las federaciones sin esa
-configuración la página la pinta atenuada.
+Las seis letras deben venir siempre, aunque la configuración seleccionada no
+pueda alcanzarlas: quién llega a cada una se deduce de `possibleLetters`, y la
+página pinta atenuado el resto. La `S` solo la alcanza la final del mundial
+(`WC_FINAL`, un 1000 fijo), así que en casi todas las configuraciones va
+atenuada.
 
-### `international`
+### `tiers`
 
-El bonus internacional y el mínimo de extranjeros por tier. Fuente:
-`ObdxEventRank.requiredForeigners` — **única fuente de verdad** de esta tabla.
+El baremo de tiers por número de competidores, que es **global**: no depende de
+la configuración ni de la categoría. Fuente:
+`ObdxConfigurationsRankThresholds.tierFromCompetitorCount`.
 
 ```jsonc
-{
-  "bonusValue": 10,
-  "bonusValueUnit": "%",
-  "foreignersByTier": [
-    { "tier": 1, "competitors": { "min": 1,  "max": 4    }, "requiredForeigners": 1 },
-    { "tier": 2, "competitors": { "min": 5,  "max": 9    }, "requiredForeigners": 1 },
-    { "tier": 3, "competitors": { "min": 10, "max": 19   }, "requiredForeigners": 2 },
-    { "tier": 4, "competitors": { "min": 20, "max": 34   }, "requiredForeigners": 3 },
-    { "tier": 5, "competitors": { "min": 35, "max": null }, "requiredForeigners": 4 }
-  ]
-}
+[
+  { "tier": 1, "competitors": { "min": 1,  "max": 9    } },
+  { "tier": 2, "competitors": { "min": 10, "max": 24   } },
+  { "tier": 3, "competitors": { "min": 25, "max": null } }
+]
 ```
 
 `competitors.max` es `null` **solo** en el último tier — así el frontend sabe que
-esa fila se etiqueta «≥ 35» y no «35 – X». Los cinco tiers siempre presentes y
+esa fila se etiqueta «≥ 25» y no «25 – X». Los tres tiers siempre presentes y
 ordenados por `tier` ascendente.
+
+### `categories`
+
+El catálogo de categorías de evento, con su nombre bilingüe. Fuente:
+`ObdxEventCategory`, y `championship` desde `ObdxConfigurationsRankThresholds.allows`
+(las `WC_*` solo las acepta el grado que acoge el mundial).
+
+```jsonc
+[
+  { "id": "CLUB",     "name": { "es": "Club",             "en": "Club" },          "championship": false },
+  { "id": "OPEN",     "name": { "es": "Open",             "en": "Open" },          "championship": false },
+  { "id": "WC_Q",     "name": { "es": "Clasificatoria WC","en": "WC qualifier" },  "championship": true  },
+  { "id": "WC_SEMI",  "name": { "es": "Semifinal WC",     "en": "WC semi-final" }, "championship": true  },
+  { "id": "WC_FINAL", "name": { "es": "Final WC",         "en": "WC final" },      "championship": true  }
+]
+```
+
+Las cinco siempre presentes y en ese orden. El frontend cruza por `id` lo que
+viene en `federations[].grades[].categories[]`, así que un `id` sin entrada aquí
+se pinta con su propio identificador y canta.
 
 ### `federations[]`
 
 Una entrada por federación, con sus configuraciones. Fuente:
 `ObdxConfigurationsRankThresholds`, agrupando por el prefijo del
-`configuration_id` (`OBDX_FCI_*`, `OBDX_ENCI_*`, `OBDX_RSCE_*`, `CPC_*`) e
-ignorando el sufijo de versión `\.V\d+$`.
+`configuration_id` (`OBDX_FCI_*`, `OBDX_ENCI_*`, `OBDX_RSCE_*`, `OBDX_CPC_*`,
+`OBDX_SPKL_*`, `OBDX_SCC_*`, `OBDX_SKK_*`, `OBDX_NKN_*`) e ignorando el sufijo
+de versión `\.V\d+$`.
 
 ```jsonc
 {
@@ -124,82 +150,100 @@ ignorando el sufijo de versión `\.V\d+$`.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `string` | Corto: es lo que se ve en el combo. Hoy `FCI`, `ENCI`, `RSCE`, `CPC`. |
+| `id` | `string` | Corto: es lo que se ve en el combo. Hoy `FCI`, `ENCI`, `RSCE`, `CPC`, `SPKL`, `SCC`, `SKK`, `NKN`. `NKN` es el código con el que la federación noruega entró en la aplicación; su nombre es Norsk Kennel Klub (NKK). |
 | `name` | `string` | Nombre largo, **no** bilingüe: es un nombre propio. |
-| `grades` | `Grade[]` | Al menos una. Orden de presentación. |
+| `grades` | `Grade[]` | Al menos una, ordenadas por `band.min` ascendente. |
 
 El frontend arranca en `FCI`; si esa federación desaparece cae en la primera del
 array, así que el orden importa.
+
+Una federación que no tenga configuración propia **no sale**: las que corren los
+grados FCI (DKK, LKF, VDH…) ya están representadas por `FCI`.
 
 #### `federations[].grades[]`
 
 ```jsonc
 {
-  "id": "OBDX_FCI_GRADE_1",
-  "name": { "es": "FCI Grade 1", "en": "FCI Grade 1" },
-  "band": { "min": 201, "max": 400 },
-  "possibleLetters": ["D", "D+"],
-  "internationalBonus": { "bonusValue": 10, "bonusValueUnit": "%", "points": 20 },
+  "id": "OBDX_FCI_GRADE_3",
+  "name": { "es": "FCI Grade 3", "en": "FCI Grade 3" },
+  "band": { "min": 601, "max": 1000 },
+  "possibleLetters": ["B", "A", "S"],
+  "categories": [ … ]
+}
+```
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | `string` | El `configuration_id` sin versión y con `.` → `_`. Se cruza con `meritCurve.context.configuration`. |
+| `name` | `{es,en}` | Etiqueta del combo y de la franja en la escala. |
+| `band.min` / `max` | `int` | Franja de la configuración dentro de 0–1000. **Sin `range`**. |
+| `possibleLetters` | `RankLetter[]` | Letras que toca la franja, de menor a mayor. Computado con `ObdxRank.fromScore` sobre los extremos. De aquí sale el atenuado de la escala. |
+| `categories` | `GradeCategory[]` | Las que la configuración admite: `CLUB` y `OPEN` siempre; las tres `WC_*` solo el grado que acoge el mundial. Ordenadas por `subBand.min`. |
+
+#### `federations[].grades[].categories[]`
+
+La categoría no es una etiqueta: es el trozo de la franja al que opta la prueba.
+
+```jsonc
+{
+  "id": "WC_Q",
+  "subBand": { "min": 775, "max": 850 },
+  "fixed": false,
   "tiers": [ … ]
 }
 ```
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `string` | El `configuration_id` sin versión. Se cruza con `meritCurve.context.configuration`. |
-| `name` | `{es,en}` | Etiqueta del combo y de la franja en la escala. |
-| `band.min` / `max` | `int` | Franja de la configuración dentro de 0–1000. **Sin `range`**. |
-| `possibleLetters` | `string[]` | Letras alcanzables, con y sin sufijo (`["B","B+","A","A+"]`). Computado con `ObdxRank.fromScore` sobre los extremos de la franja. De aquí sale el atenuado de la escala. |
-| `internationalBonus.bonusValue` / `Unit` | `int` / `string` | Redundante con `international`, pero por grado. |
-| `internationalBonus.points` | `int` | El bonus **en puntos absolutos ya redondeados** para esta franja. Es lo que pinta la gráfica sin recalcular. |
-| `tiers` | `Tier[]` | Exactamente 5, ordenados por `tier`. |
+| `id` | `CategoryId` | Debe existir en `categories[]` de la raíz. |
+| `subBand.min` / `max` | `int` | `ObdxConfigurationsRankThresholds.subBand(category)`. En las configuraciones sin mundial, `CLUB` se lleva el 75 % bajo de la franja y `OPEN` el resto. |
+| `fixed` | `bool` | `true` cuando `subBand.min == max` (semifinal y final del mundial): el tier no las mueve. El frontend lo usa para imprimir un solo score en vez de tres. |
+| `tiers` | `GradeCategoryTier[]` | Exactamente tres, ordenados por `tier`, uno por entrada de `tiers` de la raíz. |
 
-`tiers[]` se duplica en cada grado a propósito: pesa poco (~15 KB en total) y
-evita que el frontend tenga que recomputar el baremo.
+Las sub-bandas de una configuración **no tienen por qué cubrir la franja
+entera**: en el grado 3 los huecos entre 750 y 775 y entre 850 y 900 son
+deliberados — ahí no puntúa nada que no sea una ronda del mundial.
 
-#### `federations[].grades[].tiers[]`
+`tiers[]` se repite en cada categoría a propósito: pesa poco y evita que el
+frontend recompute el baremo.
+
+#### `federations[].grades[].categories[].tiers[]`
 
 ```jsonc
 {
-  "tier": 1,
-  "competitors": { "min": 1, "max": 4 },
-  "requiredForeigners": 1,
-  "tierContributionPctOfRange": 18,
-  "nationalRankScore": 237,
-  "nationalLetter": "D",
-  "internationalRankScore": 257,
-  "internationalLetter": "D+"
+  "tier": 2,
+  "competitors": { "min": 10, "max": 24 },
+  "rankScore": 825,
+  "letter": "A"
 }
 ```
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `tier` | `1..5` | |
-| `competitors` | `{min:int, max:int\|null}` | `null` en el tier 5. Coincide con `international.foreignersByTier`. |
-| `requiredForeigners` | `int` | Idem. |
-| `tierContributionPctOfRange` | `int` | `tier/5 × 90`, en % del range. |
-| `nationalRankScore` | `int` | `ObdxConfigurationsRankThresholds.eventScore(...)` evaluado en ese tier. **Computado desde la fórmula, no tabla dura.** |
-| `nationalLetter` | `string` | Letra derivada de `nationalRankScore`. |
-| `internationalRankScore` | `int` | `nationalRankScore + internationalBonus.points`. |
-| `internationalLetter` | `string` | Con sufijo. Puede saltar de letra (Grade 3 cruza B→A en 800). |
+| `tier` | `1..3` | |
+| `competitors` | `{min:int, max:int\|null}` | `null` en el tier 3. Coincide con la entrada de `tiers` de la raíz. |
+| `rankScore` | `int` | `ObdxConfigurationsRankThresholds.eventScore(competitorCount, category)` evaluado en ese tier: `subBand.min + round(tier/3 × (subBand.max − subBand.min))`. **Computado desde la fórmula, no tabla dura.** |
+| `letter` | `RankLetter` | `ObdxRank.fromScore(rankScore)`. Puede cambiar dentro de una misma categoría: la clasificatoria del mundial cruza B→A en 800. |
 
-La gráfica de tiers dibuja `nationalRankScore − band.min` en azul y
-`internationalRankScore − nationalRankScore` en ámbar, sobre una base
-transparente en `band.min`. Si esas restas salen negativas, el payload es
-incoherente.
+El `rankScore` del tier nunca cae en `subBand.min`, y es deliberado: ese suelo es
+también el punto desde el que se mide la puntuación de cada competidor. Si
+`rankScore` sale igual al suelo de la sub-banda, o fuera de `[subBand.min,
+subBand.max]`, el payload es incoherente.
 
 ### `meritCurve`
 
-La curva que convierte la nota del competidor en `competitorEventScore`. Hoy
-**fija a un evento de ejemplo** (`OBDX_FCI_GRADE_3`, `eventScore` 800): el
-frontend la pinta tal cual, no reacciona al combo.
+La curva que convierte la nota del competidor en su `competitorEventScore`.
+Fuente: `ObdxCompetitorEventScore`. Hoy **fija a un evento de ejemplo** —la final
+del mundial de grado 3, `eventScore` 1000—: el frontend la pinta tal cual, no
+reacciona al combo de federación.
 
 ```jsonc
 {
   "context": {
     "configuration": "OBDX_FCI_GRADE_3",
-    "eventScore": 800,
-    "band": { "min": 601, "max": 900 },
+    "category": "WC_FINAL",
+    "eventScore": 1000,
+    "gradeFloor": 601,
     "maxScore": 320,
     "qualifications": [
       { "id": "B",   "nameEn": "G",   "score": 192 },
@@ -215,9 +259,9 @@ frontend la pinta tal cual, no reacciona al combo.
   "series": [
     { "id": "floor", "points": [ { "x": 150, "y": 600 }, { "x": 191, "y": 600 } ] },
     { "id": "curve", "points": [
-      { "x": 192, "y": 620.9 }, { "x": 224, "y": 697.02 }, { "x": 256, "y": 773.14 },
-      { "x": 288, "y": 786.57 }, { "x": 320, "y": 800 } ] },
-    { "id": "knee",  "points": [ { "x": 256, "y": 773.14 } ] }
+      { "x": 192, "y": 640.9 }, { "x": 224, "y": 793.52 }, { "x": 256, "y": 946.14 },
+      { "x": 288, "y": 973.07 }, { "x": 320, "y": 1000 } ] },
+    { "id": "knee",  "points": [ { "x": 256, "y": 946.14 } ] }
   ]
 }
 ```
@@ -225,22 +269,26 @@ frontend la pinta tal cual, no reacciona al combo.
 | Campo | Tipo | Notas |
 |---|---|---|
 | `context.configuration` | `string` | Debe existir como `grades[].id`: el frontend lo cruza para poner el nombre en el título. |
-| `context.eventScore` | `int` | Techo de la curva. |
-| `context.band` | `{min,max}` | La franja de esa configuración. |
+| `context.category` | `CategoryId` | Debe existir en `categories[]`; da el nombre de la categoría en el título. |
+| `context.eventScore` | `int` | Techo de la curva: el `rankScore` del evento de ejemplo. |
+| `context.gradeFloor` | `int` | **El suelo del grado, no el de la sub-banda** (`band.min`). Todos los competidores de un grado se miden desde el mismo punto, así que suspender una final del mundial deja en el mismo sitio que suspender un concurso de club. |
 | `context.maxScore` | `int` | Nota máxima del competidor (320 en FCI). Manda en el eje X y en el `stepSize` (`maxScore/10`). |
-| `context.qualifications[]` | `{id, nameEn, score, top?}` | Ordenados por `score`. `id` se muestra en ES, `nameEn` en EN. Exactamente uno con `top: true`. |
-| `parameters.unlockPct` | `int` | % que desbloquea llegar al primer calificativo. |
-| `parameters.kneeShare` | `float` | Fracción de la ventana ganada en la rodilla (0.85 → «85 %»). |
-| `parameters.floorBelowFirstQualification` | `int` | Suelo de quien no llega al primer calificativo. |
+| `context.qualifications[]` | `{id, nameEn, score, top?}` | Ordenados por `score`. `id` se muestra en ES, `nameEn` en EN. Exactamente uno con `top: true`. Salen del `configuration.json` de la configuración. |
+| `parameters.unlockPct` | `int` | % del span que desbloquea llegar al primer calificativo (`QUALIFICATION_UNLOCK_SHARE`). |
+| `parameters.kneeShare` | `float` | Fracción de la ventana del 90 % ganada en la rodilla (0.85 → «85 %»). |
+| `parameters.floorBelowFirstQualification` | `int` | Suelo de quien no llega al primer calificativo: `gradeFloor − 1`. |
 | `series[]` | 3 entradas | `id` ∈ `floor` \| `curve` \| `knee`, **los tres obligatorios**; el frontend los busca por `id`, no por posición. |
 
-Los `x` de `curve` son notas del competidor y los `y` su `competitorEventScore`.
-`knee` es un único punto que debe coincidir con el punto de `curve` en el
-calificativo `top`. El primer `x` de `floor` fija el mínimo del eje X.
+Los `x` de `curve` son notas del competidor y los `y` su `competitorEventScore`,
+con `span = eventScore − gradeFloor`. `knee` es un único punto que debe coincidir
+con el de `curve` en el calificativo `top`. El primer `x` de `floor` fija el
+mínimo del eje X.
 
 ---
 
 ## `GET /k9x/methodology`
+
+`schemaVersion: 1`.
 
 ```jsonc
 {
@@ -363,7 +411,7 @@ correspondiente de `series`.
 ## Test de contrato
 
 Snapshot del JSON serializado contra un golden file. Si alguien toca una franja,
-el umbral de extranjeros o una curva, el test canta y obliga a regenerar el
+una sub-banda de categoría o una curva, el test canta y obliga a regenerar el
 golden — la doc nunca miente. Los dos ficheros de `static/methodology/` sirven
 como golden inicial.
 

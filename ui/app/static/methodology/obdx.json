@@ -852,7 +852,7 @@
       "name": "Clube Português de Canicultura",
       "grades": [
         {
-          "id": "CPC_COBS",
+          "id": "OBDX_CPC_COBS",
           "name": {
             "es": "COBS",
             "en": "COBS"
@@ -1028,6 +1028,640 @@
                   },
                   "rankScore": 200,
                   "letter": "E"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SCC",
+      "name": "Société Centrale Canine",
+      "grades": [
+        {
+          "id": "OBDX_SCC_BREVET",
+          "name": {
+            "es": "SCC Brevet",
+            "en": "SCC Brevet"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": ["E"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 100,
+                "max": 175
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 125,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 150,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 175,
+                  "letter": "E"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 176,
+                "max": 200
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 184,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 192,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 200,
+                  "letter": "E"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SKK",
+      "name": "Svenska Kennelklubben",
+      "grades": [
+        {
+          "id": "OBDX_SKK_STARTKLASS",
+          "name": {
+            "es": "SKK Startklass",
+            "en": "SKK Startklass"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": ["E"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 100,
+                "max": 175
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 125,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 150,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 175,
+                  "letter": "E"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 176,
+                "max": 200
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 184,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 192,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 200,
+                  "letter": "E"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_SKK_KLASS_1",
+          "name": {
+            "es": "SKK Klass 1",
+            "en": "SKK Klass 1"
+          },
+          "band": {
+            "min": 201,
+            "max": 400
+          },
+          "possibleLetters": ["D"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 201,
+                "max": 350
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 251,
+                  "letter": "D"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 300,
+                  "letter": "D"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 350,
+                  "letter": "D"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 351,
+                "max": 400
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 367,
+                  "letter": "D"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 384,
+                  "letter": "D"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 400,
+                  "letter": "D"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_SKK_KLASS_2",
+          "name": {
+            "es": "SKK Klass 2",
+            "en": "SKK Klass 2"
+          },
+          "band": {
+            "min": 401,
+            "max": 600
+          },
+          "possibleLetters": ["C"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 401,
+                "max": 550
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 451,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 500,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 550,
+                  "letter": "C"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 551,
+                "max": 600
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 567,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 584,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 600,
+                  "letter": "C"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "NKN",
+      "name": "Norsk Kennel Klub (NKK)",
+      "grades": [
+        {
+          "id": "OBDX_NKN_KLASSE_1",
+          "name": {
+            "es": "NKK Klasse 1",
+            "en": "NKK Klasse 1"
+          },
+          "band": {
+            "min": 201,
+            "max": 400
+          },
+          "possibleLetters": ["D"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 201,
+                "max": 350
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 251,
+                  "letter": "D"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 300,
+                  "letter": "D"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 350,
+                  "letter": "D"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 351,
+                "max": 400
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 367,
+                  "letter": "D"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 384,
+                  "letter": "D"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 400,
+                  "letter": "D"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_NKN_KLASSE_2",
+          "name": {
+            "es": "NKK Klasse 2",
+            "en": "NKK Klasse 2"
+          },
+          "band": {
+            "min": 401,
+            "max": 600
+          },
+          "possibleLetters": ["C"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 401,
+                "max": 550
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 451,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 500,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 550,
+                  "letter": "C"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 551,
+                "max": 600
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 567,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 584,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 600,
+                  "letter": "C"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_NKN_KLASSE_3",
+          "name": {
+            "es": "NKK Klasse 3",
+            "en": "NKK Klasse 3"
+          },
+          "band": {
+            "min": 601,
+            "max": 750
+          },
+          "possibleLetters": ["B"],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 601,
+                "max": 713
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 638,
+                  "letter": "B"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 676,
+                  "letter": "B"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 713,
+                  "letter": "B"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 714,
+                "max": 750
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 726,
+                  "letter": "B"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 738,
+                  "letter": "B"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 750,
+                  "letter": "B"
                 }
               ]
             }
