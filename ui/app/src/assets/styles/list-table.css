@@ -9,6 +9,19 @@
   overflow-wrap: anywhere;
 }
 
+.list-table__link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.list-table__link:hover,
+.list-table__link:focus-visible {
+  color: var(--accent);
+}
+
 .list-table__actions {
   display: flex;
   align-items: center;

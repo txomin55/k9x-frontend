@@ -51,7 +51,13 @@ vi.mock("@tanstack/solid-router", async (importOriginal) => {
   const actual =
     await importOriginal<typeof import("@tanstack/solid-router")>();
 
-  return { ...actual, useNavigate: () => navigate };
+  return {
+    ...actual,
+    useNavigate: () => navigate,
+    Link: (props: { class?: string; children?: unknown }) => (
+      <a class={props.class}>{props.children as never}</a>
+    ),
+  };
 });
 
 /** Kobalte's segmented control and the virtual grid both observe their box; jsdom has no observer. */
@@ -191,7 +197,7 @@ describe("public dogs route", () => {
     table.click();
 
     const names = [
-      ...container.querySelectorAll(".list-table__name > span"),
+      ...container.querySelectorAll(".list-table__name > a"),
     ].map((cell) => cell.textContent);
     expect(names).toEqual(["Top", "Amber", "Zoe"]);
     const headerButtons = [

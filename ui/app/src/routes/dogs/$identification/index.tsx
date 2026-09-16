@@ -1,7 +1,7 @@
+import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
-import Card from "@lib/components/molecules/card/Card";
 import { createFileRoute } from "@tanstack/solid-router";
-import { For, Show, Suspense, type JSX } from "solid-js";
+import { createSignal, For, Show, Suspense, type JSX } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/dogs/$identification/")({
 
 type Fact = { label: string; value: JSX.Element };
 
-/** How many fact rows the real card shows, so the skeleton reserves the same grid. */
+/** How many fact rows the real page shows, so the skeleton reserves the same grid. */
 const FACT_COUNT = 10;
 
 /**
@@ -41,34 +41,38 @@ function PublicDogDetailRoute() {
 }
 
 /**
- * Reuses the real card's boxes so swapping in the data shifts no layout. It carries no `Page` of its own,
+ * Reuses the real page's boxes so swapping in the data shifts no layout. It carries no `Page` of its own,
  * so it serves both the route-level fallback and the in-page one, where the frame is already on screen.
  */
 function PublicDogDetailSkeleton() {
+  const i18n = useI18n();
+
   return (
-    <Card
-      topLeft={
-        <div class="dog-detail__heading">
-          <AtomSkeleton width="60%" height="var(--text-heading-sm)" />
-        </div>
-      }
-      content={
-        <dl class="dog-detail__facts">
-          <For each={Array.from({ length: FACT_COUNT })}>
-            {() => (
-              <div class="dog-detail__fact">
-                <dt class="text-caption-sm">
-                  <AtomSkeleton width="50%" />
-                </dt>
-                <dd class="text-body-sm">
-                  <AtomSkeleton width="80%" />
-                </dd>
-              </div>
-            )}
-          </For>
-        </dl>
-      }
-    />
+    <div class="dog-detail">
+      <div class="dog-detail__heading">
+        <AtomSkeleton width="60%" height="var(--text-heading-sm)" />
+      </div>
+      <AtomCollapsible
+        open
+        trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
+        content={
+          <dl class="dog-detail__facts">
+            <For each={Array.from({ length: FACT_COUNT })}>
+              {() => (
+                <div class="dog-detail__fact">
+                  <dt class="text-caption-sm">
+                    <AtomSkeleton width="50%" />
+                  </dt>
+                  <dd class="text-body-sm">
+                    <AtomSkeleton width="80%" />
+                  </dd>
+                </div>
+              )}
+            </For>
+          </dl>
+        }
+      />
+    </div>
   );
 }
 
@@ -77,6 +81,7 @@ function PublicDogDetailPage() {
   const params = Route.useParams();
   const dogQuery = usePublicDog(() => params().identification);
   const dog = () => dogQuery.data;
+  const [isInfoOpen, setInfoOpen] = createSignal(true);
 
   /**
    * "No such dog" is only true once the request is done: a query that is still pending — or errored, which
@@ -141,7 +146,7 @@ function PublicDogDetailPage() {
           }
         >
           {(detail) => (
-            <>
+            <div class="dog-detail">
               <PageSeo
                 title={i18n.t("DOGS.DETAIL.META_TITLE", {
                   name: detail().name,
@@ -150,26 +155,25 @@ function PublicDogDetailPage() {
                   name: detail().name,
                 })}
               />
-              <Card
-                topLeft={
-                  <div class="dog-detail__heading">
-                    <span class="dog-detail__name">{detail().name}</span>
-                    <Show when={detail().sex}>
-                      <SexIcon sex={detail().sex ?? undefined} />
-                    </Show>
-                  </div>
-                }
-                topRight={
-                  <Show when={detail().image}>
-                    <img
-                      class="dog-detail__image"
-                      src={detail().image}
-                      alt={detail().name}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </Show>
-                }
+              <div class="dog-detail__heading">
+                <span class="dog-detail__name">{detail().name}</span>
+                <Show when={detail().sex}>
+                  <SexIcon sex={detail().sex ?? undefined} />
+                </Show>
+                <Show when={detail().image}>
+                  <img
+                    class="dog-detail__image"
+                    src={detail().image}
+                    alt={detail().name}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </Show>
+              </div>
+              <AtomCollapsible
+                open={isInfoOpen()}
+                onOpenChange={setInfoOpen}
+                trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
                 content={
                   <dl class="dog-detail__facts">
                     <For each={facts(detail())}>
@@ -183,7 +187,7 @@ function PublicDogDetailPage() {
                   </dl>
                 }
               />
-            </>
+            </div>
           )}
         </Show>
       </Show>

@@ -15,6 +15,7 @@ import PositionMedal from "@/components/routes/stages/$id/events/$eventId/obdx/c
 import ObdxClassificationContent from "@/components/routes/stages/$id/events/$eventId/obdx/ObdxClassificationContent";
 import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseSquares";
 import {
+  hasScoreDetail,
   isLive,
   positionTrend,
   type TrendDirection,
@@ -471,19 +472,21 @@ function EventClassificationPage() {
       header: () => null,
       enableSorting: false,
       cell: (info) => (
-        <button
-          type="button"
-          class="obdx-clf-table__expander"
-          aria-label={
-            info.row.getIsExpanded()
-              ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
-              : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
-          }
-          aria-expanded={info.row.getIsExpanded()}
-          onClick={info.row.getToggleExpandedHandler()}
-        >
-          {info.row.getIsExpanded() ? "▾" : "▸"}
-        </button>
+        <Show when={info.row.getCanExpand()}>
+          <button
+            type="button"
+            class="obdx-clf-table__expander"
+            aria-label={
+              info.row.getIsExpanded()
+                ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
+                : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
+            }
+            aria-expanded={info.row.getIsExpanded()}
+            onClick={info.row.getToggleExpandedHandler()}
+          >
+            {info.row.getIsExpanded() ? "▾" : "▸"}
+          </button>
+        </Show>
       ),
     },
   ]);
@@ -511,7 +514,7 @@ function EventClassificationPage() {
       <AtomTable<StageEventClassificationItemResponseDTO>
         data={sortedCompetitors()}
         columns={columns()}
-        getRowCanExpand={() => true}
+        getRowCanExpand={(row) => hasScoreDetail(row.original)}
         expandOnRowClick
         getRowId={(row) => row.dog.id}
         expanded={expandedState()}

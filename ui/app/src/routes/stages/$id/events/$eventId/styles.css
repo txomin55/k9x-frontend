@@ -263,9 +263,8 @@
 }
 
 .obdx-clf__pinned {
-  flex: 0 1 auto;
-  min-height: 0;
-  overflow-y: auto;
+  flex: 0 0 auto;
+  overflow: visible;
 
   padding-top: var(--unit-1);
   display: grid;

@@ -1,5 +1,6 @@
 import {
   createFileRoute,
+  Link,
   useNavigate,
   useParams,
 } from "@tanstack/solid-router";
@@ -646,7 +647,19 @@ function CompetitionStageDetailBody(props: {
         {
           accessorKey: "name",
           header: i18n.t("MY.COMPETITIONS.STAGE_DETAIL.NAME"),
-          cell: (info) => info.getValue<string>(),
+          cell: (info) => (
+            <Link
+              class="list-table__link"
+              to="/my/competitions/$id/stages/$stageId/events/$eventId"
+              params={{
+                id: props.stage().competitionId,
+                stageId: props.stage().id,
+                eventId: info.row.original.id,
+              }}
+            >
+              {info.row.original.name}
+            </Link>
+          ),
         },
         {
           id: "status",
@@ -668,13 +681,15 @@ function CompetitionStageDetailBody(props: {
         },
       ];
 
-      cols.push({
-        id: "actions",
-        header: () => null,
-        enableSorting: false,
-        cell: (info) =>
-          eventActions(() => info.row.original, VIEW.TABLE, editing),
-      });
+      if (editing) {
+        cols.push({
+          id: "actions",
+          header: () => null,
+          enableSorting: false,
+          cell: (info) =>
+            eventActions(() => info.row.original, VIEW.TABLE, editing),
+        });
+      }
 
       return cols;
     },

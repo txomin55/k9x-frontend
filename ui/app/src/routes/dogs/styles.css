@@ -51,7 +51,7 @@
 }
 
 /* Columns are fixed, so a long name is cut with an ellipsis instead of wrapping out of its row. */
-.public-dogs__table .list-table__name > span {
+.public-dogs__table .list-table__name > :is(span, a) {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -76,4 +76,13 @@
     margin-bottom: var(--unit-1);
     padding: var(--unit-05);
   }
+}
+
+.page:has(.public-dogs, .public-dogs__table) {
+  padding-bottom: var(--unit-1);
+}
+
+.public-dogs__table .atom-table__scroller {
+  box-sizing: border-box;
+  padding-bottom: var(--unit-8);
 }

@@ -407,6 +407,7 @@ function CompetitionDetailBody(props: {
       value: COMPETITION_DETAIL_TABS.STAGES,
       content: (
         <StagesSection
+          competitionId={props.competition()?.id ?? ""}
           draft={stageDialogDraft}
           editingStageId={editingStageId()}
           isEditing={isEditing()}

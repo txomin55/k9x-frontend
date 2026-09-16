@@ -5,7 +5,7 @@ import AtomSelect, {
 import AtomTable, {
   type ColumnDef,
 } from "@lib/components/atoms/table/AtomTable";
-import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, Show, Suspense } from "solid-js";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -47,6 +47,7 @@ const CARD_HEIGHT_PX = 220;
 // On a phone the grid is a single column, but the card holds the same rows, so it keeps the same height.
 const MOBILE_CARD_HEIGHT_PX = 220;
 const TABLE_ROW_HEIGHT_PX = 56;
+const FLOATING_PILL_CLEARANCE_PX = 72;
 
 /**
  * Column widths for the table view. Only the name column grows: the rest are fixed so the layout does
@@ -165,7 +166,13 @@ function PublicDogsPage() {
         header: i18n.t("DOGS.INDEX.NAME"),
         cell: (info) => (
           <div class="list-table__name">
-            <span>{info.row.original.name}</span>
+            <Link
+              class="list-table__link"
+              to="/dogs/$identification"
+              params={{ identification: info.row.original.identification }}
+            >
+              {info.row.original.name}
+            </Link>
           </div>
         ),
       },
@@ -233,6 +240,7 @@ function PublicDogsPage() {
         rowHeight={
           device() === "mobile" ? MOBILE_CARD_HEIGHT_PX : CARD_HEIGHT_PX
         }
+        endSpacing={FLOATING_PILL_CLEARANCE_PX}
         hasMore={hasMore()}
         isLoadingMore={isLoadingMore()}
         onLoadMore={loadMoreFrom(VIEW.LIST)}

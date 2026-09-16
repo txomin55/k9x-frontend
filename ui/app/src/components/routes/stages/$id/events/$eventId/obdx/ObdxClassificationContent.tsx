@@ -5,6 +5,7 @@ import ObdxExerciseSquares from "@/components/routes/stages/$id/events/$eventId/
 import ObdxExerciseDetailTable from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxExerciseDetailTable";
 import TotalBlock from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/atoms/total-block/TotalBlock";
 import { Show } from "solid-js";
+import { hasScoreDetail } from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/classificationCard.utils";
 import "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/styles.css";
 
 type ObdxClassificationContentProps = {
@@ -19,6 +20,7 @@ export default function ObdxClassificationContent(
   props: ObdxClassificationContentProps,
 ) {
   const { t } = useI18n();
+  const showDetail = () => hasScoreDetail(props.competitor);
 
   return (
     <div class="obdx-clf__body">
@@ -32,20 +34,22 @@ export default function ObdxClassificationContent(
           />
         </div>
       </Show>
-      <Show
-        when={!props.inlineDetail}
-        fallback={<ObdxExerciseDetailTable competitor={props.competitor} />}
-      >
-        <AtomCollapsible
-          open={props.open}
-          onOpenChange={props.onOpenChange}
-          trigger={
-            props.open
-              ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
-              : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
-          }
-          content={<ObdxExerciseDetailTable competitor={props.competitor} />}
-        />
+      <Show when={showDetail()}>
+        <Show
+          when={!props.inlineDetail}
+          fallback={<ObdxExerciseDetailTable competitor={props.competitor} />}
+        >
+          <AtomCollapsible
+            open={props.open}
+            onOpenChange={props.onOpenChange}
+            trigger={
+              props.open
+                ? t("STAGES.CLASSIFICATION_CARD.CLOSE")
+                : t("STAGES.CLASSIFICATION_CARD.SEE_DETAIL")
+            }
+            content={<ObdxExerciseDetailTable competitor={props.competitor} />}
+          />
+        </Show>
       </Show>
     </div>
   );

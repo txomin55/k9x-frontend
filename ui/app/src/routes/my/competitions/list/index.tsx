@@ -1,14 +1,9 @@
-import AtomButton, {
-  BUTTON_TYPES,
-} from "@lib/components/atoms/button/AtomButton";
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import AtomSvgIcon from "@lib/components/atoms/svg-icon/AtomSvgIcon";
 import AtomTable, {
   type ColumnDef,
 } from "@lib/components/atoms/table/AtomTable";
-import { createFileRoute, useNavigate } from "@tanstack/solid-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, For, Show, Suspense } from "solid-js";
-import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import FloatingToggleCircle from "@/components/common/floating-toggle-circle/FloatingToggleCircle";
@@ -86,9 +81,6 @@ function MyCompetitionsIndexPage() {
     );
   });
 
-  const openDetail = (id: string) =>
-    navigate({ to: "/my/competitions/$id", params: { id } });
-
   const columns = createMemo<ColumnDef<CompetitionResponseDTO, any>[]>(() => {
     const cols: ColumnDef<CompetitionResponseDTO, any>[] = [
       {
@@ -97,7 +89,13 @@ function MyCompetitionsIndexPage() {
         cell: (info) => (
           <div class="list-table__name">
             <CountryFlag country={info.row.original.country} />
-            <span>{info.row.original.name}</span>
+            <Link
+              class="list-table__link"
+              to="/my/competitions/$id"
+              params={{ id: info.row.original.id }}
+            >
+              {info.row.original.name}
+            </Link>
           </div>
         ),
       },
@@ -118,26 +116,6 @@ function MyCompetitionsIndexPage() {
         cell: (info) => info.getValue<string>(),
       });
     }
-
-    cols.push({
-      id: "actions",
-      header: () => null,
-      enableSorting: false,
-      cell: (info) => (
-        <div class="list-table__actions">
-          <AtomButton
-            type={BUTTON_TYPES.ACCENT}
-            onClick={() => openDetail(info.row.original.id)}
-          >
-            <AtomSvgIcon
-              src={eyeIcon}
-              alt={i18n.t("MY.COMPETITIONS.LIST.VIEW_DETAIL")}
-              tinted
-            />
-          </AtomButton>
-        </div>
-      ),
-    });
 
     return cols;
   });

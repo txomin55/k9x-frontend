@@ -1,5 +1,6 @@
 import type {
   StageEventClassificationExerciseScoresResponseDTO,
+  StageEventClassificationItemResponseDTO,
   StageEventClassificationScoreResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
@@ -121,4 +122,14 @@ export function isLive(status: string | null | undefined): boolean {
   if (!status) return false;
   const normalized = status.toLowerCase();
   return normalized.includes("live") || normalized.includes("progress");
+}
+
+export function hasScoreDetail(
+  competitor: Pick<StageEventClassificationItemResponseDTO, "exercises">,
+): boolean {
+  return (competitor.exercises ?? []).some(
+    (exercise) =>
+      exercise.exerciseScore !== null ||
+      (exercise.scores ?? []).some((score) => score.value !== null),
+  );
 }

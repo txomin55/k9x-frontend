@@ -1,4 +1,5 @@
 import { type Accessor, createMemo, createSignal, Index, Show } from "solid-js";
+import { Link } from "@tanstack/solid-router";
 import type { CompetitionResponseDTO } from "@/services/secured/competition-crud/competitionCrud.types";
 import StageEditorForm from "@/components/routes/my/competitions/$id/stages-section/StageEditorForm";
 import { formatStageDateRange } from "@/utils/date";
@@ -12,7 +13,6 @@ import AtomTable, {
   type ColumnDef,
 } from "@lib/components/atoms/table/AtomTable";
 import Card from "@lib/components/molecules/card/Card";
-import eyeIcon from "@/assets/miscelaneous/eye.svg";
 import pencilIcon from "@/assets/miscelaneous/pencil.svg";
 import trashIcon from "@/assets/miscelaneous/trash.svg";
 import ConfirmActionButton from "@/components/common/confirm-action-button/ConfirmActionButton";
@@ -28,6 +28,7 @@ type StageItem = NonNullable<CompetitionResponseDTO["stages"]>[number];
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
 
 type StagesSectionProps = {
+  competitionId: string;
   draft: Accessor<StageEditorModel | null>;
   editingStageId: string | null;
   isEditing: boolean;
@@ -96,68 +97,52 @@ export default function StagesSection(props: StagesSectionProps) {
       </AtomButton>
     );
 
-  const tableActions = (stage: StageItem, isEditing: boolean) =>
-    isEditing ? (
-      <div class="list-table__actions">
-        <Show when={canDeleteStage(stage.status)}>
-          <ConfirmActionButton
-            text={stage.name}
-            onConfirm={() => props.onDeleteStage(stage.id)}
-          >
-            <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
-              <AtomSvgIcon
-                src={trashIcon}
-                alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.DELETE")}
-                tinted
-              />
-            </AtomButton>
-          </ConfirmActionButton>
-        </Show>
-        <AtomButton
-          type={BUTTON_TYPES.ACCENT}
-          onClick={() => props.onOpenStageEditor(stage)}
+  const tableActions = (stage: StageItem) => (
+    <div class="list-table__actions">
+      <Show when={canDeleteStage(stage.status)}>
+        <ConfirmActionButton
+          text={stage.name}
+          onConfirm={() => props.onDeleteStage(stage.id)}
         >
-          <AtomSvgIcon
-            src={pencilIcon}
-            alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}
-            tinted
-          />
-        </AtomButton>
-        <AtomDialog
-          closeButtonText={i18n.t(
-            "MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG",
-          )}
-          content={
-            <StageEditorForm
-              draft={props.draft}
-              onCancel={props.onCloseStageEditor}
-              onDraftChange={props.onUpdateStageDialogDraft}
-              onSave={props.onSaveStageEditor}
+          <AtomButton type={BUTTON_TYPES.DESTRUCTIVE}>
+            <AtomSvgIcon
+              src={trashIcon}
+              alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.DELETE")}
+              tinted
             />
-          }
-          onOpenChange={(isOpen) => {
-            if (!isOpen && props.editingStageId === stage.id) {
-              props.onCloseStageEditor();
-            }
-          }}
-          open={props.editingStageId === stage.id}
-          title={`${i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")} ${stage.name}`}
+          </AtomButton>
+        </ConfirmActionButton>
+      </Show>
+      <AtomButton
+        type={BUTTON_TYPES.ACCENT}
+        onClick={() => props.onOpenStageEditor(stage)}
+      >
+        <AtomSvgIcon
+          src={pencilIcon}
+          alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")}
+          tinted
         />
-      </div>
-    ) : (
-      <div class="list-table__actions">
-        <AtomButton
-          type={BUTTON_TYPES.ACCENT}
-          onClick={() => props.onNavigateToStage(stage.id)}
-        >
-          <AtomSvgIcon
-            src={eyeIcon}
-            alt={i18n.t("MY.COMPETITIONS.STAGES_SECTION.INFO")}
-            tinted
+      </AtomButton>
+      <AtomDialog
+        closeButtonText={i18n.t("MY.COMPETITIONS.STAGES_SECTION.CLOSE_DIALOG")}
+        content={
+          <StageEditorForm
+            draft={props.draft}
+            onCancel={props.onCloseStageEditor}
+            onDraftChange={props.onUpdateStageDialogDraft}
+            onSave={props.onSaveStageEditor}
           />
-        </AtomButton>
-      </div>
-    );
+        }
+        onOpenChange={(isOpen) => {
+          if (!isOpen && props.editingStageId === stage.id) {
+            props.onCloseStageEditor();
+          }
+        }}
+        open={props.editingStageId === stage.id}
+        title={`${i18n.t("MY.COMPETITIONS.STAGES_SECTION.EDIT")} ${stage.name}`}
+      />
+    </div>
+  );
 
   const columns = createMemo<ColumnDef<StageItem, any>[]>(() => {
     const isEditing = props.isEditing;
@@ -165,7 +150,18 @@ export default function StagesSection(props: StagesSectionProps) {
       {
         accessorKey: "name",
         header: i18n.t("MY.COMPETITIONS.STAGES_SECTION.NAME"),
-        cell: (info) => info.getValue<string>(),
+        cell: (info) => (
+          <Link
+            class="list-table__link"
+            to="/my/competitions/$id/stages/$stageId"
+            params={{
+              id: props.competitionId,
+              stageId: info.row.original.id,
+            }}
+          >
+            {info.row.original.name}
+          </Link>
+        ),
       },
       {
         id: "status",
@@ -201,12 +197,14 @@ export default function StagesSection(props: StagesSectionProps) {
       });
     }
 
-    cols.push({
-      id: "actions",
-      header: () => null,
-      enableSorting: false,
-      cell: (info) => tableActions(info.row.original, isEditing),
-    });
+    if (isEditing) {
+      cols.push({
+        id: "actions",
+        header: () => null,
+        enableSorting: false,
+        cell: (info) => tableActions(info.row.original),
+      });
+    }
 
     return cols;
   });
