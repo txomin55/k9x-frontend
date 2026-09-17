@@ -1,8 +1,7 @@
 import { createEffect } from "solid-js";
 import { useAuthUser } from "@/stores/auth/auth";
 import {
-  enablePushNotificationsSetup,
-  isPushOptedOut,
+  registerPushSubscriptionSetup,
   syncPushNotificationsState,
 } from "@/stores/push-notifications/pushNotifications";
 
@@ -12,13 +11,12 @@ export default function NotificationGuard(props) {
   createEffect(async () => {
     if (!user()) return;
 
-    if (isPushOptedOut()) {
-      await syncPushNotificationsState();
-      return;
-    }
+    syncPushNotificationsState();
 
-    const enabled = await enablePushNotificationsSetup();
-    if (!enabled) await syncPushNotificationsState();
+    // Registrar es mantenimiento, no un gesto del usuario: mantiene este dispositivo como destino
+    // (el endpoint puede haber rotado) sin tocar la preferencia de la cuenta, que solo escribe el
+    // checkbox. Asi una cuenta silenciada no se reactiva sola al abrir la app en otro dispositivo.
+    await registerPushSubscriptionSetup();
   });
 
   return <>{props.children}</>;

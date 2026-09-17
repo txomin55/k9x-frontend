@@ -79,6 +79,11 @@ export default async function defaultApiResponses(page: Page) {
       pathname: "/secured/set-notification-setup",
     }),
     setRouteResponses(page, {
+      method: "PUT",
+      payload: {},
+      pathname: "/secured/notification-enabled",
+    }),
+    setRouteResponses(page, {
       method: "POST",
       payload: logoutPayload,
       pathname: "/secured/logout",

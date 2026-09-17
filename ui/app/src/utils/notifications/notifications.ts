@@ -4,7 +4,6 @@ import {
   nativeGetPushSubscription,
   nativeRequestNotificationPermission,
   nativeSubscribeToPushManager,
-  nativeUnsubscribeFromPushManager,
 } from "@/utils/service-worker/native_features/notifications/push-notifications";
 
 const requestNotificationPermission = async () => {
@@ -77,31 +76,9 @@ const getPushNotificationsState = async () => {
   return { permission, subscription };
 };
 
-/**
- * Returns the endpoint that was unsubscribed, or `null` when there was nothing to unsubscribe. The
- * endpoint is read before the subscription is dropped because it is the only way the server can tell
- * which device to forget.
- */
-const unsubscribeFromPushNotifications = async () => {
-  if (!isPushNotificationSupported()) return null;
-
-  const registration = await navigator.serviceWorker.ready;
-  if (!registration) return null;
-
-  const subscription = await nativeGetPushSubscription(registration);
-  if (!subscription) return null;
-
-  const { endpoint } = subscription;
-
-  await nativeUnsubscribeFromPushManager(subscription);
-
-  return endpoint;
-};
-
 export {
   requestNotificationPermission,
   enablePushNotifications,
   getPushNotificationsState,
   isPushNotificationSupported,
-  unsubscribeFromPushNotifications,
 };

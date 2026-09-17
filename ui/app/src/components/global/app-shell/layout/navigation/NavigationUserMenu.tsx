@@ -58,7 +58,7 @@ export default function NavigationUserMenu(props: NavigationUserMenuProps) {
   const pushSupported = isPushNotificationSupported();
 
   onMount(() => {
-    if (pushSupported) void syncPushNotificationsState();
+    if (pushSupported) syncPushNotificationsState();
   });
 
   const handleLogout = async () => {

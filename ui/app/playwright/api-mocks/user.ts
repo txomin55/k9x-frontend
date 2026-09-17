@@ -7,6 +7,7 @@ export const organizerUser: UserProfileResponseDTO = {
   email: "organizer@k9x.test",
   image: TRANSPARENT_PNG,
   name: "Olivia Organizer",
+  notificationsEnabled: true,
   organizer: true,
   subscriptions: { eventIds: [] },
 };
@@ -15,6 +16,7 @@ export const competitorUser: UserProfileResponseDTO = {
   email: "competitor@k9x.test",
   image: TRANSPARENT_PNG,
   name: "Carlos Competitor",
+  notificationsEnabled: true,
   organizer: false,
   subscriptions: { eventIds: [] },
 };

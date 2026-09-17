@@ -1,19 +1,17 @@
 import { createSignal } from "solid-js";
 import {
-  removeNotificationSetup,
   setNotificationSetup,
+  setNotificationsEnabled,
   toPushSubscriptionRequest,
 } from "@/services/secured/notification-setup/notificationSetup";
 import {
   enablePushNotifications,
   getPushNotificationsState,
   isPushNotificationSupported,
-  unsubscribeFromPushNotifications,
 } from "@/utils/notifications/notifications";
+import { getAuthUser } from "@/stores/auth/auth";
 import { translate } from "@/stores/i18n/i18n";
 import { showToast } from "@/stores/toast/toast";
-
-const PUSH_PREFERENCE_KEY = "k9x_push_notifications_enabled";
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY as
   | string
@@ -39,67 +37,61 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 /**
- * The browser never lets us revoke a granted permission from script, so an
- * explicit opt-out is persisted locally to keep the auto-subscribe effect from
- * re-enabling push behind the user's back.
+ * The checkbox shows the account's setting, which the user may have flipped from another device, so it
+ * comes from the profile rather than from what this browser happens to have subscribed. A device with
+ * no permission still renders the account state — it just is not one of the devices being reached.
  */
-const isPushOptedOut = () =>
-  globalThis.localStorage?.getItem(PUSH_PREFERENCE_KEY) === "false";
-
-const persistPushPreference = (enabled: boolean) =>
-  globalThis.localStorage?.setItem(PUSH_PREFERENCE_KEY, String(enabled));
-
-const syncPushNotificationsState = async () => {
-  const { permission, subscription } = await getPushNotificationsState();
-
-  const enabled =
-    permission === "granted" && Boolean(subscription) && !isPushOptedOut();
+const syncPushNotificationsState = () => {
+  const enabled = Boolean(getAuthUser()?.notificationsEnabled);
 
   setPushNotificationsEnabled(enabled);
 
   return enabled;
 };
 
-const enablePushNotificationsSetup = async () => {
+/**
+ * Makes this device a delivery target, without claiming the user wants notifications: that is the
+ * account setting, and only the checkbox writes it. Safe to call on every start, and a no-op when the
+ * browser has not granted permission, since there is no subscription to register without it.
+ */
+const registerPushSubscriptionSetup = async () => {
   if (!VAPID_PUBLIC_KEY) return false;
 
   const { subscription } = await enablePushNotifications(
     urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
   );
 
-  if (!subscription) {
-    setPushNotificationsEnabled(false);
-    return false;
-  }
+  if (!subscription) return false;
 
   const payload = toPushSubscriptionRequest(subscription);
-  if (!payload) {
-    setPushNotificationsEnabled(false);
-    return false;
-  }
+  if (!payload) return false;
 
   await setNotificationSetup(payload);
-
-  persistPushPreference(true);
-  setPushNotificationsEnabled(true);
 
   return true;
 };
 
 /**
- * Dropping the browser subscription is local and always succeeds, so the checkbox stays off even if the
- * server never hears about it: the row is pruned anyway the next time a push to that endpoint comes back
- * 410 Gone. When offline the removal is queued and replayed on reconnect.
+ * Turning notifications off never drops the browser subscription: its keys cannot be recreated from the
+ * server, so a device that forgets them could not be reached again by turning notifications back on
+ * from somewhere else — which is the whole point of the setting being account-wide. The server simply
+ * stops resolving this account's devices as targets.
  */
-const disablePushNotificationsSetup = async () => {
-  const endpoint = await unsubscribeFromPushNotifications();
+const disablePushNotificationsSetup = () =>
+  setNotificationsEnabled({ enabled: false });
 
-  persistPushPreference(false);
-  setPushNotificationsEnabled(false);
+/**
+ * Enabling both registers this device and turns the account on. Registering first means the device the
+ * user is looking at is already a target by the time the setting flips.
+ */
+const enablePushNotificationsSetup = async () => {
+  const registered = await registerPushSubscriptionSetup();
 
-  if (!endpoint) return;
+  if (!registered) return false;
 
-  await removeNotificationSetup({ endpoint });
+  await setNotificationsEnabled({ enabled: true });
+
+  return true;
 };
 
 /**
@@ -124,7 +116,6 @@ const togglePushNotifications = async (enabled: boolean) => {
     const granted = await enablePushNotificationsSetup().catch(() => false);
 
     if (!granted) {
-      persistPushPreference(previouslyEnabled);
       setPushNotificationsEnabled(previouslyEnabled);
       showToast(translate("GLOBAL.NAVIGATION.NOTIFICATIONS_UNAVAILABLE"));
     }
@@ -134,11 +125,11 @@ const togglePushNotifications = async (enabled: boolean) => {
 };
 
 export {
-  enablePushNotificationsSetup,
+  getPushNotificationsState,
   isPushNotificationSupported,
-  isPushOptedOut,
   pushNotificationsBusy,
   pushNotificationsEnabled,
+  registerPushSubscriptionSetup,
   syncPushNotificationsState,
   togglePushNotifications,
 };

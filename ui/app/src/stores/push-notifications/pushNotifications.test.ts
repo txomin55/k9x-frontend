@@ -2,23 +2,26 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const enablePushNotifications = vi.hoisted(() => vi.fn());
 const getPushNotificationsState = vi.hoisted(() => vi.fn());
-const unsubscribeFromPushNotifications = vi.hoisted(() => vi.fn());
 const setNotificationSetup = vi.hoisted(() => vi.fn());
-const removeNotificationSetup = vi.hoisted(() => vi.fn());
+const setNotificationsEnabled = vi.hoisted(() => vi.fn());
 const toPushSubscriptionRequest = vi.hoisted(() => vi.fn());
+const getAuthUser = vi.hoisted(() => vi.fn());
 const showToast = vi.hoisted(() => vi.fn());
 
 vi.mock("@/utils/notifications/notifications", () => ({
   enablePushNotifications,
   getPushNotificationsState,
   isPushNotificationSupported: () => true,
-  unsubscribeFromPushNotifications,
 }));
 
 vi.mock("@/services/secured/notification-setup/notificationSetup", () => ({
-  removeNotificationSetup,
   setNotificationSetup,
+  setNotificationsEnabled,
   toPushSubscriptionRequest,
+}));
+
+vi.mock("@/stores/auth/auth", () => ({
+  getAuthUser,
 }));
 
 vi.mock("@/stores/i18n/i18n", () => ({
@@ -53,10 +56,10 @@ const deferred = <TValue>() => {
 describe("togglePushNotifications", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    globalThis.localStorage.clear();
     toPushSubscriptionRequest.mockReturnValue(PAYLOAD);
     setNotificationSetup.mockResolvedValue(undefined);
-    removeNotificationSetup.mockResolvedValue(undefined);
+    setNotificationsEnabled.mockResolvedValue(undefined);
+    getAuthUser.mockReturnValue({ notificationsEnabled: false });
   });
 
   it("checks the box before the subscription round-trip finishes", async () => {
@@ -75,6 +78,7 @@ describe("togglePushNotifications", () => {
 
     expect(pushNotificationsEnabled()).toBe(true);
     expect(setNotificationSetup).toHaveBeenCalledWith(PAYLOAD);
+    expect(setNotificationsEnabled).toHaveBeenCalledWith({ enabled: true });
   });
 
   it("unchecks the box again when the device refuses to subscribe", async () => {
@@ -87,14 +91,15 @@ describe("togglePushNotifications", () => {
 
     expect(pushNotificationsEnabled()).toBe(false);
     expect(setNotificationSetup).not.toHaveBeenCalled();
+    expect(setNotificationsEnabled).not.toHaveBeenCalled();
     expect(showToast).toHaveBeenCalledWith(
       "GLOBAL.NAVIGATION.NOTIFICATIONS_UNAVAILABLE",
     );
   });
 
-  it("unchecks the box before the removal round-trip finishes and forgets the device", async () => {
-    const unsubscribing = deferred<string>();
-    unsubscribeFromPushNotifications.mockReturnValue(unsubscribing.promise);
+  it("turns the account off without dropping the browser subscription", async () => {
+    const disabling = deferred<undefined>();
+    setNotificationsEnabled.mockReturnValueOnce(undefined);
     enablePushNotifications.mockResolvedValue({ subscription: SUBSCRIPTION });
 
     const { pushNotificationsEnabled, togglePushNotifications } =
@@ -103,33 +108,73 @@ describe("togglePushNotifications", () => {
     await togglePushNotifications(true);
     expect(pushNotificationsEnabled()).toBe(true);
 
+    setNotificationsEnabled.mockReturnValueOnce(disabling.promise);
     const toggling = togglePushNotifications(false);
 
     expect(pushNotificationsEnabled()).toBe(false);
 
-    unsubscribing.resolve(SUBSCRIPTION.endpoint);
+    disabling.resolve(undefined);
     await toggling;
 
     expect(pushNotificationsEnabled()).toBe(false);
-    expect(removeNotificationSetup).toHaveBeenCalledWith({
-      endpoint: SUBSCRIPTION.endpoint,
+    expect(setNotificationsEnabled).toHaveBeenLastCalledWith({
+      enabled: false,
     });
   });
+});
 
-  it("keeps the box unchecked when the removal never reaches the server", async () => {
-    enablePushNotifications.mockResolvedValue({ subscription: SUBSCRIPTION });
-    unsubscribeFromPushNotifications.mockResolvedValue(SUBSCRIPTION.endpoint);
-    removeNotificationSetup.mockRejectedValue(new Error("offline"));
+describe("syncPushNotificationsState", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    const { pushNotificationsEnabled, togglePushNotifications } =
+  it("renders the account setting, not what this browser has subscribed", async () => {
+    getAuthUser.mockReturnValue({ notificationsEnabled: true });
+
+    const { pushNotificationsEnabled, syncPushNotificationsState } =
       await importStore();
 
-    await togglePushNotifications(true);
-    await togglePushNotifications(false).catch(() => {});
+    expect(syncPushNotificationsState()).toBe(true);
+    expect(pushNotificationsEnabled()).toBe(true);
+    expect(getPushNotificationsState).not.toHaveBeenCalled();
+  });
+
+  it("stays off for an account with notifications turned off elsewhere", async () => {
+    getAuthUser.mockReturnValue({ notificationsEnabled: false });
+
+    const { pushNotificationsEnabled, syncPushNotificationsState } =
+      await importStore();
+
+    syncPushNotificationsState();
 
     expect(pushNotificationsEnabled()).toBe(false);
-    expect(
-      globalThis.localStorage.getItem("k9x_push_notifications_enabled"),
-    ).toBe("false");
+  });
+});
+
+describe("registerPushSubscriptionSetup", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    toPushSubscriptionRequest.mockReturnValue(PAYLOAD);
+    setNotificationSetup.mockResolvedValue(undefined);
+  });
+
+  it("registers the device without touching the account setting", async () => {
+    enablePushNotifications.mockResolvedValue({ subscription: SUBSCRIPTION });
+
+    const { registerPushSubscriptionSetup } = await importStore();
+
+    await expect(registerPushSubscriptionSetup()).resolves.toBe(true);
+    expect(setNotificationSetup).toHaveBeenCalledWith(PAYLOAD);
+    expect(setNotificationsEnabled).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when the browser granted no permission", async () => {
+    enablePushNotifications.mockResolvedValue({ subscription: null });
+
+    const { registerPushSubscriptionSetup } = await importStore();
+
+    await expect(registerPushSubscriptionSetup()).resolves.toBe(false);
+    expect(setNotificationSetup).not.toHaveBeenCalled();
+    expect(setNotificationsEnabled).not.toHaveBeenCalled();
   });
 });

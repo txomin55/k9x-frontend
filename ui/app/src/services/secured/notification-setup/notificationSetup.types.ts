@@ -4,6 +4,6 @@ export interface PushSubscriptionRequestDTO {
   auth: string;
 }
 
-export interface PushUnsubscribeRequestDTO {
-  endpoint: string;
+export interface NotificationsEnabledRequestDTO {
+  enabled: boolean;
 }
