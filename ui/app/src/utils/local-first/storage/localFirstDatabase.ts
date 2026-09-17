@@ -2,7 +2,7 @@ import type Dexie from "dexie";
 import type { Table } from "dexie";
 
 const DATABASE_NAME = "k9x-local-first";
-const DATABASE_VERSION = 4;
+const DATABASE_VERSION = 5;
 
 export const LOCAL_FIRST_STORE_NAMES = {
   pendingTasks: "pending_tasks",
@@ -19,12 +19,27 @@ const loadDatabase = async (): Promise<Dexie> => {
   const { default: Dexie } = await import("dexie");
   const database = new Dexie(DATABASE_NAME);
 
-  database.version(DATABASE_VERSION).stores({
-    [LOCAL_FIRST_STORE_NAMES.pendingTasks]:
-      "id,status,entityId,entityType,timestamp,[status+timestamp]",
-    [LOCAL_FIRST_STORE_NAMES.querySnapshots]: "id,updatedAt",
-    [LOCAL_FIRST_STORE_NAMES.notificationTranslations]: "id",
-  });
+  database
+    .version(DATABASE_VERSION)
+    .stores({
+      [LOCAL_FIRST_STORE_NAMES.pendingTasks]:
+        "id,status,entityId,entityType,timestamp,[status+timestamp]",
+      [LOCAL_FIRST_STORE_NAMES.querySnapshots]:
+        "id,updatedAt,prefix,[prefix+lastReadAt]",
+      [LOCAL_FIRST_STORE_NAMES.notificationTranslations]: "id",
+    })
+    .upgrade((transaction) =>
+      transaction
+        .table(LOCAL_FIRST_STORE_NAMES.querySnapshots)
+        .toCollection()
+        .modify((snapshot) => {
+          snapshot.lastReadAt ??= snapshot.updatedAt ?? Date.now();
+          const separatorIndex = String(snapshot.id).indexOf(":");
+          if (separatorIndex > 0) {
+            snapshot.prefix = String(snapshot.id).slice(0, separatorIndex + 1);
+          }
+        }),
+    );
 
   return database;
 };

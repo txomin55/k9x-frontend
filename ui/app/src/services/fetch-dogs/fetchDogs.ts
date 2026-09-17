@@ -10,6 +10,12 @@ import type {
   PublicDogSearch,
 } from "@/services/fetch-dogs/fetchDogs.types";
 
+/**
+ * Every filter combination is its own cache entry, and typing makes a new one per keystroke. They are
+ * dropped soon after nothing reads them, so a long search does not leave the discarded ones in memory.
+ */
+const SEARCH_RESULTS_GC_TIME = 30_000;
+
 /** Dogs fetched per request while scrolling the public directory. */
 export const PUBLIC_DOGS_PAGE_SIZE = 50;
 
@@ -98,6 +104,7 @@ export const usePublicDogs = (search: () => PublicDogSearch) =>
     queryKey: getPublicDogsQueryKey(search()),
     queryFn: () => firstPage(search()),
     networkMode: "always" as const,
+    gcTime: SEARCH_RESULTS_GC_TIME,
     placeholderData: (previousDogs: PublicDog[] | undefined) => previousDogs,
   }));
 

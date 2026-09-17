@@ -3,6 +3,7 @@ import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
+import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import {
   applyDogRemoval,
@@ -21,6 +22,7 @@ import {
   ALL_DOGS_SNAPSHOT_ID,
   DOGS_PAGE_SIZE,
   DOGS_SNAPSHOT_ID,
+  DOGS_SNAPSHOT_WINDOW,
   OWNED_DOGS_SNAPSHOT_ID,
   getAllDogsQueryKey,
   getAllDogsSearchQueryKey,
@@ -32,6 +34,12 @@ import { createPagesState, type Pages } from "@/utils/pagination/pagesStore";
 import { mergeDogsWithDrafts } from "./dogDraftStore";
 import { getCachedCountries } from "@/services/secured/country-crud/countryCrud";
 import { getCachedBreeds } from "@/services/secured/breed-crud/breedCrud";
+
+/**
+ * A searched term is its own cache entry, and typing makes a new one per keystroke. They are dropped
+ * soon after nothing reads them, so a long search does not leave the discarded ones in memory.
+ */
+const SEARCH_RESULTS_GC_TIME = 30_000;
 
 const MY_DOGS_FILTERS = "owned=true&created=true";
 
@@ -83,7 +91,7 @@ const appendDogs = (previousDogs: Dog[], nextDogs: Dog[]) => {
  * page to the same cache entry, and `pages` says how far it has got. Both the user's own dogs and the
  * whole kennel are read this way, filtered or not.
  */
-const pagedDogs = (filters: string, pages: Pages) => ({
+const pagedDogs = (filters: string, pages: Pages, snapshotId?: string) => ({
   pages,
   first: async (queryKey: readonly unknown[], search?: DogListSearch) => {
     pages.reset();
@@ -103,11 +111,18 @@ const pagedDogs = (filters: string, pages: Pages) => ({
 
     try {
       const page = await fetchDogsPage(filters, pages.nextPage(), search);
+      const previousDogs = queryClient.getQueryData<Dog[]>(queryKey) ?? [];
+      const dogs = appendDogs(previousDogs, page.items);
 
-      queryClient.setQueryData<Dog[]>(queryKey, (previousDogs) =>
-        appendDogs(previousDogs ?? [], page.items),
-      );
+      queryClient.setQueryData<Dog[]>(queryKey, dogs);
       pages.pageLoaded(page.page, page.total, page.totalPages);
+
+      if (snapshotId && previousDogs.length < DOGS_SNAPSHOT_WINDOW) {
+        await saveQuerySnapshot(
+          snapshotId,
+          dogs.slice(0, DOGS_SNAPSHOT_WINDOW),
+        );
+      }
     } catch (error) {
       pages.stopLoadingMore();
       throw error;
@@ -115,7 +130,7 @@ const pagedDogs = (filters: string, pages: Pages) => ({
   },
 });
 
-const myDogs = pagedDogs(MY_DOGS_FILTERS, createPagesState());
+const myDogs = pagedDogs(MY_DOGS_FILTERS, createPagesState(), DOGS_SNAPSHOT_ID);
 
 /**
  * The name search is served by the API, so it is kept apart from the list cache: that cache is the base
@@ -123,7 +138,11 @@ const myDogs = pagedDogs(MY_DOGS_FILTERS, createPagesState());
  */
 const myDogsSearch = pagedDogs(MY_DOGS_FILTERS, createPagesState());
 
-const allDogs = pagedDogs(ALL_DOGS_FILTERS, createPagesState());
+const allDogs = pagedDogs(
+  ALL_DOGS_FILTERS,
+  createPagesState(),
+  ALL_DOGS_SNAPSHOT_ID,
+);
 
 const allDogsSearch = pagedDogs(ALL_DOGS_FILTERS, createPagesState());
 
@@ -173,6 +192,7 @@ const dogSearchQuery = (
       queryKey: queryKey(search()),
       queryFn: () => pages.first(queryKey(search()), search()),
       networkMode: "always" as const,
+      gcTime: SEARCH_RESULTS_GC_TIME,
       enabled: Boolean(search().name || search().country),
       placeholderData: (previousDogs: Dog[] | undefined) =>
         previousDogs ?? queryClient.getQueryData<Dog[]>(loadedKey()) ?? [],
