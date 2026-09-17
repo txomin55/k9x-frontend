@@ -29,7 +29,10 @@ import {
   getRankingIncludeBysQueryKey,
   getRankingGroupBysQueryKey,
 } from "./rankingCrudConstants";
-import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
+import {
+  saveQuerySnapshot,
+  saveWholeQuerySnapshot,
+} from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { mergeRankingWithDraft } from "./rankingDraftStore";
 
 const refreshRankingsSnapshot = async () => {
@@ -231,7 +234,7 @@ const refreshRankingGroupBysSnapshot = async () => {
     path: "/secured/rankings/group-bys",
   });
 
-  await saveQuerySnapshot(RANKING_GROUP_BYS_SNAPSHOT_ID, groupBys);
+  await saveWholeQuerySnapshot(RANKING_GROUP_BYS_SNAPSHOT_ID, groupBys);
   queryClient.setQueryData(getRankingGroupBysQueryKey(), groupBys);
 
   return groupBys;
@@ -271,7 +274,7 @@ const refreshRankingIncludeBysSnapshot = async () => {
     path: "/secured/rankings/include-bys",
   });
 
-  await saveQuerySnapshot(RANKING_INCLUDE_BYS_SNAPSHOT_ID, includeBys);
+  await saveWholeQuerySnapshot(RANKING_INCLUDE_BYS_SNAPSHOT_ID, includeBys);
   queryClient.setQueryData(getRankingIncludeBysQueryKey(), includeBys);
 
   return includeBys;

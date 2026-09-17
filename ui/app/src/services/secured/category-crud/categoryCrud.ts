@@ -3,7 +3,7 @@ import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
+import { saveWholeQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import {
   getCategoriesQueryKey,
@@ -15,7 +15,10 @@ const refreshCategoriesSnapshot = async (disciplineId: string) => {
     path: `/secured/discipline/${disciplineId}/categories`,
   });
 
-  await saveQuerySnapshot(getCategoriesSnapshotId(disciplineId), categories);
+  await saveWholeQuerySnapshot(
+    getCategoriesSnapshotId(disciplineId),
+    categories,
+  );
   queryClient.setQueryData(getCategoriesQueryKey(disciplineId), categories);
 
   return categories;

@@ -3,7 +3,7 @@ import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
+import { saveWholeQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import {
   COUNTRIES_SNAPSHOT_ID,
@@ -15,7 +15,7 @@ const refreshCountriesSnapshot = async () => {
     path: "/secured/countries",
   });
 
-  await saveQuerySnapshot(COUNTRIES_SNAPSHOT_ID, countries);
+  await saveWholeQuerySnapshot(COUNTRIES_SNAPSHOT_ID, countries);
   queryClient.setQueryData(getCountriesQueryKey(), countries);
 
   return countries;

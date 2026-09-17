@@ -79,9 +79,11 @@ vi.mock("@/utils/local-first/localFirstPolicy", () => ({
 
 import {
   QUERY_SNAPSHOTS_PER_PREFIX,
+  QUERY_SNAPSHOT_LIST_WINDOW,
   enforceQuerySnapshotQuotas,
   getQuerySnapshot,
   saveQuerySnapshot,
+  saveWholeQuerySnapshot,
 } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 
 const idsWithPrefix = (prefix: string) =>
@@ -155,5 +157,58 @@ describe("query snapshot quotas", () => {
 
     expect(evicted).toBe(4);
     expect(idsWithPrefix("stage:")).toHaveLength(QUERY_SNAPSHOTS_PER_PREFIX);
+  });
+});
+
+describe("query snapshot list window", () => {
+  const listOf = (size: number) =>
+    Array.from({ length: size }, (_item, index) => ({ index }));
+
+  beforeEach(() => {
+    rows.clear();
+  });
+
+  it("keeps a list snapshot within the window", async () => {
+    await saveQuerySnapshot("stages", listOf(QUERY_SNAPSHOT_LIST_WINDOW + 40));
+
+    expect(rows.get("stages")?.data).toHaveLength(QUERY_SNAPSHOT_LIST_WINDOW);
+  });
+
+  it("keeps the head, where an entity created offline is prepended", async () => {
+    const created = { index: -1 };
+
+    await saveQuerySnapshot("competitions", [
+      created,
+      ...listOf(QUERY_SNAPSHOT_LIST_WINDOW + 10),
+    ]);
+
+    const stored = rows.get("competitions")?.data as
+      | { index: number }[]
+      | undefined;
+
+    expect(stored?.[0]).toEqual(created);
+  });
+
+  it("leaves a list shorter than the window alone", async () => {
+    await saveQuerySnapshot("stages", listOf(7));
+
+    expect(rows.get("stages")?.data).toHaveLength(7);
+  });
+
+  it("leaves a snapshot that is not a list alone", async () => {
+    await saveQuerySnapshot("user", { name: "someone" });
+
+    expect(rows.get("user")?.data).toEqual({ name: "someone" });
+  });
+
+  it("stores a lookup catalogue whole, so offline name resolution still works", async () => {
+    await saveWholeQuerySnapshot(
+      "breeds",
+      listOf(QUERY_SNAPSHOT_LIST_WINDOW + 40),
+    );
+
+    expect(rows.get("breeds")?.data).toHaveLength(
+      QUERY_SNAPSHOT_LIST_WINDOW + 40,
+    );
   });
 });

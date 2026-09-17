@@ -3,7 +3,10 @@ import { defineQuery } from "@/utils/http/query-factory";
 import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
+import {
+  QUERY_SNAPSHOT_LIST_WINDOW,
+  saveQuerySnapshot,
+} from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import { queryClient } from "@/utils/http/query-client";
 import {
   applyDogRemoval,
@@ -22,7 +25,6 @@ import {
   ALL_DOGS_SNAPSHOT_ID,
   DOGS_PAGE_SIZE,
   DOGS_SNAPSHOT_ID,
-  DOGS_SNAPSHOT_WINDOW,
   OWNED_DOGS_SNAPSHOT_ID,
   getAllDogsQueryKey,
   getAllDogsSearchQueryKey,
@@ -117,11 +119,8 @@ const pagedDogs = (filters: string, pages: Pages, snapshotId?: string) => ({
       queryClient.setQueryData<Dog[]>(queryKey, dogs);
       pages.pageLoaded(page.page, page.total, page.totalPages);
 
-      if (snapshotId && previousDogs.length < DOGS_SNAPSHOT_WINDOW) {
-        await saveQuerySnapshot(
-          snapshotId,
-          dogs.slice(0, DOGS_SNAPSHOT_WINDOW),
-        );
+      if (snapshotId && previousDogs.length < QUERY_SNAPSHOT_LIST_WINDOW) {
+        await saveQuerySnapshot(snapshotId, dogs);
       }
     } catch (error) {
       pages.stopLoadingMore();

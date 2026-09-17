@@ -5,9 +5,6 @@ export const DOGS_SNAPSHOT_ID = "dogs";
 /** Dogs fetched per request while scrolling the my-dogs list. */
 export const DOGS_PAGE_SIZE = 50;
 
-/** How many dogs of a scrolled list the offline snapshot keeps. */
-export const DOGS_SNAPSHOT_WINDOW = 200;
-
 export const ALL_DOGS_SNAPSHOT_ID = "dogs-all";
 
 export const OWNED_DOGS_SNAPSHOT_ID = "dogs-owned";

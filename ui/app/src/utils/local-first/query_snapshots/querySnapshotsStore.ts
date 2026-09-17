@@ -13,10 +13,17 @@ export type { QuerySnapshot } from "@/utils/local-first/query_snapshots/querySna
 
 export const QUERY_SNAPSHOTS_PER_PREFIX = 50;
 
+export const QUERY_SNAPSHOT_LIST_WINDOW = 200;
+
 const LAST_READ_REFRESH_MS = 5 * 60 * 1000;
 
 const toSerializable = <TData>(value: TData): TData =>
   JSON.parse(JSON.stringify(value)) as TData;
+
+const toWindowed = <TData>(value: TData): TData =>
+  Array.isArray(value) && value.length > QUERY_SNAPSHOT_LIST_WINDOW
+    ? (value.slice(0, QUERY_SNAPSHOT_LIST_WINDOW) as TData)
+    : value;
 
 const getSnapshotPrefix = (id: string) => {
   const separatorIndex = id.indexOf(":");
@@ -77,7 +84,7 @@ const enforcePrefixQuota = async (
   return evicted.length;
 };
 
-export const saveQuerySnapshot = async <TData>(id: string, data: TData) => {
+const persistQuerySnapshot = async <TData>(id: string, data: TData) => {
   if (!shouldPersistLocalFirstData()) {
     return id;
   }
@@ -99,6 +106,11 @@ export const saveQuerySnapshot = async <TData>(id: string, data: TData) => {
 
   return saved;
 };
+
+export const saveQuerySnapshot = <TData>(id: string, data: TData) =>
+  persistQuerySnapshot(id, toWindowed(data));
+
+export const saveWholeQuerySnapshot = persistQuerySnapshot;
 
 export const getQuerySnapshot = <TData>(id: string) => {
   if (!shouldReadFromIndexedDb()) {

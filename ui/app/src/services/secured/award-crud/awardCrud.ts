@@ -3,7 +3,7 @@ import type { TanstackCreateQuery } from "@/utils/http/query-factory.types";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { fetchWithOfflineSnapshot } from "@/utils/local-first/query_snapshots/querySnapshotFetch";
-import { saveQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
+import { saveWholeQuerySnapshot } from "@/utils/local-first/query_snapshots/querySnapshotsStore";
 import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { getAwardsQueryKey, getAwardsSnapshotId } from "./awardCrudConstants";
 
@@ -12,7 +12,7 @@ const refreshAwardsSnapshot = async (disciplineId: string) => {
     path: `/secured/discipline/${disciplineId}/awards`,
   });
 
-  await saveQuerySnapshot(getAwardsSnapshotId(disciplineId), awards);
+  await saveWholeQuerySnapshot(getAwardsSnapshotId(disciplineId), awards);
   queryClient.setQueryData(getAwardsQueryKey(disciplineId), awards);
 
   return awards;
