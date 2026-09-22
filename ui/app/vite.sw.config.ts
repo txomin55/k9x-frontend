@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
             type: "asset",
             fileName: "manifest.webmanifest",
             source: JSON.stringify(
-              createWebManifest(env.VITE_APP_BASE_PATH),
+              createWebManifest(env.VITE_APP_BASE_PATH, mode),
               null,
               2,
             ),

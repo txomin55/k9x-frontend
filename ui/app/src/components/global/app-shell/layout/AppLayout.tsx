@@ -31,6 +31,8 @@ import {
 import { useI18n } from "@/stores/i18n/i18n";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 
+const isTestEnv = import.meta.env.MODE === "staging";
+
 const NavigationUserMenu = lazy(
   () =>
     import(
@@ -136,6 +138,9 @@ export default function AppLayout(props: ParentProps) {
             <span />
           </span>
         </button>
+        <Show when={isTestEnv}>
+          <span class="app-layout__test-env">TEST ENV</span>
+        </Show>
         <Show when={isOffline()}>
           <span>{i18n.t("GLOBAL.APP_LAYOUT.OFFLINE")}</span>
         </Show>

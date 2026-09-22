@@ -5,13 +5,15 @@ const normalizeBasePath = (value?: string) => {
 
 const toManifestPath = (basePath: string) => (basePath ? `${basePath}/` : "./");
 
-export const createWebManifest = (basePathEnv?: string) => {
+export const createWebManifest = (basePathEnv?: string, mode?: string) => {
   const basePath = normalizeBasePath(basePathEnv);
   const rootPath = toManifestPath(basePath);
+  const isStaging = mode === "staging";
+  const iconSuffix = isStaging ? "-stg" : "";
 
   return {
-    name: "Canine Index App",
-    short_name: "Canine Index",
+    name: isStaging ? "Canine Index App STG" : "Canine Index App",
+    short_name: isStaging ? "Canine Index STG" : "Canine Index",
     description: "K9X App for canine dogsport events results track",
     start_url: rootPath,
     scope: rootPath,
@@ -20,12 +22,12 @@ export const createWebManifest = (basePathEnv?: string) => {
     theme_color: "#ffffff",
     icons: [
       {
-        src: `${rootPath}k9x-192.png`,
+        src: `${rootPath}k9x-192${iconSuffix}.png`,
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: `${rootPath}k9x-512.png`,
+        src: `${rootPath}k9x-512${iconSuffix}.png`,
         sizes: "512x512",
         type: "image/png",
         purpose: "any maskable",

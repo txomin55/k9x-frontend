@@ -15,7 +15,7 @@ export const APP_SHELL_CACHE = `app-shell-${APP_SHELL_CACHE_VERSION}`;
 const CACHEABLE_EXTENSIONS =
   /\.(?:js|css|ico|png|svg|webp|woff2?|json|webmanifest|html)$/;
 const PWA_BRANDING_ASSET_PATTERN =
-  /(?:^|\/)(?:manifest\.webmanifest|k9x-192\.png|k9x-512\.png)$/;
+  /(?:^|\/)(?:manifest\.webmanifest|k9x-(?:192|512)(?:-stg)?\.png)$/;
 
 const isCacheableAssetRequest = (scope, request) => {
   const url = new URL(request.url);

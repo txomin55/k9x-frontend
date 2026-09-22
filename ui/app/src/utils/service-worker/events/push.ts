@@ -30,7 +30,9 @@ const parseEnvelope = (event): RawPushEnvelope => {
 
 export const registerPushHandler = (scope) => {
   // App icon, resolved through the same base-path helper the manifest and SW registration use.
-  const iconUrl = resolveAppPath("/k9x-512.png");
+  const iconUrl = resolveAppPath(
+    import.meta.env.MODE === "staging" ? "/k9x-512-stg.png" : "/k9x-512.png",
+  );
 
   scope.addEventListener("push", (event) => {
     const { type, metadata } = parseEnvelope(event);
