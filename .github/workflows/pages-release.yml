@@ -38,6 +38,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Fails in two seconds with a name, instead of shipping a bundle configured with empty strings
+      # — Vite inlines a missing variable as undefined rather than failing the build.
+      - name: Check the environment's secrets
+        run: |
+          missing=
+          for v in VITE_APP_API_ADDRESS VITE_GOOGLE_CLIENT_ID VITE_GOOGLE_REDIRECT_URI VITE_VAPID_PUBLIC_KEY VITE_CARTO_API_KEY; do
+            eval "value=\$$v"
+            [ -n "$value" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::The github-pages environment is missing:$missing."
+            exit 1
+          fi
+        env:
+          VITE_APP_API_ADDRESS: ${{ secrets.VITE_APP_API_ADDRESS }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_REDIRECT_URI: ${{ secrets.VITE_GOOGLE_REDIRECT_URI }}
+          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VITE_VAPID_PUBLIC_KEY }}
+          VITE_CARTO_API_KEY: ${{ secrets.VITE_CARTO_API_KEY }}
+
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
@@ -53,8 +74,19 @@ jobs:
       - name: Install deps
         run: bash ./ci-scripts/generic-before.sh
 
+      # Vite inlines any VITE_-prefixed variable found in the build environment, which is how the
+      # bundle gets its configuration now that the per-mode .env files are untracked.
       - name: Build pages
         run: bash ./ci-scripts/pages.sh
+        env:
+          # Structural, not configuration: it is what the site is served from, and it differs by
+          # target for good. Keeping it out of the secrets also avoids an empty secret in production.
+          VITE_APP_BASE_PATH: '/k9x-frontend'
+          VITE_APP_API_ADDRESS: ${{ secrets.VITE_APP_API_ADDRESS }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_REDIRECT_URI: ${{ secrets.VITE_GOOGLE_REDIRECT_URI }}
+          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VITE_VAPID_PUBLIC_KEY }}
+          VITE_CARTO_API_KEY: ${{ secrets.VITE_CARTO_API_KEY }}
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
