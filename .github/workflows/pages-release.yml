@@ -1,11 +1,9 @@
+# Manual only, like production and the backend's: deploying staging is someone running this
+# workflow, never a push. The build is always staging (CI_BUILD_ENV), whatever ref is chosen.
+
 name: Pages and Release
 
 on:
-  ##  push:
-  #    branches: [ development/stg ]
-  #    paths:
-  #      - ui/app/src/**
-  #      - ui/library/src/**
   workflow_dispatch:
     inputs:
       create_release:
