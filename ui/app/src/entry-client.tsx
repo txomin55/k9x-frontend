@@ -1,5 +1,4 @@
 // @refresh reload
-import { BrowserAgent } from "@newrelic/browser-agent/loaders/browser-agent";
 import { mount, StartClient } from "@solidjs/start/client";
 import { logger } from "@/utils/logger/logger";
 import { resolveAppPath } from "@/utils/paths/app-paths";
@@ -56,9 +55,12 @@ const options = {
   },
 };
 
-// The agent loader code executes immediately on instantiation.
-if (!import.meta.env.DEV) {
-  new BrowserAgent(options);
+// Production only: staging and local builds don't report to New Relic. The import is dynamic so
+// the agent isn't even bundled outside production. The loader runs as soon as it is instantiated.
+if (import.meta.env.MODE === "production") {
+  void import("@newrelic/browser-agent/loaders/browser-agent").then(
+    ({ BrowserAgent }) => new BrowserAgent(options),
+  );
 }
 
 window.addEventListener("error", (event) => {
