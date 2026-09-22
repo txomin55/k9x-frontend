@@ -1,0 +1,143 @@
+.calendar {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--unit-2);
+  container-type: inline-size;
+}
+
+.calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--unit-1);
+  margin-bottom: var(--unit-15);
+}
+
+.calendar__title {
+  flex: 1;
+  margin: 0;
+  text-align: center;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.calendar__nav-icon {
+  display: block;
+  font-size: var(--unit-3);
+  line-height: var(--unit-2);
+  color: var(--text-primary);
+}
+
+/* Fills the height it is given, so a page that stretches the calendar spreads
+   the weeks instead of leaving a gap under the month. */
+.calendar__grid {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--unit-025);
+  width: 100%;
+}
+
+/* Grid rows, not a table: a table cell will not stretch a flex day box to the
+   row height, so a day with several entries spills over the week below. */
+.calendar__week {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--unit-025);
+  align-items: stretch;
+}
+
+.calendar__weekdays {
+  flex: 0 0 auto;
+}
+
+.calendar__weekday {
+  padding-bottom: var(--unit-05);
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.calendar__cell {
+  display: flex;
+  min-width: 0;
+}
+
+.calendar__day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--unit-025);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--unit-4);
+  overflow: hidden;
+  padding: var(--unit-05) 0;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+button.calendar__day {
+  cursor: pointer;
+}
+
+button.calendar__day:hover {
+  background: var(--surface-hover);
+}
+
+button.calendar__day:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.calendar__day--outside {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.calendar__day--in-range {
+  background: var(--primary-soft);
+  color: var(--text-primary);
+}
+
+.calendar__day--start,
+.calendar__day--end {
+  background: var(--primary);
+  color: var(--text-inverted);
+  font-weight: 600;
+}
+
+button.calendar__day--start:hover,
+button.calendar__day--end:hover {
+  background: var(--primary-hover);
+}
+
+.calendar__day--today .calendar__day-number {
+  text-decoration: underline;
+  text-underline-offset: var(--unit-025);
+}
+
+/* Phone widths: seven columns get tight, so the chrome shrinks before the
+   content does. The whole month stays visible without horizontal scroll. */
+@container (max-width: 30rem) {
+  .calendar {
+    padding: var(--unit-1);
+  }
+
+  .calendar__day {
+    padding: var(--unit-025) 0;
+    min-height: var(--unit-3);
+  }
+}

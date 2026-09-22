@@ -26,6 +26,7 @@ import StageCardSkeleton from "@/components/routes/stages/stage-card/StageCardSk
 import StageCardEventsContent from "@/components/routes/stages/stage-card/StageCardEventsContent";
 import StagesFilters from "@/components/routes/stages/stages-filters/StagesFilters";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
+import StagesCalendar from "@/components/routes/stages/stages-calendar/StagesCalendar";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
@@ -74,6 +75,7 @@ export const Route = createFileRoute("/stages/")({
 const CONTROLS_KEYS = {
   LIST: "LIST",
   TABLE: "TABLE",
+  CALENDAR: "CALENDAR",
   MAP: "MAP",
 };
 
@@ -108,11 +110,7 @@ const StagesDataContext = createContext<StagesData>();
 function StagesDataProvider(props: ParentProps) {
   const { isOffline } = useOffline();
 
-  const [dateFromFilter] = useSearchParam("from", "");
-  const [dateToFilter] = useSearchParam("to", "");
-  const defaultRange = defaultStagesDateRange();
-  const fromMs = () => parseTimestampParam(dateFromFilter(), defaultRange.from);
-  const toMs = () => parseTimestampParam(dateToFilter(), defaultRange.to);
+  const { from: fromMs, to: toMs } = useStagesDateRange();
 
   const query = useStages(fromMs, toMs, {
     refetchOnMount: !isOffline(),
@@ -140,6 +138,17 @@ function StagesDataProvider(props: ParentProps) {
       {props.children}
     </StagesDataContext.Provider>
   );
+}
+
+function useStagesDateRange() {
+  const [dateFromFilter] = useSearchParam("from", "");
+  const [dateToFilter] = useSearchParam("to", "");
+  const defaultRange = defaultStagesDateRange();
+
+  return {
+    from: () => parseTimestampParam(dateFromFilter(), defaultRange.from),
+    to: () => parseTimestampParam(dateToFilter(), defaultRange.to),
+  };
 }
 
 function useStagesData(): StagesData {
@@ -506,6 +515,35 @@ function StagesMapView(props: { onEnroll: EnrollHandler }) {
   );
 }
 
+function StagesCalendarSkeleton() {
+  return (
+    <div class="stages-calendar-wrapper">
+      <AtomSkeleton
+        variant="rectangular"
+        width="100%"
+        height="calc(var(--unit-10) * 4)"
+        radius="var(--radius-sm)"
+      />
+    </div>
+  );
+}
+
+function StagesCalendarView(props: { onEnroll: EnrollHandler }) {
+  const { filteredStages, isLoading } = useFilteredStages();
+  const { from, to } = useStagesDateRange();
+
+  return (
+    <Show when={!isLoading()} fallback={<StagesCalendarSkeleton />}>
+      <StagesCalendar
+        stages={filteredStages()}
+        from={from()}
+        to={to()}
+        onEnroll={props.onEnroll}
+      />
+    </Show>
+  );
+}
+
 function EnrollDialog(props: {
   stageId: string;
   eventId: string;
@@ -705,6 +743,11 @@ function StagesIndexPage() {
       content: null,
     },
     {
+      value: CONTROLS_KEYS.CALENDAR,
+      text: i18n.t("STAGES.INDEX.CALENDAR"),
+      content: null,
+    },
+    {
       value: CONTROLS_KEYS.MAP,
       text: i18n.t("STAGES.INDEX.MAP"),
       disabled: isOffline(),
@@ -759,6 +802,11 @@ function StagesIndexPage() {
           <Match when={controlValue() === CONTROLS_KEYS.TABLE}>
             <Suspense fallback={<StagesTableSkeleton />}>
               <StagesTableView onEnroll={openEnrollDialog} />
+            </Suspense>
+          </Match>
+          <Match when={controlValue() === CONTROLS_KEYS.CALENDAR}>
+            <Suspense fallback={<StagesCalendarSkeleton />}>
+              <StagesCalendarView onEnroll={openEnrollDialog} />
             </Suspense>
           </Match>
           <Match when={controlValue() === CONTROLS_KEYS.MAP}>

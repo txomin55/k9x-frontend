@@ -116,7 +116,9 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": ["D"],
+          "possibleLetters": [
+            "D"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -204,7 +206,9 @@
             "min": 401,
             "max": 600
           },
-          "possibleLetters": ["C"],
+          "possibleLetters": [
+            "C"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -292,7 +296,11 @@
             "min": 601,
             "max": 1000
           },
-          "possibleLetters": ["B", "A", "S"],
+          "possibleLetters": [
+            "B",
+            "A",
+            "S"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -497,7 +505,9 @@
             "min": 50,
             "max": 100
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -585,7 +595,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -679,7 +691,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -767,7 +781,9 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": ["D"],
+          "possibleLetters": [
+            "D"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -861,7 +877,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -955,7 +973,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1049,7 +1069,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1143,7 +1165,9 @@
             "min": 100,
             "max": 200
           },
-          "possibleLetters": ["E"],
+          "possibleLetters": [
+            "E"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1231,7 +1255,9 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": ["D"],
+          "possibleLetters": [
+            "D"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1319,7 +1345,9 @@
             "min": 401,
             "max": 600
           },
-          "possibleLetters": ["C"],
+          "possibleLetters": [
+            "C"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1413,7 +1441,9 @@
             "min": 201,
             "max": 400
           },
-          "possibleLetters": ["D"],
+          "possibleLetters": [
+            "D"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1501,7 +1531,9 @@
             "min": 401,
             "max": 600
           },
-          "possibleLetters": ["C"],
+          "possibleLetters": [
+            "C"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1589,7 +1621,9 @@
             "min": 601,
             "max": 750
           },
-          "possibleLetters": ["B"],
+          "possibleLetters": [
+            "B"
+          ],
           "categories": [
             {
               "id": "CLUB",
@@ -1662,6 +1696,378 @@
                   },
                   "rankScore": 750,
                   "letter": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "VDH",
+      "name": "Verband für das Deutsche Hundewesen",
+      "grades": [
+        {
+          "id": "OBDX_VDH_BEGINNER",
+          "name": {
+            "es": "VDH Beginner",
+            "en": "VDH Beginner"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E"
+          ],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 100,
+                "max": 175
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 125,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 150,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 175,
+                  "letter": "E"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 176,
+                "max": 200
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 184,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 192,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 200,
+                  "letter": "E"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_VDH_SENIOR",
+          "name": {
+            "es": "VDH Senior",
+            "en": "VDH Senior"
+          },
+          "band": {
+            "min": 401,
+            "max": 600
+          },
+          "possibleLetters": [
+            "C"
+          ],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 401,
+                "max": 550
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 451,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 500,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 550,
+                  "letter": "C"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 551,
+                "max": 600
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 567,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 584,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 600,
+                  "letter": "C"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OKV",
+      "name": "Österreichischer Kynologenverband",
+      "grades": [
+        {
+          "id": "OBDX_OKV_BEGINNER",
+          "name": {
+            "es": "ÖKV Beginner",
+            "en": "ÖKV Beginner"
+          },
+          "band": {
+            "min": 100,
+            "max": 200
+          },
+          "possibleLetters": [
+            "E"
+          ],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 100,
+                "max": 175
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 125,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 150,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 175,
+                  "letter": "E"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 176,
+                "max": 200
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 184,
+                  "letter": "E"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 192,
+                  "letter": "E"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 200,
+                  "letter": "E"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "OBDX_OKV_SENIOR",
+          "name": {
+            "es": "ÖKV Senior",
+            "en": "ÖKV Senior"
+          },
+          "band": {
+            "min": 401,
+            "max": 600
+          },
+          "possibleLetters": [
+            "C"
+          ],
+          "categories": [
+            {
+              "id": "CLUB",
+              "subBand": {
+                "min": 401,
+                "max": 550
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 451,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 500,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 550,
+                  "letter": "C"
+                }
+              ]
+            },
+            {
+              "id": "OPEN",
+              "subBand": {
+                "min": 551,
+                "max": 600
+              },
+              "fixed": false,
+              "tiers": [
+                {
+                  "tier": 1,
+                  "competitors": {
+                    "min": 1,
+                    "max": 9
+                  },
+                  "rankScore": 567,
+                  "letter": "C"
+                },
+                {
+                  "tier": 2,
+                  "competitors": {
+                    "min": 10,
+                    "max": 24
+                  },
+                  "rankScore": 584,
+                  "letter": "C"
+                },
+                {
+                  "tier": 3,
+                  "competitors": {
+                    "min": 25,
+                    "max": null
+                  },
+                  "rankScore": 600,
+                  "letter": "C"
                 }
               ]
             }

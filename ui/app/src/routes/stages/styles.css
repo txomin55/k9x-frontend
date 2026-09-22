@@ -21,6 +21,10 @@
     max-height: calc(100dvh - 8rem);
     padding-bottom: var(--unit-8);
   }
+
+  .stages .stages-calendar {
+    padding-bottom: var(--unit-8);
+  }
 }
 
 .stages .card-list {
@@ -123,4 +127,9 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
+}
+
+.stages-calendar-wrapper {
+  flex: 1;
+  min-height: calc(var(--unit-10) * 4);
 }

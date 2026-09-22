@@ -137,8 +137,8 @@ se pinta con su propio identificador y canta.
 Una entrada por federación, con sus configuraciones. Fuente:
 `ObdxConfigurationsRankThresholds`, agrupando por el prefijo del
 `configuration_id` (`OBDX_FCI_*`, `OBDX_ENCI_*`, `OBDX_RSCE_*`, `OBDX_CPC_*`,
-`OBDX_SPKL_*`, `OBDX_SCC_*`, `OBDX_SKK_*`, `OBDX_NKN_*`) e ignorando el sufijo
-de versión `\.V\d+$`.
+`OBDX_SPKL_*`, `OBDX_SCC_*`, `OBDX_SKK_*`, `OBDX_NKN_*`, `OBDX_VDH_*`,
+`OBDX_OKV_*`) e ignorando el sufijo de versión `\.V\d+$`.
 
 ```jsonc
 {
@@ -150,15 +150,21 @@ de versión `\.V\d+$`.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `string` | Corto: es lo que se ve en el combo. Hoy `FCI`, `ENCI`, `RSCE`, `CPC`, `SPKL`, `SCC`, `SKK`, `NKN`. `NKN` es el código con el que la federación noruega entró en la aplicación; su nombre es Norsk Kennel Klub (NKK). |
+| `id` | `string` | Corto: es lo que se ve en el combo. Hoy `FCI`, `ENCI`, `RSCE`, `CPC`, `SPKL`, `SCC`, `SKK`, `NKN`, `VDH`, `OKV`. `NKN` es el código con el que la federación noruega entró en la aplicación; su nombre es Norsk Kennel Klub (NKK); `OKV` es la ÖKV austriaca, sin diéresis en el id. |
 | `name` | `string` | Nombre largo, **no** bilingüe: es un nombre propio. |
 | `grades` | `Grade[]` | Al menos una, ordenadas por `band.min` ascendente. |
 
 El frontend arranca en `FCI`; si esa federación desaparece cae en la primera del
 array, así que el orden importa.
 
-Una federación que no tenga configuración propia **no sale**: las que corren los
-grados FCI (DKK, LKF, VDH…) ya están representadas por `FCI`.
+Una federación que no tenga configuración propia **no sale**: las que corren solo
+los grados FCI (DKK, LKF…) ya están representadas por `FCI`. El **VDH** y la
+**ÖKV** sí salen desde que tienen las suyas: sus clases nacionales *Beginner* y
+*Senioren*, que corren en la misma prueba que las tres de la FCI. La Beginner cae
+en la franja de iniciación `[100, 200]` y la **Senioren en la del grado 2**
+`[401, 600]`: es una clase de veteranos —perro de 8 años o más y sin vuelta
+atrás— cuyo programa lleva identificación por olfato, cuadrado a 15 m y apporte
+dirigido, y cuyo reglamento la agrupa con las clases 2 y 3.
 
 #### `federations[].grades[]`
 
