@@ -14,11 +14,22 @@ name: Deploy production
 
 on:
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a GitHub release after deploying?'
+        required: false
+        default: false
+        type: boolean
+      release_tag:
+        description: 'Custom tag name for the release (only used when creating a release)'
+        required: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: write
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
@@ -81,3 +92,28 @@ jobs:
 
       - name: Deploy
         run: npx vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Set release tag
+        id: release_vars
+        if: ${{ github.event.inputs.create_release == 'true' }}
+        env:
+          CUSTOM_RELEASE_TAG: ${{ github.event.inputs.release_tag }}
+        run: |
+          if [ -n "$CUSTOM_RELEASE_TAG" ]; then
+            echo "release_tag=$CUSTOM_RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_tag=release-$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create release archive
+        if: ${{ github.event.inputs.create_release == 'true' }}
+        run: cd .vercel/output/static && zip -r "$GITHUB_WORKSPACE/public.zip" .
+
+      - uses: softprops/action-gh-release@v2
+        if: ${{ github.event.inputs.create_release == 'true' }}
+        with:
+          tag_name: ${{ steps.release_vars.outputs.release_tag }}
+          name: Release ${{ steps.release_vars.outputs.release_tag }}
+          files: public.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
