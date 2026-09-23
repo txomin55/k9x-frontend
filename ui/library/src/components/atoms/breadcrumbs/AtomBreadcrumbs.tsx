@@ -20,6 +20,7 @@ export interface AtomBreadcrumbsProps {
   crumbs: Crumbs[];
   onNavigate?: (route: string) => void;
   info?: AtomBreadcrumbsInfo | null;
+  extra?: JSX.Element;
 }
 
 export interface AtomBreadCrumbLinkProps {
@@ -87,6 +88,9 @@ export default function (props: AtomBreadcrumbsProps) {
               size="wide"
             />
           </li>
+        </Show>
+        <Show when={props.extra}>
+          <li class="atom-breadcrumbs__info">{props.extra}</li>
         </Show>
       </ol>
     </Breadcrumbs>

@@ -3,6 +3,7 @@ import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
 import type { ExtractionResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import ExtractionReportForm from "@/components/common/extraction-source-banner/ExtractionReportForm";
+import { useExtractionNotice } from "@/components/common/extraction-source-banner/extractionNotice";
 import { useAuthUser } from "@/stores/auth/auth";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatUtcDateOnly } from "@/utils/date";
@@ -13,18 +14,13 @@ export interface ExtractionSourceBannerProps {
   extraction?: ExtractionResponseDTO;
   /** Competition, trial or event name, shown in the report dialog so it says what is being reported. */
   context?: string;
+  inline?: boolean;
 }
 
-export default function ExtractionSourceBanner(
-  props: ExtractionSourceBannerProps,
-) {
+export function ExtractionSourceDetails(props: ExtractionSourceBannerProps) {
   const i18n = useI18n();
-  const user = useAuthUser();
 
   const [reportOpen, setReportOpen] = createSignal(false);
-  // Per-instance and not persisted: collapsing is about the screen in front of the reader, and the warning
-  // is worth showing again the next time they open a view built on extracted data.
-  const [open, setOpen] = createSignal(false);
 
   const hint = () => props.extraction?.hint;
   const url = () => props.extraction?.source?.url;
@@ -57,7 +53,7 @@ export default function ExtractionSourceBanner(
     </Show>
   );
 
-  const body = () => (
+  return (
     <div class="extraction-banner__body">
       <span class="extraction-banner__message text-caption-md">
         {i18n.t("COMMON.EXTRACTION_BANNER.MESSAGE")}
@@ -80,9 +76,26 @@ export default function ExtractionSourceBanner(
       />
     </div>
   );
+}
+
+export default function ExtractionSourceBanner(
+  props: ExtractionSourceBannerProps,
+) {
+  const i18n = useI18n();
+  const user = useAuthUser();
+
+  // Per-instance and not persisted: collapsing is about the screen in front of the reader, and the warning
+  // is worth showing again the next time they open a view built on extracted data.
+  const [open, setOpen] = createSignal(false);
+
+  useExtractionNotice(() =>
+    !props.inline && props.extraction
+      ? { extraction: props.extraction, context: props.context ?? "" }
+      : null,
+  );
 
   return (
-    <Show when={Boolean(props.extraction) && Boolean(user())}>
+    <Show when={props.inline && Boolean(props.extraction) && Boolean(user())}>
       <div class="extraction-banner extraction-banner--collapsible">
         <AtomCollapsible
           size="sm"
@@ -93,7 +106,12 @@ export default function ExtractionSourceBanner(
               {i18n.t("COMMON.EXTRACTION_BANNER.MESSAGE_SHORT")}
             </span>
           }
-          content={body()}
+          content={
+            <ExtractionSourceDetails
+              extraction={props.extraction}
+              context={props.context}
+            />
+          }
         />
       </div>
     </Show>

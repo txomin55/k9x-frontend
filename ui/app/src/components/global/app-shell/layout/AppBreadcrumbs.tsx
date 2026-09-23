@@ -4,6 +4,7 @@ import { Dynamic } from "solid-js/web";
 import AtomBreadcrumbs from "@lib/components/atoms/breadcrumbs/AtomBreadcrumbs";
 import { resolveBreadcrumbs } from "@/utils/router/breadcrumbs";
 import { queryClient } from "@/utils/http/query-client";
+import ExtractionBreadcrumbNotice from "@/components/common/extraction-source-banner/ExtractionBreadcrumbNotice";
 import InfoIcon from "@/components/common/info-icon/InfoIcon";
 import { useI18n } from "@/stores/i18n/i18n";
 
@@ -99,6 +100,7 @@ export default function AppBreadcrumbs() {
         crumbs={breadcrumbs()}
         onNavigate={(route) => void navigate({ to: route as never })}
         info={info()}
+        extra={<ExtractionBreadcrumbNotice />}
       />
     </div>
   );

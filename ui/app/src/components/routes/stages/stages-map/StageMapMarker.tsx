@@ -54,6 +54,7 @@ export function StageMapMarkerPopup(props: StageMapMarker) {
   return (
     <div class="stages-map-marker-popup">
       <ExtractionSourceBanner
+        inline
         extraction={props.stage.extraction}
         context={props.stage.name ?? ""}
       />

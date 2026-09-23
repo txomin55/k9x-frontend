@@ -102,3 +102,25 @@
   color: var(--warning-text);
   text-decoration: underline;
 }
+
+.extraction-notice__icon {
+  display: block;
+  width: var(--unit-2);
+  height: var(--unit-2);
+  line-height: 0;
+  color: var(--warning-text);
+}
+
+.extraction-notice__icon .atom-svg-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.extraction-notice__content {
+  padding: var(--unit-15);
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-md);
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+}
