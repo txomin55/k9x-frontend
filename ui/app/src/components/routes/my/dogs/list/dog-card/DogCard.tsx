@@ -20,16 +20,21 @@ export default function DogCard(props: DogCardProps) {
   const i18n = useI18n();
   return (
     <Card
-      topLeft={<span class="dog-card__name">{props.dog.name}</span>}
-      description={<span class="text-body-md">{props.dog.origin}</span>}
+      topLeft={
+        <span class="dog-card__name" title={props.dog.name}>
+          {props.dog.name}
+        </span>
+      }
       content={
-        <div class="dog-card__facts">
+        <div class="dog-card__facts text-body-sm">
           <div class="dog-card__fact">
             <CountryFlag
               country={props.dog.country.id}
               alt={props.dog.country.name}
             />
-            <span class="text-body-sm">{props.dog.breed.name}</span>
+            <span class="text-body-sm" title={props.dog.breed.name}>
+              {props.dog.breed.name}
+            </span>
             <SexIcon sex={props.dog.sex} />
           </div>
           <Show when={props.dog.handler}>
@@ -37,7 +42,9 @@ export default function DogCard(props: DogCardProps) {
               <span class="dog-card__fact-label text-caption-sm">
                 {i18n.t("MY.DOGS.LIST.HANDLER")}
               </span>
-              <span class="text-body-sm">{props.dog.handler}</span>
+              <span class="text-body-sm" title={props.dog.handler}>
+                {props.dog.handler}
+              </span>
             </div>
           </Show>
         </div>

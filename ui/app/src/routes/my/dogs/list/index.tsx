@@ -63,10 +63,11 @@ const CARD_MIN_WIDTH_PX = 240;
 // Short fragments match half the kennel, so the search waits until the text says something.
 const MIN_NAME_SEARCH_LENGTH = 3;
 
-// Tall enough for a dog name wrapping to three lines, so every card is the same height whatever it holds.
-const CARD_HEIGHT_PX = 210;
+// Exactly what a card takes: its blocks have fixed heights (two lines of name, two rows of facts), so no
+// card leaves a gap above its actions nor cuts off the handler.
+const CARD_HEIGHT_PX = 229;
 // On a phone the grid is a single column, so the cards are compact enough to show more than two at once.
-const MOBILE_CARD_HEIGHT_PX = 180;
+const MOBILE_CARD_HEIGHT_PX = 197;
 const TABLE_ROW_HEIGHT_PX = 56;
 // Room to scroll the last row clear of the floating "new dog" button.
 const FLOATING_BUTTON_CLEARANCE_PX = 72;

@@ -28,9 +28,8 @@
   max-width: none;
 }
 
-/* Dog cards are all the same height here, tall enough for a name wrapping to three lines: the row
-   spacing is then exactly the grid gap (the card's own bottom margin would double it), and a longer
-   name is clipped rather than spilling over the card below. */
+/* Dog cards are all the same height here, the row height the virtual grid lays them out at: the row
+   spacing is then exactly the grid gap (the card's own bottom margin would double it). */
 .dogs-list .virtual-card-grid__row > .card {
   box-sizing: border-box;
   height: 100%;
@@ -87,10 +86,6 @@
 @media (max-width: 767px) {
   .dogs-list .virtual-card-grid__row > .card {
     padding: var(--unit-1);
-  }
-
-  .dogs-list .virtual-card-grid__row > .card > .card__description {
-    margin-bottom: var(--unit-05);
   }
 
   .dogs-list .virtual-card-grid__row > .card > .card__content {
