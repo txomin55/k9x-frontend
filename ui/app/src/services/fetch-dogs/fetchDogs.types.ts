@@ -83,3 +83,36 @@ export interface DogParticipationYear {
   year: number;
   participations: DogParticipation[];
 }
+
+/**
+ * One result feeding the dog's K9X index. `eventScore` is the result on the 0-1000 index scale; it and
+ * `totalScore` are null when the competition's source forbids republishing its results (`restricted`).
+ */
+export interface DogIndexEvent {
+  event: IdNameDTO;
+  stageId: string;
+  discipline: IdNameDTO | null;
+  country: IdNameDTO | null;
+  /** Epoch millis the result applies to in the index (end of the stage). */
+  date: number;
+  eventScore: number | null;
+  totalScore: number | null;
+  position: number | null;
+  /** The dog's index right after this result. */
+  index: number;
+  restricted: boolean;
+}
+
+/** One sample of the index curve. At each event two samples share the timestamp: just before and after. */
+export interface DogIndexPoint {
+  timestamp: number;
+  index: number;
+}
+
+/** Everything the dog's K9X index chart needs; both lists are empty for a dog that never competed. */
+export interface DogIndexTimeline {
+  events: DogIndexEvent[];
+  curve: DogIndexPoint[];
+  /** Epoch millis the whole index starts fading if the dog does not compete again. */
+  freshnessDegradationFrom: number | null;
+}

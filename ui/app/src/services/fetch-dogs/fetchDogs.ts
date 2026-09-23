@@ -4,6 +4,7 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { createPagesState } from "@/utils/pagination/pagesStore";
 import type {
+  DogIndexTimeline,
   DogParticipationYear,
   PublicDog,
   PublicDogDetail,
@@ -25,6 +26,9 @@ export const getPublicDogQueryKey = (identification: string) =>
 
 export const getPublicDogParticipationsQueryKey = (identification: string) =>
   ["public-dog-participations", identification, getCurrentLocale()] as const;
+
+export const getPublicDogIndexQueryKey = (identification: string) =>
+  ["public-dog-index", identification, getCurrentLocale()] as const;
 
 export const getPublicDogsQueryKey = (search: PublicDogSearch) =>
   [
@@ -149,6 +153,24 @@ export const usePublicDogParticipations = (identification: () => string) =>
  */
 export const prefetchPublicDogParticipations = (identification: string) =>
   void queryClient.prefetchQuery(publicDogParticipationsQuery(identification));
+
+const publicDogIndexQuery = (identification: string) => ({
+  queryKey: getPublicDogIndexQueryKey(identification),
+  queryFn: () =>
+    rawRequest<DogIndexTimeline>({
+      path: `/dogs/${encodeURIComponent(identification)}/index`,
+    }),
+  staleTime: PARTICIPATIONS_STALE_TIME,
+  networkMode: "always" as const,
+});
+
+/** The dog's K9X index over its career: its results and the curve between them. */
+export const usePublicDogIndex = (identification: () => string) =>
+  createQuery(() => publicDogIndexQuery(identification()));
+
+/** Same as {@link prefetchPublicDogParticipations}, for the K9X tab. */
+export const prefetchPublicDogIndex = (identification: string) =>
+  void queryClient.prefetchQuery(publicDogIndexQuery(identification));
 
 /**
  * The dog the breadcrumb of the detail page names, without waiting for its own request: the directory the

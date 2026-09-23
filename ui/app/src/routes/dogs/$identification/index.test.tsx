@@ -26,10 +26,13 @@ const isPending = vi.fn<() => boolean>(() => false);
 const isFetching = vi.fn<() => boolean>(() => false);
 
 const prefetchParticipations = vi.fn<(identification: string) => void>();
+const prefetchIndex = vi.fn<(identification: string) => void>();
 
 vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
   prefetchPublicDogParticipations: (identification: string) =>
     prefetchParticipations(identification),
+  prefetchPublicDogIndex: (identification: string) =>
+    prefetchIndex(identification),
   usePublicDog: () => ({
     get data() {
       return dog();
@@ -58,6 +61,12 @@ vi.mock(
     ),
   }),
 );
+
+vi.mock("@/components/routes/dogs/dog-k9x-index/DogK9xIndex", () => ({
+  default: (props: { identification: string }) => (
+    <div class="k9x-index-stub">{props.identification}</div>
+  ),
+}));
 
 vi.mock("@/components/common/page-seo/PageSeo", () => ({
   default: () => null,
@@ -98,6 +107,7 @@ describe("public dog detail route", () => {
     tabParam.mockReturnValue("BIO");
     setTabParam.mockClear();
     prefetchParticipations.mockClear();
+    prefetchIndex.mockClear();
   });
 
   test("shows every public field of the dog", () => {
@@ -198,13 +208,24 @@ describe("public dog detail route", () => {
     expect(setTabParam).toHaveBeenCalledWith("K9X");
   });
 
-  test("starts loading the participations without waiting for the dog", () => {
+  test("starts loading the participations and the index without waiting for the dog", () => {
     dog.mockReturnValue(undefined);
     isPending.mockReturnValue(true);
 
     renderPage();
 
     expect(prefetchParticipations).toHaveBeenCalledWith("981098106001010");
+    expect(prefetchIndex).toHaveBeenCalledWith("981098106001010");
+  });
+
+  test("shows the dog's K9X index in the K9X section", () => {
+    tabParam.mockReturnValue("K9X");
+
+    const { container } = renderPage();
+
+    expect(container.querySelector(".k9x-index-stub")).toHaveTextContent(
+      "981098106001010",
+    );
   });
 
   test("shows the dog's participations in the participations section", () => {

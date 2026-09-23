@@ -1,0 +1,148 @@
+.dog-k9x-index {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-075);
+}
+
+.dog-k9x-index__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--unit-075) var(--unit-15);
+  color: var(--text-secondary);
+}
+
+.dog-k9x-index__legend > span {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-05);
+}
+
+.dog-k9x-index__swatch--line,
+.dog-k9x-index__swatch--dash {
+  flex: none;
+  width: var(--unit-1);
+  height: 0;
+  border-top: 2px solid;
+}
+
+.dog-k9x-index__swatch--dash {
+  border-top-style: dashed;
+}
+
+.dog-k9x-index__swatch--band {
+  flex: none;
+  width: var(--unit-15);
+  height: 3px;
+  border-radius: var(--radius-full, 999px);
+}
+
+.dog-k9x-index__swatch--dot {
+  flex: none;
+  width: var(--unit-05);
+  height: var(--unit-05);
+  border-radius: 50%;
+}
+
+.dog-k9x-index__chart-box {
+  position: relative;
+  width: 100%;
+  height: 20rem;
+}
+
+/* The event card: the app's popover surface, anchored to the clicked dot inside the chart box. */
+.dog-k9x-index__card {
+  position: absolute;
+  z-index: var(--z-popover);
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-075);
+  width: max-content;
+  max-width: 280px;
+  min-width: 200px;
+  padding: var(--unit-1) var(--unit-15);
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 32, 0.12);
+}
+
+.dog-k9x-index__card-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--unit-1);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+.dog-k9x-index__card-title:hover,
+.dog-k9x-index__card-title:focus-visible {
+  color: var(--accent);
+}
+
+.dog-k9x-index__card-meta,
+.dog-k9x-index__card-result {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-075);
+}
+
+.dog-k9x-index__card-meta,
+.dog-k9x-index__card-note {
+  color: var(--text-secondary);
+}
+
+.dog-k9x-index__card-note {
+  margin: 0;
+}
+
+.dog-k9x-index__card-position {
+  display: inline-flex;
+  min-width: var(--unit-3);
+  justify-content: center;
+}
+
+.dog-k9x-index__card-figures {
+  display: flex;
+  gap: var(--unit-15);
+  margin: 0;
+  padding-top: var(--unit-075);
+  border-top: 1px solid var(--border);
+}
+
+.dog-k9x-index__card-figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-025, 2px);
+}
+
+.dog-k9x-index__card-figure dt {
+  color: var(--text-secondary);
+}
+
+.dog-k9x-index__card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--unit-05);
+  margin: 0;
+  padding: 0 var(--unit-075);
+  font-weight: 600;
+  border: 1px solid;
+  border-radius: var(--radius-full, 999px);
+}
+
+.dog-k9x-index__card-letter {
+  font-weight: 700;
+}
+
+.dog-k9x-index__empty {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 767px) {
+  .dog-k9x-index__chart-box {
+    height: 16rem;
+  }
+}

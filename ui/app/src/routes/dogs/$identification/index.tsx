@@ -15,8 +15,10 @@ import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
+import DogK9xIndex from "@/components/routes/dogs/dog-k9x-index/DogK9xIndex";
 import DogParticipations from "@/components/routes/dogs/dog-participations/DogParticipations";
 import {
+  prefetchPublicDogIndex,
   prefetchPublicDogParticipations,
   usePublicDog,
 } from "@/services/fetch-dogs/fetchDogs";
@@ -50,12 +52,15 @@ const FACT_COUNT = 10;
  * the route is captured by the `<Outlet>` boundary, which blanks the whole page instead of showing this
  * skeleton. So the query is created *and* read inside the child below, under this local `<Suspense>`.
  *
- * The participations are only prefetched here — nothing reads them — so they load alongside the dog without
+ * The participations and the K9X index are only prefetched here — nothing reads them — so they load alongside the dog without
  * holding up its page, and the tab that shows them reads them under a boundary of its own.
  */
 function PublicDogDetailRoute() {
   const params = Route.useParams();
-  createEffect(() => prefetchPublicDogParticipations(params().identification));
+  createEffect(() => {
+    prefetchPublicDogParticipations(params().identification);
+    prefetchPublicDogIndex(params().identification);
+  });
 
   return (
     <Suspense
@@ -100,7 +105,8 @@ function DogDetailTabs(props: { bio: JSX.Element }) {
     {
       value: DOG_DETAIL_TABS.K9X,
       text: i18n.t("DOGS.DETAIL.TAB_K9X"),
-      content: () => null,
+      // An element for the same reason as the participations.
+      content: <DogK9xIndex identification={params().identification} />,
     },
   ]);
 
