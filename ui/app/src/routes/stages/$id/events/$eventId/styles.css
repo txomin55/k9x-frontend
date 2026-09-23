@@ -36,6 +36,10 @@
   align-items: center;
 }
 
+.classification__header--info > .classification__config-row {
+  column-gap: var(--unit-2);
+}
+
 .classification__score-calculation,
 .classification__judges {
   display: flex;
@@ -78,6 +82,7 @@
 
 .classification__config-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--unit-1);
   flex: 1 1 auto;
@@ -289,4 +294,20 @@
   border: 1px solid var(--primary-border);
   background: var(--primary-soft);
   color: var(--primary);
+}
+
+@media (min-width: 768px) {
+  .obdx-clf__pinned {
+    max-height: 40vh;
+    overflow-y: auto;
+    margin-bottom: 0;
+  }
+
+  .obdx-clf__pinned > .card {
+    margin-bottom: 0;
+  }
+
+  .obdx-clf__pinned .card__content {
+    margin-bottom: 0;
+  }
 }

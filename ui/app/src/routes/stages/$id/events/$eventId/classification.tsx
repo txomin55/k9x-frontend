@@ -669,11 +669,17 @@ function EventClassificationPage() {
                         {lastUpdatedBlock()}
                       </div>
                       <div class="classification__header--info">
-                        {configurationRow()}
+                        <div class="classification__config-row">
+                          {disciplineBlock()}
+                          {scoreCalculationBlock()}
+                          {judgesBlock()}
+                          <EventRankingsLink
+                            stageId={params().id}
+                            eventId={params().eventId}
+                          />
+                        </div>
                       </div>
                     </div>
-                    {scoreCalculationBlock()}
-                    {judgesBlock()}
                     {filters()}
                   </>
                 }
