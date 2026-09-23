@@ -29,19 +29,6 @@
   white-space: nowrap;
 }
 
-.public-dog-card__description {
-  display: flex;
-  align-items: center;
-  gap: var(--unit-1);
-  min-width: 0;
-}
-
-.public-dog-card__description > span:first-child {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
 .public-dog-card__facts {
   display: flex;
   flex-direction: column;
@@ -61,10 +48,14 @@
   margin-inline-end: var(--unit-05);
 }
 
-.public-dog-card__fact > span:last-child {
+.public-dog-card__fact > .text-body-sm {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.public-dog-card__fact > .sex-icon {
+  flex-shrink: 0;
 }
 
 .public-dog-card__fact-label {

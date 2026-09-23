@@ -35,19 +35,17 @@ export default function PublicDogCard(props: {
           </span>
         </div>
       }
-      description={
-        <span class="public-dog-card__description text-caption-sm">
-          <span>{props.dog.breed?.name ?? ""}</span>
-          <Show when={props.dog.sex}>
-            <SexIcon sex={props.dog.sex!} />
-          </Show>
-        </span>
-      }
       content={
         <div class="public-dog-card__facts">
           <div class="public-dog-card__fact">
-            <CountryFlag country={props.dog.country?.id ?? ""} />
-            <span class="text-body-sm">{props.dog.country?.name ?? ""}</span>
+            <CountryFlag
+              country={props.dog.country?.id ?? ""}
+              alt={props.dog.country?.name}
+            />
+            <span class="text-body-sm">{props.dog.breed?.name ?? ""}</span>
+            <Show when={props.dog.sex}>
+              <SexIcon sex={props.dog.sex!} />
+            </Show>
           </div>
           <Show when={props.dog.handler}>
             <div class="public-dog-card__fact">
