@@ -67,10 +67,6 @@
     padding: var(--unit-1);
   }
 
-  .public-dogs .virtual-card-grid__row > .card > .card__description {
-    margin-bottom: var(--unit-05);
-  }
-
   .public-dogs .virtual-card-grid__row > .card > .card__content {
     margin-bottom: var(--unit-1);
     padding: var(--unit-05);

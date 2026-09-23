@@ -5,6 +5,7 @@ import AtomButton, {
 import Card from "@lib/components/molecules/card/Card";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
+import k9xLogo from "@/assets/miscelaneous/k9x-logo.svg";
 import K9xScore from "@/components/routes/dogs/dog-card/K9xScore";
 import type { PublicDog } from "@/services/fetch-dogs/fetchDogs.types";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -25,10 +26,12 @@ export default function PublicDogCard(props: {
       topLeft={
         <div class="public-dog-card__heading">
           <span class="public-dog-card__score">
-            <span class="public-dog-card__score-label text-caption-sm">
-              {i18n.t("DOGS.INDEX.SCORE")}
-            </span>
             <K9xScore rank={props.dog.rank} />
+            <img
+              class="public-dog-card__score-icon"
+              src={k9xLogo}
+              alt={i18n.t("DOGS.INDEX.SCORE")}
+            />
           </span>
           <span class="public-dog-card__name" title={props.dog.name}>
             {props.dog.name}
@@ -36,7 +39,7 @@ export default function PublicDogCard(props: {
         </div>
       }
       content={
-        <div class="public-dog-card__facts">
+        <div class="public-dog-card__facts text-body-sm">
           <div class="public-dog-card__fact">
             <CountryFlag
               country={props.dog.country?.id ?? ""}

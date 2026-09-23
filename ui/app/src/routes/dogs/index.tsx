@@ -42,10 +42,11 @@ const CARD_MIN_WIDTH_PX = 240;
 // Short fragments match half the directory, so the search waits until the text says something.
 const MIN_SEARCH_LENGTH = 3;
 
-// Tall enough for a dog name wrapping to three lines, so every card is the same height whatever it holds.
-const CARD_HEIGHT_PX = 220;
-// On a phone the grid is a single column, but the card holds the same rows, so it keeps the same height.
-const MOBILE_CARD_HEIGHT_PX = 220;
+// Exactly what a card takes: the name is a single line and the facts always two rows, so no card leaves
+// a gap above its action nor cuts off the handler.
+const CARD_HEIGHT_PX = 210;
+// On a phone the card is tightened up, so it takes less.
+const MOBILE_CARD_HEIGHT_PX = 178;
 const TABLE_ROW_HEIGHT_PX = 56;
 const FLOATING_PILL_CLEARANCE_PX = 72;
 

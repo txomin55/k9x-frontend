@@ -24,14 +24,24 @@
   flex-shrink: 0;
 }
 
-.public-dog-card__score-label {
-  color: var(--text-muted);
-  white-space: nowrap;
+/* The box sits on the number's baseline, but the logo's lettering sits on y=310 of its 404-high box:
+   shifting it down by the rest puts the lettering on that baseline too. */
+.public-dog-card__score-icon {
+  flex-shrink: 0;
+  position: relative;
+  top: calc(var(--unit-3) * 94 / 404);
+  width: var(--unit-3);
+  height: var(--unit-3);
+}
+
+.public-dog-card__score > .k9x-score {
+  font-size: var(--text-heading-lg);
+  font-weight: var(--font-weight-bold);
 }
 
 .public-dog-card__facts {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: repeat(2, calc(1lh + 2 * var(--unit-05)));
   gap: var(--unit-05);
   min-width: 0;
 }
