@@ -1,4 +1,5 @@
 import { Show } from "solid-js";
+import { Link } from "@tanstack/solid-router";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import BihIndicator from "@/components/common/bih-indicator/BihIndicator";
 import ReserveIndicator from "@/components/common/reserve-indicator/ReserveIndicator";
@@ -31,7 +32,13 @@ export default function ObdxCompetitorHeader(props: ObdxCompetitorHeaderProps) {
           <Show when={props.competitor.country}>
             <CountryFlag country={props.competitor.country.id} />
           </Show>
-          {props.competitor.dog.name}
+          <Link
+            class="list-table__link"
+            to="/dogs/$identification"
+            params={{ identification: props.competitor.dog.id }}
+          >
+            {props.competitor.dog.name}
+          </Link>
           <Show when={props.competitor.bih}>
             <BihIndicator />
           </Show>

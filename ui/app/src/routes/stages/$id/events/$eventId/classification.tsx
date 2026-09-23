@@ -1,4 +1,4 @@
-import { createFileRoute, useParams } from "@tanstack/solid-router";
+import { createFileRoute, Link, useParams } from "@tanstack/solid-router";
 import { useEventClassification } from "@/services/fetch-stages/fetchStages";
 import type {
   StageEventClassificationItemResponseDTO,
@@ -407,7 +407,13 @@ function EventClassificationPage() {
           <div class="obdx-clf-table__dog">
             <span class="obdx-clf-table__dog-name">
               <CountryFlag country={row.country.id} />
-              <span>{row.dog.name}</span>
+              <Link
+                class="list-table__link"
+                to="/dogs/$identification"
+                params={{ identification: row.dog.id }}
+              >
+                {row.dog.name}
+              </Link>
               <Show when={row.bih}>
                 <BihIndicator />
               </Show>

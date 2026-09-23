@@ -2,6 +2,24 @@ import { render } from "@solidjs/testing-library";
 import ObdxCompetitorHeader from "@/components/routes/stages/$id/events/$eventId/obdx/classification-card/ObdxCompetitorHeader";
 import type { StageEventClassificationItemResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 
+vi.mock("@tanstack/solid-router", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@tanstack/solid-router")>();
+
+  return {
+    ...actual,
+    Link: (props: {
+      class?: string;
+      params?: { identification: string };
+      children?: unknown;
+    }) => (
+      <a class={props.class} href={`/dogs/${props.params?.identification}`}>
+        {props.children as never}
+      </a>
+    ),
+  };
+});
+
 vi.mock("@/components/common/country-flag/CountryFlag", () => ({
   default: () => <span>flag</span>,
 }));
@@ -46,5 +64,16 @@ describe("ObdxCompetitorHeader", () => {
     ));
 
     expect(container.querySelector(".bih-indicator")).not.toBeInTheDocument();
+  });
+
+  test("links the dog name to its public detail", () => {
+    const { getByRole } = render(() => (
+      <ObdxCompetitorHeader competitor={buildCompetitor()} />
+    ));
+
+    expect(getByRole("link", { name: "Koda" })).toHaveAttribute(
+      "href",
+      "/dogs/dog-1",
+    );
   });
 });
