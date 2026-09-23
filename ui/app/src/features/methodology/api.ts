@@ -1,33 +1,28 @@
 import { createQuery } from "@tanstack/solid-query";
-import { resolveAppPath } from "@/utils/paths/app-paths";
+import { rawRequest } from "@/utils/http/client";
 import type { K9xMethodology, ObdxMethodology } from "./types";
 
-const fetchMethodology = async <TData>(name: string): Promise<TData> => {
-  const response = await fetch(resolveAppPath(`/methodology/${name}.json`));
+/**
+ * The backend assembles both documents from the rules that compute the rank, so they only change with a deploy;
+ * it serves them with `Cache-Control: public, max-age=86400`, and the query keeps them fresh for as long.
+ */
+const METHODOLOGY_STALE_TIME = 24 * 60 * 60 * 1000;
 
-  if (!response.ok) {
-    throw new Error(`Unable to load the ${name} methodology data`);
-  }
-
-  return (await response.json()) as TData;
-};
-
-const staticDocumentQuery = {
-  staleTime: Number.POSITIVE_INFINITY,
-  gcTime: Number.POSITIVE_INFINITY,
+const methodologyQuery = {
+  staleTime: METHODOLOGY_STALE_TIME,
   retry: 1,
 };
 
 export const useObdxMethodology = () =>
   createQuery(() => ({
     queryKey: ["methodology", "obdx"],
-    queryFn: () => fetchMethodology<ObdxMethodology>("obdx"),
-    ...staticDocumentQuery,
+    queryFn: () => rawRequest<ObdxMethodology>({ path: "/obdx/methodology" }),
+    ...methodologyQuery,
   }));
 
 export const useK9xMethodology = () =>
   createQuery(() => ({
     queryKey: ["methodology", "k9x"],
-    queryFn: () => fetchMethodology<K9xMethodology>("k9x"),
-    ...staticDocumentQuery,
+    queryFn: () => rawRequest<K9xMethodology>({ path: "/k9x/methodology" }),
+    ...methodologyQuery,
   }));
