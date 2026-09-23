@@ -55,8 +55,6 @@ const FLOATING_PILL_CLEARANCE_PX = 72;
  */
 const COLUMN_WIDTH = {
   score: 88,
-  /** The flag alone, so the column takes no more room than the flag needs. */
-  country: 56,
   breed: 168,
   sex: 64,
   handler: 176,
@@ -154,48 +152,38 @@ function PublicDogsPage() {
     countryOptions()[0];
 
   /**
-   * Name, country and index are on screen at every width; the rest of the dog is added as the screen
+   * Index and name, with the country's flag beside it, are on screen at every width; the rest of the dog is added as the screen
    * grows. Every column is built sort-proof by {@link unsortable}, so the order on screen is always
    * the server's.
    */
   const columns = createMemo<ColumnDef<PublicDog, any>[]>(() => {
     const cols: ColumnDef<PublicDog, any>[] = [
       {
+        id: "score",
+        size: COLUMN_WIDTH.score,
+        header: i18n.t("DOGS.INDEX.SCORE"),
+        cell: (info) => <K9xScore rank={info.row.original.rank} compact />,
+      },
+      {
         id: "name",
         accessorKey: "name",
         header: i18n.t("DOGS.INDEX.NAME"),
         cell: (info) => (
           <div class="list-table__name">
+            <CountryFlag
+              country={info.row.original.country?.id}
+              alt={info.row.original.country?.name}
+            />
             <Link
               class="list-table__link"
               to="/dogs/$identification"
               params={{ identification: info.row.original.identification }}
+              title={info.row.original.name}
             >
               {info.row.original.name}
             </Link>
           </div>
         ),
-      },
-      // The flag *is* the country, so the column is just the flag, at every width. The name it stands
-      // for travels in the alt text, for whoever cannot tell the flags apart.
-      {
-        id: "country",
-        size: COLUMN_WIDTH.country,
-        header: i18n.t("DOGS.INDEX.COUNTRY"),
-        cell: (info) => (
-          <div class="public-dogs__country">
-            <CountryFlag
-              country={info.row.original.country?.id}
-              alt={info.row.original.country?.name}
-            />
-          </div>
-        ),
-      },
-      {
-        id: "score",
-        size: COLUMN_WIDTH.score,
-        header: i18n.t("DOGS.INDEX.SCORE"),
-        cell: (info) => <K9xScore rank={info.row.original.rank} compact />,
       },
     ];
 

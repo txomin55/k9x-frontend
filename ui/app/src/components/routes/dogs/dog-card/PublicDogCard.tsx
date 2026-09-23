@@ -24,22 +24,24 @@ export default function PublicDogCard(props: {
     <Card
       topLeft={
         <div class="public-dog-card__heading">
-          <span class="public-dog-card__name">{props.dog.name}</span>
-          <Show when={props.dog.sex}>
-            <SexIcon sex={props.dog.sex!} />
-          </Show>
-        </div>
-      }
-      topRight={
-        <div class="public-dog-card__score">
-          <span class="public-dog-card__score-label text-caption-sm">
-            {i18n.t("DOGS.INDEX.SCORE")}
+          <span class="public-dog-card__score">
+            <span class="public-dog-card__score-label text-caption-sm">
+              {i18n.t("DOGS.INDEX.SCORE")}
+            </span>
+            <K9xScore rank={props.dog.rank} />
           </span>
-          <K9xScore rank={props.dog.rank} />
+          <span class="public-dog-card__name" title={props.dog.name}>
+            {props.dog.name}
+          </span>
         </div>
       }
       description={
-        <span class="text-caption-sm">{props.dog.breed?.name ?? ""}</span>
+        <span class="public-dog-card__description text-caption-sm">
+          <span>{props.dog.breed?.name ?? ""}</span>
+          <Show when={props.dog.sex}>
+            <SexIcon sex={props.dog.sex!} />
+          </Show>
+        </span>
       }
       content={
         <div class="public-dog-card__facts">

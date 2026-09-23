@@ -57,9 +57,8 @@
   text-overflow: ellipsis;
 }
 
-.public-dogs__country {
-  display: flex;
-  align-items: center;
+.public-dogs__table .list-table__name > .country-flag {
+  flex-shrink: 0;
 }
 
 /* On a phone the cards are the whole column, so they are tightened up to fit more of the list on screen. */

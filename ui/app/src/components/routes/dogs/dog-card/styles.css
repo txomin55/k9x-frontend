@@ -1,27 +1,45 @@
+.card__top-left:has(> .public-dog-card__heading) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .public-dog-card__heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--unit-1);
+  min-width: 0;
+}
+
+.public-dog-card__name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.public-dog-card__score {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--unit-05);
+  flex-shrink: 0;
+}
+
+.public-dog-card__score-label {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.public-dog-card__description {
   display: flex;
   align-items: center;
   gap: var(--unit-1);
   min-width: 0;
 }
 
-.public-dog-card__name {
+.public-dog-card__description > span:first-child {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-/* The index is the point of this card, so it is stacked under its own label on the top-right corner. */
-.public-dog-card__score {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--unit-05);
-}
-
-.public-dog-card__score-label {
-  color: var(--text-muted);
-  white-space: nowrap;
 }
 
 .public-dog-card__facts {
