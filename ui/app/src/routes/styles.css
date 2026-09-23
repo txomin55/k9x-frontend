@@ -138,6 +138,22 @@
   line-height: 1.5;
 }
 
+.landing-page__imports {
+  display: grid;
+  justify-items: start;
+  gap: var(--unit-1);
+  padding: var(--unit-3);
+  border: 1px solid var(--border);
+  border-radius: var(--unit-2);
+  background: color-mix(in srgb, var(--surface) 94%, white 6%);
+}
+
+.landing-page__imports p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
 .landing-page__latest {
   display: grid;
   gap: var(--unit-2);

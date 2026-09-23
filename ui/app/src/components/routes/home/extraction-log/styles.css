@@ -1,0 +1,158 @@
+/* Fixed height so the dialog does not resize as days open and close; an open day scrolls inside its own content. */
+.extraction-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-1);
+  height: min(60vh, 36rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.extraction-log > * {
+  flex: none;
+}
+
+.extraction-log > .atom-collapsible:has(> .atom-collapsible__content[data-expanded]) {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: calc(var(--unit-10) * 2);
+}
+
+.extraction-log .atom-collapsible__trigger {
+  flex: none;
+}
+
+.extraction-log .atom-collapsible__content[data-expanded] {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.extraction-log__message {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.extraction-log__day {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--unit-2);
+  width: 100%;
+}
+
+.extraction-log__day-date {
+  font-weight: var(--font-weight-medium);
+}
+
+.extraction-log__day-count {
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+  white-space: nowrap;
+}
+
+.extraction-log__stages,
+.extraction-log__events {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extraction-log__stages {
+  gap: var(--unit-1);
+}
+
+/* A link to the trial detail: it has to read as clickable, hence the chevron, the accent name and the hover. */
+.extraction-log__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--unit-1);
+  row-gap: var(--unit-05);
+  padding: var(--unit-1) var(--unit-15);
+  border: 1px solid var(--border);
+  border-radius: var(--unit-15);
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.extraction-log__stage > :not(.extraction-log__stage-chevron) {
+  grid-column: 1;
+}
+
+.extraction-log__stage:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--surface) 88%, white 12%);
+}
+
+.extraction-log__stage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.extraction-log__stage-chevron {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  color: var(--text-secondary);
+  font-size: var(--text-heading-sm);
+  line-height: 1;
+  transition:
+    transform 160ms ease,
+    color 160ms ease;
+}
+
+.extraction-log__stage:hover .extraction-log__stage-chevron {
+  transform: translateX(2px);
+  color: var(--accent);
+}
+
+.extraction-log__stage-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--unit-1);
+}
+
+.extraction-log__stage-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.extraction-log__stage:hover .extraction-log__stage-name {
+  text-decoration: underline;
+}
+
+.extraction-log__stage-date,
+.extraction-log__stage-competition {
+  color: var(--text-secondary);
+  font-size: var(--text-caption-md);
+}
+
+.extraction-log__stage-date {
+  white-space: nowrap;
+}
+
+.extraction-log__event {
+  display: flex;
+  align-items: center;
+  gap: var(--unit-1);
+  min-width: 0;
+}
+
+.extraction-log__event-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

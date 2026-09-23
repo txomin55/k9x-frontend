@@ -19,8 +19,10 @@ import StatusBadge from "@/components/common/status-badge/StatusBadge";
 import { useStages } from "@/services/fetch-stages/fetchStages";
 import { useI18n } from "@/stores/i18n/i18n";
 import ContactForm from "@/components/global/app-shell/layout/navigation/ContactForm";
+import ExtractionLog from "@/components/routes/home/extraction-log/ExtractionLog";
 import AtomButton, {
   BUTTON_SIZES,
+  BUTTON_TYPES,
 } from "@lib/components/atoms/button/AtomButton";
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomDialog from "@lib/components/atoms/dialog/AtomDialog";
@@ -128,6 +130,7 @@ function EntryRoutePage() {
 
   const [openGenericContactForm, setOpenGenericContactForm] =
     createSignal(false);
+  const [openExtractionLog, setOpenExtractionLog] = createSignal(false);
 
   onMount(async () => {
     const search = location().searchStr;
@@ -269,6 +272,29 @@ function EntryRoutePage() {
             </article>
           )}
         </For>
+      </div>
+
+      <div class="landing-page__imports">
+        <span class="landing-page__section-title">
+          {i18n.t("HOME.IMPORTS_TITLE")}
+        </span>
+        <p>{i18n.t("HOME.IMPORTS_DESCRIPTION")}</p>
+        <AtomButton
+          type={BUTTON_TYPES.ACCENT}
+          onClick={() => setOpenExtractionLog(true)}
+        >
+          {i18n.t("HOME.IMPORTS_BUTTON")}
+        </AtomButton>
+        <AtomDialog
+          closeButtonText={i18n.t("GLOBAL.NAVIGATION.CLOSE_DIALOG")}
+          content={
+            <ExtractionLog onNavigate={() => setOpenExtractionLog(false)} />
+          }
+          onOpenChange={setOpenExtractionLog}
+          open={openExtractionLog()}
+          size="wide"
+          title={i18n.t("HOME.IMPORTS_DIALOG_TITLE")}
+        />
       </div>
 
       <AtomDialog

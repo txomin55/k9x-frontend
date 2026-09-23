@@ -2,6 +2,7 @@ import { expect } from "@playwright/test";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import { loggedOutTest } from "@test/utils/authFixtures";
 import { defaultStages } from "@test/api-mocks/stages";
+import { defaultExtractionLog } from "@test/api-mocks/extractions";
 
 const [latestStage] = defaultStages;
 
@@ -19,6 +20,34 @@ loggedOutTest.describe("Landing page - logged out", () => {
 
     await expect(page).toHaveURL(`/stages/${latestStage.id}/info`);
   });
+
+  loggedOutTest(
+    "lists imported trials by day with only the latest day open",
+    async ({ page }) => {
+      const [latestDay, olderDay] = defaultExtractionLog;
+      const latestStage = latestDay.stages[0];
+      const olderStage = olderDay.stages[0];
+
+      await page.goto(AppRoutePath.HOME);
+      await page.getByRole("button", { name: "See imports" }).click();
+
+      const dialog = page.getByRole("dialog");
+      await expect(
+        dialog.getByRole("link", { name: new RegExp(latestStage.name) }),
+      ).toBeVisible();
+      await expect(dialog.getByText(latestStage.events[0].name)).toBeVisible();
+      await expect(dialog.getByText(olderStage.name)).not.toBeVisible();
+      await expect(dialog.getByRole("button", { name: /enroll/i })).toHaveCount(
+        0,
+      );
+
+      await dialog
+        .getByRole("link", { name: new RegExp(latestStage.name) })
+        .click();
+
+      await expect(page).toHaveURL(`/stages/${latestStage.id}/info`);
+    },
+  );
 
   loggedOutTest("explains what K9X is", async ({ page }) => {
     await page.goto(AppRoutePath.HOME);

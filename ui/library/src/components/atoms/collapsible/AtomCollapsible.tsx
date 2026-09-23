@@ -9,6 +9,8 @@ export type AtomCollapsibleProps = {
   content: JSX.Element;
   disabled?: boolean;
   open?: boolean;
+  /** Initial state when uncontrolled (no `open`). */
+  defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   /** `sm` trims the vertical padding of trigger and content, for tight layouts. Defaults to `md`. */
   size?: AtomCollapsibleSize;
@@ -18,6 +20,7 @@ export default function AtomCollapsible(props: AtomCollapsibleProps) {
   return (
     <Collapsible.Root
       class={`atom-collapsible${props.size === "sm" ? " atom-collapsible--sm" : ""}`}
+      defaultOpen={props.defaultOpen}
       disabled={props.disabled}
       onOpenChange={props.onOpenChange}
       open={props.open}

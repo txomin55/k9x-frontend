@@ -3,6 +3,7 @@ import { defaultClassification } from "@test/api-mocks/classification";
 import { defaultCompetitions } from "@test/api-mocks/competitions";
 import { resolveDogByIdentificationPayload } from "@test/api-mocks/dogByIdentification";
 import { defaultDogs, toDogsPage } from "@test/api-mocks/dogs";
+import { defaultExtractionLog } from "@test/api-mocks/extractions";
 import { defaultJudges } from "@test/api-mocks/judges";
 import { mockAccessToken } from "@test/api-mocks/login";
 import { logoutPayload } from "@test/api-mocks/logout";
@@ -97,6 +98,11 @@ export default async function defaultApiResponses(page: Page) {
       method: "GET",
       payload: defaultStageDetail,
       pathname: "/stages/*",
+    }),
+    setRouteResponses(page, {
+      method: "GET",
+      payload: defaultExtractionLog,
+      pathname: "/extractions",
     }),
     setRouteResponses(page, {
       method: "GET",
