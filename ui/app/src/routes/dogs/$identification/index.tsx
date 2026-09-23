@@ -1,5 +1,6 @@
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
+import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
 import { createFileRoute } from "@tanstack/solid-router";
 import { createSignal, For, Show, Suspense, type JSX } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
@@ -10,6 +11,7 @@ import { usePublicDog } from "@/services/fetch-dogs/fetchDogs";
 import type { PublicDogDetail } from "@/services/fetch-dogs/fetchDogs.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatDateTime } from "@/utils/date";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 export const Route = createFileRoute("/dogs/$identification/")({
@@ -17,6 +19,16 @@ export const Route = createFileRoute("/dogs/$identification/")({
 });
 
 type Fact = { label: string; value: JSX.Element };
+
+const DOG_DETAIL_TAB_PARAM = "tab";
+
+const DOG_DETAIL_TABS = {
+  BIO: "BIO",
+  PARTICIPATIONS: "PARTICIPATIONS",
+  K9X: "K9X",
+} as const;
+
+const TAB_VALUES: string[] = Object.values(DOG_DETAIL_TABS);
 
 /** How many fact rows the real page shows, so the skeleton reserves the same grid. */
 const FACT_COUNT = 10;
@@ -40,6 +52,44 @@ function PublicDogDetailRoute() {
   );
 }
 
+/** The selected tab lives in the URL, so a shared link opens the same tab. */
+function DogDetailTabs(props: { bio: JSX.Element }) {
+  const i18n = useI18n();
+  const [tabParam, setTabParam] = useSearchParam(
+    DOG_DETAIL_TAB_PARAM,
+    DOG_DETAIL_TABS.BIO,
+  );
+  const selectedTab = () =>
+    TAB_VALUES.includes(tabParam()) ? tabParam() : DOG_DETAIL_TABS.BIO;
+
+  return (
+    <AtomTabs
+      defaultValue={DOG_DETAIL_TABS.BIO}
+      value={selectedTab()}
+      onChange={setTabParam}
+      options={[
+        {
+          value: DOG_DETAIL_TABS.BIO,
+          content: <span>{i18n.t("DOGS.DETAIL.TAB_BIO")}</span>,
+        },
+        {
+          value: DOG_DETAIL_TABS.PARTICIPATIONS,
+          content: <span>{i18n.t("DOGS.DETAIL.TAB_PARTICIPATIONS")}</span>,
+        },
+        {
+          value: DOG_DETAIL_TABS.K9X,
+          content: <span>{i18n.t("DOGS.DETAIL.TAB_K9X")}</span>,
+        },
+      ]}
+      contents={[
+        { value: DOG_DETAIL_TABS.BIO, content: props.bio },
+        { value: DOG_DETAIL_TABS.PARTICIPATIONS, content: null },
+        { value: DOG_DETAIL_TABS.K9X, content: null },
+      ]}
+    />
+  );
+}
+
 /**
  * Reuses the real page's boxes so swapping in the data shifts no layout. It carries no `Page` of its own,
  * so it serves both the route-level fallback and the in-page one, where the frame is already on screen.
@@ -52,24 +102,28 @@ function PublicDogDetailSkeleton() {
       <div class="dog-detail__heading">
         <AtomSkeleton width="60%" height="var(--text-heading-sm)" />
       </div>
-      <AtomCollapsible
-        open
-        trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
-        content={
-          <dl class="dog-detail__facts">
-            <For each={Array.from({ length: FACT_COUNT })}>
-              {() => (
-                <div class="dog-detail__fact">
-                  <dt class="text-caption-sm">
-                    <AtomSkeleton width="50%" />
-                  </dt>
-                  <dd class="text-body-sm">
-                    <AtomSkeleton width="80%" />
-                  </dd>
-                </div>
-              )}
-            </For>
-          </dl>
+      <DogDetailTabs
+        bio={
+          <AtomCollapsible
+            open
+            trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
+            content={
+              <dl class="dog-detail__facts">
+                <For each={Array.from({ length: FACT_COUNT })}>
+                  {() => (
+                    <div class="dog-detail__fact">
+                      <dt class="text-caption-sm">
+                        <AtomSkeleton width="50%" />
+                      </dt>
+                      <dd class="text-body-sm">
+                        <AtomSkeleton width="80%" />
+                      </dd>
+                    </div>
+                  )}
+                </For>
+              </dl>
+            }
+          />
         }
       />
     </div>
@@ -170,21 +224,25 @@ function PublicDogDetailPage() {
                   />
                 </Show>
               </div>
-              <AtomCollapsible
-                open={isInfoOpen()}
-                onOpenChange={setInfoOpen}
-                trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
-                content={
-                  <dl class="dog-detail__facts">
-                    <For each={facts(detail())}>
-                      {(fact) => (
-                        <div class="dog-detail__fact">
-                          <dt class="text-caption-sm">{fact.label}</dt>
-                          <dd class="text-body-sm">{fact.value}</dd>
-                        </div>
-                      )}
-                    </For>
-                  </dl>
+              <DogDetailTabs
+                bio={
+                  <AtomCollapsible
+                    open={isInfoOpen()}
+                    onOpenChange={setInfoOpen}
+                    trigger={<span>{i18n.t("DOGS.DETAIL.INFO")}</span>}
+                    content={
+                      <dl class="dog-detail__facts">
+                        <For each={facts(detail())}>
+                          {(fact) => (
+                            <div class="dog-detail__fact">
+                              <dt class="text-caption-sm">{fact.label}</dt>
+                              <dd class="text-body-sm">{fact.value}</dd>
+                            </div>
+                          )}
+                        </For>
+                      </dl>
+                    }
+                  />
                 }
               />
             </div>
