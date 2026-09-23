@@ -4,6 +4,7 @@ import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
 import { createPagesState } from "@/utils/pagination/pagesStore";
 import type {
+  DogParticipationYear,
   PublicDog,
   PublicDogDetail,
   PublicDogPageDTO,
@@ -21,6 +22,9 @@ export const PUBLIC_DOGS_PAGE_SIZE = 50;
 
 export const getPublicDogQueryKey = (identification: string) =>
   ["public-dog", identification, getCurrentLocale()] as const;
+
+export const getPublicDogParticipationsQueryKey = (identification: string) =>
+  ["public-dog-participations", identification, getCurrentLocale()] as const;
 
 export const getPublicDogsQueryKey = (search: PublicDogSearch) =>
   [
@@ -118,6 +122,33 @@ export const usePublicDog = (identification: () => string) =>
       }),
     networkMode: "always" as const,
   }));
+
+/**
+ * Results only change once a day, when the snapshot runs. Keeping them fresh for a while also stops the tab
+ * from asking again for what the prefetch has just brought.
+ */
+const PARTICIPATIONS_STALE_TIME = 5 * 60_000;
+
+const publicDogParticipationsQuery = (identification: string) => ({
+  queryKey: getPublicDogParticipationsQueryKey(identification),
+  queryFn: () =>
+    rawRequest<DogParticipationYear[]>({
+      path: `/dogs/${encodeURIComponent(identification)}/participations`,
+    }),
+  staleTime: PARTICIPATIONS_STALE_TIME,
+  networkMode: "always" as const,
+});
+
+/** Every event the dog was entered in, grouped by year, newest first. */
+export const usePublicDogParticipations = (identification: () => string) =>
+  createQuery(() => publicDogParticipationsQuery(identification()));
+
+/**
+ * Starts the participations request alongside the dog's own, so the tab usually has them by the time it is
+ * opened. Fire-and-forget: nothing waits on it, and a failure is left for the tab's own query to retry.
+ */
+export const prefetchPublicDogParticipations = (identification: string) =>
+  void queryClient.prefetchQuery(publicDogParticipationsQuery(identification));
 
 /**
  * The dog the breadcrumb of the detail page names, without waiting for its own request: the directory the

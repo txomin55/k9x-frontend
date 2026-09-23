@@ -1,13 +1,25 @@
 import AtomCollapsible from "@lib/components/atoms/collapsible/AtomCollapsible";
 import AtomSkeleton from "@lib/components/atoms/skeleton/AtomSkeleton";
-import AtomTabs from "@lib/components/atoms/tabs/AtomTabs";
+import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
 import { createFileRoute } from "@tanstack/solid-router";
-import { createSignal, For, Show, Suspense, type JSX } from "solid-js";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Show,
+  Suspense,
+  type JSX,
+} from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
-import { usePublicDog } from "@/services/fetch-dogs/fetchDogs";
+import DogParticipations from "@/components/routes/dogs/dog-participations/DogParticipations";
+import {
+  prefetchPublicDogParticipations,
+  usePublicDog,
+} from "@/services/fetch-dogs/fetchDogs";
 import type { PublicDogDetail } from "@/services/fetch-dogs/fetchDogs.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatDateTime } from "@/utils/date";
@@ -37,8 +49,14 @@ const FACT_COUNT = 10;
  * The route component reads no query of its own: reading `.data` is what suspends, and a read owned by
  * the route is captured by the `<Outlet>` boundary, which blanks the whole page instead of showing this
  * skeleton. So the query is created *and* read inside the child below, under this local `<Suspense>`.
+ *
+ * The participations are only prefetched here — nothing reads them — so they load alongside the dog without
+ * holding up its page, and the tab that shows them reads them under a boundary of its own.
  */
 function PublicDogDetailRoute() {
+  const params = Route.useParams();
+  createEffect(() => prefetchPublicDogParticipations(params().identification));
+
   return (
     <Suspense
       fallback={
@@ -52,9 +70,13 @@ function PublicDogDetailRoute() {
   );
 }
 
-/** The selected tab lives in the URL, so a shared link opens the same tab. */
+/**
+ * The sections are a segmented control rather than tabs so the switcher fits a phone as well as a laptop. The
+ * selected one lives in the URL, so a shared link opens the same section.
+ */
 function DogDetailTabs(props: { bio: JSX.Element }) {
   const i18n = useI18n();
+  const params = Route.useParams();
   const [tabParam, setTabParam] = useSearchParam(
     DOG_DETAIL_TAB_PARAM,
     DOG_DETAIL_TABS.BIO,
@@ -62,30 +84,32 @@ function DogDetailTabs(props: { bio: JSX.Element }) {
   const selectedTab = () =>
     TAB_VALUES.includes(tabParam()) ? tabParam() : DOG_DETAIL_TABS.BIO;
 
+  const controls = createMemo(() => [
+    {
+      value: DOG_DETAIL_TABS.BIO,
+      text: i18n.t("DOGS.DETAIL.TAB_BIO"),
+      content: () => props.bio,
+    },
+    {
+      value: DOG_DETAIL_TABS.PARTICIPATIONS,
+      text: i18n.t("DOGS.DETAIL.TAB_PARTICIPATIONS"),
+      // Built as an element, not a thunk: the segmented control renders a thunk inside its Switch/Match, and
+      // a query that suspends in there (even under its own <Suspense>) re-renders forever and freezes the tab.
+      content: <DogParticipations identification={params().identification} />,
+    },
+    {
+      value: DOG_DETAIL_TABS.K9X,
+      text: i18n.t("DOGS.DETAIL.TAB_K9X"),
+      content: () => null,
+    },
+  ]);
+
   return (
-    <AtomTabs
-      defaultValue={DOG_DETAIL_TABS.BIO}
-      value={selectedTab()}
-      onChange={setTabParam}
-      options={[
-        {
-          value: DOG_DETAIL_TABS.BIO,
-          content: <span>{i18n.t("DOGS.DETAIL.TAB_BIO")}</span>,
-        },
-        {
-          value: DOG_DETAIL_TABS.PARTICIPATIONS,
-          content: <span>{i18n.t("DOGS.DETAIL.TAB_PARTICIPATIONS")}</span>,
-        },
-        {
-          value: DOG_DETAIL_TABS.K9X,
-          content: <span>{i18n.t("DOGS.DETAIL.TAB_K9X")}</span>,
-        },
-      ]}
-      contents={[
-        { value: DOG_DETAIL_TABS.BIO, content: props.bio },
-        { value: DOG_DETAIL_TABS.PARTICIPATIONS, content: null },
-        { value: DOG_DETAIL_TABS.K9X, content: null },
-      ]}
+    <AtomSegmentedControl
+      title={i18n.t("DOGS.DETAIL.SECTIONS")}
+      control={selectedTab()}
+      onControlChange={setTabParam}
+      controls={controls()}
     />
   );
 }

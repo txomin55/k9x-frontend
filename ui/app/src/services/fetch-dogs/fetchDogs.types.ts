@@ -59,3 +59,27 @@ export interface PublicDogDetail {
   /** Epoch millis of the last change to the dog. */
   lastUpdate: number;
 }
+
+/**
+ * One event the dog was entered in. Position, score and OBDX points come from the snapshot taken the morning
+ * after the stage ends, so they are null for an event still running; score and points are also null when the
+ * competition's source forbids republishing its results (`restricted`).
+ */
+export interface DogParticipation {
+  event: IdNameDTO;
+  stageId: string;
+  /** Epoch millis of the stage start. */
+  date: number;
+  /** Country of the competition the event belongs to. */
+  country: IdNameDTO | null;
+  position: number | null;
+  totalScore: number | null;
+  obdxPoints: number | null;
+  restricted: boolean;
+}
+
+/** A dog's participations in one UTC year. The API sends the years newest first. */
+export interface DogParticipationYear {
+  year: number;
+  participations: DogParticipation[];
+}

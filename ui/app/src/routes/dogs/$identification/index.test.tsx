@@ -25,7 +25,11 @@ const dog = vi.fn<() => PublicDogDetail | undefined>(() => detail());
 const isPending = vi.fn<() => boolean>(() => false);
 const isFetching = vi.fn<() => boolean>(() => false);
 
+const prefetchParticipations = vi.fn<(identification: string) => void>();
+
 vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
+  prefetchPublicDogParticipations: (identification: string) =>
+    prefetchParticipations(identification),
   usePublicDog: () => ({
     get data() {
       return dog();
@@ -46,6 +50,15 @@ vi.mock("@/utils/search-params/useSearchParam", () => ({
   useSearchParam: () => [tabParam, setTabParam] as const,
 }));
 
+vi.mock(
+  "@/components/routes/dogs/dog-participations/DogParticipations",
+  () => ({
+    default: (props: { identification: string }) => (
+      <div class="participations-stub">{props.identification}</div>
+    ),
+  }),
+);
+
 vi.mock("@/components/common/page-seo/PageSeo", () => ({
   default: () => null,
 }));
@@ -63,6 +76,13 @@ vi.mock("@tanstack/solid-router", async (importOriginal) => {
   };
 });
 
+/** Kobalte's segmented control observes its box; jsdom has no observer. */
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
 const renderPage = () => {
   const Component = Route.options.component as () => JSX.Element;
 
@@ -71,11 +91,13 @@ const renderPage = () => {
 
 describe("public dog detail route", () => {
   beforeEach(() => {
+    vi.stubGlobal("ResizeObserver", ResizeObserverMock);
     dog.mockReturnValue(detail());
     isPending.mockReturnValue(false);
     isFetching.mockReturnValue(false);
     tabParam.mockReturnValue("BIO");
     setTabParam.mockClear();
+    prefetchParticipations.mockClear();
   });
 
   test("shows every public field of the dog", () => {
@@ -143,39 +165,55 @@ describe("public dog detail route", () => {
     expect(container.querySelector(".dog-detail__empty")).not.toBeNull();
   });
 
-  test("shows the bio, participations and k9x tabs, bio first", () => {
+  test("shows the bio, participations and k9x sections, bio first", () => {
     const { getAllByRole } = renderPage();
 
-    const tabs = getAllByRole("tab");
-    expect(tabs).toHaveLength(3);
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    const sections = getAllByRole("radio");
+    expect(sections).toHaveLength(3);
+    expect(sections[0]).toBeChecked();
   });
 
-  test("opens the tab named in the url", () => {
+  test("opens the section named in the url", () => {
     tabParam.mockReturnValue("PARTICIPATIONS");
 
     const { getAllByRole, container } = renderPage();
 
-    expect(getAllByRole("tab")[1]).toHaveAttribute("aria-selected", "true");
+    expect(getAllByRole("radio")[1]).toBeChecked();
     expect(container.querySelector(".dog-detail__facts")).toBeNull();
   });
 
-  test("falls back to the bio tab for an unknown tab in the url", () => {
+  test("falls back to the bio section for an unknown one in the url", () => {
     tabParam.mockReturnValue("NOPE");
 
     const { getAllByRole } = renderPage();
 
-    expect(getAllByRole("tab")[0]).toHaveAttribute("aria-selected", "true");
+    expect(getAllByRole("radio")[0]).toBeChecked();
   });
 
-  test("writes the chosen tab to the url", () => {
+  test("writes the chosen section to the url", () => {
     const { getAllByRole } = renderPage();
 
-    const k9xTab = getAllByRole("tab")[2];
-    fireEvent.pointerDown(k9xTab, { button: 0, pointerType: "mouse" });
-    fireEvent.mouseDown(k9xTab, { button: 0 });
-    fireEvent.click(k9xTab);
+    fireEvent.click(getAllByRole("radio")[2]);
 
     expect(setTabParam).toHaveBeenCalledWith("K9X");
+  });
+
+  test("starts loading the participations without waiting for the dog", () => {
+    dog.mockReturnValue(undefined);
+    isPending.mockReturnValue(true);
+
+    renderPage();
+
+    expect(prefetchParticipations).toHaveBeenCalledWith("981098106001010");
+  });
+
+  test("shows the dog's participations in the participations section", () => {
+    tabParam.mockReturnValue("PARTICIPATIONS");
+
+    const { container } = renderPage();
+
+    expect(container.querySelector(".participations-stub")).toHaveTextContent(
+      "981098106001010",
+    );
   });
 });
