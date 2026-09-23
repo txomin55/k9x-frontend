@@ -324,12 +324,12 @@
 
 /* In table view the expand lives in a full-width colspan cell whose auto width
    is driven by its content, so .obdx-clf__detail never bounds itself and the
-   whole table (or the app) scrolls instead. Bind it to the container inline
-   size (.obdx-clf-table is a container) so it scrolls internally like the
-   card/list view, keeping the first exercise column fixed. */
+   whole table (or the app) scrolls instead. Containing its inline size keeps it
+   out of the table's width, so it takes the cell's width and scrolls internally
+   like the card/list view, keeping the first exercise column fixed. */
 .atom-table__expanded-cell .obdx-clf__detail {
-  width: calc(100cqi - var(--unit-2));
-  max-width: calc(100cqi - var(--unit-2));
+  width: 100%;
+  contain: inline-size;
 }
 
 /* From 620px up the table fills its container and the score columns share the
