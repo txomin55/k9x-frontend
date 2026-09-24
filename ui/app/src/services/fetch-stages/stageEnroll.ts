@@ -10,6 +10,7 @@ import {
   getStagesQueryKey,
 } from "@/services/fetch-stages/fetchStages";
 import { getVisibleDogs } from "@/services/secured/dog-crud/dogCrudOfflineUtils";
+import { getOwnedDogsQueryKey } from "@/services/secured/dog-crud/dogCrudConstants";
 import type { Dog } from "@/services/secured/dog-crud/dogCrud.types";
 import { rawRequest } from "@/utils/http/client";
 import { queryClient } from "@/utils/http/query-client";
@@ -55,7 +56,10 @@ const buildNextStage = (
       return event;
     }
 
-    const ownedDog = getVisibleDogs().find(
+    const ownedDog = [
+      ...getVisibleDogs(),
+      ...(queryClient.getQueryData<Dog[]>(getOwnedDogsQueryKey()) ?? []),
+    ].find(
       (dog) => String(dog.identification) === String(payload.dogIdentification),
     );
 
