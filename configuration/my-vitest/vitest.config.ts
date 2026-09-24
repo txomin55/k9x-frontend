@@ -20,6 +20,7 @@ export default defineConfig({
         "**/*.d.ts",
         "**/src/**/*.json",
         "**/src/**/*.stories.@(ts|tsx|svelte)",
+        "**/src/**/*.spec.ts",
       ],
       allowExternal: true,
       include: ["**/src/**/*.{ts,tsx,svelte}"],
