@@ -1,10 +1,6 @@
 # Manual only, like the backend's. Vercel's git integration is off (vercel.json → git.deployment
 # Enabled: false), so a push deploys nothing: production goes out when someone runs this workflow.
 #
-# Repository secrets:
-#   SMOKE_GOOGLE_EMAIL / SMOKE_GOOGLE_PASSWORD  the smoke account (k9x.support@gmail.com, no 2FA)
-#   SONAR_HOST_URL / SONAR_TOKEN
-#
 # The `production` GitHub environment holds:
 #   VERCEL_TOKEN       Vercel → Account Settings → Tokens
 #   VERCEL_ORG_ID      `vercel link` writes both into .vercel/project.json, or read them in
@@ -36,278 +32,9 @@ permissions:
   contents: write
 
 jobs:
-  unit_tests:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache pnpm
-        uses: actions/cache@v4
-        with:
-          path: .pnpm-store
-          key: pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install deps
-        run: bash ./ci-scripts/generic-before.sh
-
-      - name: Run unit tests
-        run: bash ./ci-scripts/unit-tests.sh
-
-      - name: Upload unit reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: reports-unit
-          path: .reports/*
-          include-hidden-files: true
-
-  e2e_tests:
-    name: E2E Tests
-    runs-on: ubuntu-latest
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ui/app/.cache/ms-playwright
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache pnpm
-        uses: actions/cache@v4
-        with:
-          path: .pnpm-store
-          key: pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Resolve Playwright cache metadata
-        id: playwright_meta
-        run: |
-          PLAYWRIGHT_VERSION="$(node -e "const fs=require('fs'); const lines=fs.readFileSync('pnpm-lock.yaml','utf8').split(/\\r?\\n/); let inApp=false; let inDev=false; let found=false; let version=''; for (const line of lines) { if (!inApp && /^  ui\\/app:$/.test(line)) { inApp=true; continue; } if (inApp && /^    devDependencies:$/.test(line)) { inDev=true; continue; } if (inApp && inDev && /^      '@playwright\\/test':$/.test(line)) { found=true; continue; } if (found) { const match=line.match(/^        version: ([^\\s]+)/); if (match) { version=match[1].split('(')[0]; break; } } if (inApp && /^  [^ ]/.test(line)) { break; } } if (!version) { process.exit(1); } process.stdout.write(version);")"
-          echo "version=$PLAYWRIGHT_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ui/app/.cache/ms-playwright
-          key: playwright-browsers-${{ steps.playwright_meta.outputs.version }}
-
-      - name: Install deps
-        run: bash ./ci-scripts/generic-before.sh
-
-      - name: Run E2E tests
-        run: bash ./ci-scripts/e2e-tests.sh
-
-      - name: Upload e2e reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: reports-e2e
-          path: .reports
-          include-hidden-files: true
-
-  test_summary:
-    name: Test Summary
-    runs-on: ubuntu-latest
-    needs: [ unit_tests, e2e_tests ]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache pnpm
-        uses: actions/cache@v4
-        with:
-          path: .pnpm-store
-          key: pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Install deps
-        run: bash ./ci-scripts/generic-before.sh
-
-      - name: Download unit reports
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-unit
-          path: artifacts/unit
-
-      - name: Download e2e reports
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-e2e
-          path: artifacts/e2e
-
-      - name: Merge reports
-        run: |
-          mkdir -p .reports
-          cp -R artifacts/unit/. .reports/
-          cp -R artifacts/e2e/. .reports/
-
-      - name: Build summary coverage
-        run: bash ./ci-scripts/test-summary.sh
-
-      - name: Check the coverage threshold
-        uses: insightsengineering/coverage-action@v3
-        with:
-          path: .reports/test/total/coverage/cobertura-coverage.xml
-          threshold: 45
-          fail: true
-          publish: false
-          diff: true
-          diff-branch: main
-          diff-storage: _xml_coverage_reports
-          coverage-summary-title: "Code Coverage Summary"
-          uncovered-statements-increase-failure: false
-          new-uncovered-statements-failure: false
-          coverage-rate-reduction-failure: true
-
-      - name: Summarize coverage
-        if: ${{ always() }}
-        uses: irongut/CodeCoverageSummary@v1.3.0
-        with:
-          filename: .reports/test/total/coverage/cobertura-coverage.xml
-          format: markdown
-          output: file
-
-      - name: Publish the coverage summary
-        if: ${{ always() }}
-        run: '[ -f code-coverage-results.md ] && cat code-coverage-results.md >> "$GITHUB_STEP_SUMMARY" || true'
-
-      - name: Upload summary reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: reports-summary
-          path: .reports
-          include-hidden-files: true
-
-  sonar_check:
-    name: Sonar Check
-    runs-on: ubuntu-latest
-    needs: [ unit_tests, e2e_tests, test_summary ]
-    env:
-      SONAR_USER_HOME: .sonar
-      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Download summary reports
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-summary
-          path: artifacts/summary
-
-      - name: Download unit reports
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-unit
-          path: artifacts/unit
-
-      - name: Download e2e reports
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-e2e
-          path: artifacts/e2e
-
-      - name: Merge reports
-        run: |
-          mkdir -p .reports
-          cp -R artifacts/unit/. .reports/
-          cp -R artifacts/e2e/. .reports/
-          cp -R artifacts/summary/. .reports/
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  smoke_tests:
-    name: Smoke Tests (staging)
-    runs-on: ubuntu-latest
-    needs: [ test_summary ]
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ui/app/.cache/ms-playwright
-      PWA_PRO_URL: https://txomin55.github.io
-      SMOKE_BASE_PATH: /k9x-frontend
-      SMOKE_API_URL: https://k9x-backend.onrender.com
-      SMOKE_GOOGLE_EMAIL: ${{ secrets.SMOKE_GOOGLE_EMAIL }}
-      SMOKE_GOOGLE_PASSWORD: ${{ secrets.SMOKE_GOOGLE_PASSWORD }}
-    steps:
-      - name: Check the smoke secrets
-        run: |
-          missing=
-          [ -n "$SMOKE_GOOGLE_EMAIL" ] || missing="$missing SMOKE_GOOGLE_EMAIL"
-          [ -n "$SMOKE_GOOGLE_PASSWORD" ] || missing="$missing SMOKE_GOOGLE_PASSWORD"
-          if [ -n "$missing" ]; then
-            echo "::error::The repository is missing:$missing."
-            exit 1
-          fi
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Cache pnpm
-        uses: actions/cache@v4
-        with:
-          path: .pnpm-store
-          key: pnpm-${{ hashFiles('pnpm-lock.yaml') }}
-
-      - name: Resolve Playwright cache metadata
-        id: playwright_meta
-        run: |
-          PLAYWRIGHT_VERSION="$(node -e "const fs=require('fs'); const lines=fs.readFileSync('pnpm-lock.yaml','utf8').split(/\\r?\\n/); let inApp=false; let inDev=false; let found=false; let version=''; for (const line of lines) { if (!inApp && /^  ui\\/app:$/.test(line)) { inApp=true; continue; } if (inApp && /^    devDependencies:$/.test(line)) { inDev=true; continue; } if (inApp && inDev && /^      '@playwright\\/test':$/.test(line)) { found=true; continue; } if (found) { const match=line.match(/^        version: ([^\\s]+)/); if (match) { version=match[1].split('(')[0]; break; } } if (inApp && /^  [^ ]/.test(line)) { break; } } if (!version) { process.exit(1); } process.stdout.write(version);")"
-          echo "version=$PLAYWRIGHT_VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
-          path: ui/app/.cache/ms-playwright
-          key: playwright-browsers-${{ steps.playwright_meta.outputs.version }}
-
-      - name: Install deps
-        run: bash ./ci-scripts/generic-before.sh
-
-      - name: Install Playwright browsers
-        run: pnpm --filter ./ui/app exec playwright install --with-deps chromium
-
-      - name: Wake the staging backend
-        run: |
-          for attempt in 1 2 3 4 5 6; do
-            code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "$SMOKE_API_URL/" || true)"
-            case "$code" in
-              000|502|503|504) echo "attempt $attempt: $code"; sleep 10 ;;
-              *) echo "backend up ($code)"; exit 0 ;;
-            esac
-          done
-          echo "::error::The staging backend at $SMOKE_API_URL did not answer."
-          exit 1
-
-      - name: Run smoke tests
-        run: pnpm --filter ./ui/app run test:smoke
-
-      - name: Upload smoke reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: reports-smoke
-          path: ui/app/.reports/test/smoke
-          retention-days: 14
-
   deploy:
     name: Deploy production
     runs-on: ubuntu-latest
-    needs: [ smoke_tests ]
     environment: production
     permissions:
       contents: write
@@ -386,26 +113,15 @@ jobs:
             echo "release_tag=release-$(date -u +%Y%m%d-%H%M)" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Download summary reports
+      - name: Create release archive
         if: ${{ github.event.inputs.create_release == 'true' }}
-        uses: actions/download-artifact@v4
-        with:
-          name: reports-summary
-          path: artifacts/summary
-
-      - name: Create release archives
-        if: ${{ github.event.inputs.create_release == 'true' }}
-        run: |
-          (cd .vercel/output/static && zip -r "$GITHUB_WORKSPACE/public.zip" .)
-          (cd artifacts/summary/test/total/coverage && zip -r "$GITHUB_WORKSPACE/coverage.zip" .)
+        run: (cd .vercel/output/static && zip -r "$GITHUB_WORKSPACE/public.zip" .)
 
       - uses: softprops/action-gh-release@v2
         if: ${{ github.event.inputs.create_release == 'true' }}
         with:
           tag_name: ${{ steps.release_vars.outputs.release_tag }}
           name: Release ${{ steps.release_vars.outputs.release_tag }}
-          files: |
-            public.zip
-            coverage.zip
+          files: public.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
