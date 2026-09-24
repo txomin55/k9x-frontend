@@ -42,6 +42,7 @@ competitorTest.describe("Collection red card (write) - collector", () => {
           await expect(dialog).toBeHidden();
         },
         assertRehydrated: async () => {
+          await dismissPendingCollections(page);
           await expect(redCardButton).toBeVisible();
         },
       });

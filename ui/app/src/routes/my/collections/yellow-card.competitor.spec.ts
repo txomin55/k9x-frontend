@@ -42,6 +42,7 @@ competitorTest.describe("Collection yellow card (write) - collector", () => {
           await expect(dialog).toBeHidden();
         },
         assertRehydrated: async () => {
+          await dismissPendingCollections(page);
           await expect(yellowCardButton).toBeVisible();
         },
       });

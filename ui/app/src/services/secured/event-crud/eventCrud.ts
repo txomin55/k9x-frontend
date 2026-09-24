@@ -458,6 +458,7 @@ const projectCollectionNotCompeting = (
               status: payload.notCompeting
                 ? COMPETITOR_STATUS.NOT_COMPETING
                 : COMPETITOR_STATUS.ENROLLED,
+              notCompeting: payload.notCompeting,
             },
           }
         : competitorScores,

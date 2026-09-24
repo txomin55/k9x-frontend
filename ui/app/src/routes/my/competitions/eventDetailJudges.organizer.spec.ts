@@ -137,6 +137,7 @@ organizerTest.describe("Event detail judges (write) - organizer", () => {
           await judge.fill("Judge Beta");
           await judge.press("ArrowDown");
           await judge.press("Enter");
+          await dialog.getByLabel("Email").fill("beta@k9x.test");
           await dialog.getByText("Main judge", { exact: true }).click();
           await dialog.getByRole("button", { name: "Create" }).click();
         },

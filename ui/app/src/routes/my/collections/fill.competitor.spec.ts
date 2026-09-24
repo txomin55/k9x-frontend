@@ -40,6 +40,7 @@ competitorTest.describe("Collection scoring (write) - competitor", () => {
           await expect(scoreInput).toHaveValue("8");
         },
         assertRehydrated: async () => {
+          await dismissPendingCollections(page);
           await selectCompetitor();
           await expect(scoreInput).toHaveValue("8");
         },

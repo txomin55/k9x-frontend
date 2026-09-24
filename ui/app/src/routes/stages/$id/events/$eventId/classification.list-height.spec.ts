@@ -16,7 +16,25 @@ const makeCompetitor = (
 ): StageEventClassificationItemResponseDTO => ({
   country: { id: "ES", name: "Spain" },
   dog: { id: `dog-${position}`, name: `Dog ${position}` },
-  exercises: [],
+  exercises: [
+    {
+      exercise: { id: "ex-1", name: "Heel work" },
+      scores: [
+        {
+          judge: { id: "judge-1", name: "Maria Lopez" },
+          value: 8,
+          scoreRating: 1,
+          applies: true,
+        },
+      ],
+      exerciseScore: 8,
+      scoreRating: 1,
+      totalScore: 8,
+      tags: [],
+      yellowCards: [],
+      redCard: null,
+    },
+  ],
   owner: `Owner ${position}`,
   handler: `Handler ${position}`,
   position,

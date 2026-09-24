@@ -43,6 +43,7 @@ competitorTest.describe("Collection not-competing (write) - collector", () => {
           await expect(didNotShowButton).toBeHidden();
         },
         assertRehydrated: async () => {
+          await dismissPendingCollections(page);
           await selectCompetitor();
           await expect(didNotShowButton).toBeHidden();
         },
