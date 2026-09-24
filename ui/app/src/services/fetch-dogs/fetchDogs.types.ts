@@ -116,3 +116,32 @@ export interface DogIndexTimeline {
   /** Epoch millis the whole index starts fading if the dog does not compete again. */
   freshnessDegradationFrom: number | null;
 }
+
+/** A band of the world ranking chart: dogs whose index is in `[from, to)`, the last band closed at 1000. */
+export interface K9xRankingBucket {
+  from: number;
+  to: number;
+  dogs: number;
+}
+
+/** A dog placed on the world ranking chart. `position` is 1-based and shared by tied dogs. */
+export interface K9xRankingHighlight {
+  dog: IdNameDTO;
+  index: number;
+  position: number;
+  /** Smallest whole percentage of the charted dogs the dog is in the top of, from 1 to 100. */
+  topPercent: number;
+}
+
+/**
+ * The world ranking chart, from the snapshot the index cron rewrites on the 1st and 16th of each month. Only
+ * dogs whose index is 100 or more are charted, and `total` counts just those. `highlight` is null when the
+ * requested dog is not on the chart; `asOf` is null while the snapshot has never been written.
+ */
+export interface K9xRanking {
+  total: number;
+  /** Epoch millis the snapshot was computed. */
+  asOf: number | null;
+  buckets: K9xRankingBucket[];
+  highlight: K9xRankingHighlight | null;
+}

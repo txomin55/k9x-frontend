@@ -1,0 +1,76 @@
+.dog-k9x-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-075);
+  min-width: 0;
+}
+
+/* The segmented control stretches to its container by default; here it only needs its own row. */
+.dog-k9x-ranking .atom-segmented-control {
+  height: auto;
+}
+
+/*
+ * On a phone the segmented control floats at the bottom as the page's tab bar. The scope switch is not a page
+ * section, so it stays in the panel, where it would otherwise pile onto the section tabs. Same breakpoint as the
+ * library's rule it undoes.
+ */
+@media (max-width: 767px) {
+  .dog-k9x-ranking .atom-segmented-control__controls {
+    position: static;
+    transform: none;
+  }
+
+  .dog-k9x-ranking .atom-segmented-control__wrapper {
+    box-shadow: none;
+  }
+}
+
+.dog-k9x-ranking__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--unit-1) var(--unit-2);
+}
+
+.dog-k9x-ranking__position {
+  display: flex;
+  align-items: baseline;
+  gap: var(--unit-05);
+}
+
+.dog-k9x-ranking__position-value,
+.dog-k9x-ranking__top-value {
+  font-size: var(--text-heading-md);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.dog-k9x-ranking__position-total {
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.dog-k9x-ranking__top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--unit-025, 2px);
+  color: var(--text-secondary);
+}
+
+.dog-k9x-ranking__top-value {
+  color: var(--text-primary);
+}
+
+.dog-k9x-ranking__chart-box {
+  position: relative;
+  width: 100%;
+  height: 16rem;
+}
+
+.dog-k9x-ranking__note,
+.dog-k9x-ranking__empty {
+  margin: 0;
+  color: var(--text-secondary);
+}

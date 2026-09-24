@@ -56,3 +56,25 @@
   gap: var(--unit-1);
   min-width: 0;
 }
+
+/*
+ * The world ranking and the index over time sit side by side once both fit and stack otherwise, ranking first.
+ * Sized off the section's own width rather than the viewport, since the desktop nav sidebar narrows the content.
+ * The index chart takes the larger share: a timeline needs the width more than a distribution.
+ */
+.dog-detail__k9x {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--unit-2) var(--unit-3);
+}
+
+.dog-detail__k9x-ranking {
+  flex: 1 1 calc(var(--unit-10) * 4.5);
+  min-width: 0;
+}
+
+.dog-detail__k9x-index {
+  flex: 2 1 calc(var(--unit-10) * 6);
+  min-width: 0;
+}

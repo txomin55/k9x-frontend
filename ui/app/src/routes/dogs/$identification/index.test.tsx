@@ -27,12 +27,15 @@ const isFetching = vi.fn<() => boolean>(() => false);
 
 const prefetchParticipations = vi.fn<(identification: string) => void>();
 const prefetchIndex = vi.fn<(identification: string) => void>();
+const prefetchRanking = vi.fn<(identification: string) => void>();
 
 vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
   prefetchPublicDogParticipations: (identification: string) =>
     prefetchParticipations(identification),
   prefetchPublicDogIndex: (identification: string) =>
     prefetchIndex(identification),
+  prefetchPublicK9xRanking: (identification: string) =>
+    prefetchRanking(identification),
   usePublicDog: () => ({
     get data() {
       return dog();
@@ -65,6 +68,14 @@ vi.mock(
 vi.mock("@/components/routes/dogs/dog-k9x-index/DogK9xIndex", () => ({
   default: (props: { identification: string }) => (
     <div class="k9x-index-stub">{props.identification}</div>
+  ),
+}));
+
+vi.mock("@/components/routes/dogs/dog-k9x-ranking/DogK9xRanking", () => ({
+  default: (props: { identification: string; country?: { id: string } }) => (
+    <div class="k9x-ranking-stub">
+      {props.identification}:{props.country?.id}
+    </div>
   ),
 }));
 
@@ -208,7 +219,7 @@ describe("public dog detail route", () => {
     expect(setTabParam).toHaveBeenCalledWith("K9X");
   });
 
-  test("starts loading the participations and the index without waiting for the dog", () => {
+  test("starts loading the participations, the index and the ranking without waiting for the dog", () => {
     dog.mockReturnValue(undefined);
     isPending.mockReturnValue(true);
 
@@ -216,6 +227,7 @@ describe("public dog detail route", () => {
 
     expect(prefetchParticipations).toHaveBeenCalledWith("981098106001010");
     expect(prefetchIndex).toHaveBeenCalledWith("981098106001010");
+    expect(prefetchRanking).toHaveBeenCalledWith("981098106001010");
   });
 
   test("shows the dog's K9X index in the K9X section", () => {
@@ -225,6 +237,19 @@ describe("public dog detail route", () => {
 
     expect(container.querySelector(".k9x-index-stub")).toHaveTextContent(
       "981098106001010",
+    );
+  });
+
+  test("puts the dog's world ranking before its index chart, narrowable to its country", () => {
+    tabParam.mockReturnValue("K9X");
+
+    const { container } = renderPage();
+
+    const section = container.querySelector(".dog-detail__k9x")!;
+    expect(section.firstElementChild).toHaveClass("dog-detail__k9x-ranking");
+    expect(section.lastElementChild).toHaveClass("dog-detail__k9x-index");
+    expect(container.querySelector(".k9x-ranking-stub")).toHaveTextContent(
+      "981098106001010:ES",
     );
   });
 

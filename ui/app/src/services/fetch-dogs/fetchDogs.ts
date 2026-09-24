@@ -6,6 +6,7 @@ import { createPagesState } from "@/utils/pagination/pagesStore";
 import type {
   DogIndexTimeline,
   DogParticipationYear,
+  K9xRanking,
   PublicDog,
   PublicDogDetail,
   PublicDogPageDTO,
@@ -29,6 +30,17 @@ export const getPublicDogParticipationsQueryKey = (identification: string) =>
 
 export const getPublicDogIndexQueryKey = (identification: string) =>
   ["public-dog-index", identification, getCurrentLocale()] as const;
+
+export const getPublicK9xRankingQueryKey = (
+  identification: string,
+  country: string | undefined,
+) =>
+  [
+    "public-k9x-ranking",
+    identification,
+    country ?? "",
+    getCurrentLocale(),
+  ] as const;
 
 export const getPublicDogsQueryKey = (search: PublicDogSearch) =>
   [
@@ -171,6 +183,37 @@ export const usePublicDogIndex = (identification: () => string) =>
 /** Same as {@link prefetchPublicDogParticipations}, for the K9X tab. */
 export const prefetchPublicDogIndex = (identification: string) =>
   void queryClient.prefetchQuery(publicDogIndexQuery(identification));
+
+/** The ranking snapshot is only rewritten twice a month, so it stays fresh as long as the dog's own index. */
+const publicK9xRankingQuery = (identification: string, country?: string) => ({
+  queryKey: getPublicK9xRankingQueryKey(identification, country),
+  queryFn: () =>
+    rawRequest<K9xRanking>({
+      path: `/k9x/ranking?${new URLSearchParams({
+        dog: identification,
+        ...(country ? { country } : {}),
+      })}`,
+    }),
+  staleTime: PARTICIPATIONS_STALE_TIME,
+  networkMode: "always" as const,
+});
+
+/**
+ * The world ranking chart with the dog placed on it, world-wide or within `country`. Switching the scope keeps
+ * the previous chart on screen until the new one arrives, rather than blanking the panel to its skeleton.
+ */
+export const usePublicK9xRanking = (
+  identification: () => string,
+  country: () => string | undefined,
+) =>
+  createQuery(() => ({
+    ...publicK9xRankingQuery(identification(), country()),
+    placeholderData: (previous: K9xRanking | undefined) => previous,
+  }));
+
+/** Same as {@link prefetchPublicDogParticipations}, for the world-wide ranking of the K9X tab. */
+export const prefetchPublicK9xRanking = (identification: string) =>
+  void queryClient.prefetchQuery(publicK9xRankingQuery(identification));
 
 /**
  * The dog the breadcrumb of the detail page names, without waiting for its own request: the directory the

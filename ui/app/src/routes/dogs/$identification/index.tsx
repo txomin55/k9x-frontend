@@ -16,13 +16,16 @@ import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import DogK9xIndex from "@/components/routes/dogs/dog-k9x-index/DogK9xIndex";
+import DogK9xRanking from "@/components/routes/dogs/dog-k9x-ranking/DogK9xRanking";
 import DogParticipations from "@/components/routes/dogs/dog-participations/DogParticipations";
 import {
   prefetchPublicDogIndex,
   prefetchPublicDogParticipations,
+  prefetchPublicK9xRanking,
   usePublicDog,
 } from "@/services/fetch-dogs/fetchDogs";
 import type { PublicDogDetail } from "@/services/fetch-dogs/fetchDogs.types";
+import type { IdNameDTO } from "@/services/secured/judge-crud/judgeCrud.types";
 import { useI18n } from "@/stores/i18n/i18n";
 import { formatDateTime } from "@/utils/date";
 import { useSearchParam } from "@/utils/search-params/useSearchParam";
@@ -52,7 +55,7 @@ const FACT_COUNT = 10;
  * the route is captured by the `<Outlet>` boundary, which blanks the whole page instead of showing this
  * skeleton. So the query is created *and* read inside the child below, under this local `<Suspense>`.
  *
- * The participations and the K9X index are only prefetched here — nothing reads them — so they load alongside the dog without
+ * The participations, the K9X index and its world ranking are only prefetched here — nothing reads them — so they load alongside the dog without
  * holding up its page, and the tab that shows them reads them under a boundary of its own.
  */
 function PublicDogDetailRoute() {
@@ -60,6 +63,7 @@ function PublicDogDetailRoute() {
   createEffect(() => {
     prefetchPublicDogParticipations(params().identification);
     prefetchPublicDogIndex(params().identification);
+    prefetchPublicK9xRanking(params().identification);
   });
 
   return (
@@ -78,8 +82,12 @@ function PublicDogDetailRoute() {
 /**
  * The sections are a segmented control rather than tabs so the switcher fits a phone as well as a laptop. The
  * selected one lives in the URL, so a shared link opens the same section.
+ *
+ * The K9X section puts the dog's place in the world ranking before its index over time: stacked, the ranking
+ * comes first; side by side, when there is room for both, it sits on the left. `country` is the dog's, which
+ * the ranking can be narrowed to — the skeleton has none yet and offers only the world ranking.
  */
-function DogDetailTabs(props: { bio: JSX.Element }) {
+function DogDetailTabs(props: { bio: JSX.Element; country?: IdNameDTO }) {
   const i18n = useI18n();
   const params = Route.useParams();
   const [tabParam, setTabParam] = useSearchParam(
@@ -106,7 +114,19 @@ function DogDetailTabs(props: { bio: JSX.Element }) {
       value: DOG_DETAIL_TABS.K9X,
       text: i18n.t("DOGS.DETAIL.TAB_K9X"),
       // An element for the same reason as the participations.
-      content: <DogK9xIndex identification={params().identification} />,
+      content: (
+        <div class="dog-detail__k9x">
+          <div class="dog-detail__k9x-ranking">
+            <DogK9xRanking
+              identification={params().identification}
+              country={props.country}
+            />
+          </div>
+          <div class="dog-detail__k9x-index">
+            <DogK9xIndex identification={params().identification} />
+          </div>
+        </div>
+      ),
     },
   ]);
 
@@ -255,6 +275,7 @@ function PublicDogDetailPage() {
                 </Show>
               </div>
               <DogDetailTabs
+                country={detail().country}
                 bio={
                   <AtomCollapsible
                     open={isInfoOpen()}
