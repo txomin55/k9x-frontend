@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { named } from "./constants";
+import { named, smokePath } from "./constants";
 
 // UTC, not local: the backend compares UTC days, so between local midnight and
 // UTC midnight the local "today" is still tomorrow for the backend — a stage
@@ -99,7 +99,7 @@ const captureCreate = async <T = Record<string, unknown>>(
 
 export const createJudge = async (page: Page) => {
   const name = named("Judge");
-  await page.goto("./my/judges/list");
+  await page.goto(smokePath("/my/judges/list"));
   const body = await captureCreate<{ id: string }>(
     page,
     { urlIncludes: "/secured/judges" },
@@ -120,7 +120,7 @@ export const createJudge = async (page: Page) => {
 export const createDog = async (page: Page) => {
   const name = named("Dog");
   const identification = name.replace(/\D/g, "");
-  await page.goto("./my/dogs/list");
+  await page.goto(smokePath("/my/dogs/list"));
   const body = await captureCreate<{ id: string }>(
     page,
     { urlIncludes: "/secured/dogs" },
@@ -149,7 +149,7 @@ export const createDog = async (page: Page) => {
 
 export const createCompetition = async (page: Page) => {
   const name = named("Competition");
-  await page.goto("./my/competitions/list");
+  await page.goto(smokePath("/my/competitions/list"));
   const body = await captureCreate<{ id: string }>(
     page,
     { urlIncludes: "/secured/competitions" },
@@ -188,7 +188,7 @@ export const createStage = async (
   startInDays = 30,
 ) => {
   const title = named("Trial");
-  await page.goto(`./my/competitions/${competitionId}`);
+  await page.goto(smokePath(`/my/competitions/${competitionId}`));
   await enterEditMode(page);
   const body = await captureCreate<{ id: string }>(
     page,
@@ -212,7 +212,9 @@ export const createEvent = async (
   stageId: string,
 ) => {
   const title = named("Event");
-  await page.goto(`./my/competitions/${competitionId}/stages/${stageId}`);
+  await page.goto(
+    smokePath(`/my/competitions/${competitionId}/stages/${stageId}`),
+  );
   await enterEditMode(page);
   const body = await captureCreate<{ id: string }>(
     page,
@@ -239,7 +241,9 @@ export const setEventConfiguration = async (
   eventId: string,
 ) => {
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await enterEditMode(page);
   await page.addStyleTag({
@@ -281,7 +285,9 @@ export const addJudgeToEvent = async (
   judgeName: string,
 ) => {
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await enterEditMode(page);
   await setEnrollmentDeadline(page);
@@ -306,7 +312,9 @@ export const addExerciseToEvent = async (
   optionIndex = 1,
 ) => {
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await enterEditMode(page);
   await setEnrollmentDeadline(page);
@@ -333,7 +341,9 @@ export const addCompetitorToEvent = async (
   eventId: string,
 ) => {
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await enterEditMode(page);
   await setEnrollmentDeadline(page);
@@ -355,7 +365,7 @@ export const addCompetitorToEvent = async (
 };
 
 export const viewEventInfo = async (page: Page, stageId: string) => {
-  await page.goto(`./stages/${stageId}/info`);
+  await page.goto(smokePath(`/stages/${stageId}/info`));
   const enrolled = page.getByRole("button", { name: "Competitors enrolled" });
   await expect(enrolled).toBeVisible();
   await enrolled.click();
@@ -366,7 +376,7 @@ export const enrollDog = async (
   stageId: string,
   dogName: string,
 ) => {
-  await page.goto(`./stages/${stageId}/info`);
+  await page.goto(smokePath(`/stages/${stageId}/info`));
   await page.getByRole("button", { name: "Enroll", exact: true }).click();
   const dialog = page.getByRole("dialog");
   const dog = dialog.getByRole("combobox", { name: "Dog" });
@@ -395,7 +405,9 @@ export const acceptEnrollment = async (
   // A self-enrolled competitor starts pending; the organizer must accept the
   // enrollment (while the event is still CREATED) before it can be scored.
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await page.getByRole("tab", { name: "Competitors" }).click();
   const acceptEnroll = page
@@ -415,7 +427,9 @@ export const closeEnrollment = async (
   // stays before the new start day, so move the deadline to yesterday before
   // making the stage live (enrollment must already be over by then).
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await enterEditMode(page);
   const deadline = page.getByLabel("Enrollment deadline");
@@ -430,7 +444,7 @@ export const setStageDatesToToday = async (
   // Events are only editable while their stage is CREATED (future), but only
   // become scoreable once the stage is live. So build everything on a future
   // stage, then move its dates to today to make it live.
-  await page.goto(`./my/competitions/${competitionId}`);
+  await page.goto(smokePath(`/my/competitions/${competitionId}`));
   await enterEditMode(page);
   const editStage = page.getByRole("button", { name: "Edit", exact: true });
   await expect(editStage).toBeVisible();
@@ -483,7 +497,7 @@ export const addScores = async (
   // STARTED, which happens after the collector enters a score. So the collector
   // reaches the collection directly (it shows up under My collections because
   // the judge's collector email is the test user) and scores there.
-  await page.goto(`./my/collections/${eventId}`);
+  await page.goto(smokePath(`/my/collections/${eventId}`));
   await dismissPendingCollections(page);
   await page.addStyleTag({
     content: ".floating-toggle-circle { pointer-events: none; }",
@@ -523,7 +537,9 @@ export const addScores = async (
 
   // Scoring transitions the event to STARTED; the "Scores" button now shows.
   await page.goto(
-    `./my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    smokePath(
+      `/my/competitions/${competitionId}/stages/${stageId}/events/${eventId}`,
+    ),
   );
   await dismissPendingCollections(page);
   await page.getByRole("tab", { name: "Competitors" }).click();
@@ -539,7 +555,7 @@ export const viewClassification = async (
   dogName: string,
 ) => {
   await page.goto(
-    `./stages/${stageId}/events/${eventId}/classification?view=TABLE`,
+    smokePath(`/stages/${stageId}/events/${eventId}/classification?view=TABLE`),
   );
   // Classification is computed server-side and can take a while to populate.
   await expect(page.getByText(dogName).first()).toBeVisible({
@@ -587,7 +603,7 @@ export const visitStagesListing = async (page: Page, stageName: string) => {
   // The listing filters names with a RegExp, so escape regex-special chars
   // (the stage name has parentheses) to match the literal name.
   const query = stageName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  await page.goto("./stages");
+  await page.goto(smokePath("/stages"));
   await revealStagesFilters(page);
   await page.getByLabel("Trial name").fill(query);
 
@@ -602,7 +618,7 @@ export const visitStagesListing = async (page: Page, stageName: string) => {
   // Return to the listing with a fresh navigation instead of history back:
   // going back leaves the info view mounted over the listing (URL updates but
   // the segmented control stays covered), which deadlocks the Map click.
-  await page.goto("./stages");
+  await page.goto(smokePath("/stages"));
   await revealStagesFilters(page);
   await page.getByLabel("Trial name").fill(query);
 

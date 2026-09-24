@@ -12,6 +12,7 @@ regresiones en los flujos felices.
 | Variable | Default | Qué controla |
 |---|---|---|
 | `PWA_PRO_URL` | `http://localhost:5173` | URL del front a testar. En local arranca `start:integrated` (API en `:4000`). Apúntala a un deploy para testar otro entorno. |
+| `SMOKE_BASE_PATH` | vacío | Subpath desde el que se sirve la app (p. ej. `/k9x-frontend` en staging). Toda navegación pasa por `smokePath()`. |
 | `SMOKE_API_URL` | `http://localhost:4000` | API real usada por el cleanup (DELETE de lo creado). |
 | `SMOKE_RUN_ID` | `MMDD-HHMMSS` | Sufijo único de los nombres creados. |
 | `SMOKE_GOOGLE_EMAIL` / `SMOKE_GOOGLE_PASSWORD` | — | Credenciales para el auto-login (alternativa al fichero). |
@@ -42,7 +43,7 @@ regresiones en los flujos felices.
    ```bash
    pnpm test:smoke
    # contra un deploy:
-   PWA_PRO_URL=https://staging.app SMOKE_API_URL=https://staging-api pnpm test:smoke
+   PWA_PRO_URL=https://txomin55.github.io SMOKE_BASE_PATH=/k9x-frontend SMOKE_API_URL=https://k9x-backend.onrender.com pnpm test:smoke
    ```
 
 Todo lo creado (jueces, perros, competiciones, stages, eventos) se nombra con el

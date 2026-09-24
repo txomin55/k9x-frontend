@@ -13,6 +13,13 @@ export const SMOKE_CREDENTIALS_PATH =
 export const SMOKE_API_URL =
   process.env.SMOKE_API_URL ?? "http://localhost:4000";
 
+const SMOKE_BASE_PATH = (process.env.SMOKE_BASE_PATH ?? "")
+  .trim()
+  .replace(/\/+$/, "")
+  .replace(/^(?=[^/])/, "/");
+
+export const smokePath = (path: string) => `${SMOKE_BASE_PATH}${path}`;
+
 const pad = (value: number) => String(value).padStart(2, "0");
 
 const readableRunId = () => {

@@ -4,7 +4,7 @@ import type { PlaywrightTestConfig } from "@playwright/test";
 import { defineConfig, devices } from "@playwright/test";
 import { SMOKE_STATE_PATH } from "./smoke/utils/constants";
 
-const baseURL = `${(process.env.PWA_PRO_URL ?? "http://localhost:5173").replace(/\/+$/, "")}/`;
+const baseURL = process.env.PWA_PRO_URL ?? "http://localhost:5173";
 const isLocal = baseURL.includes("localhost") || baseURL.includes("127.0.0.1");
 
 const localWebServer: PlaywrightTestConfig["webServer"] = {

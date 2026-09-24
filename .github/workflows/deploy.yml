@@ -235,7 +235,8 @@ jobs:
     needs: [ test_summary ]
     env:
       PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/ui/app/.cache/ms-playwright
-      PWA_PRO_URL: https://txomin55.github.io/k9x-frontend
+      PWA_PRO_URL: https://txomin55.github.io
+      SMOKE_BASE_PATH: /k9x-frontend
       SMOKE_API_URL: https://k9x-backend.onrender.com
       SMOKE_GOOGLE_EMAIL: ${{ secrets.SMOKE_GOOGLE_EMAIL }}
       SMOKE_GOOGLE_PASSWORD: ${{ secrets.SMOKE_GOOGLE_PASSWORD }}

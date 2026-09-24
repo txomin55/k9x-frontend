@@ -3,7 +3,7 @@ import path from "node:path";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import * as flows from "./utils/flows";
 import { cleanup, newRegistry } from "./utils/cleanup";
-import { PENDING_COLLECTIONS_DISABLED_KEY } from "./utils/constants";
+import { PENDING_COLLECTIONS_DISABLED_KEY, smokePath } from "./utils/constants";
 
 // Throwaway spec that produces the screenshots for the user guide. It builds the
 // scenarios with the smoke helpers (English UI) and then walks the app a second
@@ -146,10 +146,12 @@ test("capture the guide screenshots", async ({ page }) => {
 
   const open = built.open!;
   const scored = built.scored!;
-  const openEvent = `/my/competitions/${open.competitionId}/stages/${open.stageId}/events/${open.eventId}`;
+  const openEvent = smokePath(
+    `/my/competitions/${open.competitionId}/stages/${open.stageId}/events/${open.eventId}`,
+  );
 
   // ---------------------------------------------------------------- journey 1
-  await page.goto("/my/judges/list");
+  await page.goto(smokePath("/my/judges/list"));
   await expect(
     page.getByRole("button", { name: "+", exact: true }),
   ).toBeVisible();
@@ -165,11 +167,11 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "01-judge-dialog.png");
   await closeDialog(page);
 
-  await page.goto("/my/judges/list");
+  await page.goto(smokePath("/my/judges/list"));
   await settle(page);
   await shot(page, "02-judge-list.png");
 
-  await page.goto("/my/dogs/list");
+  await page.goto(smokePath("/my/dogs/list"));
   await expect(
     page.getByRole("button", { name: "+", exact: true }),
   ).toBeVisible();
@@ -190,7 +192,7 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "03-dog-dialog.png");
   await closeDialog(page);
 
-  await page.goto(`/my/competitions/${open.competitionId}`);
+  await page.goto(smokePath(`/my/competitions/${open.competitionId}`));
   await editMode(page);
   await shot(page, "04-competition-edit.png");
 
@@ -208,7 +210,7 @@ test("capture the guide screenshots", async ({ page }) => {
   await closeDialog(page);
 
   await page.goto(
-    `/my/competitions/${open.competitionId}/stages/${open.stageId}`,
+    smokePath(`/my/competitions/${open.competitionId}/stages/${open.stageId}`),
   );
   await editMode(page);
   await page
@@ -261,13 +263,13 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "09-add-competitor.png");
   await closeDialog(page);
 
-  await page.goto(`/stages/${open.stageId}/info`);
+  await page.goto(smokePath(`/stages/${open.stageId}/info`));
   await page.getByRole("button", { name: "Inscritos" }).click();
   await settle(page);
   await shot(page, "10-stage-info.png");
 
   // ---------------------------------------------------------------- journey 2
-  await page.goto(`/stages/${open.stageId}/info`);
+  await page.goto(smokePath(`/stages/${open.stageId}/info`));
   await page.getByRole("button", { name: "Inscrever-se", exact: true }).click();
   const enrollDialog = page.getByRole("dialog");
   await enrollDialog.getByRole("combobox", { name: "Cão" }).click();
@@ -278,7 +280,7 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "11-enroll-dialog.png");
   await closeDialog(page);
 
-  await page.goto(`/stages/${open.stageId}/info`);
+  await page.goto(smokePath(`/stages/${open.stageId}/info`));
   await page.getByRole("button", { name: "Inscritos" }).click();
   await expect(page.getByText(open.dogName).first()).toBeVisible();
   await settle(page);
@@ -286,7 +288,9 @@ test("capture the guide screenshots", async ({ page }) => {
 
   // ---------------------------------------------------------------- journey 3
   await page.goto(
-    `/my/competitions/${scored.competitionId}/stages/${scored.stageId}/events/${scored.eventId}`,
+    smokePath(
+      `/my/competitions/${scored.competitionId}/stages/${scored.stageId}/events/${scored.eventId}`,
+    ),
   );
   await page.getByRole("tab", { name: "Exercícios" }).click();
   await settle(page);
@@ -308,7 +312,7 @@ test("capture the guide screenshots", async ({ page }) => {
   await settle(page);
   await shot(page, "15-close-enrollment.png");
 
-  await page.goto(`/my/competitions/${open.competitionId}`);
+  await page.goto(smokePath(`/my/competitions/${open.competitionId}`));
   await editMode(page);
   await page
     .getByRole("button", { name: "Editar", exact: true })
@@ -324,11 +328,11 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "16-stage-today.png");
   await closeDialog(page);
 
-  await page.goto("/my/collections/list");
+  await page.goto(smokePath("/my/collections/list"));
   await settle(page);
   await shot(page, "17-collection.png");
 
-  await page.goto(`/my/collections/${scored.eventId}`);
+  await page.goto(smokePath(`/my/collections/${scored.eventId}`));
   await page
     .getByRole("button", { name: /Competidores/ })
     .first()
@@ -341,14 +345,18 @@ test("capture the guide screenshots", async ({ page }) => {
   await shot(page, "18-scores.png");
 
   await page.goto(
-    `/my/competitions/${scored.competitionId}/stages/${scored.stageId}/events/${scored.eventId}`,
+    smokePath(
+      `/my/competitions/${scored.competitionId}/stages/${scored.stageId}/events/${scored.eventId}`,
+    ),
   );
   await page.getByRole("tab", { name: "Competidores" }).click();
   await settle(page);
   await shot(page, "19-scores-button.png");
 
   await page.goto(
-    `/stages/${scored.stageId}/events/${scored.eventId}/classification?view=TABLE`,
+    smokePath(
+      `/stages/${scored.stageId}/events/${scored.eventId}/classification?view=TABLE`,
+    ),
   );
   await expect(page.getByText(scored.dogName).first()).toBeVisible({
     timeout: 30_000,
@@ -368,7 +376,7 @@ test("capture the guide screenshots", async ({ page }) => {
     await settle(page, 1_500);
   };
 
-  await page.goto("/stages");
+  await page.goto(smokePath("/stages"));
   await revealFilters();
   await shot(page, "21-stages-filters.png");
 
@@ -377,7 +385,7 @@ test("capture the guide screenshots", async ({ page }) => {
   await settle(page);
   await shot(page, "22-plus-info.png");
 
-  await page.goto("/stages");
+  await page.goto(smokePath("/stages"));
   await revealFilters();
   await page
     .locator(".atom-segmented-control__item-label", { hasText: "Mapa" })
