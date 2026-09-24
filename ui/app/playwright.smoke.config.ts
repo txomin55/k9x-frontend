@@ -4,7 +4,7 @@ import type { PlaywrightTestConfig } from "@playwright/test";
 import { defineConfig, devices } from "@playwright/test";
 import { SMOKE_STATE_PATH } from "./smoke/utils/constants";
 
-const baseURL = process.env.PWA_PRO_URL ?? "http://localhost:5173";
+const baseURL = `${(process.env.PWA_PRO_URL ?? "http://localhost:5173").replace(/\/+$/, "")}/`;
 const isLocal = baseURL.includes("localhost") || baseURL.includes("127.0.0.1");
 
 const localWebServer: PlaywrightTestConfig["webServer"] = {
@@ -19,7 +19,7 @@ export default defineConfig({
   testMatch: "**/*.smoke.spec.ts",
   timeout: 180_000,
   expect: { timeout: 10_000 },
-  retries: 1,
+  retries: 0,
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
@@ -51,6 +51,7 @@ export default defineConfig({
     {
       name: "smoke",
       testMatch: "**/*.smoke.spec.ts",
+      testIgnore: process.env.CI ? "**/docs-capture.smoke.spec.ts" : undefined,
       dependencies: ["setup"],
       use: {
         ...devices["Pixel 5"],

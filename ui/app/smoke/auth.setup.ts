@@ -124,16 +124,16 @@ const persist = (context: import("@playwright/test").BrowserContext) => {
 // dependencies up front; otherwise the first hit on each chunk during a journey
 // triggers a vite re-optimization that full-reloads the page mid-test.
 const WARM_ROUTES = [
-  "/my/judges/list",
-  "/my/dogs/list",
-  "/my/competitions/list",
-  "/my/collections/list",
-  "/my/competitions/warm",
-  "/my/competitions/warm/stages/warm",
-  "/my/competitions/warm/stages/warm/events/warm",
-  "/my/collections/warm",
-  "/stages/warm/info",
-  "/stages/warm/events/warm/classification",
+  "./my/judges/list",
+  "./my/dogs/list",
+  "./my/competitions/list",
+  "./my/collections/list",
+  "./my/competitions/warm",
+  "./my/competitions/warm/stages/warm",
+  "./my/competitions/warm/stages/warm/events/warm",
+  "./my/collections/warm",
+  "./stages/warm/info",
+  "./stages/warm/events/warm/classification",
 ];
 
 const warmRoutes = async (page: import("@playwright/test").Page) => {
@@ -151,7 +151,7 @@ test("authenticate", async ({ browser }) => {
     const context = await browser.newContext();
     await disableWalkthrough(context);
     const page = await context.newPage();
-    await gotoStable(page, "/");
+    await gotoStable(page, "./");
     await page.evaluate(
       ([key, value]) => window.localStorage.setItem(key, value),
       [ACCESS_TOKEN_KEY, token] as const,
@@ -169,7 +169,7 @@ test("authenticate", async ({ browser }) => {
         },
       ]);
     }
-    await gotoStable(page, "/my/dogs/list");
+    await gotoStable(page, "./my/dogs/list");
     await expect(
       page.getByRole("button", { name: "+", exact: true }),
     ).toBeVisible({ timeout: 20_000 });
@@ -185,7 +185,7 @@ test("authenticate", async ({ browser }) => {
     });
     await disableWalkthrough(reuseContext);
     const reusePage = await reuseContext.newPage();
-    await gotoStable(reusePage, "/my/dogs/list");
+    await gotoStable(reusePage, "./my/dogs/list");
     // Give the SPA time to hydrate and silently refresh the access token before
     // deciding the session is dead — an instant isVisible() check races the
     // render and falsely falls through to the interactive Google login.
@@ -206,7 +206,7 @@ test("authenticate", async ({ browser }) => {
   const context = await browser.newContext();
   await disableWalkthrough(context);
   const page = await context.newPage();
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "Login" }).click();
 
   const credentials = readCredentials();

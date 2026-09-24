@@ -106,8 +106,10 @@ const context = libReport.createContext({
 const report = reports.create("lcov");
 const coverageReport = reports.create("cobertura");
 const jsonReport = reports.create("json");
+const htmlReport = reports.create("html");
 
 // call execute to synchronously create and write the report to disk
 report.execute(context);
 coverageReport.execute(context);
 jsonReport.execute(context);
+htmlReport.execute(context);
