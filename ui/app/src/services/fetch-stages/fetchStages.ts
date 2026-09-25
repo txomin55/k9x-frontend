@@ -17,6 +17,20 @@ const STAGES_SNAPSHOT_ID = "stages";
 const STAGE_SNAPSHOT_PREFIX = "stage:";
 
 export const getStagesQueryKey = () => ["stages", getCurrentLocale()] as const;
+export const getAllStagesByCountryQueryKey = () =>
+  ["stages-by-country"] as const;
+export const getStagesByCountryQueryKey = (
+  country: string,
+  from: number,
+  to: number,
+) =>
+  [
+    ...getAllStagesByCountryQueryKey(),
+    country,
+    from,
+    to,
+    getCurrentLocale(),
+  ] as const;
 export const getStageByIdQueryKey = (id: string) =>
   ["stage", id, getCurrentLocale()] as const;
 export const getEventClassificationQueryKey = (
@@ -33,6 +47,11 @@ const fetchStages = (from: number, to: number) =>
       path: `/stages?from=${from}&to=${to}`,
     }),
   );
+
+const fetchStagesByCountry = (from: number, to: number, country: string) =>
+  rawRequest<StageSummaryResponseDTO[]>({
+    path: `/stages?from=${from}&to=${to}&country=${encodeURIComponent(country.toUpperCase())}`,
+  });
 
 const refreshStageByIdSnapshot = async (id: string) => {
   const stage = await rawRequest<StageDetailResponseDTO>({
@@ -84,6 +103,26 @@ export const useStages = (
 
   return query;
 };
+
+/**
+ * The country filter is served by the API and kept out of the stages cache: that cache is the base of the
+ * local-first list and of the country options, and seeding it with one country's stages would read as "the
+ * rest are gone". It starts with the stages already listed so the page never suspends mid-filter.
+ */
+export const useStagesByCountry = (
+  from: () => number,
+  to: () => number,
+  country: () => string,
+) =>
+  createQuery(() => ({
+    queryKey: getStagesByCountryQueryKey(country(), from(), to()),
+    queryFn: () => fetchStagesByCountry(from(), to(), country()),
+    enabled: !!country(),
+    placeholderData: (previousStages: StageSummaryResponseDTO[] | undefined) =>
+      queryClient.getQueryData<StageSummaryResponseDTO[]>(
+        getStagesQueryKey(),
+      ) ?? previousStages,
+  }));
 
 export const useStageById = (id: string, options?: TanstackCreateQuery) =>
   stageByIdQuery.useQuery([id], {

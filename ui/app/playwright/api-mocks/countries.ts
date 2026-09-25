@@ -14,5 +14,5 @@ export const setupCountries = (page: Page, countries = defaultCountries) =>
   setRouteResponses(page, {
     method: "GET",
     payload: countries,
-    pathname: "/secured/countries",
+    pathname: "/countries",
   });

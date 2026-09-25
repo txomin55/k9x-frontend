@@ -12,7 +12,8 @@ import {
 
 const refreshCountriesSnapshot = async () => {
   const countries = await rawRequest<IdNameDTO[]>({
-    path: "/secured/countries",
+    // The public endpoint, so the lists an anonymous visitor sees can offer every country too.
+    path: "/countries",
   });
 
   await saveWholeQuerySnapshot(COUNTRIES_SNAPSHOT_ID, countries);

@@ -101,6 +101,8 @@ export const loggedOutTest = baseTest.extend<{ autoLoggedOut: void }>({
           pathname: "/refresh",
           status: 401,
         }),
+        // Public lists offer every country, from an endpoint that needs no token.
+        setupCountries(page),
       ]);
       await use();
     },

@@ -25,6 +25,7 @@ import { buildNameMatcher, isSameCountry } from "@/utils/filter/nameFilter";
 import { useViewportFillHeight } from "@/utils/layout/useViewportFillHeight";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
 import { isOffline } from "@/utils/local-first/localFirstPolicy";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
@@ -59,7 +60,10 @@ function MyCompetitionsIndexPage() {
     enabled: () => Boolean(user()),
   });
   const [nameFilter, setNameFilter] = createSignal("");
-  const [countryFilter, setCountryFilter] = createSignal(ANY_COUNTRY);
+  const [countryFilter, setCountryFilter] = useSearchParam(
+    "country",
+    ANY_COUNTRY,
+  );
   const [view, setView] = createSignal<string>(VIEW.LIST);
   const tableFill = useViewportFillHeight();
   const device = useDeviceType();

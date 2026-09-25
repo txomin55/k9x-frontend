@@ -6,6 +6,7 @@ import type {
   StageSummaryResponseDTO,
 } from "@/services/fetch-stages/fetchStages.types";
 import {
+  getAllStagesByCountryQueryKey,
   getStageByIdQueryKey,
   getStagesQueryKey,
 } from "@/services/fetch-stages/fetchStages";
@@ -147,6 +148,12 @@ const applyOptimisticEnroll = async (
     queryClient.setQueryData(getStagesQueryKey(), nextStages);
     await saveQuerySnapshot(STAGES_SNAPSHOT_ID, nextStages);
   }
+
+  queryClient.setQueriesData<StageSummaryResponseDTO[]>(
+    { queryKey: getAllStagesByCountryQueryKey() },
+    (stages) =>
+      stages && buildNextStagesSummary(stageId, stages, payload, nextStage),
+  );
 };
 
 const rollbackStageEnroll = async (
@@ -179,6 +186,11 @@ const rollbackStageEnroll = async (
     queryClient.setQueryData(getStagesQueryKey(), undefined);
     await removeQuerySnapshot(STAGES_SNAPSHOT_ID);
   }
+
+  // The country lists are not snapshotted, so the server's answer is the rollback.
+  await queryClient.invalidateQueries({
+    queryKey: getAllStagesByCountryQueryKey(),
+  });
 };
 
 const isStageEnrollRollbackPayload = (

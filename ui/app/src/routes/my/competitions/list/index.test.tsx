@@ -26,6 +26,10 @@ vi.mock(
   }),
 );
 
+vi.mock("@/utils/search-params/useSearchParam", () => ({
+  useSearchParam: () => [() => "", vi.fn()] as const,
+}));
+
 vi.mock("@/services/secured/competition-crud/competitionCrud", () => ({
   useCompetitions: () => ({
     data: [],

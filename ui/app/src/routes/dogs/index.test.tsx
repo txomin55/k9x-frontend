@@ -41,6 +41,14 @@ vi.mock("@/services/fetch-dogs/fetchDogs", () => ({
   },
 }));
 
+vi.mock("@/utils/search-params/useSearchParam", () => ({
+  useSearchParam: () => [() => "", vi.fn()] as const,
+}));
+
+vi.mock("@/services/secured/country-crud/countryCrud", () => ({
+  useCountries: () => ({ data: [{ id: "ES", name: "Spain" }] }),
+}));
+
 vi.mock("@/components/common/page-seo/PageSeo", () => ({
   default: () => null,
 }));
@@ -196,9 +204,9 @@ describe("public dogs route", () => {
     const table = await findByRole("radio", { checked: false });
     table.click();
 
-    const names = [
-      ...container.querySelectorAll(".list-table__name > a"),
-    ].map((cell) => cell.textContent);
+    const names = [...container.querySelectorAll(".list-table__name > a")].map(
+      (cell) => cell.textContent,
+    );
     expect(names).toEqual(["Top", "Amber", "Zoe"]);
     const headerButtons = [
       ...container.querySelectorAll<HTMLButtonElement>("th button"),

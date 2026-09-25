@@ -1,20 +1,17 @@
 import { AtomSegmentedControl } from "@lib/components/atoms/segmented-control/AtomSegmentedControl";
-import AtomSelect, {
-  type AtomSelectOption,
-} from "@lib/components/atoms/select/AtomSelect";
 import AtomTable, {
   type ColumnDef,
 } from "@lib/components/atoms/table/AtomTable";
 import { createFileRoute, Link, useNavigate } from "@tanstack/solid-router";
 import { createMemo, createSignal, Show, Suspense } from "solid-js";
 import CardListSkeleton from "@/components/common/card-list-skeleton/CardListSkeleton";
+import CountryFilter from "@/components/common/country-filter/CountryFilter";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import NameFilter from "@/components/common/name-filter/NameFilter";
 import Page from "@/components/common/page/Page";
 import PageSeo from "@/components/common/page-seo/PageSeo";
 import SexIcon from "@/components/common/sex-icon/SexIcon";
 import VirtualCardGrid from "@/components/common/virtual-card-grid/VirtualCardGrid";
-import { countriesOf } from "@/components/routes/dogs/dogCountries";
 import K9xScore from "@/components/routes/dogs/dog-card/K9xScore";
 import PublicDogCard from "@/components/routes/dogs/dog-card/PublicDogCard";
 import {
@@ -27,15 +24,10 @@ import { useI18n } from "@/stores/i18n/i18n";
 import { useDebouncedValue } from "@/utils/debounce/useDebouncedValue";
 import { useFillRemainingHeight } from "@/utils/layout/useFillRemainingHeight";
 import { useDeviceType } from "@/utils/media-query/useDeviceType";
+import { useSearchParam } from "@/utils/search-params/useSearchParam";
 import "./styles.css";
 
 const VIEW = { LIST: "LIST", TABLE: "TABLE" } as const;
-
-/**
- * Kobalte reads an empty option value as "nothing selected" and swaps the trigger for the placeholder,
- * so the "all countries" entry needs a value of its own inside the select.
- */
-const ALL_COUNTRIES = "__ALL__";
 
 // Mirrors the card grid's CSS minimum column width, so virtualization wraps rows where the grid did.
 const CARD_MIN_WIDTH_PX = 240;
@@ -101,7 +93,7 @@ function PublicDogsPage() {
 
   const [nameFilter, setNameFilter] = createSignal("");
   const [handlerFilter, setHandlerFilter] = createSignal("");
-  const [countryFilter, setCountryFilter] = createSignal("");
+  const [countryFilter, setCountryFilter] = useSearchParam("country", "");
   const [view, setView] = createSignal<string>(VIEW.LIST);
 
   // The text filters travel in the request, so they only reach the query once the typing settles, and
@@ -138,19 +130,6 @@ function PublicDogsPage() {
 
     void loadMorePublicDogs(search());
   };
-
-  const countryOptions = createMemo<AtomSelectOption[]>(() => [
-    { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ALL_COUNTRIES },
-    ...countriesOf(dogs()).map(({ id, name }) => ({
-      label: name,
-      value: id,
-      preLabel: <CountryFlag country={id} alt={`${id} flag`} />,
-    })),
-  ]);
-
-  const selectedCountry = () =>
-    countryOptions().find((option) => option.value === countryFilter()) ??
-    countryOptions()[0];
 
   /**
    * Index and name, with the country's flag beside it, are on screen at every width; the rest of the dog is added as the screen
@@ -301,20 +280,7 @@ function PublicDogsPage() {
           value={handlerFilter()}
           onChange={setHandlerFilter}
         />
-        <div class="country-filter">
-          <AtomSelect
-            label={i18n.t("COMMON.COUNTRY_FIELD.COUNTRY")}
-            options={countryOptions()}
-            value={selectedCountry()}
-            onChange={(option) =>
-              setCountryFilter(
-                !option?.value || option.value === ALL_COUNTRIES
-                  ? ""
-                  : option.value,
-              )
-            }
-          />
-        </div>
+        <CountryFilter value={countryFilter()} onChange={setCountryFilter} />
       </div>
 
       {/* Dogs first: a background refetch must not pull the skeleton over a list that is already on

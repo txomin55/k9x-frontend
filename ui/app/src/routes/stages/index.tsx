@@ -27,7 +27,10 @@ import StageCardEventsContent from "@/components/routes/stages/stage-card/StageC
 import StagesFilters from "@/components/routes/stages/stages-filters/StagesFilters";
 import StagesMap from "@/components/routes/stages/stages-map/StagesMap";
 import StagesCalendar from "@/components/routes/stages/stages-calendar/StagesCalendar";
-import { useStages } from "@/services/fetch-stages/fetchStages";
+import {
+  useStages,
+  useStagesByCountry,
+} from "@/services/fetch-stages/fetchStages";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 import { enrollStageEvent } from "@/services/fetch-stages/stageEnroll";
 import { useOwnedDogs } from "@/services/secured/dog-crud/dogCrud";
@@ -102,6 +105,7 @@ type StagesQuery = ReturnType<typeof useStages>;
 
 type StagesData = {
   query: StagesQuery;
+  byCountry: ReturnType<typeof useStagesByCountry>;
   isReloadingRange: () => boolean;
 };
 
@@ -109,13 +113,19 @@ const StagesDataContext = createContext<StagesData>();
 
 function StagesDataProvider(props: ParentProps) {
   const { isOffline } = useOffline();
+  const user = useAuthUser();
 
   const { from: fromMs, to: toMs } = useStagesDateRange();
+  const [countryFilter] = useSearchParam("country", "");
 
   const query = useStages(fromMs, toMs, {
     refetchOnMount: !isOffline(),
     gcTime: 5 * 60 * 1000,
   });
+  // Filters only apply to a logged-in user, so an anonymous visit never asks for a country.
+  const byCountry = useStagesByCountry(fromMs, toMs, () =>
+    user() ? countryFilter() : "",
+  );
 
   const [isReloadingRange, setIsReloadingRange] = createSignal(false);
 
@@ -134,7 +144,7 @@ function StagesDataProvider(props: ParentProps) {
   );
 
   return (
-    <StagesDataContext.Provider value={{ query, isReloadingRange }}>
+    <StagesDataContext.Provider value={{ query, byCountry, isReloadingRange }}>
       {props.children}
     </StagesDataContext.Provider>
   );
@@ -167,7 +177,11 @@ function useFilteredStages() {
   const user = useAuthUser();
   const isLoggedIn = () => !!user();
 
-  const { query: fetchedStages, isReloadingRange } = useStagesData();
+  const {
+    query: fetchedStages,
+    byCountry: stagesByCountry,
+    isReloadingRange,
+  } = useStagesData();
 
   const [nameFilter] = useSearchParam("name", "");
   const [countryFilter] = useSearchParam("country", "");
@@ -178,9 +192,11 @@ function useFilteredStages() {
   const filteredStages = createMemo(() => {
     if (fetchedStages.isPending) return [];
 
-    const stages = fetchedStages.data ?? [];
-    if (!isLoggedIn()) return stages;
+    if (!isLoggedIn()) return fetchedStages.data ?? [];
 
+    // The country travels in the request; the rest is still matched here, over what came back.
+    const stages =
+      (countryFilter() ? stagesByCountry.data : fetchedStages.data) ?? [];
     const matchesName = buildNameMatcher(nameFilter());
     const country = countryFilter().toLowerCase();
     const status = statusFilter();
@@ -209,50 +225,6 @@ function useFilteredStages() {
   };
 
   return { filteredStages, isLoading };
-}
-
-function StagesFiltersConnected(props: {
-  name: string;
-  country: string;
-  status: string;
-  dateFrom: string;
-  dateTo: string;
-  onNameChange: (value: string) => void;
-  onCountryChange: (value: string) => void;
-  onStatusChange: (value: string) => void;
-  onDateFromChange: (value: string) => void;
-  onDateToChange: (value: string) => void;
-}) {
-  const fetchedStages = useStagesQuery();
-
-  const availableCountries = createMemo(() => {
-    if (fetchedStages.isPending) return [];
-
-    const stages = fetchedStages.data ?? [];
-    return [
-      ...new Set(
-        stages
-          .map((stage) => (stage.country ?? "").toLowerCase())
-          .filter(Boolean),
-      ),
-    ];
-  });
-
-  return (
-    <StagesFilters
-      name={props.name}
-      country={props.country}
-      status={props.status}
-      dateFrom={props.dateFrom}
-      dateTo={props.dateTo}
-      availableCountries={availableCountries()}
-      onNameChange={props.onNameChange}
-      onCountryChange={props.onCountryChange}
-      onStatusChange={props.onStatusChange}
-      onDateFromChange={props.onDateFromChange}
-      onDateToChange={props.onDateToChange}
-    />
-  );
 }
 
 function StagesLoginHint() {
@@ -780,7 +752,7 @@ function StagesIndexPage() {
           title={i18n.t("STAGES.INDEX.META_TITLE")}
           description={i18n.t("STAGES.INDEX.META_DESCRIPTION")}
         />
-        <StagesFiltersConnected
+        <StagesFilters
           name={nameFilter()}
           country={countryFilter()}
           status={statusFilter()}

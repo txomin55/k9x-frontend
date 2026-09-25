@@ -3,7 +3,7 @@ import AtomInput from "@lib/components/atoms/input/AtomInput";
 import AtomSelect, {
   type AtomSelectOption,
 } from "@lib/components/atoms/select/AtomSelect";
-import { Show } from "solid-js";
+import { createMemo, Show } from "solid-js";
 import CountryFlag from "@/components/common/country-flag/CountryFlag";
 import { useCountries } from "@/services/secured/country-crud/countryCrud";
 import { useI18n } from "@/stores/i18n/i18n";
@@ -25,7 +25,6 @@ type StagesFiltersProps = {
   status: string;
   dateFrom: string;
   dateTo: string;
-  availableCountries: string[];
   onNameChange: (value: string) => void;
   onCountryChange: (value: string) => void;
   onStatusChange: (value: string) => void;
@@ -49,7 +48,7 @@ export default function StagesFilters(props: StagesFiltersProps) {
  */
 const ALL_OPTION_VALUE = "__ALL__";
 
-/** Split out so the secured countries query only runs once the login gate above lets it through. */
+/** Split out so the filters' queries only run once the login gate above lets them through. */
 function StagesFiltersFields(props: StagesFiltersProps) {
   const i18n = useI18n();
   const device = useDeviceType();
@@ -57,35 +56,25 @@ function StagesFiltersFields(props: StagesFiltersProps) {
 
   const countriesQuery = useCountries({ refetchOnMount: false });
 
-  const countryOptions = (): AtomSelectOption[] => {
-    const nameByCode = new Map(
-      (countriesQuery.data ?? []).map(({ id, name }) => [
-        id.toLowerCase(),
-        name,
-      ]),
-    );
-    const options = [
-      ...new Set(
-        props.availableCountries
-          .map((code) => code.toLowerCase())
-          .filter(Boolean),
-      ),
-    ]
-      .map((code) => ({
-        label: nameByCode.get(code) ?? code.toUpperCase(),
+  // Every country, not just the ones on screen: the country travels in the request, so a country with no
+  // trial in the loaded range is still a valid question. A memo, so the flags are created under this
+  // component and not whenever the select happens to read its options.
+  const countryOptions = createMemo<AtomSelectOption[]>(() => [
+    { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ALL_OPTION_VALUE },
+    ...(countriesQuery.data ?? []).map(({ id, name }) => {
+      const code = id.toLowerCase();
+      return {
+        label: name,
         value: code,
         preLabel: <CountryFlag country={code} alt={`${code} flag`} />,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-    return [
-      { label: i18n.t("COMMON.COUNTRY_FIELD.ALL"), value: ALL_OPTION_VALUE },
-      ...options,
-    ];
-  };
+      };
+    }),
+  ]);
 
   const selectedCountry = () =>
-    countryOptions().find((option) => option.value === props.country) ??
-    countryOptions()[0];
+    countryOptions().find(
+      (option) => option.value === props.country.toLowerCase(),
+    ) ?? countryOptions()[0];
 
   const statusOptions: AtomSelectOption[] = [
     { label: i18n.t("STAGES.FILTERS.ALL_STATUSES"), value: ALL_OPTION_VALUE },

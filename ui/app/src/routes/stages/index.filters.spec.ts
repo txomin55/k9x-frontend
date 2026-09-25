@@ -1,7 +1,10 @@
 import type { Page } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { competitorTest, loggedOutTest } from "@test/utils/authFixtures";
-import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
+import {
+  byCountry,
+  setRouteResponses,
+} from "@test/utils/playwrightMockingUtils";
 import { AppRoutePath } from "@/components/global/app-shell/paths";
 import type { StageSummaryResponseDTO } from "@/services/fetch-stages/fetchStages.types";
 
@@ -61,13 +64,13 @@ const countries = [
 const setupFilterStages = async (page: Page) => {
   await setRouteResponses(page, {
     method: "GET",
-    pathname: "/secured/countries",
+    pathname: "/countries",
     payload: countries,
   });
   await setRouteResponses(page, {
     method: "GET",
     pathname: "/stages",
-    payload: filterStages,
+    payload: (_match, request) => byCountry(filterStages, request.url()),
   });
 };
 
@@ -113,6 +116,35 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
       page.getByText("Paris Autumn Open", { exact: true }),
     ).toHaveCount(0);
   });
+
+  competitorTest(
+    "asks the API for the trials of the chosen country",
+    async ({ page }) => {
+      const countries: string[] = [];
+      page.on("request", (request) => {
+        const url = new URL(request.url());
+        if (
+          url.pathname.endsWith("/stages") &&
+          url.searchParams.has("country")
+        ) {
+          countries.push(url.searchParams.get("country") as string);
+        }
+      });
+      await setupFilterStages(page);
+      await page.goto(AppRoutePath.STAGES);
+      await openFilters(page);
+      await expect(
+        page.getByText("Paris Autumn Open", { exact: true }),
+      ).toBeVisible();
+
+      await selectCountry(page, "France");
+
+      await expect.poll(() => countries).toContain("FR");
+      await expect(
+        page.getByText("Barcelona Spring Trial", { exact: true }),
+      ).toHaveCount(0);
+    },
+  );
 
   competitorTest("filters the trials by country", async ({ page }) => {
     await setupFilterStages(page);
@@ -278,7 +310,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
       });
       await setRouteResponses(page, {
         method: "GET",
-        pathname: "/secured/countries",
+        pathname: "/countries",
         payload: countries,
       });
 
