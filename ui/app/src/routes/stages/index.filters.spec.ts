@@ -168,7 +168,7 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
   });
 
   competitorTest(
-    "only lists countries present in the stages",
+    "lists every country, not only those of the listed stages",
     async ({ page }) => {
       await setupFilterStages(page);
       await page.goto(AppRoutePath.STAGES);
@@ -184,10 +184,10 @@ competitorTest.describe("Trials list - filters (logged in)", () => {
         page.getByRole("option", { name: "Portugal" }),
       ).toBeVisible();
       await expect(page.getByRole("option", { name: "France" })).toBeVisible();
-      await expect(page.getByRole("option", { name: "Italy" })).toHaveCount(0);
+      await expect(page.getByRole("option", { name: "Italy" })).toBeVisible();
       await expect(
         page.getByRole("option", { name: "United Kingdom" }),
-      ).toHaveCount(0);
+      ).toBeVisible();
     },
   );
 

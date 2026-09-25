@@ -1,6 +1,7 @@
 import type { Page } from "@playwright/test";
 import { defaultClassification } from "@test/api-mocks/classification";
 import { defaultCompetitions } from "@test/api-mocks/competitions";
+import { setupCountries } from "@test/api-mocks/countries";
 import { resolveDogByIdentificationPayload } from "@test/api-mocks/dogByIdentification";
 import { defaultDogs, toDogsPage } from "@test/api-mocks/dogs";
 import { defaultExtractionLog } from "@test/api-mocks/extractions";
@@ -23,6 +24,8 @@ import {
 
 export default async function defaultApiResponses(page: Page) {
   await Promise.all([
+    // Every country filter lists them, logged in or not, from an endpoint that needs no token.
+    setupCountries(page),
     setRouteResponses(page, {
       method: "POST",
       payload: mockAccessToken,

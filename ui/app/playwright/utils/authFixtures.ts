@@ -3,18 +3,12 @@ import { test as baseTest } from "@test/utils/testFixture";
 import { mockAccessToken } from "@test/api-mocks/login";
 import { competitorUser, organizerUser } from "@test/api-mocks/user";
 import { setupBreeds } from "@test/api-mocks/breeds";
-import { setupCountries } from "@test/api-mocks/countries";
 import { setupAwards } from "@test/api-mocks/awards";
 import { setupCategories } from "@test/api-mocks/categories";
 import { setRouteResponses } from "@test/utils/playwrightMockingUtils";
 
 const seedReferenceData = (page: Page) =>
-  Promise.all([
-    setupBreeds(page),
-    setupCountries(page),
-    setupAwards(page),
-    setupCategories(page),
-  ]);
+  Promise.all([setupBreeds(page), setupAwards(page), setupCategories(page)]);
 
 const ACCESS_TOKEN_KEY = "k9x_access_token";
 
@@ -101,8 +95,6 @@ export const loggedOutTest = baseTest.extend<{ autoLoggedOut: void }>({
           pathname: "/refresh",
           status: 401,
         }),
-        // Public lists offer every country, from an endpoint that needs no token.
-        setupCountries(page),
       ]);
       await use();
     },
