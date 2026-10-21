@@ -64,4 +64,21 @@ describe("AtomNumberInput", () => {
     expect(input.value).toBe("44,457,999.17");
     expect(onRawValueChange).toHaveBeenLastCalledWith(44457999.17);
   });
+
+  test("accepts a comma as decimal separator in a dot-decimal locale", async () => {
+    const user = userEvent.setup();
+    const onRawValueChange = vi.fn();
+    const { getByRole } = render(() => (
+      <AtomNumberInput rawValue={0} onRawValueChange={onRawValueChange} />
+    ));
+
+    const input = getByRole("spinbutton") as HTMLInputElement;
+
+    await user.clear(input);
+    await user.type(input, "6,5");
+    await user.tab();
+
+    expect(input.value).toBe("6.5");
+    expect(onRawValueChange).toHaveBeenLastCalledWith(6.5);
+  });
 });

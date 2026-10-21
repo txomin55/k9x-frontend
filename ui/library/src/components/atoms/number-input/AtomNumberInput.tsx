@@ -1,5 +1,6 @@
+import { useLocale } from "@kobalte/core/i18n";
 import * as NumberField from "@kobalte/core/number-field";
-import type { JSX } from "solid-js";
+import { createMemo, type JSX } from "solid-js";
 import "./styles.css";
 
 export type AtomNumberInputProps = {
@@ -24,7 +25,37 @@ export type AtomNumberInputProps = {
   validationState?: "valid" | "invalid";
 };
 
+const DECIMAL_KEYS = [",", "."];
+
 export default function AtomNumberInput(props: AtomNumberInputProps) {
+  const { locale } = useLocale();
+  const decimalSeparator = createMemo(
+    () =>
+      new Intl.NumberFormat(locale())
+        .formatToParts(1.1)
+        .find((part) => part.type === "decimal")?.value ?? ".",
+  );
+
+  const normalizeDecimalSeparator = (
+    event: InputEvent & { currentTarget: HTMLInputElement },
+  ) => {
+    const input = event.currentTarget;
+    const caret = input.selectionStart;
+    if (
+      event.inputType !== "insertText" ||
+      !DECIMAL_KEYS.includes(event.data ?? "") ||
+      event.data === decimalSeparator() ||
+      caret === null
+    ) {
+      return;
+    }
+    input.value =
+      input.value.slice(0, caret - 1) +
+      decimalSeparator() +
+      input.value.slice(caret);
+    input.setSelectionRange(caret, caret);
+  };
+
   return (
     <NumberField.Root
       class="atom-number-input"
@@ -53,6 +84,7 @@ export default function AtomNumberInput(props: AtomNumberInputProps) {
         <NumberField.Input
           class="atom-number-input__control"
           onBlur={props.onBlur}
+          onInput={normalizeDecimalSeparator}
           onWheel={(e) => e.currentTarget.blur()}
           placeholder={props.placeholder}
         />
